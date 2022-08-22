@@ -1,0 +1,16 @@
+{
+  "git.ignoreLimitWarning": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+  "editor.trimAutoWhitespace": true,
+  "editor.tabSize": 2,
+  "[handlebars]": {
+    "editor.formatOnSave": false,
+    "editor.formatOnPaste": false
+  },
+  "files.trimTrailingWhitespace": true,
+  "editor.rulers": [100]
+}
