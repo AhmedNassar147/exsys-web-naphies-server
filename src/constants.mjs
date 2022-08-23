@@ -22,7 +22,9 @@ export const WASSEL_API_NAMES = {
   CREATE_ELIGIBILITY: "createEligibility",
 };
 
-const WASSEL_PROVIDER_ID = PACKAGE_JSON_APP_CONFIG.wassel.providerId;
+const {
+  wassel: { providerId: WASSEL_PROVIDER_ID },
+} = PACKAGE_JSON_APP_CONFIG;
 
 export const WASSEL_CONSTANTS = {
   baseAPiUrl: "https://api.stg-eclaims.waseel.com",
