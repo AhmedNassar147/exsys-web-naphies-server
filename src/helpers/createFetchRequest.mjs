@@ -45,10 +45,10 @@ const createFetchRequest = ({
       }
 
       const { status, headers } = apiResponse;
-      const message = httpStatusCodes[status];
-      const isSuccess = message === "success";
       const contentType = headers.get("content-type") || "";
       const result = await getApiResult(contentType, apiResponse);
+      const message = httpStatusCodes[status];
+      const isSuccess = message === "success";
 
       resolve({
         isSuccess,
