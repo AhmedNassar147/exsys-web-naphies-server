@@ -14,7 +14,12 @@ import {
 const { baseAPiUrl, resourceNames, HTTP_STATUS_CODE } = WASSEL_CONSTANTS;
 const { CREATE_TOKEN } = WASSEL_API_NAMES;
 
-const createWasselRequest = async ({ resourceName, ...options }) => {
+const createWasselRequest = async ({
+  xBaseApiUrl = baseAPiUrl,
+  resourceName,
+  requestParams,
+  ...options
+}) => {
   const createRequestHeaders = async () => {
     if (resourceName === CREATE_TOKEN) {
       return BASE_API_HEADERS;
@@ -34,9 +39,20 @@ const createWasselRequest = async ({ resourceName, ...options }) => {
 
   const curredRequestHeaders = await createRequestHeaders();
 
+  let currentResourceName = resourceNames[resourceName];
+
+  if (requestParams) {
+    Object.keys(requestParams).forEach((key) => {
+      currentResourceName = currentResourceName.replace(
+        `:${key}`,
+        requestParams[key]
+      );
+    });
+  }
+
   return await createFetchRequest({
-    baseAPiUrl,
-    resourceName: resourceNames[resourceName],
+    baseAPiUrl: xBaseApiUrl,
+    resourceName: currentResourceName,
     requestHeaders: curredRequestHeaders,
     httpStatusCodes: HTTP_STATUS_CODE,
     ...options,

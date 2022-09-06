@@ -18,6 +18,7 @@ export const BASE_API_HEADERS = {
 
 export const WASSEL_API_NAMES = {
   CREATE_TOKEN: "createToken",
+  QUEY_CCHI_BENEFICIARY: "queryCchiBeneficiary",
   CREATE_BENEFICIARY: "createBeneficiary",
   CREATE_ELIGIBILITY: "createEligibility",
 };
@@ -31,6 +32,8 @@ export const WASSEL_CONSTANTS = {
   resourceNames: {
     // https://api.stg-eclaims.waseel.com/swagger-ui.html?urls.primaryName=beneficiaries#/
     [WASSEL_API_NAMES.CREATE_TOKEN]: "oauth/authenticate",
+    // https://api.eclaims.waseel.com/beneficiaries/providers/754/patientKey/2429674985
+    [WASSEL_API_NAMES.QUEY_CCHI_BENEFICIARY]: `beneficiaries/providers/${WASSEL_PROVIDER_ID}/patientKey/:patientKey`,
     [WASSEL_API_NAMES.CREATE_BENEFICIARY]: `beneficiaries/providers/${WASSEL_PROVIDER_ID}`,
     [WASSEL_API_NAMES.CREATE_ELIGIBILITY]: `eligibilities/providers/${WASSEL_PROVIDER_ID}/request`,
   },
