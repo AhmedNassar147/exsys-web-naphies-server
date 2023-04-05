@@ -1,0 +1,522 @@
+{
+  "resourceType": "Bundle",
+  "id": "127c8ae0-2a2d-4c16-85b4-d7b01f019000",
+  "meta": {
+    "profile": [
+      "http://nphies.sa/fhir/ksa/nphies-fs/StructureDefinition/bundle|1.0.0"
+    ]
+  },
+  "type": "message",
+  "timestamp": "2022-05-22T16:54:01.873+02:00",
+  "entry": [
+    {
+      "fullUrl": "http://exsyssolutions.com/MessageHeader/1266dbc2-b178-4352-85b4-d7b01f019000",
+      "resource": {
+        "resourceType": "MessageHeader",
+        "id": "1266dbc2-b178-4352-85b4-d7b01f019000",
+        "meta": {
+          "profile": [
+            "http://nphies.sa/fhir/ksa/nphies-fs/StructureDefinition/message-header|1.0.0"
+          ]
+        },
+        "eventCoding": {
+          "system": "http://nphies.sa/terminology/CodeSystem/ksa-message-events",
+          "code": "priorauth-request"
+        },
+        "destination": [
+          {
+            "endpoint": "http://nphies.sa/license/payer-license/INS-FHIR",
+            "receiver": {
+              "type": "Organization",
+              "identifier": {
+                "system": "http://nphies.sa/license/payer-license",
+                "value": "INS-FHIR"
+              }
+            }
+          }
+        ],
+        "sender": {
+          "type": "Organization",
+          "identifier": {
+            "system": "http://nphies.sa/license/provider-license",
+            "value": "10000300103940"
+          }
+        },
+        "source": {
+          "endpoint": "http://nphies.sa/license/provider-license/10000300103940"
+        },
+        "focus": [
+          {
+            "reference": "http://exsyssolutions.com/Claim/466"
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "http://exsyssolutions.com/Claim/466",
+      "resource": {
+        "resourceType": "Claim",
+        "id": "466",
+        "meta": {
+          "profile": [
+            "http://nphies.sa/fhir/ksa/nphies-fs/StructureDefinition/professional-priorauth|1.0.0"
+          ]
+        },
+        "extension": [
+          {
+            "url": "http://nphies.sa/fhir/ksa/nphies-fs/StructureDefinition/extension-transfer",
+            "valueBoolean": true
+          }
+        ],
+        "identifier": [
+          {
+            "system": "http://exsyssolutions.com/authorization",
+            "value": "466"
+          }
+        ],
+        "status": "active",
+        "type": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/claim-type",
+              "code": "professional"
+            }
+          ]
+        },
+        "subType": {
+          "coding": [
+            {
+              "system": "http://nphies.sa/terminology/CodeSystem/claim-subtype",
+              "code": "op"
+            }
+          ]
+        },
+        "use": "preauthorization",
+        "patient": {
+          "reference": "http://exsyssolutions.com/Patient/185288"
+        },
+        "created": "2022-05-22",
+        "provider": {
+          "reference": "http://exsyssolutions.com/Organization/10000300103940"
+        },
+        "insurer": {
+          "reference": "http://exsyssolutions.com/Organization/"
+        },
+        "priority": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/processpriority",
+              "code": "normal"
+            }
+          ]
+        },
+        "payee": {
+          "type": {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/payeetype",
+                "code": "provider"
+              }
+            ]
+          }
+        },
+        "careTeam": [
+          {
+            "sequence": 1,
+            "provider": {
+              "reference": "http://exsyssolutions.com/Practitioner/7"
+            },
+            "role": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/claimcareteamrole",
+                  "code": "primary"
+                }
+              ]
+            },
+            "qualification": {
+              "coding": [
+                {
+                  "system": "http://nphies.sa/terminology/CodeSystem/practice-codes",
+                  "code": "08.26"
+                }
+              ]
+            }
+          }
+        ],
+        "supportingInfo": [
+          {
+            "sequence": 1,
+            "category": {
+              "coding": [
+                {
+                  "system": "http://nphies.sa/terminology/CodeSystem/claim-information-category",
+                  "code": "vital-sign-systolic"
+                }
+              ]
+            },
+            "valueQuantity": {
+              "value": 120,
+              "system": "http://unitsofmeasure.org",
+              "code": "mm[Hg]"
+            }
+          },
+          {
+            "sequence": 2,
+            "category": {
+              "coding": [
+                {
+                  "system": "http://nphies.sa/terminology/CodeSystem/claim-information-category",
+                  "code": "vital-sign-diastolic"
+                }
+              ]
+            },
+            "valueQuantity": {
+              "value": 80,
+              "system": "http://unitsofmeasure.org",
+              "code": "mm[Hg]"
+            }
+          },
+          {
+            "sequence": 3,
+            "category": {
+              "coding": [
+                {
+                  "system": "http://nphies.sa/terminology/CodeSystem/claim-information-category",
+                  "code": "vital-sign-height"
+                }
+              ]
+            },
+            "valueQuantity": {
+              "value": 160,
+              "system": "http://unitsofmeasure.org",
+              "code": "cm"
+            }
+          },
+          {
+            "sequence": 4,
+            "category": {
+              "coding": [
+                {
+                  "system": "http://nphies.sa/terminology/CodeSystem/claim-information-category",
+                  "code": "vital-sign-weight"
+                }
+              ]
+            },
+            "valueQuantity": {
+              "value": 160,
+              "system": "http://unitsofmeasure.org",
+              "code": "kg"
+            }
+          },
+          {
+            "sequence": 5,
+            "category": {
+              "coding": [
+                {
+                  "system": "http://nphies.sa/terminology/CodeSystem/claim-information-category",
+                  "code": "info",
+                  "display": "Chief Complaint"
+                }
+              ]
+            },
+            "valueString": " -blurring of vision OS"
+          },
+          {
+            "sequence": 6,
+            "category": {
+              "coding": [
+                {
+                  "system": "http://nphies.sa/terminology/CodeSystem/claim-information-category",
+                  "code": "reason-for-visit"
+                }
+              ]
+            },
+            "code": {
+              "coding": [
+                {
+                  "system": "http://nphies.sa/terminology/CodeSystem/visit-reason",
+                  "code": "new-visit"
+                }
+              ]
+            }
+          }
+        ],
+        "diagnosis": [
+          {
+            "sequence": 1,
+            "diagnosisCodeableConcept": {
+              "coding": [
+                {
+                  "system": "http://hl7.org/fhir/sid/icd-10-am",
+                  "code": "H36.0"
+                }
+              ]
+            },
+            "type": [
+              {
+                "coding": [
+                  {
+                    "system": "http://nphies.sa/terminology/CodeSystem/diagnosis-type",
+                    "code": "principal"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "sequence": 2,
+            "diagnosisCodeableConcept": {
+              "coding": [
+                {
+                  "system": "http://hl7.org/fhir/sid/icd-10-am",
+                  "code": "H25"
+                }
+              ]
+            },
+            "type": [
+              {
+                "coding": [
+                  {
+                    "system": "http://nphies.sa/terminology/CodeSystem/diagnosis-type",
+                    "code": "principal"
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "insurance": [
+          {
+            "sequence": 1,
+            "focal": true,
+            "coverage": {
+              "reference": "http://nphies.sa/Coverage/1"
+            }
+          }
+        ],
+        "item": [],
+        "total": {
+          "value": 0,
+          "currency": "SAR"
+        }
+      }
+    },
+    {
+      "fullUrl": "http://exsyssolutions.com/Patient/185288",
+      "resource": {
+        "resourceType": "Patient",
+        "id": "185288",
+        "meta": {
+          "profile": [
+            "http://nphies.sa/fhir/ksa/nphies-fs/StructureDefinition/patient|1.0.0"
+          ]
+        },
+        "identifier": [
+          {
+            "system": "http://nphies.sa/identifier/iqama",
+            "value": "2125093043",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "PRC",
+                  "display": "iqama"
+                }
+              ]
+            }
+          }
+        ],
+        "active": true,
+        "name": [
+          {
+            "use": "official",
+            "text": "Eyad Arnous",
+            "family": "Arnous",
+            "given": ["Eyad", "Arnous"]
+          }
+        ],
+        "telecom": [
+          {
+            "system": "phone",
+            "value": "+966541413301"
+          }
+        ],
+        "gender": "female",
+        "_gender": {
+          "extension": [
+            {
+              "url": "http://nphies.sa/fhir/ksa/nphies-fs/StructureDefinition/extension-ksa-administrative-gender",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://nphies.sa/terminology/CodeSystem/ksa-administrative-gender",
+                    "code": "female",
+                    "display": "Female"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "birthDate": "1962-01-01"
+      }
+    },
+    {
+      "fullUrl": "http://nphies.sa/Coverage/1",
+      "resource": {
+        "resourceType": "Coverage",
+        "id": "1",
+        "meta": {
+          "profile": [
+            "http://nphies.sa/fhir/ksa/nphies-fs/StructureDefinition/coverage|1.0.0"
+          ]
+        },
+        "identifier": [
+          {
+            "system": "http://exsyssolutions.com/memberid",
+            "value": "6005472377\t"
+          }
+        ],
+        "status": "active",
+        "type": {
+          "coding": [
+            {
+              "system": "http://nphies.sa/terminology/CodeSystem/coverage-type",
+              "code": "EHCPOL",
+              "display": "extended healthcare"
+            }
+          ]
+        },
+        "subscriber": {
+          "reference": "http://exsyssolutions.com/Patient/185288"
+        },
+        "beneficiary": {
+          "reference": "http://exsyssolutions.com/Patient/185288"
+        },
+        "relationship": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/subscriber-relationship",
+              "code": "self",
+              "display": "self"
+            }
+          ]
+        },
+        "payor": [
+          {
+            "reference": "http://exsyssolutions.com/Organization/"
+          }
+        ],
+        "class": [
+          {
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/coverage-class",
+                  "code": "group"
+                }
+              ]
+            },
+            "value": "CB135",
+            "name": "Insurance Group A"
+          }
+        ],
+        "network": "Golden C"
+      }
+    },
+    {
+      "fullUrl": "http://exsyssolutions.com/Practitioner/7",
+      "resource": {
+        "resourceType": "Practitioner",
+        "id": "7",
+        "meta": {
+          "profile": [
+            "http://nphies.sa/fhir/ksa/nphies-fs/StructureDefinition/practitioner|1.0.0"
+          ]
+        },
+        "identifier": [
+          {
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "MD"
+                }
+              ]
+            },
+            "system": "http://nphies.sa/license/practitioner-license",
+            "value": "N-P-00003"
+          }
+        ],
+        "active": true,
+        "name": [
+          {
+            "use": "official",
+            "text": "Dr. Amar Moustafa",
+            "family": "Moustafa",
+            "given": ["Dr.", "Amar"]
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "http://exsyssolutions.com/Organization/10000300103940",
+      "resource": {
+        "resourceType": "Organization",
+        "id": "10000300103940",
+        "meta": {
+          "profile": [
+            "http://nphies.sa/fhir/ksa/nphies-fs/StructureDefinition/provider-organization|1.0.0"
+          ]
+        },
+        "identifier": [
+          {
+            "system": "http://nphies.sa/license/provider-license",
+            "value": "10000300103940"
+          }
+        ],
+        "active": true,
+        "type": [
+          {
+            "coding": [
+              {
+                "system": "http://nphies.sa/terminology/CodeSystem/organization-type",
+                "code": "prov"
+              }
+            ]
+          }
+        ],
+        "name": "Al Falah International Hospital"
+      }
+    },
+    {
+      "fullUrl": "http://exsyssolutions.com/Organization/",
+      "resource": {
+        "resourceType": "Organization",
+        "meta": {
+          "profile": [
+            "http://nphies.sa/fhir/ksa/nphies-fs/StructureDefinition/insurer-organization|1.0.0"
+          ]
+        },
+        "identifier": [
+          {
+            "system": "http://nphies.sa/license/payer-license"
+          }
+        ],
+        "active": true,
+        "type": [
+          {
+            "coding": [
+              {
+                "system": "http://nphies.sa/terminology/CodeSystem/organization-type",
+                "code": "ins"
+              }
+            ]
+          }
+        ],
+        "name": "Saudi National Insurance"
+      }
+    }
+  ]
+}

@@ -8,7 +8,7 @@ import createWasselRequest from "../helpers/createWasselRequest.mjs";
 import {
   getLocalStorageItem,
   setLocalStorageItem,
-} from "../helpers/localStorage.mjs";
+} from "../nodeHelpers/localStorage.mjs";
 
 const { CREATE_TOKEN } = WASSEL_API_NAMES;
 

@@ -4,7 +4,7 @@
  *
  */
 import createFetchRequest from "./createFetchRequest.mjs";
-import { getLocalStorageItem } from "./localStorage.mjs";
+import { getLocalStorageItem } from "../nodeHelpers/localStorage.mjs";
 import {
   BASE_API_HEADERS,
   WASSEL_CONSTANTS,

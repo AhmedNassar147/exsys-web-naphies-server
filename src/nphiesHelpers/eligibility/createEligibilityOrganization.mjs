@@ -1,0 +1,56 @@
+/*
+ *
+ * Helpers: `createEligibilityOrganization`.
+ *
+ */
+import createNphiesBaseResource from "../base/createNphiesBaseResource.mjs";
+import {
+  NPHIES_BASE_PROFILE_TYPES,
+  NPHIES_RESOURCE_TYPES,
+  NPHIES_API_URLS,
+  NPHIES_BASE_CODE_TYPES,
+} from "../../constants.mjs";
+
+const { PROVIDER_ORGANIZATION } = NPHIES_BASE_PROFILE_TYPES;
+const { ORGANIZATION } = NPHIES_RESOURCE_TYPES;
+const { BASE_CODE_SYS_URL, PROVIDER_LICENSE_URL, PAYER_LICENSE_URL } =
+  NPHIES_API_URLS;
+const { ORGANIZATION_TYPE } = NPHIES_BASE_CODE_TYPES;
+
+const createEligibilityOrganization = ({
+  organizationLicense,
+  organizationReference,
+  organizationName,
+  isProvider,
+  providerOrganizationUrl,
+}) => ({
+  fullUrl: `${providerOrganizationUrl}/${organizationReference}`,
+  resource: {
+    ...createNphiesBaseResource({
+      resourceType: ORGANIZATION,
+      profileType: PROVIDER_ORGANIZATION,
+      uuid: organizationReference,
+    }),
+    identifier: [
+      {
+        system: isProvider ? PROVIDER_LICENSE_URL : PAYER_LICENSE_URL,
+        // use: "official",
+        value: organizationLicense,
+      },
+    ],
+    active: true,
+    type: [
+      {
+        coding: [
+          {
+            system: `${BASE_CODE_SYS_URL}/${ORGANIZATION_TYPE}`,
+            code: isProvider ? "prov" : "ins",
+          },
+        ],
+      },
+    ],
+    name: organizationName,
+  },
+});
+
+export default createEligibilityOrganization;

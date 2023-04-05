@@ -10,7 +10,7 @@ import { PACKAGE_JSON_APP_CONFIG, localStoragePath } from "../constants.mjs";
 
 const { localStorageFilePaths } = PACKAGE_JSON_APP_CONFIG;
 
-const throwIfLocalStorageFilesDoesnotIncludeFilePath = (filePath) => {
+const throwIfLocalStorageFilesDoesNotIncludeFilePath = (filePath) => {
   if (!localStorageFilePaths.includes(filePath)) {
     throw new Error(
       `the file \`${filePath}\` must be set in \`localStorageFilePaths\``
@@ -21,7 +21,7 @@ const throwIfLocalStorageFilesDoesnotIncludeFilePath = (filePath) => {
 export const getLocalStorageItem = async ({ fileName = "", key }) => {
   const filePath = `${fileName}.json`;
 
-  throwIfLocalStorageFilesDoesnotIncludeFilePath(filePath);
+  throwIfLocalStorageFilesDoesNotIncludeFilePath(filePath);
   const fileFullPath = `${localStoragePath}/${filePath}`;
 
   const isPathExists = await checkPathExists(fileFullPath);
@@ -37,7 +37,7 @@ export const getLocalStorageItem = async ({ fileName = "", key }) => {
 export const setLocalStorageItem = async ({ fileName = "", key, value }) => {
   const filePath = `${fileName}.json`;
 
-  throwIfLocalStorageFilesDoesnotIncludeFilePath(filePath);
+  throwIfLocalStorageFilesDoesNotIncludeFilePath(filePath);
   const fileFullPath = `${localStoragePath}/${filePath}`;
 
   const isPathExists = await checkPathExists(fileFullPath);
