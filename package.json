@@ -22,14 +22,11 @@
   },
   "appConfig": {
     "serverPort": 5000,
+    "retryTimes": 5,
+    "retryDelay": 20000,
     "localStorageFilePaths": [
       "tokens.json"
-    ],
-    "wassel": {
-      "providerId": "754",
-      "userName": "flhnphies",
-      "password": "745flh"
-    }
+    ]
   },
   "engines": {
     "node": ">= 16.5.0",
