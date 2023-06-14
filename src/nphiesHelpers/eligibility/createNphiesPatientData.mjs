@@ -28,8 +28,6 @@ const createNphiesPatientData = ({
   nationalId,
   nationalIdType,
   staffFirstName,
-  staffMiddleName,
-  staffLastName,
   staffFamilyName,
   staffPhone,
   patientGender,
@@ -37,11 +35,7 @@ const createNphiesPatientData = ({
   patientMaritalStatus,
   providerPatientUrl,
 }) => {
-  const staffNames = [
-    staffFirstName || " ",
-    staffMiddleName || " ",
-    staffLastName || " ",
-  ];
+  const staffNames = [staffFirstName || " ", staffFamilyName || " "];
 
   return {
     fullUrl: `${providerPatientUrl}/${patientId}`,

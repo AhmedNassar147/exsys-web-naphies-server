@@ -6,7 +6,12 @@
 import { readFile } from "fs/promises";
 import https from "https";
 
-const createNphiesOptions = async ({ certificatePath, ignoreCert }) => {
+const defaultOptions = { ignoreCert: true };
+
+const createNphiesOptions = async ({
+  certificatePath,
+  ignoreCert,
+} = defaultOptions) => {
   const certificate = ignoreCert ? undefined : await readFile(certificatePath);
 
   const requestOptions = {

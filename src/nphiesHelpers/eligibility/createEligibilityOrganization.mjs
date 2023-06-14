@@ -20,7 +20,7 @@ const { ORGANIZATION_TYPE } = NPHIES_BASE_CODE_TYPES;
 const createEligibilityOrganization = ({
   organizationLicense,
   organizationReference,
-  organizationName,
+  siteName,
   isProvider,
   providerOrganizationUrl,
 }) => ({
@@ -49,7 +49,7 @@ const createEligibilityOrganization = ({
         ],
       },
     ],
-    name: organizationName,
+    name: siteName,
   },
 });
 

@@ -37,7 +37,7 @@ const createNphiesMessageHeader = ({
       ...baseResourceData,
       eventCoding: {
         system: `${BASE_CODE_SYS_URL}/${KSA_MSG_EVENTS}`,
-        code: "eligibility-request",
+        code: "eligibility",
       },
       destination: [
         {

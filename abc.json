@@ -1,0 +1,251 @@
+{
+  "resourceType": "Bundle",
+  "id": "ff29bdaf-f8f8-43fa-9d60-4fc188a381ae",
+  "meta": {
+    "profile": [
+      "http://nphies.sa/fhir/ksa/nphies-fs/StructureDefinition/bundle|1.0.0"
+    ]
+  },
+  "type": "message",
+  "timestamp": "2023-06-14T14:28:43.084Z",
+  "entry": [
+    {
+      "fullUrl": "http://exsyssolutions.com/MessageHeader/197733ff-5203-44cf-aa7e-5259a0fb75fa",
+      "resource": {
+        "resourceType": "MessageHeader",
+        "id": "197733ff-5203-44cf-aa7e-5259a0fb75fa",
+        "meta": {
+          "profile": [
+            "http://nphies.sa/fhir/ksa/nphies-fs/StructureDefinition/message-header|1.0.0"
+          ]
+        },
+        "eventCoding": {
+          "system": "http://nphies.sa/terminology/CodeSystem/ksa-message-events",
+          "code": "eligibility"
+        },
+        "destination": [
+          {
+            "endpoint": "http://nphies.sa/license/payer-license/INS-FHIR",
+            "receiver": {
+              "type": "Organization",
+              "identifier": {
+                "system": "http://nphies.sa/license/payer-license",
+                "value": "INS-FHIR"
+              }
+            }
+          }
+        ],
+        "sender": {
+          "type": "Organization",
+          "identifier": {
+            "system": "http://nphies.sa/license/provider-license",
+            "value": "10000300103940"
+          }
+        },
+        "source": {
+          "endpoint": "http://nphies.sa/license/payer-license/10000300103940"
+        },
+        "focus": [
+          {
+            "reference": "http://exsyssolutions.com/CoverageEligibilityRequest/9"
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "http://exsyssolutions.com/CoverageEligibilityRequest/9",
+      "resource": {
+        "resourceType": "CoverageEligibilityRequest",
+        "id": 9,
+        "meta": {
+          "profile": [
+            "http://nphies.sa/fhir/ksa/nphies-fs/StructureDefinition/eligibility-request|1.0.0"
+          ]
+        },
+        "identifier": [
+          {
+            "system": "http://exsyssolutions.com/CoverageEligibilityRequest",
+            "value": "req_9"
+          }
+        ],
+        "status": "active",
+        "priority": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/processpriority",
+              "code": "normal"
+            }
+          ]
+        },
+        "purpose": ["validation"],
+        "patient": {
+          "reference": "http://exsyssolutions.com/Patient/115765"
+        },
+        "servicedPeriod": {
+          "start": "2023-06-14",
+          "end": "2023-06-15"
+        },
+        "created": "2023-6-14",
+        "provider": {
+          "reference": "http://exsyssolutions.com/Organization/10000300103940"
+        },
+        "insurer": {
+          "reference": "http://exsyssolutions.com/Organization/INS-FHIR"
+        },
+        "facility": {
+          "reference": "http://exsyssolutions.com/Location/2be11333-08ed-422a-9923-931c5a475f63"
+        }
+      }
+    },
+    {
+      "fullUrl": "http://exsyssolutions.com/Organization/10000300103940",
+      "resource": {
+        "resourceType": "Organization",
+        "id": "10000300103940",
+        "meta": {
+          "profile": [
+            "http://nphies.sa/fhir/ksa/nphies-fs/StructureDefinition/provider-organization|1.0.0"
+          ]
+        },
+        "identifier": [
+          {
+            "system": "http://nphies.sa/license/provider-license",
+            "value": "10000300103940"
+          }
+        ],
+        "active": true,
+        "type": [
+          {
+            "coding": [
+              {
+                "system": "http://nphies.sa/terminology/CodeSystem/organization-type",
+                "code": "prov"
+              }
+            ]
+          }
+        ],
+        "name": "Al Falah International Hospital"
+      }
+    },
+    {
+      "fullUrl": "http://exsyssolutions.com/Organization/INS-FHIR",
+      "resource": {
+        "resourceType": "Organization",
+        "id": "INS-FHIR",
+        "meta": {
+          "profile": [
+            "http://nphies.sa/fhir/ksa/nphies-fs/StructureDefinition/provider-organization|1.0.0"
+          ]
+        },
+        "identifier": [
+          {
+            "system": "http://nphies.sa/license/payer-license",
+            "value": "INS-FHIR"
+          }
+        ],
+        "active": true,
+        "type": [
+          {
+            "coding": [
+              {
+                "system": "http://nphies.sa/terminology/CodeSystem/organization-type",
+                "code": "ins"
+              }
+            ]
+          }
+        ],
+        "name": "شركة ولا للتأمين التعاوني-الظهران"
+      }
+    },
+    {
+      "fullUrl": "http://exsyssolutions.com/Patient/115765",
+      "resource": {
+        "resourceType": "Patient",
+        "id": "115765",
+        "meta": {
+          "profile": [
+            "http://nphies.sa/fhir/ksa/nphies-fs/StructureDefinition/patient|1.0.0"
+          ]
+        },
+        "identifier": [
+          {
+            "system": "http://nphies.sa/identifier/iqama",
+            "value": "1116201086",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://nphies.sa/terminology/CodeSystem/patient-identifier-type",
+                  "code": "PRC"
+                }
+              ]
+            }
+          }
+        ],
+        "active": true,
+        "name": [
+          {
+            "given": ["Eyad", "Arnous"],
+            "text": "Eyad Arnous",
+            "family": "Arnous",
+            "use": "official"
+          }
+        ],
+        "telecom": [
+          {
+            "system": "phone",
+            "value": "+966541413301"
+          }
+        ],
+        "gender": "female",
+        "_gender": {
+          "extension": [
+            {
+              "url": "http://nphies.sa/fhir/ksa/nphies-fs/StructureDefinition/extension-ksa-administrative-gender",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://nphies.sa/terminology/CodeSystem/ksa-administrative-gender",
+                    "code": "female"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "fullUrl": "http://exsyssolutions.com/Location/2be11333-08ed-422a-9923-931c5a475f63",
+      "resource": {
+        "resourceType": "Location",
+        "id": "2be11333-08ed-422a-9923-931c5a475f63",
+        "meta": {
+          "profile": [
+            "http://nphies.sa/fhir/ksa/nphies-fs/StructureDefinition/location|1.0.0"
+          ]
+        },
+        "identifier": [
+          {
+            "system": "http://nphies.sa/license/location-license",
+            "value": "GACH"
+          }
+        ],
+        "status": "active",
+        "name": "Al Falah International Hospital",
+        "type": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/v3-RoleCode",
+                "code": "GACH"
+              }
+            ]
+          }
+        ],
+        "managingOrganization": {
+          "reference": "http://exsyssolutions.com/Organization/10000300103940"
+        }
+      }
+    }
+  ]
+}

@@ -22,8 +22,8 @@ const createCoverageEligibilityRequest = ({
   requestId,
   purpose,
   priorityCode,
-  providerOrganizationReference,
-  payerOrganizationReference,
+  providerOrganization,
+  payerOrganization,
   periodStartDate,
   periodEndDate,
   coverageId,
@@ -34,7 +34,7 @@ const createCoverageEligibilityRequest = ({
   providerCoverageUrl,
   providerCoverageEligibilityUrl,
   providerLocationUrl,
-  providerLocationReference,
+  providerLocation,
 }) => {
   const { dateString } = getCurrentDate();
 
@@ -50,7 +50,7 @@ const createCoverageEligibilityRequest = ({
         {
           system: providerCoverageEligibilityUrl,
           value: requestId,
-          // "value": "req_161490" in json file but not found in anywhere
+          value: `req_${requestId}`,
         },
       ],
       status: "active",
@@ -72,22 +72,26 @@ const createCoverageEligibilityRequest = ({
       },
       created: reverseDate(dateString),
       provider: {
-        reference: `${providerOrganizationUrl}/${providerOrganizationReference}`,
+        reference: `${providerOrganizationUrl}/${providerOrganization}`,
       },
       insurer: {
-        reference: `${providerOrganizationUrl}/${payerOrganizationReference}`,
+        reference: `${providerOrganizationUrl}/${payerOrganization}`,
       },
       facility: {
-        reference: `${providerLocationUrl}/${providerLocationReference}`,
+        reference: `${providerLocationUrl}/${providerLocation}`,
       },
-      insurance: [
-        {
-          coverage: {
-            reference: `${providerCoverageUrl}/${coverageId}`,
-          },
-          businessArrangement,
-        },
-      ],
+      ...(coverageId
+        ? {
+            insurance: [
+              {
+                coverage: {
+                  reference: `${providerCoverageUrl}/${coverageId}`,
+                },
+                businessArrangement,
+              },
+            ],
+          }
+        : null),
     },
   };
 };

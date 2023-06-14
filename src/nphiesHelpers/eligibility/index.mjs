@@ -1,6 +1,6 @@
 /*
  *
- * Helper: `makeEligibilityRequest`.
+ * Helper: `createNaphiesRequestFullData`.
  *
  */
 import createNphiesMessageHeader from "./createNphiesMessageHeader.mjs";
@@ -12,34 +12,31 @@ import createLocationData from "./createLocationData.mjs";
 import createNphiesBaseRequestData from "../base/createNphiesBaseRequestData.mjs";
 import createProviderUrls from "../base/createProviderUrls.mjs";
 
-const makeEligibilityRequest = async ({
+const createNaphiesRequestFullData = ({
   provider_license,
-  provider_organization_reference,
-  provider_organization_name,
-  payer_license,
-  payer_organization_reference,
-  payer_organization_name,
-  provider_base_url,
-  provider_location_reference,
-  location_license,
-  location_name,
-  payer_base_url,
   request_id,
+  payer_license,
+  site_url,
+  site_tel,
+  site_name,
+  provider_organization,
+  payer_organization,
+  payer_name,
+  provider_location,
+  location_license,
+  payer_base_url,
   purpose,
-  priority_code,
+  priority_code = "normal",
   coverage_type,
   coverage_id,
   member_id,
   patient_id,
   national_id,
-  national_id_type,
+  national_id_type = "PRC",
   staff_first_name,
-  staff_middle_name,
-  staff_last_name,
   staff_family_name,
-  staff_phone,
-  patient_gender,
-  patient_birthdate,
+  gender,
+  birthDate,
   patient_martial_status,
   relationship,
   period_start_date,
@@ -55,7 +52,7 @@ const makeEligibilityRequest = async ({
     providerCoverageEligibilityUrl,
     providerMessageHeaderUrl,
     providerLocationUrl,
-  } = createProviderUrls(provider_base_url);
+  } = createProviderUrls(site_url);
 
   const requestPayload = {
     ...createNphiesBaseRequestData(),
@@ -71,8 +68,9 @@ const makeEligibilityRequest = async ({
         requestId: request_id,
         purpose,
         priorityCode: priority_code,
-        providerOrganizationReference: provider_organization_reference,
-        payerOrganizationReference: payer_organization_reference,
+        providerOrganization: provider_organization,
+        payerOrganization: payer_organization,
+        providerLocation: provider_location,
         periodStartDate: period_start_date,
         periodEndDate: period_end_date,
         coverageId: coverage_id,
@@ -83,7 +81,6 @@ const makeEligibilityRequest = async ({
         providerCoverageUrl,
         providerCoverageEligibilityUrl,
         providerLocationUrl,
-        providerLocationReference: provider_location_reference,
       }),
       createNphiesCoverage({
         coverageId: coverage_id,
@@ -91,7 +88,7 @@ const makeEligibilityRequest = async ({
         memberId: member_id,
         patientId: patient_id,
         relationship,
-        payerOrganizationReference: payer_organization_reference,
+        payerOrganization: payer_organization,
         payerBaseUrl: payer_base_url,
         providerOrganizationUrl,
         providerPatientUrl,
@@ -101,15 +98,15 @@ const makeEligibilityRequest = async ({
       }),
       createEligibilityOrganization({
         organizationLicense: provider_license,
-        organizationReference: provider_organization_reference,
-        organizationName: provider_organization_name,
+        organizationReference: provider_organization,
+        siteName: site_name,
         providerOrganizationUrl,
         isProvider: true,
       }),
       createEligibilityOrganization({
         organizationLicense: payer_license,
-        organizationReference: payer_organization_reference,
-        organizationName: payer_organization_name,
+        organizationReference: payer_organization,
+        siteName: payer_name,
         providerOrganizationUrl,
       }),
       createNphiesPatientData({
@@ -117,27 +114,25 @@ const makeEligibilityRequest = async ({
         nationalId: national_id,
         nationalIdType: national_id_type,
         staffFirstName: staff_first_name,
-        staffMiddleName: staff_middle_name,
-        staffLastName: staff_last_name,
         staffFamilyName: staff_family_name,
-        staffPhone: staff_phone,
-        patientGender: patient_gender,
-        patientBirthdate: patient_birthdate,
+        staffPhone: site_tel,
+        patientGender: gender,
+        patientBirthdate: birthDate,
         patientMaritalStatus: patient_martial_status,
         providerPatientUrl,
       }),
       createLocationData({
         locationLicense: location_license,
-        locationName: location_name,
-        providerLocationReference: provider_location_reference,
-        locationManagingOrganization: provider_organization_reference,
+        siteName: site_name,
+        providerLocation: provider_location,
+        providerOrganization: provider_organization,
         providerLocationUrl,
         providerOrganizationUrl,
       }),
-    ],
+    ].filter(Boolean),
   };
 
-  console.log("requestPayload", requestPayload);
+  return requestPayload;
 };
 
-export default makeEligibilityRequest;
+export default createNaphiesRequestFullData;

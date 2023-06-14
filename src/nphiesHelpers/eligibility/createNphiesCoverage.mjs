@@ -27,13 +27,17 @@ const createNphiesCoverage = ({
   relationship,
   networkName,
   coverageClasses,
-  payerOrganizationReference,
+  payerOrganization,
   payerBaseUrl,
   providerOrganizationUrl,
   providerPatientUrl,
   providerCoverageUrl,
 }) => {
   const patientUrlReference = `${providerPatientUrl}/${patientId}`;
+
+  if (!coverageId || !coverageType) {
+    return false;
+  }
 
   return {
     fullUrl: `${providerCoverageUrl}/${coverageId}`,
@@ -65,17 +69,21 @@ const createNphiesCoverage = ({
       beneficiary: {
         reference: patientUrlReference,
       },
-      relationship: {
-        coding: [
-          {
-            system: `${BASE_TERMINOLOGY_CODE_SYS_URL}/${SUBSCRIBER_RELATIONSHIP}`,
-            code: relationship,
-          },
-        ],
-      },
+      ...(relationship
+        ? {
+            relationship: {
+              coding: [
+                {
+                  system: `${BASE_TERMINOLOGY_CODE_SYS_URL}/${SUBSCRIBER_RELATIONSHIP}`,
+                  code: relationship,
+                },
+              ],
+            },
+          }
+        : null),
       payor: [
         {
-          reference: `${providerOrganizationUrl}/${payerOrganizationReference}`,
+          reference: `${providerOrganizationUrl}/${payerOrganization}`,
         },
       ],
       network: networkName,

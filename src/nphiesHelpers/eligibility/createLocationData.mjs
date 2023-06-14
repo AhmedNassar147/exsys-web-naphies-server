@@ -20,18 +20,18 @@ const locationSystemTypeUrl = `${BASE_TERMINOLOGY_CODE_SYS_URL}/${ROLE_CODE}`;
 
 const createLocationData = ({
   locationLicense,
-  locationName,
-  providerLocationReference,
+  siteName,
+  providerLocation,
+  providerOrganization,
   providerLocationUrl,
   providerOrganizationUrl,
-  locationManagingOrganization,
 }) => ({
-  fullUrl: `${providerLocationUrl}/${providerLocationReference}`,
+  fullUrl: `${providerLocationUrl}/${providerLocation}`,
   resource: {
     ...createNphiesBaseResource({
       resourceType: LOCATION,
       profileType: PROFILE_LOCATION,
-      uuid: providerLocationReference,
+      uuid: providerLocation,
     }),
     identifier: [
       {
@@ -40,7 +40,7 @@ const createLocationData = ({
       },
     ],
     status: "active",
-    name: locationName,
+    name: siteName,
     type: [
       {
         coding: [
@@ -52,7 +52,7 @@ const createLocationData = ({
       },
     ],
     managingOrganization: {
-      reference: `${providerOrganizationUrl}/${locationManagingOrganization}`,
+      reference: `${providerOrganizationUrl}/${providerOrganization}`,
     },
   },
 });
