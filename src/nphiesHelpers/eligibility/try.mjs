@@ -1,6 +1,9 @@
 import { writeFile } from "fs/promises";
 import createNaphiesRequestFullData from "./index.mjs";
 import createNphiesRequest from "../../helpers/createNphiesRequest.mjs";
+import mapEntriesAndExtractNeededData from "../extraction/mapEntriesAndExtractNeededData.mjs";
+import extractCoverageEligibilityEntryResponseData from "../extraction/extractCoverageEligibilityEntryResponseData.mjs";
+import extractCoverageEntryResponseData from "../extraction/extractCoverageEntryResponseData.mjs";
 
 const {
   primaryKey,
@@ -52,7 +55,7 @@ const {
 const message_event_type = "validation";
 const patientFileNo = "115765";
 
-const result = createNaphiesRequestFullData({
+const nphiesDataCreatedFromExsysData = createNaphiesRequestFullData({
   provider_license,
   request_id: primaryKey,
   payer_license,
@@ -84,12 +87,34 @@ const result = createNaphiesRequestFullData({
   coverage_classes: undefined,
 });
 
-await writeFile("./abc.json", JSON.stringify(result, null, 2));
+await writeFile(
+  "./abc.json",
+  JSON.stringify(nphiesDataCreatedFromExsysData, null, 2)
+);
 
 const nphiesResults = await createNphiesRequest({
-  bodyData: result,
+  bodyData: nphiesDataCreatedFromExsysData,
 });
 
-await writeFile("./abc-result.json", JSON.stringify(nphiesResults, null, 2));
+let allResultData = {
+  ...nphiesResults,
+};
+
+const { isSuccess, result: nphiesResponse } = nphiesResults;
+if (isSuccess) {
+  const extractedData = mapEntriesAndExtractNeededData(nphiesResponse, {
+    CoverageEligibilityResponse: extractCoverageEligibilityEntryResponseData,
+    Coverage: extractCoverageEntryResponseData,
+  });
+
+  allResultData.dataSentToExsys = {
+    primaryKey: primaryKey,
+    nodeServerDataSentToNaphies: nphiesDataCreatedFromExsysData,
+    naphiesResponse: nphiesResponse,
+    naphiesExtractedData: extractedData,
+  };
+}
+
+await writeFile("./abc-result.json", JSON.stringify(allResultData, null, 2));
 
 export {};
