@@ -35,7 +35,7 @@ const createFetchRequest = (options) => {
     const wrapper = (n) => {
       axios(fetchOptions)
         .then((apiResponse) => {
-          console.log("apiResponse", apiResponse);
+          // console.log("apiResponse", apiResponse);
           const { status, data } = apiResponse;
           const message = httpStatusCodes[status];
           const isSuccess = message === "success";
@@ -59,9 +59,9 @@ const createFetchRequest = (options) => {
           });
         })
         .catch(async (error) => {
-          console.log("error", error);
+          // console.log("error", error);
           if (n > 0) {
-            console.log("retrying", n);
+            // console.log("retrying", n);
             await delay(retryDelay);
             wrapper(--n);
           } else {
