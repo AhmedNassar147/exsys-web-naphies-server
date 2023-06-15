@@ -3,13 +3,10 @@
  * Constants: 'exsys-web-naphies-server'.
  *
  */
-import readJsonFile from "./nodeHelpers/readJsonFile.mjs";
-
-const { appConfig } = await readJsonFile(`${process.cwd()}/package.json`, true);
-
-export const PACKAGE_JSON_APP_CONFIG = appConfig;
-
-export const localStoragePath = `${process.cwd()}/localStorage`;
+export const SERVER_PORT = 5000;
+export const RETRY_TIMES = 5;
+export const RETRY_DELAY = 20000;
+export const RESTART_SERVER_MS = 60000;
 
 export const EXSYS_BASE_URL = "http://149.102.140.8:9090/ords/exsys_api";
 export const EXSYS_API_IDS_NAMES = {

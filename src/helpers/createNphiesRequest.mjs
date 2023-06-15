@@ -5,18 +5,16 @@
  */
 import createFetchRequest from "./createFetchRequest.mjs";
 import createNphiesOptions from "./createNphiesOptions.mjs";
-import { NPHIES_API_URLS, PACKAGE_JSON_APP_CONFIG } from "../constants.mjs";
+import { NPHIES_API_URLS, RETRY_TIMES, RETRY_DELAY } from "../constants.mjs";
 
 const { NPHIES_PRODUCTION, NPHIES_DEVELOPMENT } = NPHIES_API_URLS;
-const { retryTimes: _retryTimes, retryDelay: _retryDelay } =
-  PACKAGE_JSON_APP_CONFIG;
 
 const createNphiesRequest = async ({
   isProduction,
   bodyData,
   transformApiResults,
-  retryTimes = _retryTimes,
-  retryDelay = _retryDelay,
+  retryTimes = RETRY_TIMES,
+  retryDelay = RETRY_DELAY,
 }) => {
   const apiUrl = isProduction ? NPHIES_PRODUCTION : NPHIES_DEVELOPMENT;
   const { httpsAgent, headers } = await createNphiesOptions({

@@ -7,11 +7,9 @@ import createFetchRequest from "./createFetchRequest.mjs";
 import {
   EXSYS_BASE_URL,
   EXSYS_API_IDS,
-  PACKAGE_JSON_APP_CONFIG,
+  RETRY_TIMES,
+  RETRY_DELAY,
 } from "../constants.mjs";
-
-const { retryTimes: _retryTimes, retryDelay: _retryDelay } =
-  PACKAGE_JSON_APP_CONFIG;
 
 const createExsysRequest = async ({
   xBaseApiUrl = EXSYS_BASE_URL,
@@ -21,8 +19,8 @@ const createExsysRequest = async ({
   requestHeaders,
   transformApiResults,
   body,
-  retryTimes = _retryTimes,
-  retryDelay = _retryDelay,
+  retryTimes = RETRY_TIMES,
+  retryDelay = RETRY_DELAY,
 }) => {
   const resourceNameUrl = EXSYS_API_IDS[resourceName];
 

@@ -1,14 +1,14 @@
 {
   "name": "exsys-web-naphies-server",
   "version": "1.0.0",
-  "description": "Contains a web server for exsys, wassel and nphies endpoints",
+  "description": "Contains a web server for exsys and nphies endpoints",
   "main": "src/index.js",
   "author": "ahmed nassar",
   "license": "MIT",
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "node ./src/index.js",
+    "dev": "xxx=10 node ./src/index.js",
     "build": "rollup --config",
     "prod": "node ./bin/index.js"
   },
@@ -17,14 +17,6 @@
     "body-parser": "^1.20.0",
     "cors": "^2.8.5",
     "express": "^4.18.1"
-  },
-  "appConfig": {
-    "serverPort": 5000,
-    "retryTimes": 5,
-    "retryDelay": 20000,
-    "localStorageFilePaths": [
-      "tokens.json"
-    ]
   },
   "engines": {
     "node": ">= 16.5.0",
