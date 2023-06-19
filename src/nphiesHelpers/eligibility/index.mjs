@@ -43,9 +43,7 @@ const createNaphiesRequestFullData = ({
   period_end_date,
   business_arrangement,
   network_name,
-  coverage_class_code = "group",
-  coverage_class_value,
-  coverage_class_name,
+  classes,
 }) => {
   const {
     providerPatientUrl,
@@ -96,9 +94,7 @@ const createNaphiesRequestFullData = ({
         providerPatientUrl,
         providerCoverageUrl,
         networkName: network_name,
-        coverageClassCode: coverage_class_code,
-        coverageClassValue: coverage_class_value,
-        coverageClassName: coverage_class_name,
+        classes,
       }),
       createEligibilityOrganization({
         organizationLicense: provider_license,

@@ -92,9 +92,7 @@ const nphiesDataCreatedFromExsysData = createNaphiesRequestFullData({
   period_end_date,
   business_arrangement: undefined,
   network_name: undefined,
-  // coverage_class_code = "group",
-  coverage_class_value: undefined,
-  coverage_class_name: undefined,
+  classes: undefined,
 });
 
 await writeFile(

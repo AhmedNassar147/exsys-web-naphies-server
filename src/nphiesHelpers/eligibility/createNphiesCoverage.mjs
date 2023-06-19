@@ -27,9 +27,7 @@ const createNphiesCoverage = ({
   patientId,
   relationship,
   networkName,
-  coverageClassCode,
-  coverageClassValue,
-  coverageClassName,
+  classes,
   payerOrganization,
   payerBaseUrl,
   providerOrganizationUrl,
@@ -91,22 +89,21 @@ const createNphiesCoverage = ({
         },
       ],
       network: networkName,
-      class: !!(coverageClassCode && coverageClassValue && coverageClassName)
-        ? [
-            {
+      class:
+        Array.isArray(classes) && classes.length
+          ? classes.map(({ code, value, name }) => ({
               type: {
                 coding: [
                   {
                     system: coverageClassUrl,
-                    code: coverageClassCode,
+                    code,
                   },
                 ],
               },
-              value: coverageClassValue,
-              name: coverageClassName,
-            },
-          ]
-        : undefined,
+              value,
+              name,
+            }))
+          : undefined,
     },
   };
 };
