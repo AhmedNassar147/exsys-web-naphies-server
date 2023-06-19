@@ -126,29 +126,3 @@ if (isSuccess) {
 await writeFile("./abc-result.json", JSON.stringify(allResultData, null, 2));
 
 export {};
-
-// {
-//   "nafiesResponseData": {
-//     "resourceType": "OperationOutcome",
-//     "id": "82d5a8cd-cd9b-4ca3-acf7-d737676ef723",
-//     "meta": {
-//       "profile": "http://nphies.sa/fhir/ksa/nphies-fs/StructureDefinition/OperationOutcome|1.0.0"
-//     },
-//     "issue": [
-//       {
-//         "severity": "error",
-//         "code": "exception",
-//         "details": {
-//           "coding": [
-//             {
-//               "code": "GE-00010",
-//               "display": "The HIC/TPA you are trying to access is not onboarded/active on nphies",
-//               "system": "http://nphies.sa/terminology/CodeSystem/adjudication-error"
-//             }
-//           ]
-//         }
-//       }
-//     ]
-//   },
-//   "status": 503
-// }
