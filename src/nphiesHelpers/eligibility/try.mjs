@@ -28,16 +28,16 @@ const {
     period_end_date,
   },
 } = {
-  primaryKey: 9,
+  primaryKey: 21,
   data: {
     organization_no: "001",
-    site_url: "http://exsyssolutions.com",
+    site_url: "http://nphies.sa",
     site_name: "Al Falah International Hospital",
     site_tel: "+966541413301",
     official_name: "Eyad",
     official_f_name: "Arnous",
-    provider_license: "10000300103940",
-    provider_organization: "10000300103940",
+    provider_license: "PR-FHIR",
+    provider_organization: "1",
     provider_location: "2be11333-08ed-422a-9923-931c5a475f63",
     location_license: "GACH",
     payer_license: "INS-FHIR",
@@ -47,8 +47,8 @@ const {
     iqama_no: "1116201086",
     gender: "female",
     birthDate: "2002-01-01",
-    period_start_date: "2023-06-14",
-    period_end_date: "2023-06-15",
+    period_start_date: "2023-06-19",
+    period_end_date: "2023-06-20",
   },
 };
 
