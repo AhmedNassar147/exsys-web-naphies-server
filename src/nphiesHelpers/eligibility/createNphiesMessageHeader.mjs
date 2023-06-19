@@ -22,7 +22,6 @@ const createNphiesMessageHeader = ({
   providerLicense,
   payerLicense,
   requestId,
-  payerOrganization,
   providerCoverageEligibilityUrl,
   // providerMessageHeaderUrl,
 }) => {
@@ -49,7 +48,7 @@ const createNphiesMessageHeader = ({
             type: "Organization",
             identifier: {
               system: PAYER_LICENSE_URL,
-              value: payerOrganization,
+              value: payerLicense,
             },
           },
         },
