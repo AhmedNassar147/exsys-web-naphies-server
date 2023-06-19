@@ -4,6 +4,7 @@
  *
  */
 import axios from "axios";
+import { writeFile } from "fs/promises";
 import { BASE_API_HEADERS, HTTP_STATUS_CODE } from "../constants.mjs";
 
 const delay = (ms) => new Promise((resolve) => setTimeout(() => resolve(), ms));
@@ -59,9 +60,14 @@ const createFetchRequest = (options) => {
           });
         })
         .catch(async (error) => {
-          // console.log("error", error);
+          const { response: nafiesResponse } = error || {};
+          const { data: nafiesResponseData, status } = nafiesResponse || {};
+          await writeFile(
+            "./abc-result-error.json",
+            JSON.stringify({ nafiesResponseData, status }, null, 2)
+          );
+
           if (n > 0) {
-            // console.log("retrying", n);
             await delay(retryDelay);
             wrapper(--n);
           } else {
