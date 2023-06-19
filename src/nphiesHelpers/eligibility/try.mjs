@@ -41,7 +41,7 @@ const {
     provider_location: "2be11333-08ed-422a-9923-931c5a475f63",
     location_license: "GACH",
     payer_license: "INS-FHIR",
-    payer_organization: "10000300103940",
+    payer_organization: "INS-FHIR",
     payer_name: "شركة ولا للتأمين التعاوني-الظهران",
     memberid: 1116201086,
     iqama_no: "1116201086",
