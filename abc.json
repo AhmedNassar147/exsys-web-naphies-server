@@ -77,9 +77,7 @@
             }
           ]
         },
-        "purpose": [
-          "validation"
-        ],
+        "purpose": ["validation"],
         "patient": {
           "reference": "http://exsyssolutions.com/Patient/115765"
         },
@@ -186,10 +184,7 @@
         "active": true,
         "name": [
           {
-            "given": [
-              "Eyad",
-              "Arnous"
-            ],
+            "given": ["Eyad", "Arnous"],
             "text": "Eyad Arnous",
             "family": "Arnous",
             "use": "official"
