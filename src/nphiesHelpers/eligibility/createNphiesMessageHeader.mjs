@@ -4,6 +4,7 @@
  *
  */
 import createNphiesBaseResource from "../base/createNphiesBaseResource.mjs";
+import removeNphiesProfileVersion from "../base/removeNphiesProfileVersion.mjs";
 import {
   NPHIES_BASE_PROFILE_TYPES,
   NPHIES_RESOURCE_TYPES,
@@ -11,7 +12,7 @@ import {
   NPHIES_BASE_CODE_TYPES,
 } from "../../constants.mjs";
 
-const { MESSAGE_HEADER } = NPHIES_BASE_PROFILE_TYPES;
+const { MESSAGE_HEADER, ELIGIBILITY_REQUEST } = NPHIES_BASE_PROFILE_TYPES;
 const { KSA_MSG_EVENTS } = NPHIES_BASE_CODE_TYPES;
 const { RESOURCE_MESSAGE_HEADER } = NPHIES_RESOURCE_TYPES;
 const { BASE_CODE_SYS_URL, PROVIDER_LICENSE_URL, PAYER_LICENSE_URL } =
@@ -37,7 +38,7 @@ const createNphiesMessageHeader = ({
       ...baseResourceData,
       eventCoding: {
         system: `${BASE_CODE_SYS_URL}/${KSA_MSG_EVENTS}`,
-        code: "eligibility",
+        code: removeNphiesProfileVersion(ELIGIBILITY_REQUEST),
       },
       destination: [
         {
