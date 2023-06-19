@@ -5,6 +5,7 @@
  */
 import createNphiesBaseResource from "../base/createNphiesBaseResource.mjs";
 import reverseDate from "../../nodeHelpers/reverseDate.mjs";
+import capitalizeFirstLetter from "../../nodeHelpers/capitalizeFirstLetter.mjs";
 import {
   NPHIES_BASE_PROFILE_TYPES,
   NPHIES_RESOURCE_TYPES,
@@ -18,7 +19,7 @@ const { BASE_CODE_SYS_URL, BASE_TERMINOLOGY_CODE_SYS_URL, BASE_PROFILE_URL } =
   NPHIES_API_URLS;
 const {
   MARITAL_STATUS,
-  PATIENT_IDENTIFIER_TYPE,
+  // PATIENT_IDENTIFIER_TYPE,
   KAS_EXT_ADMIN_GENDER,
   KSA_ADMIN_GENDER,
 } = NPHIES_BASE_CODE_TYPES;
@@ -47,16 +48,17 @@ const createNphiesPatientData = ({
       }),
       identifier: [
         {
-          system: "http://nphies.sa/identifier/iqama",
-          value: nationalId,
           type: {
             coding: [
               {
-                system: `${BASE_CODE_SYS_URL}/${PATIENT_IDENTIFIER_TYPE}`,
+                system: `${BASE_TERMINOLOGY_CODE_SYS_URL}/v2-0203`,
                 code: nationalIdType,
+                display: "iqama",
               },
             ],
           },
+          system: "http://nphies.sa/identifier/iqama",
+          value: nationalId,
         },
       ],
       active: true,
@@ -86,6 +88,7 @@ const createNphiesPatientData = ({
                       {
                         system: `${BASE_CODE_SYS_URL}/${KSA_ADMIN_GENDER}`,
                         code: patientGender,
+                        display: capitalizeFirstLetter(patientGender),
                       },
                     ],
                   },

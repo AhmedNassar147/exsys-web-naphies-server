@@ -4,6 +4,7 @@
  *
  */
 import createNphiesBaseResource from "../base/createNphiesBaseResource.mjs";
+import capitalizeFirstLetter from "../../nodeHelpers/capitalizeFirstLetter.mjs";
 import {
   NPHIES_BASE_PROFILE_TYPES,
   NPHIES_RESOURCE_TYPES,
@@ -26,7 +27,9 @@ const createNphiesCoverage = ({
   patientId,
   relationship,
   networkName,
-  coverageClasses,
+  coverageClassCode,
+  coverageClassValue,
+  coverageClassName,
   payerOrganization,
   payerBaseUrl,
   providerOrganizationUrl,
@@ -76,6 +79,7 @@ const createNphiesCoverage = ({
                 {
                   system: `${BASE_TERMINOLOGY_CODE_SYS_URL}/${SUBSCRIBER_RELATIONSHIP}`,
                   code: relationship,
+                  display: capitalizeFirstLetter(relationship),
                 },
               ],
             },
@@ -87,21 +91,22 @@ const createNphiesCoverage = ({
         },
       ],
       network: networkName,
-      class:
-        coverageClasses && coverageClasses.length
-          ? coverageClasses.map(({ key, value, name }) => ({
+      class: !!(coverageClassCode && coverageClassValue && coverageClassName)
+        ? [
+            {
               type: {
                 coding: [
                   {
                     system: coverageClassUrl,
-                    code: key,
+                    code: coverageClassCode,
                   },
                 ],
               },
-              value: value,
-              name: name,
-            }))
-          : undefined,
+              value: coverageClassValue,
+              name: coverageClassName,
+            },
+          ]
+        : undefined,
     },
   };
 };

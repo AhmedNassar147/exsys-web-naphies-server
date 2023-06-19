@@ -43,7 +43,9 @@ const createNaphiesRequestFullData = ({
   period_end_date,
   business_arrangement,
   network_name,
-  coverage_classes,
+  coverage_class_code = "group",
+  coverage_class_value,
+  coverage_class_name,
 }) => {
   const {
     providerPatientUrl,
@@ -86,7 +88,7 @@ const createNaphiesRequestFullData = ({
       createNphiesCoverage({
         coverageId: coverage_id,
         coverageType: coverage_type,
-        memberId: member_id,
+        memberId: member_id ? member_id.toString() : member_id,
         patientId: patient_id,
         relationship,
         payerOrganization: payer_organization,
@@ -95,7 +97,9 @@ const createNaphiesRequestFullData = ({
         providerPatientUrl,
         providerCoverageUrl,
         networkName: network_name,
-        coverageClasses: coverage_classes,
+        coverageClassCode: coverage_class_code,
+        coverageClassValue: coverage_class_value,
+        coverageClassName: coverage_class_name,
       }),
       createEligibilityOrganization({
         organizationLicense: provider_license,
@@ -103,12 +107,6 @@ const createNaphiesRequestFullData = ({
         siteName: site_name,
         providerOrganizationUrl,
         isProvider: true,
-      }),
-      createEligibilityOrganization({
-        organizationLicense: payer_license,
-        organizationReference: payer_organization,
-        siteName: payer_name,
-        providerOrganizationUrl,
       }),
       createNphiesPatientData({
         patientId: patient_id,
@@ -121,6 +119,12 @@ const createNaphiesRequestFullData = ({
         patientBirthdate: birthDate,
         patientMaritalStatus: patient_martial_status,
         providerPatientUrl,
+      }),
+      createEligibilityOrganization({
+        organizationLicense: payer_license,
+        organizationReference: payer_organization,
+        siteName: payer_name,
+        providerOrganizationUrl,
       }),
       createLocationData({
         locationLicense: location_license,

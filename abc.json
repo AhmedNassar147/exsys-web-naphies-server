@@ -1,19 +1,19 @@
 {
   "resourceType": "Bundle",
-  "id": "8a0d6afa-40c3-462f-a6c0-c3adf9ef6b3c",
+  "id": "3f17a794-a340-4e2b-b6a9-efd8e0653243",
   "meta": {
     "profile": [
       "http://nphies.sa/fhir/ksa/nphies-fs/StructureDefinition/bundle|1.0.0"
     ]
   },
   "type": "message",
-  "timestamp": "2023-06-15T11:54:12.611Z",
+  "timestamp": "2023-06-19T19:54:22.964Z",
   "entry": [
     {
-      "fullUrl": "http://exsyssolutions.com/MessageHeader/d4b68211-3ea0-4e8b-b62a-a89d94d3bb85",
+      "fullUrl": "urn:uuid:f26433eb-1ae3-467d-b90e-1bcbfd65faaa",
       "resource": {
         "resourceType": "MessageHeader",
-        "id": "d4b68211-3ea0-4e8b-b62a-a89d94d3bb85",
+        "id": "f26433eb-1ae3-467d-b90e-1bcbfd65faaa",
         "meta": {
           "profile": [
             "http://nphies.sa/fhir/ksa/nphies-fs/StructureDefinition/message-header|1.0.0"
@@ -21,7 +21,7 @@
         },
         "eventCoding": {
           "system": "http://nphies.sa/terminology/CodeSystem/ksa-message-events",
-          "code": "eligibility"
+          "code": "eligibility-request"
         },
         "destination": [
           {
@@ -30,7 +30,7 @@
               "type": "Organization",
               "identifier": {
                 "system": "http://nphies.sa/license/payer-license",
-                "value": "INS-FHIR"
+                "value": "1"
               }
             }
           }
@@ -39,24 +39,24 @@
           "type": "Organization",
           "identifier": {
             "system": "http://nphies.sa/license/provider-license",
-            "value": "10000300103940"
+            "value": "PR-FHIR"
           }
         },
         "source": {
-          "endpoint": "http://nphies.sa/license/payer-license/10000300103940"
+          "endpoint": "http://nphies.sa/license/payer-license/PR-FHIR"
         },
         "focus": [
           {
-            "reference": "http://exsyssolutions.com/CoverageEligibilityRequest/9"
+            "reference": "http://provider.com/CoverageEligibilityRequest/21"
           }
         ]
       }
     },
     {
-      "fullUrl": "http://exsyssolutions.com/CoverageEligibilityRequest/9",
+      "fullUrl": "http://provider.com/CoverageEligibilityRequest/21",
       "resource": {
         "resourceType": "CoverageEligibilityRequest",
-        "id": 9,
+        "id": "21",
         "meta": {
           "profile": [
             "http://nphies.sa/fhir/ksa/nphies-fs/StructureDefinition/eligibility-request|1.0.0"
@@ -64,8 +64,8 @@
         },
         "identifier": [
           {
-            "system": "http://exsyssolutions.com/CoverageEligibilityRequest",
-            "value": "req_9"
+            "system": "http://provider.com/CoverageEligibilityRequest",
+            "value": "req_21"
           }
         ],
         "status": "active",
@@ -77,31 +77,86 @@
             }
           ]
         },
-        "purpose": ["validation"],
+        "purpose": ["benefits", "validation"],
         "patient": {
-          "reference": "http://exsyssolutions.com/Patient/115765"
+          "reference": "http://provider.com/Patient/115765"
         },
         "servicedPeriod": {
-          "start": "2023-06-14",
-          "end": "2023-06-15"
+          "start": "2023-06-19",
+          "end": "2023-06-20"
         },
-        "created": "2023-6-15",
+        "created": "2023-06-19",
         "provider": {
-          "reference": "http://exsyssolutions.com/Organization/10000300103940"
+          "reference": "http://provider.com/Organization/6"
         },
         "insurer": {
-          "reference": "http://exsyssolutions.com/Organization/INS-FHIR"
+          "reference": "http://provider.com/Organization/1"
         },
         "facility": {
-          "reference": "http://exsyssolutions.com/Location/2be11333-08ed-422a-9923-931c5a475f63"
-        }
+          "reference": "http://provider.com/Location/2be11333-08ed-422a-9923-931c5a475f63"
+        },
+        "insurance": [
+          {
+            "coverage": {
+              "reference": "http://provider.com/Coverage/21"
+            }
+          }
+        ]
       }
     },
     {
-      "fullUrl": "http://exsyssolutions.com/Organization/10000300103940",
+      "fullUrl": "http://provider.com/Coverage/21",
+      "resource": {
+        "resourceType": "Coverage",
+        "id": "21",
+        "meta": {
+          "profile": [
+            "http://nphies.sa/fhir/ksa/nphies-fs/StructureDefinition/coverage|1.0.0"
+          ]
+        },
+        "identifier": [
+          {
+            "system": "http://payer.com/memberid",
+            "value": "1116201086"
+          }
+        ],
+        "status": "active",
+        "type": {
+          "coding": [
+            {
+              "system": "http://nphies.sa/terminology/CodeSystem/coverage-type",
+              "code": "EHCPOL"
+            }
+          ]
+        },
+        "subscriber": {
+          "reference": "http://provider.com/Patient/115765"
+        },
+        "subscriberId": "1116201086",
+        "beneficiary": {
+          "reference": "http://provider.com/Patient/115765"
+        },
+        "relationship": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/subscriber-relationship",
+              "code": "self",
+              "display": "Self"
+            }
+          ]
+        },
+        "payor": [
+          {
+            "reference": "http://provider.com/Organization/1"
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "http://provider.com/Organization/6",
       "resource": {
         "resourceType": "Organization",
-        "id": "10000300103940",
+        "id": "6",
         "meta": {
           "profile": [
             "http://nphies.sa/fhir/ksa/nphies-fs/StructureDefinition/provider-organization|1.0.0"
@@ -110,7 +165,7 @@
         "identifier": [
           {
             "system": "http://nphies.sa/license/provider-license",
-            "value": "10000300103940"
+            "value": "PR-FHIR"
           }
         ],
         "active": true,
@@ -128,37 +183,7 @@
       }
     },
     {
-      "fullUrl": "http://exsyssolutions.com/Organization/INS-FHIR",
-      "resource": {
-        "resourceType": "Organization",
-        "id": "INS-FHIR",
-        "meta": {
-          "profile": [
-            "http://nphies.sa/fhir/ksa/nphies-fs/StructureDefinition/provider-organization|1.0.0"
-          ]
-        },
-        "identifier": [
-          {
-            "system": "http://nphies.sa/license/payer-license",
-            "value": "INS-FHIR"
-          }
-        ],
-        "active": true,
-        "type": [
-          {
-            "coding": [
-              {
-                "system": "http://nphies.sa/terminology/CodeSystem/organization-type",
-                "code": "ins"
-              }
-            ]
-          }
-        ],
-        "name": "شركة ولا للتأمين التعاوني-الظهران"
-      }
-    },
-    {
-      "fullUrl": "http://exsyssolutions.com/Patient/115765",
+      "fullUrl": "http://provider.com/Patient/115765",
       "resource": {
         "resourceType": "Patient",
         "id": "115765",
@@ -169,16 +194,17 @@
         },
         "identifier": [
           {
-            "system": "http://nphies.sa/identifier/iqama",
-            "value": "1116201086",
             "type": {
               "coding": [
                 {
-                  "system": "http://nphies.sa/terminology/CodeSystem/patient-identifier-type",
-                  "code": "PRC"
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "PRC",
+                  "display": "iqama"
                 }
               ]
-            }
+            },
+            "system": "http://nphies.sa/identifier/iqama",
+            "value": "1116201086"
           }
         ],
         "active": true,
@@ -205,17 +231,49 @@
                 "coding": [
                   {
                     "system": "http://nphies.sa/terminology/CodeSystem/ksa-administrative-gender",
-                    "code": "female"
+                    "code": "female",
+                    "display": "Female"
                   }
                 ]
               }
             }
           ]
-        }
+        },
+        "birthDate": "2002-01-01"
       }
     },
     {
-      "fullUrl": "http://exsyssolutions.com/Location/2be11333-08ed-422a-9923-931c5a475f63",
+      "fullUrl": "http://provider.com/Organization/1",
+      "resource": {
+        "resourceType": "Organization",
+        "id": "1",
+        "meta": {
+          "profile": [
+            "http://nphies.sa/fhir/ksa/nphies-fs/StructureDefinition/insurer-organization|1.0.0"
+          ]
+        },
+        "identifier": [
+          {
+            "system": "http://nphies.sa/license/payer-license",
+            "value": "INS-FHIR"
+          }
+        ],
+        "active": true,
+        "type": [
+          {
+            "coding": [
+              {
+                "system": "http://nphies.sa/terminology/CodeSystem/organization-type",
+                "code": "ins"
+              }
+            ]
+          }
+        ],
+        "name": "شركة ولا للتأمين التعاوني-الظهران"
+      }
+    },
+    {
+      "fullUrl": "http://provider.com/Location/2be11333-08ed-422a-9923-931c5a475f63",
       "resource": {
         "resourceType": "Location",
         "id": "2be11333-08ed-422a-9923-931c5a475f63",
@@ -243,7 +301,7 @@
           }
         ],
         "managingOrganization": {
-          "reference": "http://exsyssolutions.com/Organization/10000300103940"
+          "reference": "http://provider.com/Organization/6"
         }
       }
     }

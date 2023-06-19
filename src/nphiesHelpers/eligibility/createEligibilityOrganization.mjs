@@ -11,7 +11,8 @@ import {
   NPHIES_BASE_CODE_TYPES,
 } from "../../constants.mjs";
 
-const { PROVIDER_ORGANIZATION } = NPHIES_BASE_PROFILE_TYPES;
+const { PROVIDER_ORGANIZATION, INSURER_ORGANIZATION } =
+  NPHIES_BASE_PROFILE_TYPES;
 const { ORGANIZATION } = NPHIES_RESOURCE_TYPES;
 const { BASE_CODE_SYS_URL, PROVIDER_LICENSE_URL, PAYER_LICENSE_URL } =
   NPHIES_API_URLS;
@@ -28,7 +29,7 @@ const createEligibilityOrganization = ({
   resource: {
     ...createNphiesBaseResource({
       resourceType: ORGANIZATION,
-      profileType: PROVIDER_ORGANIZATION,
+      profileType: isProvider ? PROVIDER_ORGANIZATION : INSURER_ORGANIZATION,
       uuid: organizationReference,
     }),
     identifier: [

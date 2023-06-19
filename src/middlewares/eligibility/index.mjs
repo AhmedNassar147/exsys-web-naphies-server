@@ -104,7 +104,7 @@ const createEligibilityMiddleware = (app) => async (req, res, next) => {
         staff_first_name: official_name,
         staff_family_name: official_f_name,
         gender: gender,
-        birthdate: birthDate,
+        birthDate: birthDate,
         patient_martial_status: undefined,
         relationship: undefined,
         period_start_date,

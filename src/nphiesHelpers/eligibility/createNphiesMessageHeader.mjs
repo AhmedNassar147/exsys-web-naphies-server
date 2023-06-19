@@ -24,7 +24,7 @@ const createNphiesMessageHeader = ({
   requestId,
   payerOrganization,
   providerCoverageEligibilityUrl,
-  providerMessageHeaderUrl,
+  // providerMessageHeaderUrl,
 }) => {
   const baseResourceData = createNphiesBaseResource({
     resourceType: RESOURCE_MESSAGE_HEADER,
@@ -34,7 +34,8 @@ const createNphiesMessageHeader = ({
   const { id } = baseResourceData;
 
   return {
-    fullUrl: `${providerMessageHeaderUrl}/${id}`,
+    // `${providerMessageHeaderUrl}/${id}`
+    fullUrl: `urn:uuid:${id}`,
     resource: {
       ...baseResourceData,
       eventCoding: {
