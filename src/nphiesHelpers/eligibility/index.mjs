@@ -61,6 +61,7 @@ const createNaphiesRequestFullData = ({
         providerLicense: provider_license,
         payerLicense: payer_license,
         requestId: request_id,
+        payerOrganization: payer_organization,
         providerCoverageEligibilityUrl,
         providerMessageHeaderUrl,
       }),

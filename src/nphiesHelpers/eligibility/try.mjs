@@ -31,17 +31,17 @@ const {
   primaryKey: 21,
   data: {
     organization_no: "001",
-    site_url: "http://nphies.sa",
+    site_url: "http://provider.com",
     site_name: "Al Falah International Hospital",
     site_tel: "+966541413301",
     official_name: "Eyad",
     official_f_name: "Arnous",
     provider_license: "PR-FHIR",
-    provider_organization: "10000300103940",
+    provider_organization: "6",
     provider_location: "2be11333-08ed-422a-9923-931c5a475f63",
     location_license: "GACH",
     payer_license: "INS-FHIR",
-    payer_organization: "INS-FHIR",
+    payer_organization: "1",
     payer_name: "شركة ولا للتأمين التعاوني-الظهران",
     memberid: 1116201086,
     iqama_no: "1116201086",
@@ -67,10 +67,14 @@ const nphiesDataCreatedFromExsysData = createNaphiesRequestFullData({
   payer_name,
   provider_location,
   location_license,
+  // payer_base_url: "http://payer.com",
   payer_base_url: "",
   purpose: [message_event_type],
+  // coverage_type: 'EHCPOL',
   coverage_type: undefined,
+  // coverage_id: "21",
   coverage_id: undefined,
+  // member_id: "5464554586",
   member_id: memberid,
   patient_id: patientFileNo,
   national_id: iqama_no,
@@ -79,6 +83,7 @@ const nphiesDataCreatedFromExsysData = createNaphiesRequestFullData({
   gender: gender,
   birthdate: birthDate,
   patient_martial_status: undefined,
+  // relationship: "self",
   relationship: undefined,
   period_start_date,
   period_end_date,
@@ -118,3 +123,29 @@ if (isSuccess) {
 await writeFile("./abc-result.json", JSON.stringify(allResultData, null, 2));
 
 export {};
+
+// {
+//   "nafiesResponseData": {
+//     "resourceType": "OperationOutcome",
+//     "id": "82d5a8cd-cd9b-4ca3-acf7-d737676ef723",
+//     "meta": {
+//       "profile": "http://nphies.sa/fhir/ksa/nphies-fs/StructureDefinition/OperationOutcome|1.0.0"
+//     },
+//     "issue": [
+//       {
+//         "severity": "error",
+//         "code": "exception",
+//         "details": {
+//           "coding": [
+//             {
+//               "code": "GE-00010",
+//               "display": "The HIC/TPA you are trying to access is not onboarded/active on nphies",
+//               "system": "http://nphies.sa/terminology/CodeSystem/adjudication-error"
+//             }
+//           ]
+//         }
+//       }
+//     ]
+//   },
+//   "status": 503
+// }
