@@ -11,16 +11,17 @@ import readJsonFile from "./readJsonFile.mjs";
 const writeResultFile = async (data) => {
   const { dateString, time } = getCurrentDate();
 
-  const currentResultFilePath = `results/${dateString}.json`;
-  if (!(await checkPathExists(currentResultFilePath))) {
-    await mkdir(currentResultFilePath, { recursive: true });
+  const currentResultFolderPath = "results";
+  if (!(await checkPathExists(currentResultFolderPath))) {
+    await mkdir(currentResultFolderPath);
   }
+
+  const currentResultFilePath = `${currentResultFolderPath}/${dateString}.json`;
 
   let previousResultFileData = [];
 
   if (await checkPathExists(currentResultFilePath)) {
-    previousResultFileData =
-      (await readJsonFile(currentResultFilePath, true)) || [];
+    previousResultFileData = await readJsonFile(currentResultFilePath, true);
   }
 
   const nextFileResults = [
@@ -45,3 +46,7 @@ const writeResultFile = async (data) => {
 };
 
 export default writeResultFile;
+
+(async () => {
+  await writeResultFile({ name: "" });
+})();
