@@ -13,5 +13,5 @@
   },
   "files.trimTrailingWhitespace": true,
   "editor.rulers": [100],
-  "cSpell.words": ["Codeable", "payor", "processpriority"]
+  "cSpell.words": ["Codeable", "EXSYSF", "payor", "processpriority"]
 }

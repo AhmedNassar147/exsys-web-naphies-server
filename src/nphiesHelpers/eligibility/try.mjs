@@ -29,7 +29,7 @@ const {
     period_end_date,
   },
 } = {
-  primaryKey: 34,
+  primaryKey: 35,
   data: {
     organization_no: "001",
     site_url: "http://provider.com",
@@ -48,11 +48,8 @@ const {
     iqama_no: "1116201086",
     gender: "female",
     birthDate: "2002-01-01",
-    // period_start_date: "2023-06-20",
-    // period_end_date: "2023-06-21",
-
-    period_start_date: "2023-06-19",
-    period_end_date: "2023-06-20",
+    period_start_date: "2023-06-20",
+    period_end_date: "2023-06-21",
   },
 };
 
@@ -130,7 +127,11 @@ const callNphiesAPIAndPrintResults = async (nphiesDataCreatedFromExsysData) => {
       } = extractedData;
       // "errorCode": "GE-00012"
       // "error": "Payer is unreachable or temporarily offline, Please try again in a moment. If issue persists please follow up with the payer contact center."
-      shouldReloadApiDataCreation = ["GE-00012"].includes(errorCode);
+      // "error": "NPHIES has already received and is currently processing a message for which this message is a duplicate",
+      // "errorCode": "BV-00542"
+      shouldReloadApiDataCreation = ["GE-00012", "BV-00542"].includes(
+        errorCode
+      );
     }
   }
 

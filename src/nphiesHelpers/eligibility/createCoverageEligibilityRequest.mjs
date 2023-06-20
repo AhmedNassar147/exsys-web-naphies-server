@@ -70,8 +70,7 @@ const createCoverageEligibilityRequest = ({
         start: reverseDate(periodStartDate),
         end: reverseDate(periodEndDate),
       },
-      // created: reverseDate(dateString),
-      created: reverseDate(periodStartDate),
+      created: reverseDate(dateString),
       provider: {
         reference: `${providerOrganizationUrl}/${providerOrganization}`,
       },
