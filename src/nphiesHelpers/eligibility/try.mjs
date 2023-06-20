@@ -5,6 +5,7 @@ import mapEntriesAndExtractNeededData from "../extraction/mapEntriesAndExtractNe
 import extractCoverageEligibilityEntryResponseData from "../extraction/extractCoverageEligibilityEntryResponseData.mjs";
 import extractCoverageEntryResponseData from "../extraction/extractCoverageEntryResponseData.mjs";
 import formatNphiesResponseIssue from "../base/formatNphiesResponseIssue.mjs";
+import { RETRY_DELAY } from "../../constants.mjs";
 
 const {
   primaryKey,
@@ -139,14 +140,20 @@ const callNphiesAPIAndPrintResults = async (nphiesDataCreatedFromExsysData) => {
       ].includes(errorCode);
 
       if (shouldReloadApiDataCreation) {
-        console.log("------------ReloadApiDataCreation----------");
+        console.log(
+          `----ReloadApiDataCreation---- in ${RETRY_DELAY / 1000} seconds`
+        );
         console.log(`errorCode=>${errorCode} , error=>${error}`);
       }
     }
   }
 
   if (shouldReloadApiDataCreation) {
-    await callNphiesAPIAndPrintResults(nphiesDataCreatedFromExsysData);
+    setTimeout(
+      async () =>
+        await callNphiesAPIAndPrintResults(nphiesDataCreatedFromExsysData),
+      RETRY_DELAY
+    );
     return;
   }
 
