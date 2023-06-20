@@ -1,6 +1,6 @@
-import { writeFile } from "fs/promises";
 import createNaphiesRequestFullData from "./index.mjs";
 import createNphiesRequest from "../../helpers/createNphiesRequest.mjs";
+import writeResultFile from "../../nodeHelpers/writeResultFile.mjs";
 import mapEntriesAndExtractNeededData from "../extraction/mapEntriesAndExtractNeededData.mjs";
 import extractCoverageEligibilityEntryResponseData from "../extraction/extractCoverageEligibilityEntryResponseData.mjs";
 import extractCoverageEntryResponseData from "../extraction/extractCoverageEntryResponseData.mjs";
@@ -95,34 +95,27 @@ const nphiesDataCreatedFromExsysData = createNaphiesRequestFullData({
   classes: undefined,
 });
 
-await writeFile(
-  "./abc.json",
-  JSON.stringify(nphiesDataCreatedFromExsysData, null, 2)
-);
-
 const nphiesResults = await createNphiesRequest({
   bodyData: nphiesDataCreatedFromExsysData,
 });
 
+const { isSuccess, result: nphiesResponse, ...restResult } = nphiesResults;
+
 let allResultData = {
-  ...nphiesResults,
+  isSuccess,
+  ...restResult,
+  primaryKey: primaryKey,
+  nodeServerDataSentToNaphies: nphiesDataCreatedFromExsysData,
+  nphiesResponse,
 };
 
-const { isSuccess, result: nphiesResponse } = nphiesResults;
 if (isSuccess) {
   const extractedData = mapEntriesAndExtractNeededData(nphiesResponse, {
     CoverageEligibilityResponse: extractCoverageEligibilityEntryResponseData,
     Coverage: extractCoverageEntryResponseData,
   });
 
-  allResultData.dataSentToExsys = {
-    primaryKey: primaryKey,
-    nodeServerDataSentToNaphies: nphiesDataCreatedFromExsysData,
-    naphiesResponse: nphiesResponse,
-    naphiesExtractedData: extractedData,
-  };
+  allResultData.nphiesExtractedData = extractedData;
 }
 
-await writeFile("./abc-result.json", JSON.stringify(allResultData, null, 2));
-
-export {};
+await writeResultFile(allResultData);

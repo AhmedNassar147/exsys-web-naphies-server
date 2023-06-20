@@ -4,7 +4,6 @@
  *
  */
 import axios from "axios";
-import { writeFile } from "fs/promises";
 import { BASE_API_HEADERS, HTTP_STATUS_CODE } from "../constants.mjs";
 
 const delay = (ms) => new Promise((resolve) => setTimeout(() => resolve(), ms));
@@ -36,14 +35,14 @@ const createFetchRequest = (options) => {
     const wrapper = (n) => {
       axios(fetchOptions)
         .then((apiResponse) => {
-          // console.log("apiResponse", apiResponse);
           const { status, data } = apiResponse;
           const message = httpStatusCodes[status];
           const isSuccess = message === "success";
 
           const baseValues = {
+            status,
             isSuccess,
-            error: isSuccess ? "" : message,
+            error: isSuccess ? undefined : message,
           };
 
           if (transformApiResults) {
@@ -60,13 +59,8 @@ const createFetchRequest = (options) => {
           });
         })
         .catch(async (error) => {
-          const { response: nafiesResponse } = error || {};
-          const { data: nafiesResponseData, status } = nafiesResponse || {};
-          await writeFile(
-            "./abc-result-error.json",
-            JSON.stringify({ nafiesResponseData, status }, null, 2)
-          );
-
+          const { response } = error || {};
+          const { data: responseData, status } = response || {};
           if (n > 0) {
             await delay(retryDelay);
             wrapper(--n);
@@ -74,7 +68,8 @@ const createFetchRequest = (options) => {
             resolve({
               isSuccess: false,
               error: "something went wrong",
-              result: undefined,
+              status,
+              result: responseData,
             });
           }
         });

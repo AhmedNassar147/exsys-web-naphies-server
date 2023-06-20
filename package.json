@@ -10,7 +10,7 @@
   "scripts": {
     "dev": "node ./src/index.js",
     "build": "rollup --config",
-    "prod": "node ./bin/index.js"
+    "prod": "node ./bin/index.js --production"
   },
   "dependencies": {
     "axios": "^1.4.0",
