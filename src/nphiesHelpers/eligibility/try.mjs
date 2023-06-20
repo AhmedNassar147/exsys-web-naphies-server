@@ -147,6 +147,9 @@ const callNphiesAPIAndPrintResults = async (nphiesDataCreatedFromExsysData) => {
   // current date
   // "error": "The HIC unable to process your message, for more information please contact the payer.",
   // "errorCode": "GE-00026"
+
+  // "error": "Message Header ID is not a valid GUID",
+  // "errorCode": "BV-00168"
   if (!isSuccess) {
     const { issue } = nphiesResponse;
     allResultData = {
