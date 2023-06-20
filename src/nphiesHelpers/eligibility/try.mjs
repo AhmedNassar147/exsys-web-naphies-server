@@ -30,7 +30,7 @@ const {
     period_end_date,
   },
 } = {
-  primaryKey: "exsys35",
+  primaryKey: 44,
   data: {
     organization_no: "001",
     site_url: "http://provider.com",
@@ -143,7 +143,11 @@ const callNphiesAPIAndPrintResults = async (nphiesDataCreatedFromExsysData) => {
         console.log(
           `----ReloadApiDataCreation---- in ${RETRY_DELAY / 1000} seconds`
         );
-        console.log(`errorCode=>${errorCode} , error=>${error}`);
+        console.log({
+          primaryKey,
+          errorCode,
+          error,
+        });
       }
     }
   }
