@@ -5,7 +5,10 @@ import mapEntriesAndExtractNeededData from "../extraction/mapEntriesAndExtractNe
 import extractCoverageEligibilityEntryResponseData from "../extraction/extractCoverageEligibilityEntryResponseData.mjs";
 import extractCoverageEntryResponseData from "../extraction/extractCoverageEntryResponseData.mjs";
 import formatNphiesResponseIssue from "../base/formatNphiesResponseIssue.mjs";
-import { RETRY_DELAY } from "../../constants.mjs";
+import { RETRY_DELAY, RETRY_TIMES } from "../../constants.mjs";
+
+const message_event_type = "validation";
+const patientFileNo = "115765";
 
 const {
   primaryKey,
@@ -30,7 +33,7 @@ const {
     period_end_date,
   },
 } = {
-  primaryKey: 36,
+  primaryKey: 43,
   data: {
     organization_no: "001",
     site_url: "http://provider.com",
@@ -54,9 +57,6 @@ const {
   },
 };
 
-const message_event_type = "validation";
-const patientFileNo = "115765";
-
 const refreshNphiesDataCreatedFromExsysData = () =>
   createNaphiesRequestFullData({
     provider_license,
@@ -71,13 +71,12 @@ const refreshNphiesDataCreatedFromExsysData = () =>
     provider_location,
     location_license,
     payer_base_url: "http://payer.com",
-    purpose:
-      message_event_type === "validation"
-        ? ["benefits", message_event_type]
-        : [message_event_type],
-    coverage_type: "EHCPOL",
+    purpose: ["validation", "benefits"].includes(message_event_type)
+      ? ["benefits", "validation"]
+      : [message_event_type],
     // coverage_type: undefined,
-    coverage_id: "21",
+    coverage_type: "EHCPOL",
+    coverage_id: "20",
     // coverage_id: undefined,
     // member_id: "5464554586",
     member_id: memberid,
@@ -98,7 +97,12 @@ const refreshNphiesDataCreatedFromExsysData = () =>
     classes: undefined,
   });
 
-const callNphiesAPIAndPrintResults = async (nphiesDataCreatedFromExsysData) => {
+const callNphiesAPIAndPrintResults = async (
+  nphiesDataCreatedFromExsysData,
+  retryTimes
+) => {
+  // await writeResultFile(nphiesDataCreatedFromExsysData);
+
   const nphiesResults = await createNphiesRequest({
     bodyData: nphiesDataCreatedFromExsysData,
   });
@@ -128,11 +132,11 @@ const callNphiesAPIAndPrintResults = async (nphiesDataCreatedFromExsysData) => {
       } = extractedData;
       // "errorCode": "GE-00012"
       // "error": "Payer is unreachable or temporarily offline, Please try again in a moment. If issue persists please follow up with the payer contact center."
-      // "error": "NPHIES has already received and is currently processing a message for which this message is a duplicate",
       // "errorCode": "BV-00542"
-      // current date
-      // "error": "The HIC unable to process your message, for more information please contact the payer.",
+      // "error": "NPHIES has already received and is currently processing a message for which this message is a duplicate",
       // "errorCode": "GE-00026"
+      // "error": "The HIC unable to process your message, for more information please contact the payer.",
+
       shouldReloadApiDataCreation = [
         "GE-00012",
         "BV-00542",
@@ -152,10 +156,13 @@ const callNphiesAPIAndPrintResults = async (nphiesDataCreatedFromExsysData) => {
     }
   }
 
-  if (shouldReloadApiDataCreation) {
+  if (shouldReloadApiDataCreation && retryTimes > 0) {
     setTimeout(
       async () =>
-        await callNphiesAPIAndPrintResults(nphiesDataCreatedFromExsysData),
+        await callNphiesAPIAndPrintResults(
+          nphiesDataCreatedFromExsysData,
+          retryTimes - 1
+        ),
       RETRY_DELAY
     );
     return;
@@ -164,7 +171,6 @@ const callNphiesAPIAndPrintResults = async (nphiesDataCreatedFromExsysData) => {
   // primary key issue
   // "error": "The main resource identifier SHALL be unique on the HCP/HIC level",
   // "errorCode": "BV-00163"
-
   if (!isSuccess) {
     const { issue } = nphiesResponse;
     allResultData = {
@@ -176,4 +182,7 @@ const callNphiesAPIAndPrintResults = async (nphiesDataCreatedFromExsysData) => {
   await writeResultFile(allResultData);
 };
 
-await callNphiesAPIAndPrintResults(refreshNphiesDataCreatedFromExsysData());
+await callNphiesAPIAndPrintResults(
+  refreshNphiesDataCreatedFromExsysData(),
+  RETRY_TIMES
+);
