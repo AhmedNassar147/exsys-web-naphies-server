@@ -47,8 +47,8 @@ const {
     iqama_no: "1116201086",
     gender: "female",
     birthDate: "2002-01-01",
-    period_start_date: "2023-06-19",
-    period_end_date: "2023-06-20",
+    period_start_date: "2023-06-20",
+    period_end_date: "2023-06-22",
   },
 };
 
