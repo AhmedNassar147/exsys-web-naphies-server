@@ -48,8 +48,11 @@ const {
     iqama_no: "1116201086",
     gender: "female",
     birthDate: "2002-01-01",
-    period_start_date: "2023-06-20",
-    period_end_date: "2023-06-21",
+    // period_start_date: "2023-06-20",
+    // period_end_date: "2023-06-21",
+
+    period_start_date: "2023-06-19",
+    period_end_date: "2023-06-20",
   },
 };
 
@@ -136,8 +139,13 @@ const callNphiesAPIAndPrintResults = async (nphiesDataCreatedFromExsysData) => {
     return;
   }
 
+  // primary key issue
   // "error": "The main resource identifier SHALL be unique on the HCP/HIC level",
   // "errorCode": "BV-00163"
+
+  // current date
+  // "error": "The HIC unable to process your message, for more information please contact the payer.",
+  // "errorCode": "GE-00026"
   if (!isSuccess) {
     const { issue } = nphiesResponse;
     allResultData = {
