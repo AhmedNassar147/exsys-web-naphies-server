@@ -3,6 +3,7 @@
  * Helper: `extractCoverageEligibilityEntryResponseData`.
  *
  */
+import extractNphiesCodeAndDisplayFromCodingType from "./extractNphiesCodeAndDisplayFromCodingType.mjs";
 const extractCoverageEligibilityEntryResponseData = ({
   resourceType,
   id,
@@ -11,9 +12,12 @@ const extractCoverageEligibilityEntryResponseData = ({
   servicedPeriod,
   identifier,
   status,
+  error,
 }) => {
   const { start, end } = servicedPeriod || {};
   const [{ system, value }] = identifier || [{}];
+  const [{ code: type }] = error || [{}];
+  const { code, display } = extractNphiesCodeAndDisplayFromCodingType(type);
 
   return {
     resourceType,
@@ -25,6 +29,8 @@ const extractCoverageEligibilityEntryResponseData = ({
     periodEnd: end,
     payerClaimResponseUrl: system,
     claimResponse: value,
+    error: display,
+    errorCode: code,
   };
 };
 

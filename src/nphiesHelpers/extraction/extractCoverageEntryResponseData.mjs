@@ -3,7 +3,7 @@
  * Helper: `extractCoverageEntryResponseData`.
  *
  */
-import extractNphiesCodeFromCodingType from "./extractNphiesCodeFromCodingType.mjs";
+import extractNphiesCodeAndDisplayFromCodingType from "./extractNphiesCodeAndDisplayFromCodingType.mjs";
 
 const extractCostToBeneficiaryItemValues = (item, keyOfValue) => {
   const { [keyOfValue]: value, type } = item;
@@ -12,11 +12,12 @@ const extractCostToBeneficiaryItemValues = (item, keyOfValue) => {
     return {};
   }
   const { value: _value, currency } = value;
+  const { code } = extractNphiesCodeAndDisplayFromCodingType(type);
 
   return {
     value: _value,
     currency,
-    code: extractNphiesCodeFromCodingType(type),
+    code: code,
   };
 };
 
@@ -61,7 +62,7 @@ const extractCoverageEntryResponseData = ({
 
   const classesValues = Array.isArray(classes)
     ? classes.map(({ value, name, type }) => ({
-        code: extractNphiesCodeFromCodingType(type),
+        code: extractNphiesCodeAndDisplayFromCodingType(type).code,
         value: value,
         name: name,
       }))

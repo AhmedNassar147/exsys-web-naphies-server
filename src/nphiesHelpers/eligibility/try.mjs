@@ -4,6 +4,7 @@ import writeResultFile from "../../nodeHelpers/writeResultFile.mjs";
 import mapEntriesAndExtractNeededData from "../extraction/mapEntriesAndExtractNeededData.mjs";
 import extractCoverageEligibilityEntryResponseData from "../extraction/extractCoverageEligibilityEntryResponseData.mjs";
 import extractCoverageEntryResponseData from "../extraction/extractCoverageEntryResponseData.mjs";
+import formatNphiesResponseIssue from "../base/formatNphiesResponseIssue.mjs";
 
 const {
   primaryKey,
@@ -116,6 +117,14 @@ if (isSuccess) {
   });
 
   allResultData.nphiesExtractedData = extractedData;
+}
+
+if (!isSuccess) {
+  const { issue } = nphiesResponse;
+  allResultData = {
+    ...allResultData,
+    ...formatNphiesResponseIssue(issue),
+  };
 }
 
 await writeResultFile(allResultData);
