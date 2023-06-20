@@ -1,7 +1,6 @@
 import createNaphiesRequestFullData from "./index.mjs";
 import createNphiesRequest from "../../helpers/createNphiesRequest.mjs";
 import writeResultFile from "../../nodeHelpers/writeResultFile.mjs";
-import createUUID from "../../nodeHelpers/createUUID.mjs";
 import mapEntriesAndExtractNeededData from "../extraction/mapEntriesAndExtractNeededData.mjs";
 import extractCoverageEligibilityEntryResponseData from "../extraction/extractCoverageEligibilityEntryResponseData.mjs";
 import extractCoverageEntryResponseData from "../extraction/extractCoverageEntryResponseData.mjs";
@@ -30,7 +29,7 @@ const {
     period_end_date,
   },
 } = {
-  primaryKey: 35,
+  primaryKey: "exsys35",
   data: {
     organization_no: "001",
     site_url: "http://provider.com",
@@ -60,7 +59,7 @@ const patientFileNo = "115765";
 const refreshNphiesDataCreatedFromExsysData = () =>
   createNaphiesRequestFullData({
     provider_license,
-    request_id: createUUID(),
+    request_id: primaryKey,
     payer_license,
     site_url,
     site_tel,
@@ -149,8 +148,6 @@ const callNphiesAPIAndPrintResults = async (nphiesDataCreatedFromExsysData) => {
   // "error": "The HIC unable to process your message, for more information please contact the payer.",
   // "errorCode": "GE-00026"
 
-  // "error": "Message Header ID is not a valid GUID",
-  // "errorCode": "BV-00168"
   if (!isSuccess) {
     const { issue } = nphiesResponse;
     allResultData = {

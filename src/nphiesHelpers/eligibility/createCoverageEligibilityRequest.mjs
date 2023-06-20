@@ -49,7 +49,6 @@ const createCoverageEligibilityRequest = ({
       identifier: [
         {
           system: providerCoverageEligibilityUrl,
-          value: requestId,
           value: `req_${requestId}`,
         },
       ],
