@@ -49,82 +49,104 @@ const {
     gender: "female",
     birthDate: "2002-01-01",
     period_start_date: "2023-06-20",
-    period_end_date: "2023-06-22",
+    period_end_date: "2023-06-21",
   },
 };
 
 const message_event_type = "validation";
 const patientFileNo = "115765";
 
-const nphiesDataCreatedFromExsysData = createNaphiesRequestFullData({
-  provider_license,
-  request_id: primaryKey,
-  payer_license,
-  site_url,
-  site_tel,
-  site_name,
-  provider_organization,
-  payer_organization,
-  payer_name,
-  provider_location,
-  location_license,
-  payer_base_url: "http://payer.com",
-  purpose:
-    message_event_type === "validation"
-      ? ["benefits", message_event_type]
-      : [message_event_type],
-  coverage_type: "EHCPOL",
-  // coverage_type: undefined,
-  coverage_id: "21",
-  // coverage_id: undefined,
-  // member_id: "5464554586",
-  member_id: memberid,
-  patient_id: patientFileNo,
-  // national_id_type: "PRC"
-  national_id: iqama_no,
-  staff_first_name: official_name,
-  staff_family_name: official_f_name,
-  gender: gender,
-  birthDate: birthDate,
-  patient_martial_status: undefined,
-  relationship: "self",
-  // relationship: undefined,
-  period_start_date,
-  period_end_date,
-  business_arrangement: undefined,
-  network_name: undefined,
-  classes: undefined,
-});
-
-const nphiesResults = await createNphiesRequest({
-  bodyData: nphiesDataCreatedFromExsysData,
-});
-
-const { isSuccess, result: nphiesResponse, ...restResult } = nphiesResults;
-
-let allResultData = {
-  isSuccess,
-  ...restResult,
-  primaryKey: primaryKey,
-  nodeServerDataSentToNaphies: nphiesDataCreatedFromExsysData,
-  nphiesResponse,
-};
-
-if (isSuccess) {
-  const extractedData = mapEntriesAndExtractNeededData(nphiesResponse, {
-    CoverageEligibilityResponse: extractCoverageEligibilityEntryResponseData,
-    Coverage: extractCoverageEntryResponseData,
+const refreshNphiesDataCreatedFromExsysData = () =>
+  createNaphiesRequestFullData({
+    provider_license,
+    request_id: primaryKey,
+    payer_license,
+    site_url,
+    site_tel,
+    site_name,
+    provider_organization,
+    payer_organization,
+    payer_name,
+    provider_location,
+    location_license,
+    payer_base_url: "http://payer.com",
+    purpose:
+      message_event_type === "validation"
+        ? ["benefits", message_event_type]
+        : [message_event_type],
+    coverage_type: "EHCPOL",
+    // coverage_type: undefined,
+    coverage_id: "21",
+    // coverage_id: undefined,
+    // member_id: "5464554586",
+    member_id: memberid,
+    patient_id: patientFileNo,
+    // national_id_type: "PRC"
+    national_id: iqama_no,
+    staff_first_name: official_name,
+    staff_family_name: official_f_name,
+    gender: gender,
+    birthDate: birthDate,
+    patient_martial_status: undefined,
+    relationship: "self",
+    // relationship: undefined,
+    period_start_date,
+    period_end_date,
+    business_arrangement: undefined,
+    network_name: undefined,
+    classes: undefined,
   });
 
-  allResultData.nphiesExtractedData = extractedData;
-}
+const callNphiesAPIAndPrintResults = async (nphiesDataCreatedFromExsysData) => {
+  const nphiesResults = await createNphiesRequest({
+    bodyData: nphiesDataCreatedFromExsysData,
+  });
 
-if (!isSuccess) {
-  const { issue } = nphiesResponse;
-  allResultData = {
-    ...allResultData,
-    ...formatNphiesResponseIssue(issue),
+  const { isSuccess, result: nphiesResponse, ...restResult } = nphiesResults;
+
+  let allResultData = {
+    isSuccess,
+    ...restResult,
+    primaryKey: primaryKey,
+    nodeServerDataSentToNaphies: nphiesDataCreatedFromExsysData,
+    nphiesResponse,
   };
-}
 
-await writeResultFile(allResultData);
+  let shouldReloadApiDataCreation = false;
+  if (isSuccess) {
+    const extractedData = mapEntriesAndExtractNeededData(nphiesResponse, {
+      CoverageEligibilityResponse: extractCoverageEligibilityEntryResponseData,
+      Coverage: extractCoverageEntryResponseData,
+    });
+
+    allResultData.nphiesExtractedData = extractedData;
+
+    if (extractedData) {
+      const {
+        CoverageEligibilityResponse: { errorCode },
+      } = extractedData;
+      // "errorCode": "GE-00012"
+      // "error": "Payer is unreachable or temporarily offline, Please try again in a moment. If issue persists please follow up with the payer contact center."
+      shouldReloadApiDataCreation = ["GE-00012"].includes(errorCode);
+    }
+  }
+
+  if (shouldReloadApiDataCreation) {
+    await callNphiesAPIAndPrintResults(nphiesDataCreatedFromExsysData);
+    return;
+  }
+
+  // "error": "The main resource identifier SHALL be unique on the HCP/HIC level",
+  // "errorCode": "BV-00163"
+  if (!isSuccess) {
+    const { issue } = nphiesResponse;
+    allResultData = {
+      ...allResultData,
+      ...formatNphiesResponseIssue(issue),
+    };
+  }
+
+  await writeResultFile(allResultData);
+};
+
+await callNphiesAPIAndPrintResults(refreshNphiesDataCreatedFromExsysData());
