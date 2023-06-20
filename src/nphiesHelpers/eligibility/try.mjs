@@ -30,7 +30,7 @@ const {
     period_end_date,
   },
 } = {
-  primaryKey: 44,
+  primaryKey: 36,
   data: {
     organization_no: "001",
     site_url: "http://provider.com",
