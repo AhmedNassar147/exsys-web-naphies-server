@@ -46,7 +46,3 @@ const writeResultFile = async (data) => {
 };
 
 export default writeResultFile;
-
-(async () => {
-  await writeResultFile({ name: "" });
-})();
