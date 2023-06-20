@@ -123,15 +123,25 @@ const callNphiesAPIAndPrintResults = async (nphiesDataCreatedFromExsysData) => {
 
     if (extractedData) {
       const {
-        CoverageEligibilityResponse: { errorCode },
+        CoverageEligibilityResponse: { errorCode, error },
       } = extractedData;
       // "errorCode": "GE-00012"
       // "error": "Payer is unreachable or temporarily offline, Please try again in a moment. If issue persists please follow up with the payer contact center."
       // "error": "NPHIES has already received and is currently processing a message for which this message is a duplicate",
       // "errorCode": "BV-00542"
-      shouldReloadApiDataCreation = ["GE-00012", "BV-00542"].includes(
-        errorCode
-      );
+      // current date
+      // "error": "The HIC unable to process your message, for more information please contact the payer.",
+      // "errorCode": "GE-00026"
+      shouldReloadApiDataCreation = [
+        "GE-00012",
+        "BV-00542",
+        "GE-00026",
+      ].includes(errorCode);
+
+      if (shouldReloadApiDataCreation) {
+        console.log("------------ReloadApiDataCreation----------");
+        console.log(`errorCode=>${errorCode} , error=>${error}`);
+      }
     }
   }
 
@@ -143,10 +153,6 @@ const callNphiesAPIAndPrintResults = async (nphiesDataCreatedFromExsysData) => {
   // primary key issue
   // "error": "The main resource identifier SHALL be unique on the HCP/HIC level",
   // "errorCode": "BV-00163"
-
-  // current date
-  // "error": "The HIC unable to process your message, for more information please contact the payer.",
-  // "errorCode": "GE-00026"
 
   if (!isSuccess) {
     const { issue } = nphiesResponse;
