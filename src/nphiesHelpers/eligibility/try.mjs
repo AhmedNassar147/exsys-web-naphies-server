@@ -33,7 +33,7 @@ const {
     period_end_date,
   },
 } = {
-  primaryKey: 43,
+  primaryKey: 21,
   data: {
     organization_no: "001",
     site_url: "http://provider.com",
@@ -76,7 +76,7 @@ const refreshNphiesDataCreatedFromExsysData = () =>
       : [message_event_type],
     // coverage_type: undefined,
     coverage_type: "EHCPOL",
-    coverage_id: "20",
+    coverage_id: "21",
     // coverage_id: undefined,
     // member_id: "5464554586",
     member_id: memberid,
