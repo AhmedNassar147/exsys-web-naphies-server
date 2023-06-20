@@ -1,6 +1,7 @@
 import createNaphiesRequestFullData from "./index.mjs";
 import createNphiesRequest from "../../helpers/createNphiesRequest.mjs";
 import writeResultFile from "../../nodeHelpers/writeResultFile.mjs";
+import createUUID from "../../nodeHelpers/createUUID.mjs";
 import mapEntriesAndExtractNeededData from "../extraction/mapEntriesAndExtractNeededData.mjs";
 import extractCoverageEligibilityEntryResponseData from "../extraction/extractCoverageEligibilityEntryResponseData.mjs";
 import extractCoverageEntryResponseData from "../extraction/extractCoverageEntryResponseData.mjs";
@@ -59,7 +60,7 @@ const patientFileNo = "115765";
 const refreshNphiesDataCreatedFromExsysData = () =>
   createNaphiesRequestFullData({
     provider_license,
-    request_id: primaryKey,
+    request_id: createUUID(),
     payer_license,
     site_url,
     site_tel,
