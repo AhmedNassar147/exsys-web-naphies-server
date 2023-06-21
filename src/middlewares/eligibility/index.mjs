@@ -3,9 +3,8 @@
  * `createEligibilityMiddleware`: `middleware`
  *
  */
-import createExsysRequest from "../../helpers/createExsysRequest.mjs";
-import createNaphiesRequestFullData from "../../nphiesHelpers/eligibility/index.mjs";
-import { ELIGIBILITY_TYPES, EXSYS_API_IDS_NAMES } from "../../constants.mjs";
+import fetchExsysEligibilityDataAndCallNphies from "../../exsysHelpers/fetchExsysEligibilityDataAndCallNphies.mjs";
+import { ELIGIBILITY_TYPES } from "../../constants.mjs";
 
 // all body params
 // "authorization": 5361528,
@@ -53,69 +52,9 @@ const createEligibilityMiddleware =
         contract_no: contractNo,
       };
 
-      const { isSuccess, result } = await createExsysRequest({
-        resourceName: EXSYS_API_IDS_NAMES.createNphiesRequest,
-        body: bodyData,
+      await fetchExsysEligibilityDataAndCallNphies({
+        exsysAPiBodyData: bodyData,
       });
-
-      if (isSuccess) {
-        const {
-          primaryKey,
-          data: {
-            site_url,
-            site_name,
-            site_tel,
-            official_name,
-            official_f_name,
-            provider_license,
-            provider_organization,
-            provider_location,
-            location_license,
-            payer_license,
-            payer_organization,
-            payer_name,
-            memberid,
-            iqama_no,
-            gender,
-            birthDate,
-            period_start_date,
-            period_end_date,
-          },
-        } = result;
-
-        const values = createNaphiesRequestFullData({
-          provider_license,
-          request_id: primaryKey,
-          payer_license,
-          site_url,
-          site_tel,
-          site_name,
-          provider_organization,
-          payer_organization,
-          payer_name,
-          provider_location,
-          location_license,
-          payer_base_url: "",
-          purpose: [message_event_type],
-          coverage_type: undefined,
-          coverage_id: undefined,
-          member_id: memberid,
-          patient_id: patientFileNo,
-          national_id: iqama_no,
-          staff_first_name: official_name,
-          staff_family_name: official_f_name,
-          gender: gender,
-          birthDate: birthDate,
-          patient_martial_status: undefined,
-          relationship: undefined,
-          period_start_date,
-          period_end_date,
-          business_arrangement: undefined,
-          network_name: undefined,
-          coverage_classes: undefined,
-        });
-        next();
-      }
     });
 
     next();

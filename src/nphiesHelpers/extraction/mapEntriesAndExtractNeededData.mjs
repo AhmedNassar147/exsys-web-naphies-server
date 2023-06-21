@@ -3,11 +3,15 @@
  * Helper: `mapEntriesAndExtractNeededData`.
  *
  */
+import formatNphiesResponseIssue from "../base/formatNphiesResponseIssue.mjs";
+
 const mapEntriesAndExtractNeededData = (
   nphiesResponse,
   extractionFunctionsMap
 ) => {
-  const { entry, id: bundle_id } = nphiesResponse || {};
+  const { entry, id: bundle_id, issue } = nphiesResponse || {};
+  const issueValues = formatNphiesResponseIssue(issue);
+
   if (Array.isArray(entry) && entry.length && extractionFunctionsMap) {
     const result = [...entry].reduce((acc, { resource }) => {
       const { resourceType } = resource;
@@ -23,10 +27,11 @@ const mapEntriesAndExtractNeededData = (
     return {
       bundleId: bundle_id,
       ...(result || null),
+      ...issueValues,
     };
   }
 
-  return undefined;
+  return !!issueValues ? issueValues : undefined;
 };
 
 export default mapEntriesAndExtractNeededData;
