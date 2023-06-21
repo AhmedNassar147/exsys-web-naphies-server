@@ -6,9 +6,9 @@ const exsysAPiBodyData = {
   message_event: "eligibility",
   message_event_type: "validation",
   organization_no: "001",
-  patient_file_no: "115765",
-  memberid: "1116201086",
-  contract_no: 16529,
+  patient_file_no: SERVER_CONFIG.patientFileNo,
+  memberid: SERVER_CONFIG.memberId,
+  contract_no: SERVER_CONFIG.contractNo,
 };
 
 await fetchExsysEligibilityDataAndCallNphies({
