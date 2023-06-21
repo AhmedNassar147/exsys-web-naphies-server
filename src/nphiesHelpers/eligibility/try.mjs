@@ -1,6 +1,7 @@
 import createNaphiesRequestFullData from "./index.mjs";
 import createNphiesRequest from "../../helpers/createNphiesRequest.mjs";
 import writeResultFile from "../../nodeHelpers/writeResultFile.mjs";
+import createUUID from "../../nodeHelpers/createUUID.mjs";
 import mapEntriesAndExtractNeededData from "../extraction/mapEntriesAndExtractNeededData.mjs";
 import extractCoverageEligibilityEntryResponseData from "../extraction/extractCoverageEligibilityEntryResponseData.mjs";
 import extractCoverageEntryResponseData from "../extraction/extractCoverageEntryResponseData.mjs";
@@ -57,10 +58,12 @@ const {
   },
 };
 
-const refreshNphiesDataCreatedFromExsysData = () =>
-  createNaphiesRequestFullData({
+const getNphiesDataCreatedFromExsysData = () => {
+  const requestId = createUUID();
+
+  return createNaphiesRequestFullData({
     provider_license,
-    request_id: primaryKey,
+    request_id: requestId,
     payer_license,
     site_url,
     site_tel,
@@ -76,7 +79,7 @@ const refreshNphiesDataCreatedFromExsysData = () =>
       : [message_event_type],
     // coverage_type: undefined,
     coverage_type: "EHCPOL",
-    coverage_id: "21",
+    coverage_id: requestId,
     // coverage_id: undefined,
     // member_id: "5464554586",
     member_id: memberid,
@@ -96,13 +99,12 @@ const refreshNphiesDataCreatedFromExsysData = () =>
     network_name: undefined,
     classes: undefined,
   });
+};
 
 const callNphiesAPIAndPrintResults = async (
   nphiesDataCreatedFromExsysData,
   retryTimes
 ) => {
-  // await writeResultFile(nphiesDataCreatedFromExsysData);
-
   const nphiesResults = await createNphiesRequest({
     bodyData: nphiesDataCreatedFromExsysData,
   });
@@ -112,7 +114,7 @@ const callNphiesAPIAndPrintResults = async (
   let allResultData = {
     isSuccess,
     ...restResult,
-    primaryKey: primaryKey,
+    primaryKey,
     nodeServerDataSentToNaphies: nphiesDataCreatedFromExsysData,
     nphiesResponse,
   };
@@ -136,11 +138,13 @@ const callNphiesAPIAndPrintResults = async (
       // "error": "NPHIES has already received and is currently processing a message for which this message is a duplicate",
       // "errorCode": "GE-00026"
       // "error": "The HIC unable to process your message, for more information please contact the payer.",
-
+      // "errorCode": "BV-00163"
+      // "error": "The main resource identifier SHALL be unique on the HCP/HIC level",
       shouldReloadApiDataCreation = [
         "GE-00012",
         "BV-00542",
         "GE-00026",
+        "BV-00163",
       ].includes(errorCode);
 
       if (shouldReloadApiDataCreation) {
@@ -168,9 +172,6 @@ const callNphiesAPIAndPrintResults = async (
     return;
   }
 
-  // primary key issue
-  // "error": "The main resource identifier SHALL be unique on the HCP/HIC level",
-  // "errorCode": "BV-00163"
   if (!isSuccess) {
     const { issue } = nphiesResponse;
     allResultData = {
@@ -183,6 +184,6 @@ const callNphiesAPIAndPrintResults = async (
 };
 
 await callNphiesAPIAndPrintResults(
-  refreshNphiesDataCreatedFromExsysData(),
+  getNphiesDataCreatedFromExsysData(),
   RETRY_TIMES
 );
