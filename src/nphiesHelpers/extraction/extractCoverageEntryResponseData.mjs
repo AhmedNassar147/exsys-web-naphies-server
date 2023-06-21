@@ -76,8 +76,8 @@ const extractCoverageEntryResponseData = ({
     payor,
     network,
     dependent,
-    classes: classesValues,
     ...copayValues,
+    classes: classesValues,
   };
 };
 
