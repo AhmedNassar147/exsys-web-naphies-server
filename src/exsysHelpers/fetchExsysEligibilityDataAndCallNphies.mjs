@@ -6,6 +6,7 @@
 import createExsysRequest from "../helpers/createExsysRequest.mjs";
 import createNphiesRequest from "../helpers/createNphiesRequest.mjs";
 import createUUID from "../nodeHelpers/createUUID.mjs";
+import writeResultFile from "../nodeHelpers/writeResultFile.mjs";
 import mapEntriesAndExtractNeededData from "../nphiesHelpers/extraction/mapEntriesAndExtractNeededData.mjs";
 import extractCoverageEligibilityEntryResponseData from "../nphiesHelpers/extraction/extractCoverageEligibilityEntryResponseData.mjs";
 import extractCoverageEntryResponseData from "../nphiesHelpers/extraction/extractCoverageEntryResponseData.mjs";
