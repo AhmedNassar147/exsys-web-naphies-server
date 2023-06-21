@@ -51,15 +51,13 @@ const getNphiesDataCreatedFromExsysData = ({
   message_event_type,
   patientFileNo,
 }) => {
-  const requestId = createUUID();
-
   const purpose = BENEFITS_AND_VALIDATION_TYPE.includes(message_event_type)
     ? BENEFITS_AND_VALIDATION_TYPE
     : [message_event_type];
 
   return createNaphiesRequestFullData({
     provider_license,
-    request_id: requestId,
+    request_id: createUUID(),
     payer_license,
     site_url,
     site_tel,
@@ -72,7 +70,6 @@ const getNphiesDataCreatedFromExsysData = ({
     payer_base_url: payer_base_url || "http://payer.com",
     purpose,
     coverage_type: coverage_type || "EHCPOL",
-    coverage_id: requestId,
     member_id: memberid,
     patient_id: patientFileNo,
     national_id_type: "PRC",
@@ -91,11 +88,8 @@ const getNphiesDataCreatedFromExsysData = ({
   });
 };
 
-const callNphiesAPIAndPrintResults = async (
-  nphiesDataCreatedFromExsysData,
-  primaryKey,
-  retryTimes
-) => {
+const callNphiesAPIAndCollectResults = async (options, retryTimes) => {
+  const { nphiesDataCreatedFromExsysData, primaryKey } = options;
   const nphiesResults = await createNphiesRequest({
     bodyData: nphiesDataCreatedFromExsysData,
   });
@@ -110,14 +104,14 @@ const callNphiesAPIAndPrintResults = async (
     nphiesResponse,
   };
 
-  let shouldReloadApiDataCreation = false;
-
   const extractedData = mapEntriesAndExtractNeededData(nphiesResponse, {
     CoverageEligibilityResponse: extractCoverageEligibilityEntryResponseData,
     Coverage: extractCoverageEntryResponseData,
   });
 
   allResultData.nphiesExtractedData = extractedData;
+
+  let shouldReloadApiDataCreation = false;
 
   if (extractedData) {
     const {
@@ -152,18 +146,13 @@ const callNphiesAPIAndPrintResults = async (
 
   if (shouldReloadApiDataCreation && retryTimes > 0) {
     setTimeout(
-      async () =>
-        await callNphiesAPIAndPrintResults(
-          nphiesDataCreatedFromExsysData,
-          primaryKey,
-          retryTimes - 1
-        ),
+      async () => await callNphiesAPIAndCollectResults(options, retryTimes - 1),
       RETRY_DELAY
     );
     return;
   }
 
-  await writeResultFile(allResultData);
+  return allResultData;
 };
 
 const fetchExsysEligibilityDataAndCallNphies = async ({ exsysAPiBodyData }) => {
@@ -186,11 +175,12 @@ const fetchExsysEligibilityDataAndCallNphies = async ({ exsysAPiBodyData }) => {
       classes: undefined,
     });
 
-    await callNphiesAPIAndPrintResults(
-      nphiesDataCreatedFromExsysData,
-      primaryKey,
+    const nphiesResultData = await callNphiesAPIAndCollectResults(
+      { nphiesDataCreatedFromExsysData, primaryKey },
       RETRY_TIMES
     );
+
+    await writeResultFile(nphiesResultData);
   }
 };
 

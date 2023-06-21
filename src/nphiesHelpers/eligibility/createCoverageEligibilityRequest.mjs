@@ -26,7 +26,6 @@ const createCoverageEligibilityRequest = ({
   payerOrganization,
   periodStartDate,
   periodEndDate,
-  coverageId,
   patientId,
   businessArrangement,
   providerPatientUrl,
@@ -79,18 +78,14 @@ const createCoverageEligibilityRequest = ({
       facility: {
         reference: `${providerLocationUrl}/${providerLocation}`,
       },
-      ...(coverageId
-        ? {
-            insurance: [
-              {
-                coverage: {
-                  reference: `${providerCoverageUrl}/${coverageId}`,
-                },
-                businessArrangement,
-              },
-            ],
-          }
-        : null),
+      insurance: [
+        {
+          coverage: {
+            reference: `${providerCoverageUrl}/${requestId}`,
+          },
+          businessArrangement,
+        },
+      ],
     },
   };
 };

@@ -21,7 +21,7 @@ const { COVERAGE_TYPE, SUBSCRIBER_RELATIONSHIP, COVERAGE_CLASS } =
 const coverageClassUrl = `${BASE_TERMINOLOGY_CODE_SYS_URL}/${COVERAGE_CLASS}`;
 
 const createNphiesCoverage = ({
-  coverageId,
+  requestId,
   coverageType,
   memberId,
   patientId,
@@ -36,17 +36,17 @@ const createNphiesCoverage = ({
 }) => {
   const patientUrlReference = `${providerPatientUrl}/${patientId}`;
 
-  if (!coverageId || !coverageType) {
+  if (!requestId || !coverageType) {
     return false;
   }
 
   return {
-    fullUrl: `${providerCoverageUrl}/${coverageId}`,
+    fullUrl: `${providerCoverageUrl}/${requestId}`,
     resource: {
       ...createNphiesBaseResource({
         resourceType: RESOURCE_COVERAGE,
         profileType: PROFILE_COVERAGE,
-        uuid: coverageId,
+        uuid: requestId,
       }),
       identifier: [
         {
