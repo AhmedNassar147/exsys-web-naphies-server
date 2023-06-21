@@ -8,7 +8,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "node ./src/index.js",
+    "start": "node ./src/index.js",
+    "dev": "yarn start --dev",
     "build": "rollup --config",
     "prod": "node ./bin/index.js --production"
   },
