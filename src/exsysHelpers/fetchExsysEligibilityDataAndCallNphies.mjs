@@ -91,7 +91,7 @@ const getNphiesDataCreatedFromExsysData = ({
 };
 
 const callNphiesAPIAndCollectResults = (options, retryTimes) =>
-  Promise(async (resolve) => {
+  new Promise(async (resolve) => {
     const wrapper = async (_retryTimes) => {
       const { nphiesDataCreatedFromExsysData, primaryKey } = options;
       const nphiesResults = await createNphiesRequest({
