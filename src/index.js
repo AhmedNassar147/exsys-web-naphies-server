@@ -7,7 +7,7 @@ import express from "express";
 import cors from "cors";
 import bodyParser from "body-parser";
 import {
-  SERVER_PORT,
+  SERVER_HOST_PATH,
   RESTART_SERVER_MS,
   NPHIES_CERT_FILE_NAME,
   CLI_CONFIG,
@@ -39,8 +39,8 @@ const { ignoreCert } = CLI_CONFIG;
   app.use(bodyParser.raw());
   app.use("/eligibility", createEligibilityMiddleware(app));
 
-  const res = app.listen(SERVER_PORT, () =>
-    console.log(`app is running on http://localhost:${SERVER_PORT}`)
+  const res = app.listen(SERVER_HOST_PATH, () =>
+    console.log(`app is running on ${SERVER_HOST_PATH}`)
   );
 
   res.on("error", () => {
