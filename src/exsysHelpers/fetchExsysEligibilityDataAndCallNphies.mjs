@@ -227,3 +227,12 @@ const fetchExsysEligibilityDataAndCallNphies = async ({
 };
 
 export default fetchExsysEligibilityDataAndCallNphies;
+
+// {
+//   "authorization": 162880685,
+//   "patientFileNo": "0366316",
+//   "contractNo": 163449,
+//   "memberId": "6007694176",
+//   "organizationNo": "001",
+//   "passphrase": "kRwYHgS0kVGP"
+// }
