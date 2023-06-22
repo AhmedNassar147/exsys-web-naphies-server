@@ -43,13 +43,13 @@ const { ignoreCert } = CLI_CONFIG;
     console.log(`app is running on http://localhost:${SERVER_PORT}`)
   );
 
-  // res.on("error", () => {
-  //   res.close((err) => {
-  //     process.kill(process.pid);
-  //     console.log(
-  //       `restarting server after ${RESTART_SERVER_MS / 1000} seconds`
-  //     );
-  //     restartProcess();
-  //   });
-  // });
+  res.on("error", () => {
+    res.close(() => {
+      process.kill(process.pid);
+      console.log(
+        `restarting server after ${RESTART_SERVER_MS / 1000} seconds`
+      );
+      restartProcess();
+    });
+  });
 })();

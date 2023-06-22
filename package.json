@@ -8,7 +8,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "start": "nodemon -q ./src/index.js",
+    "start": "nodemon --ignore results/ --ignore bin/ -q ./src/index.js ",
     "dev": "yarn start --ignore-cert --dev",
     "build": "rollup --config",
     "// prodx": "node ./bin/index.js --production",
