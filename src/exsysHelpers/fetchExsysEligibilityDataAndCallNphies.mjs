@@ -16,7 +16,10 @@ import {
   EXSYS_API_IDS_NAMES,
   RETRY_DELAY,
   RETRY_TIMES,
+  NPHIES_RESOURCE_TYPES,
 } from "../constants.mjs";
+
+const { COVERAGE, COVERAGE_ELIGIBILITY_REQUEST } = NPHIES_RESOURCE_TYPES;
 
 const BENEFITS_AND_VALIDATION_TYPE = [
   ELIGIBILITY_TYPES.benefits,
@@ -96,7 +99,7 @@ const callNphiesAPIAndCollectResults = async (options, retryTimes) => {
 
   const { isSuccess, result: nphiesResponse, ...restResult } = nphiesResults;
 
-  let allResultData = {
+  let nphiesResultData = {
     isSuccess,
     ...restResult,
     primaryKey,
@@ -104,18 +107,23 @@ const callNphiesAPIAndCollectResults = async (options, retryTimes) => {
     nphiesResponse,
   };
 
+  let hasError = !isSuccess;
+
   const extractedData = mapEntriesAndExtractNeededData(nphiesResponse, {
-    CoverageEligibilityResponse: extractCoverageEligibilityEntryResponseData,
-    Coverage: extractCoverageEntryResponseData,
+    [COVERAGE_ELIGIBILITY_REQUEST]: extractCoverageEligibilityEntryResponseData,
+    [COVERAGE]: extractCoverageEntryResponseData,
   });
 
-  allResultData.nphiesExtractedData = extractedData;
+  nphiesResultData.nphiesExtractedData = extractedData;
 
   let shouldReloadApiDataCreation = false;
 
   if (extractedData) {
     const {
-      CoverageEligibilityResponse: { errorCode, error },
+      [COVERAGE_ELIGIBILITY_REQUEST]: { errorCode, error },
+      [COVERAGE]: { errorCode: coverageErrorCode, error: coverageError },
+      errorCode: issueErrorCode,
+      error: issueError,
     } = extractedData;
     // "errorCode": "GE-00012"
     // "error": "Payer is unreachable or temporarily offline, Please try again in a moment. If issue persists please follow up with the payer contact center."
@@ -132,19 +140,20 @@ const callNphiesAPIAndCollectResults = async (options, retryTimes) => {
       "BV-00163",
     ].includes(errorCode);
 
-    if (shouldReloadApiDataCreation) {
-      console.log(
-        `----ReloadApiDataCreation---- in ${RETRY_DELAY / 1000} seconds`
-      );
-      console.log({
-        primaryKey,
+    if (!hasError) {
+      hasError = [
         errorCode,
         error,
-      });
+        coverageErrorCode,
+        coverageError,
+        issueErrorCode,
+        issueError,
+      ].some((value) => !!value);
     }
   }
 
   if (shouldReloadApiDataCreation && retryTimes > 0) {
+    console.log(`--ReloadApiDataCreation-- in ${RETRY_DELAY / 1000} seconds`);
     setTimeout(
       async () => await callNphiesAPIAndCollectResults(options, retryTimes - 1),
       RETRY_DELAY
@@ -152,7 +161,7 @@ const callNphiesAPIAndCollectResults = async (options, retryTimes) => {
     return;
   }
 
-  return allResultData;
+  return { nphiesResultData, hasError };
 };
 
 const fetchExsysEligibilityDataAndCallNphies = async ({ exsysAPiBodyData }) => {
@@ -161,26 +170,38 @@ const fetchExsysEligibilityDataAndCallNphies = async ({ exsysAPiBodyData }) => {
     body: exsysAPiBodyData,
   });
 
+  if (!isSuccess) {
+    console.error(`Exsys API failed with results`, {
+      result,
+      exsysAPiBodyData,
+    });
+    return;
+  }
+
   const { patient_file_no, message_event_type } = exsysAPiBodyData;
 
-  if (isSuccess) {
-    const { primaryKey, data } = result;
+  const { primaryKey, data } = result;
 
-    const nphiesDataCreatedFromExsysData = getNphiesDataCreatedFromExsysData({
-      ...data,
-      message_event_type,
-      patientFileNo: patient_file_no,
-      business_arrangement: undefined,
-      network_name: undefined,
-      classes: undefined,
+  const nphiesDataCreatedFromExsysData = getNphiesDataCreatedFromExsysData({
+    ...data,
+    message_event_type,
+    patientFileNo: patient_file_no,
+    business_arrangement: undefined,
+    network_name: undefined,
+    classes: undefined,
+  });
+
+  const nphiesCollectedResults = await callNphiesAPIAndCollectResults(
+    { nphiesDataCreatedFromExsysData, primaryKey },
+    RETRY_TIMES
+  );
+
+  if (nphiesCollectedResults) {
+    const { nphiesResultData, hasError } = nphiesCollectedResults;
+    await writeResultFile({
+      data: nphiesResultData,
+      isError: hasError,
     });
-
-    const nphiesResultData = await callNphiesAPIAndCollectResults(
-      { nphiesDataCreatedFromExsysData, primaryKey },
-      RETRY_TIMES
-    );
-
-    await writeResultFile(nphiesResultData);
   }
 };
 

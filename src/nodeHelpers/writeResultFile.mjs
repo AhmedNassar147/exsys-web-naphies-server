@@ -8,12 +8,12 @@ import getCurrentDate from "./getCurrentDate.mjs";
 import checkPathExists from "./checkPathExists.mjs";
 import readJsonFile from "./readJsonFile.mjs";
 
-const writeResultFile = async (data) => {
+const writeResultFile = async ({ data, isError }) => {
   const { dateString, time } = getCurrentDate();
 
-  const currentResultFolderPath = "results";
+  const currentResultFolderPath = "results" + isError ? "error" : "success";
   if (!(await checkPathExists(currentResultFolderPath))) {
-    await mkdir(currentResultFolderPath);
+    await mkdir(currentResultFolderPath, { recursive: true });
   }
 
   const currentResultFilePath = `${currentResultFolderPath}/${dateString}.json`;

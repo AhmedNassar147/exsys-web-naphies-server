@@ -56,7 +56,7 @@ export const NPHIES_RESOURCE_TYPES = {
   ORGANIZATION: "Organization",
   PATIENT: "Patient",
   LOCATION: "Location",
-  RESOURCE_COVERAGE: "Coverage",
+  COVERAGE: "Coverage",
 };
 
 export const NPHIES_API_URLS = {

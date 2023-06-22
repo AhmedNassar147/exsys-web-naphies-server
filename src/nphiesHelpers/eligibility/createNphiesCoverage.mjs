@@ -13,7 +13,7 @@ import {
 } from "../../constants.mjs";
 
 const { PROFILE_COVERAGE } = NPHIES_BASE_PROFILE_TYPES;
-const { RESOURCE_COVERAGE } = NPHIES_RESOURCE_TYPES;
+const { COVERAGE } = NPHIES_RESOURCE_TYPES;
 const { BASE_CODE_SYS_URL, BASE_TERMINOLOGY_CODE_SYS_URL } = NPHIES_API_URLS;
 const { COVERAGE_TYPE, SUBSCRIBER_RELATIONSHIP, COVERAGE_CLASS } =
   NPHIES_BASE_CODE_TYPES;
@@ -44,7 +44,7 @@ const createNphiesCoverage = ({
     fullUrl: `${providerCoverageUrl}/${requestId}`,
     resource: {
       ...createNphiesBaseResource({
-        resourceType: RESOURCE_COVERAGE,
+        resourceType: COVERAGE,
         profileType: PROFILE_COVERAGE,
         uuid: requestId,
       }),

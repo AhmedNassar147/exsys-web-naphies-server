@@ -30,9 +30,12 @@ const extractCoverageEntryResponseData = ({
   network,
   dependent,
   class: classes,
+  error,
 }) => {
   const [{ value: memberid }] = identifier || [{}];
   const [{ value: payor }] = classes || [{}];
+  const [{ code: type }] = error || [{}];
+  const { code, display } = extractNphiesCodeAndDisplayFromCodingType(type);
 
   const copayValues = Array.isArray(costToBeneficiary)
     ? costToBeneficiary.reduce((acc, item) => {
@@ -76,6 +79,8 @@ const extractCoverageEntryResponseData = ({
     payor,
     network,
     dependent,
+    error: display,
+    errorCode: code,
     ...copayValues,
     classes: classesValues,
   };
