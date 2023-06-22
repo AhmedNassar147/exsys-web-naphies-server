@@ -15,6 +15,7 @@ import {
   ELIGIBILITY_TYPES,
   EXSYS_API_IDS_NAMES,
   RETRY_DELAY,
+  NPHIES_RETRY_TIMES,
   NPHIES_RESOURCE_TYPES,
 } from "../constants.mjs";
 
@@ -90,10 +91,16 @@ const getNphiesDataCreatedFromExsysData = ({
   });
 };
 
-const callNphiesAPIAndCollectResults = (options, retryTimes) =>
+const callNphiesAPIAndCollectResults = ({
+  retryTimes,
+  exsysResultsData,
+  primaryKey,
+}) =>
   new Promise(async (resolve) => {
     const wrapper = async (_retryTimes) => {
-      const { nphiesDataCreatedFromExsysData, primaryKey } = options;
+      const nphiesDataCreatedFromExsysData =
+        getNphiesDataCreatedFromExsysData(exsysResultsData);
+
       const nphiesResults = await createNphiesRequest({
         bodyData: nphiesDataCreatedFromExsysData,
       });
@@ -108,6 +115,7 @@ const callNphiesAPIAndCollectResults = (options, retryTimes) =>
         isSuccess,
         ...restResult,
         primaryKey,
+        exsysResultsData,
         nodeServerDataSentToNaphies: nphiesDataCreatedFromExsysData,
         nphiesResponse,
       };
@@ -178,9 +186,6 @@ const callNphiesAPIAndCollectResults = (options, retryTimes) =>
         return;
       }
 
-      // if (!shouldReloadWithFoundRetryTime) {
-      //   console.error(`=>>>> WRONG WRONG =>>>>`);
-      // }
       resolve({ nphiesResultData, hasError, errorMessage });
     };
     await wrapper(retryTimes);
@@ -207,7 +212,8 @@ const fetchExsysEligibilityDataAndCallNphies = async ({
     if (printValues) {
       await writeResultFile({
         data: {
-          result,
+          primaryKey,
+          exsysResultsData: data,
           exsysAPiBodyData,
         },
         isError: true,
@@ -224,36 +230,30 @@ const fetchExsysEligibilityDataAndCallNphies = async ({
 
   const { patient_file_no, message_event_type } = exsysAPiBodyData;
 
-  const nphiesDataCreatedFromExsysData = getNphiesDataCreatedFromExsysData({
-    ...data,
-    message_event_type,
-    patientFileNo: patient_file_no,
-    business_arrangement: undefined,
-    network_name: undefined,
-    classes: undefined,
+  const { nphiesResultData, hasError } = await callNphiesAPIAndCollectResults({
+    exsysResultsData: {
+      ...data,
+      message_event_type,
+      patientFileNo: patient_file_no,
+      business_arrangement: undefined,
+      network_name: undefined,
+      classes: undefined,
+    },
+    primaryKey,
+    retryTimes: NPHIES_RETRY_TIMES,
   });
 
-  const nphiesCollectedResults = await callNphiesAPIAndCollectResults(
-    { nphiesDataCreatedFromExsysData, primaryKey },
-    2
-  );
-
-  if (typeof nphiesCollectedResults === "undefined") {
-    console.log("=======> nphiesCollectedResults <=======");
-  }
-
   if (printValues) {
-    const { nphiesResultData, hasError } = nphiesCollectedResults;
     await writeResultFile({
-      data: {
-        exsysData: result,
-        ...nphiesResultData,
-      },
+      data: nphiesResultData,
       isError: hasError,
     });
   }
 
-  return nphiesCollectedResults;
+  return {
+    data: nphiesResultData.nphiesExtractedData,
+    hasError,
+  };
 };
 
 export default fetchExsysEligibilityDataAndCallNphies;
