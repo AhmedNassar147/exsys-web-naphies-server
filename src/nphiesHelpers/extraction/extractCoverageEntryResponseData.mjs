@@ -33,7 +33,7 @@ const extractCoverageEntryResponseData = ({
   error,
 }) => {
   const [{ value: memberid }] = identifier || [{}];
-  const [{ value: payor }] = classes || [{}];
+  const [{ value: firstPayorName, code: firstPayorCode }] = classes || [{}];
   const [{ code: type }] = error || [{}];
   const { code, display } = extractNphiesCodeAndDisplayFromCodingType(type);
 
@@ -65,9 +65,9 @@ const extractCoverageEntryResponseData = ({
 
   const classesValues = Array.isArray(classes)
     ? classes.map(({ value, name, type }) => ({
-        code: extractNphiesCodeAndDisplayFromCodingType(type).code,
-        value: value,
-        name: name,
+        key: extractNphiesCodeAndDisplayFromCodingType(type).code,
+        value,
+        name,
       }))
     : undefined;
 
@@ -76,7 +76,8 @@ const extractCoverageEntryResponseData = ({
     responseId: id,
     status,
     memberid,
-    payor,
+    firstPayorName,
+    firstPayorCode,
     network,
     dependent,
     error: display,

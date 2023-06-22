@@ -168,7 +168,10 @@ const callNphiesAPIAndCollectResults = async (options, retryTimes) => {
   return { nphiesResultData, hasError, errorMessage };
 };
 
-const fetchExsysEligibilityDataAndCallNphies = async ({ exsysAPiBodyData }) => {
+const fetchExsysEligibilityDataAndCallNphies = async ({
+  exsysAPiBodyData,
+  printValues = true,
+}) => {
   const { isSuccess, result } = await createExsysRequest({
     resourceName: EXSYS_API_IDS_NAMES.createNphiesRequest,
     body: exsysAPiBodyData,
@@ -207,7 +210,7 @@ const fetchExsysEligibilityDataAndCallNphies = async ({ exsysAPiBodyData }) => {
     2
   );
 
-  if (nphiesCollectedResults) {
+  if (nphiesCollectedResults && printValues) {
     const { nphiesResultData, hasError } = nphiesCollectedResults;
     await writeResultFile({
       data: nphiesResultData,

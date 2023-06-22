@@ -38,7 +38,7 @@ const extractCoverageEligibilityEntryResponseData = ({
     periodEnd: end,
     payerClaimResponseUrl: system,
     claimResponse: value,
-    isPatientEligible,
+    isPatientEligible: isPatientEligible ? "Y" : "N",
     error: display,
     errorCode: code,
   };

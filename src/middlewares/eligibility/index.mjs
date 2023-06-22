@@ -25,7 +25,7 @@ import { ELIGIBILITY_TYPES } from "../../constants.mjs";
 const createEligibilityMiddleware = (app) => async (req, res, next) => {
   const { originalUrl } = req;
 
-  app.post(originalUrl, async (req, _, next) => {
+  app.post(originalUrl, async (req, res, next) => {
     const {
       body: {
         patientFileNo,
@@ -51,9 +51,13 @@ const createEligibilityMiddleware = (app) => async (req, res, next) => {
       contract_no: contractNo,
     };
 
-    const {} = await fetchExsysEligibilityDataAndCallNphies({
-      exsysAPiBodyData: bodyData,
-    });
+    const { errorMessage, nphiesResultData } =
+      await fetchExsysEligibilityDataAndCallNphies({
+        exsysAPiBodyData: bodyData,
+        printValues: false,
+      });
+
+    // res.send();
   });
 
   next();
