@@ -8,7 +8,7 @@ import https from "https";
 import createFetchRequest from "./createFetchRequest.mjs";
 import {
   NPHIES_API_URLS,
-  RETRY_TIMES,
+  NPHIES_RETRY_TIMES,
   RETRY_DELAY,
   CLI_CONFIG,
   NPHIES_CERT_FILE_NAME,
@@ -22,7 +22,7 @@ const { passphrase } = SERVER_CONFIG;
 const createNphiesRequest = async ({
   bodyData,
   transformApiResults,
-  retryTimes = RETRY_TIMES,
+  retryTimes = NPHIES_RETRY_TIMES,
   retryDelay = RETRY_DELAY,
 }) => {
   const apiUrl = production ? NPHIES_PRODUCTION : NPHIES_DEVELOPMENT;

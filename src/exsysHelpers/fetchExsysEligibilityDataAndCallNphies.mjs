@@ -250,8 +250,10 @@ const fetchExsysEligibilityDataAndCallNphies = async ({
     });
   }
 
+  const { nphiesExtractedData } = nphiesResultData;
+
   return {
-    data: nphiesResultData.nphiesExtractedData,
+    data: nphiesExtractedData,
     hasError,
   };
 };
