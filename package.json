@@ -11,7 +11,8 @@
     "start": "nodemon --ignore results/ --ignore bin/ -q ./src/index.js ",
     "dev": "yarn start --ignore-cert --dev",
     "build": "rollup --config",
-    "// prodx": "node ./bin/index.js --production",
+    "pretest-dev": "yarn build",
+    "test-dev": "node ./bin/index.js --ignore-cert --dev",
     "prod": "node ./bin/index.js --production"
   },
   "dependencies": {
