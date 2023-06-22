@@ -51,7 +51,7 @@ const createEligibilityMiddleware = (app) => async (req, res, next) => {
       contract_no: contractNo,
     };
 
-    await fetchExsysEligibilityDataAndCallNphies({
+    const {} = await fetchExsysEligibilityDataAndCallNphies({
       exsysAPiBodyData: bodyData,
     });
   });

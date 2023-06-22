@@ -13,16 +13,20 @@ const extractCoverageEligibilityEntryResponseData = ({
   identifier,
   status,
   error,
+  extension,
 }) => {
   const { start, end } = servicedPeriod || {};
   const [{ system, value }] = identifier || [{}];
   const [{ code: type }] = error || [{}];
   const { code, display } = extractNphiesCodeAndDisplayFromCodingType(type);
+  const [{ valueCodeableConcept }] = extension || [{}];
+  const { code: valueCodeableConceptCode } =
+    extractNphiesCodeAndDisplayFromCodingType(valueCodeableConcept);
 
   const isPatientEligible =
     outcome === "complete" &&
     status === "active" &&
-    disposition === "Coverage is in-force";
+    valueCodeableConceptCode === "eligible";
 
   return {
     resourceType,

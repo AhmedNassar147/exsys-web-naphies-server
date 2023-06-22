@@ -15,7 +15,6 @@ import {
   ELIGIBILITY_TYPES,
   EXSYS_API_IDS_NAMES,
   RETRY_DELAY,
-  RETRY_TIMES,
   NPHIES_RESOURCE_TYPES,
 } from "../constants.mjs";
 
@@ -108,6 +107,7 @@ const callNphiesAPIAndCollectResults = async (options, retryTimes) => {
   };
 
   let hasError = !isSuccess;
+  let errorMessage = restResult.error;
 
   const extractedData = mapEntriesAndExtractNeededData(nphiesResponse, {
     CoverageEligibilityResponse: extractCoverageEligibilityEntryResponseData,
@@ -151,6 +151,8 @@ const callNphiesAPIAndCollectResults = async (options, retryTimes) => {
         issueErrorCode,
         issueError,
       ].some((value) => !!value);
+
+      errorMessage = [error, coverageError, issueError].join(" , ");
     }
   }
 
@@ -163,7 +165,7 @@ const callNphiesAPIAndCollectResults = async (options, retryTimes) => {
     return;
   }
 
-  return { nphiesResultData, hasError };
+  return { nphiesResultData, hasError, errorMessage };
 };
 
 const fetchExsysEligibilityDataAndCallNphies = async ({ exsysAPiBodyData }) => {
@@ -179,7 +181,12 @@ const fetchExsysEligibilityDataAndCallNphies = async ({ exsysAPiBodyData }) => {
       result,
       exsysAPiBodyData,
     });
-    return;
+    return {
+      errorMessage:
+        error_message ||
+        `error with calling exsys \`${EXSYS_API_IDS_NAMES.createNphiesRequest}\` API`,
+      hasError: true,
+    };
   }
 
   const { patient_file_no, message_event_type } = exsysAPiBodyData;
@@ -197,7 +204,7 @@ const fetchExsysEligibilityDataAndCallNphies = async ({ exsysAPiBodyData }) => {
 
   const nphiesCollectedResults = await callNphiesAPIAndCollectResults(
     { nphiesDataCreatedFromExsysData, primaryKey },
-    RETRY_TIMES
+    2
   );
 
   if (nphiesCollectedResults) {
@@ -207,6 +214,8 @@ const fetchExsysEligibilityDataAndCallNphies = async ({ exsysAPiBodyData }) => {
       isError: hasError,
     });
   }
+
+  return nphiesCollectedResults;
 };
 
 export default fetchExsysEligibilityDataAndCallNphies;
