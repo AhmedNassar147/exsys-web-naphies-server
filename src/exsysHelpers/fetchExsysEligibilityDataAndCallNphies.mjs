@@ -170,16 +170,18 @@ const callNphiesAPIAndCollectResults = (options, retryTimes) =>
       const shouldReloadWithFoundRetryTime =
         shouldReloadApiDataCreation && _retryTimes > 0;
 
-      if (!shouldReloadWithFoundRetryTime) {
-        resolve({ nphiesResultData, hasError, errorMessage });
+      if (shouldReloadWithFoundRetryTime) {
+        console.log(
+          `--ReloadApiDataCreation-- in ${RETRY_DELAY / 1000} seconds`
+        );
+        setTimeout(async () => await wrapper(_retryTimes - 1), RETRY_DELAY);
+        return;
       }
 
-      if (!shouldReloadWithFoundRetryTime) {
-        console.error(`=>>>> WRONG WRONG =>>>>`);
-      }
-
-      console.log(`--ReloadApiDataCreation-- in ${RETRY_DELAY / 1000} seconds`);
-      setTimeout(async () => await wrapper(_retryTimes - 1), RETRY_DELAY);
+      // if (!shouldReloadWithFoundRetryTime) {
+      //   console.error(`=>>>> WRONG WRONG =>>>>`);
+      // }
+      resolve({ nphiesResultData, hasError, errorMessage });
     };
     await wrapper(retryTimes);
   });
@@ -235,6 +237,8 @@ const fetchExsysEligibilityDataAndCallNphies = async ({
     { nphiesDataCreatedFromExsysData, primaryKey },
     2
   );
+
+  console.log("nphiesCollectedResults", nphiesCollectedResults);
 
   if (printValues) {
     const { nphiesResultData, hasError } = nphiesCollectedResults;
