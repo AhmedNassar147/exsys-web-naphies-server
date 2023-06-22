@@ -12,8 +12,12 @@ export default {
     "cors",
     "express",
     "body-parser",
-    "node-fetch",
     "fs/promises",
+    "nodemon",
+    "child_process",
+    "https",
+    "crypto",
+    "axios",
   ],
   input: "src/index.js",
   output: {
@@ -24,7 +28,7 @@ export default {
     shebang(),
     terser({
       format: {
-        beautify: true,
+        beautify: false,
         comments: false,
         indent_level: 2,
         shebang: true,

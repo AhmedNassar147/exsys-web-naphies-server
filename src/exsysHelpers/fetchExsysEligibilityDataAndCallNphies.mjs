@@ -90,85 +90,99 @@ const getNphiesDataCreatedFromExsysData = ({
   });
 };
 
-const callNphiesAPIAndCollectResults = async (options, retryTimes) => {
-  const { nphiesDataCreatedFromExsysData, primaryKey } = options;
-  const nphiesResults = await createNphiesRequest({
-    bodyData: nphiesDataCreatedFromExsysData,
+const callNphiesAPIAndCollectResults = (options, retryTimes) =>
+  Promise(async (resolve) => {
+    const wrapper = async (_retryTimes) => {
+      const { nphiesDataCreatedFromExsysData, primaryKey } = options;
+      const nphiesResults = await createNphiesRequest({
+        bodyData: nphiesDataCreatedFromExsysData,
+      });
+
+      const {
+        isSuccess,
+        result: nphiesResponse,
+        ...restResult
+      } = nphiesResults;
+
+      let nphiesResultData = {
+        isSuccess,
+        ...restResult,
+        primaryKey,
+        nodeServerDataSentToNaphies: nphiesDataCreatedFromExsysData,
+        nphiesResponse,
+      };
+
+      let hasError = !isSuccess;
+      let errorMessage = restResult.error;
+
+      const extractedData = mapEntriesAndExtractNeededData(nphiesResponse, {
+        CoverageEligibilityResponse:
+          extractCoverageEligibilityEntryResponseData,
+        [COVERAGE]: extractCoverageEntryResponseData,
+      });
+
+      nphiesResultData.nphiesExtractedData = extractedData;
+
+      let shouldReloadApiDataCreation = false;
+
+      if (extractedData) {
+        const {
+          CoverageEligibilityResponse: coverageEligibilityResponse,
+          [COVERAGE]: coverageEntry,
+          errorCode: issueErrorCode,
+          error: issueError,
+        } = extractedData;
+
+        const { errorCode, error } = coverageEligibilityResponse || {};
+        const { errorCode: coverageErrorCode, error: coverageError } =
+          coverageEntry || {};
+
+        // "errorCode": "GE-00012"
+        // "error": "Payer is unreachable or temporarily offline, Please try again in a moment. If issue persists please follow up with the payer contact center."
+        // "errorCode": "BV-00542"
+        // "error": "NPHIES has already received and is currently processing a message for which this message is a duplicate",
+        // "errorCode": "BV-00163"
+        // "error": "The main resource identifier SHALL be unique on the HCP/HIC level",
+        // "errorCode": "GE-00026" => send to front end
+        // "error": "The HIC unable to process your message, for more information please contact the payer.",
+        // "errorCode": "GE-00010",
+        // "error": "The HIC/TPA you are trying to access is not onboarded/active on nphies",
+        shouldReloadApiDataCreation = [
+          "GE-00012",
+          "BV-00542",
+          "BV-00163",
+        ].includes(errorCode);
+
+        if (!hasError) {
+          hasError = [
+            errorCode,
+            error,
+            coverageErrorCode,
+            coverageError,
+            issueErrorCode,
+            issueError,
+          ].some((value) => !!value);
+
+          errorMessage = [error, coverageError, issueError].join(" , ");
+        }
+      }
+
+      const shouldReloadWithFoundRetryTime =
+        shouldReloadApiDataCreation && _retryTimes > 0;
+
+      if (!shouldReloadWithFoundRetryTime) {
+        resolve({ nphiesResultData, hasError, errorMessage });
+      }
+
+      if (!shouldReloadWithFoundRetryTime) {
+        console.error(`=>>>> WRONG WRONG =>>>>`);
+      }
+
+      console.log(`--ReloadApiDataCreation-- in ${RETRY_DELAY / 1000} seconds`);
+      setTimeout(async () => await wrapper(_retryTimes - 1), RETRY_DELAY);
+    };
+    await wrapper(retryTimes);
   });
-
-  const { isSuccess, result: nphiesResponse, ...restResult } = nphiesResults;
-
-  let nphiesResultData = {
-    isSuccess,
-    ...restResult,
-    primaryKey,
-    nodeServerDataSentToNaphies: nphiesDataCreatedFromExsysData,
-    nphiesResponse,
-  };
-
-  let hasError = !isSuccess;
-  let errorMessage = restResult.error;
-
-  const extractedData = mapEntriesAndExtractNeededData(nphiesResponse, {
-    CoverageEligibilityResponse: extractCoverageEligibilityEntryResponseData,
-    [COVERAGE]: extractCoverageEntryResponseData,
-  });
-
-  nphiesResultData.nphiesExtractedData = extractedData;
-
-  let shouldReloadApiDataCreation = false;
-
-  if (extractedData) {
-    const {
-      CoverageEligibilityResponse: coverageEligibilityResponse,
-      [COVERAGE]: coverageEntry,
-      errorCode: issueErrorCode,
-      error: issueError,
-    } = extractedData;
-
-    const { errorCode, error } = coverageEligibilityResponse || {};
-    const { errorCode: coverageErrorCode, error: coverageError } =
-      coverageEntry || {};
-
-    // "errorCode": "GE-00012"
-    // "error": "Payer is unreachable or temporarily offline, Please try again in a moment. If issue persists please follow up with the payer contact center."
-    // "errorCode": "BV-00542"
-    // "error": "NPHIES has already received and is currently processing a message for which this message is a duplicate",
-    // "errorCode": "BV-00163"
-    // "error": "The main resource identifier SHALL be unique on the HCP/HIC level",
-    // "errorCode": "GE-00026" => send to front end
-    // "error": "The HIC unable to process your message, for more information please contact the payer.",
-    // "errorCode": "GE-00010",
-    // "error": "The HIC/TPA you are trying to access is not onboarded/active on nphies",
-    shouldReloadApiDataCreation = ["GE-00012", "BV-00542", "BV-00163"].includes(
-      errorCode
-    );
-
-    if (!hasError) {
-      hasError = [
-        errorCode,
-        error,
-        coverageErrorCode,
-        coverageError,
-        issueErrorCode,
-        issueError,
-      ].some((value) => !!value);
-
-      errorMessage = [error, coverageError, issueError].join(" , ");
-    }
-  }
-
-  if (shouldReloadApiDataCreation && retryTimes > 0) {
-    console.log(`--ReloadApiDataCreation-- in ${RETRY_DELAY / 1000} seconds`);
-    setTimeout(
-      async () => await callNphiesAPIAndCollectResults(options, retryTimes - 1),
-      RETRY_DELAY
-    );
-    return;
-  }
-
-  return { nphiesResultData, hasError, errorMessage };
-};
 
 const fetchExsysEligibilityDataAndCallNphies = async ({
   exsysAPiBodyData,
@@ -222,7 +236,7 @@ const fetchExsysEligibilityDataAndCallNphies = async ({
     2
   );
 
-  if (nphiesCollectedResults && printValues) {
+  if (printValues) {
     const { nphiesResultData, hasError } = nphiesCollectedResults;
     await writeResultFile({
       data: {
