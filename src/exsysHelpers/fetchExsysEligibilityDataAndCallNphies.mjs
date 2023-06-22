@@ -238,7 +238,9 @@ const fetchExsysEligibilityDataAndCallNphies = async ({
     2
   );
 
-  console.log("nphiesCollectedResults", nphiesCollectedResults);
+  if (typeof nphiesCollectedResults === "undefined") {
+    console.log("=======> nphiesCollectedResults <=======");
+  }
 
   if (printValues) {
     const { nphiesResultData, hasError } = nphiesCollectedResults;
