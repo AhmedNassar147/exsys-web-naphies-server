@@ -138,6 +138,8 @@ const callNphiesAPIAndCollectResults = async (options, retryTimes) => {
     // "error": "The main resource identifier SHALL be unique on the HCP/HIC level",
     // "errorCode": "GE-00026" => send to front end
     // "error": "The HIC unable to process your message, for more information please contact the payer.",
+    // "errorCode": "GE-00010",
+    // "error": "The HIC/TPA you are trying to access is not onboarded/active on nphies",
     shouldReloadApiDataCreation = ["GE-00012", "BV-00542", "BV-00163"].includes(
       errorCode
     );

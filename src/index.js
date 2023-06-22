@@ -45,7 +45,7 @@ const { ignoreCert } = CLI_CONFIG;
 
   res.on("error", (error) => {
     console.log("server error", error);
-    res.closeAllConnections();
+    res.close();
     process.kill(process.pid);
     console.log(`restarting server after ${RESTART_SERVER_MS / 1000} seconds`);
     restartProcess();

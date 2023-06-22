@@ -22,7 +22,7 @@ import { ELIGIBILITY_TYPES } from "../../constants.mjs";
 // "episode_invoice_no": "" ,
 // "statement_no": "" ,
 
-const createEligibilityMiddleware = (app) => async (req, res, next) => {
+const createEligibilityMiddleware = (app) => async (req, _, next) => {
   const { originalUrl } = req;
 
   app.post(originalUrl, async (req, res, next) => {
@@ -51,13 +51,18 @@ const createEligibilityMiddleware = (app) => async (req, res, next) => {
       contract_no: contractNo,
     };
 
-    const { errorMessage, nphiesResultData } =
-      await fetchExsysEligibilityDataAndCallNphies({
-        exsysAPiBodyData: bodyData,
-        printValues: false,
-      });
+    const apiResults = await fetchExsysEligibilityDataAndCallNphies({
+      exsysAPiBodyData: bodyData,
+      printValues: false,
+    });
 
-    // res.send();
+    res
+      .header("Content-type", "application/json")
+      .status(200)
+      .json(apiResults)
+      .end();
+
+    next();
   });
 
   next();
