@@ -53,7 +53,7 @@ const createEligibilityMiddleware = (app) => async (req, _, next) => {
 
     const apiResults = await fetchExsysEligibilityDataAndCallNphies({
       exsysAPiBodyData: bodyData,
-      printValues: false,
+      // printValues: false,
     });
 
     res
