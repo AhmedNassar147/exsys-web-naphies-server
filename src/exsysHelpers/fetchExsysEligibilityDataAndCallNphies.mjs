@@ -187,6 +187,17 @@ const fetchExsysEligibilityDataAndCallNphies = async ({
       result,
       exsysAPiBodyData,
     });
+
+    if (printValues) {
+      await writeResultFile({
+        data: {
+          result,
+          exsysAPiBodyData,
+        },
+        isError: true,
+      });
+    }
+
     return {
       errorMessage:
         error_message ||
