@@ -8,10 +8,11 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "start": "nodemon -q ./src/index.js --ignore-cert",
-    "dev": "yarn start --dev",
+    "start": "nodemon -q ./src/index.js",
+    "dev": "yarn start --ignore-cert --dev",
     "build": "rollup --config",
-    "prod": "node ./bin/index.js --production"
+    "// prod": "node ./bin/index.js --production",
+    "prod": "yarn start --production"
   },
   "dependencies": {
     "axios": "^1.4.0",

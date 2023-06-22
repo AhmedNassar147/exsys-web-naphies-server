@@ -11,7 +11,7 @@ import readJsonFile from "./readJsonFile.mjs";
 const writeResultFile = async ({ data, isError }) => {
   const { dateString, time } = getCurrentDate();
 
-  const currentResultFolderPath = "results" + isError ? "error" : "success";
+  const currentResultFolderPath = `results/${isError ? "error" : "success"}`;
   if (!(await checkPathExists(currentResultFolderPath))) {
     await mkdir(currentResultFolderPath, { recursive: true });
   }
