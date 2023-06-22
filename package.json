@@ -11,7 +11,7 @@
     "start": "nodemon -q ./src/index.js",
     "dev": "yarn start --ignore-cert --dev",
     "build": "rollup --config",
-    "// prod": "node ./bin/index.js --production",
+    "// prodx": "node ./bin/index.js --production",
     "prod": "yarn start --production"
   },
   "dependencies": {
