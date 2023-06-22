@@ -181,7 +181,7 @@ const fetchExsysEligibilityDataAndCallNphies = async ({
 
   const { error_message } = result || {};
 
-  if (!isSuccess || error_message) {
+  if (error_message || !isSuccess) {
     console.error(`Exsys API failed with results`, {
       result,
       exsysAPiBodyData,
@@ -215,7 +215,10 @@ const fetchExsysEligibilityDataAndCallNphies = async ({
   if (nphiesCollectedResults && printValues) {
     const { nphiesResultData, hasError } = nphiesCollectedResults;
     await writeResultFile({
-      data: nphiesResultData,
+      data: {
+        exsysData: result,
+        ...nphiesResultData,
+      },
       isError: hasError,
     });
   }

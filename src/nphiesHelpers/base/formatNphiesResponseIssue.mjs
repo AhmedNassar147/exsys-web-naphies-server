@@ -7,7 +7,7 @@ import extractNphiesCodeAndDisplayFromCodingType from "../extraction/extractNphi
 
 const formatNphiesResponseIssue = (issue) => {
   if (Array.isArray(issue) && issue.length) {
-    const [details] = issue;
+    const [{ details }] = issue;
     const { code, display } =
       extractNphiesCodeAndDisplayFromCodingType(details);
 
