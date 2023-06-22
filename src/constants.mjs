@@ -11,7 +11,7 @@ export const CLI_CONFIG = await collectProcessOptions();
 export const SERVER_CONFIG = await readJsonFile("config.json", true);
 
 export const SERVER_PORT = 5000;
-export const RETRY_TIMES = 5;
+export const RETRY_TIMES = 3;
 export const RETRY_DELAY = 20000;
 export const RESTART_SERVER_MS = 60000;
 const { dev, certificatePath } = CLI_CONFIG;

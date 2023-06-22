@@ -12,10 +12,12 @@ import {
   RETRY_DELAY,
   CLI_CONFIG,
   NPHIES_CERT_FILE_NAME,
+  SERVER_CONFIG,
 } from "../constants.mjs";
 
 const { NPHIES_PRODUCTION, NPHIES_DEVELOPMENT } = NPHIES_API_URLS;
-const { production, ignoreCert, passphrase } = CLI_CONFIG;
+const { production, ignoreCert } = CLI_CONFIG;
+const { passphrase } = SERVER_CONFIG;
 
 const createNphiesRequest = async ({
   bodyData,
