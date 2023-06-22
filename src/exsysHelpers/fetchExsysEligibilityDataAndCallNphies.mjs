@@ -179,7 +179,8 @@ const fetchExsysEligibilityDataAndCallNphies = async ({
     body: exsysAPiBodyData,
   });
 
-  const { error_message } = result || {};
+  const { primaryKey, data } = result || {};
+  const { error_message } = data || {};
 
   if (error_message || !isSuccess) {
     console.error(`Exsys API failed with results`, {
@@ -195,8 +196,6 @@ const fetchExsysEligibilityDataAndCallNphies = async ({
   }
 
   const { patient_file_no, message_event_type } = exsysAPiBodyData;
-
-  const { primaryKey, data } = result;
 
   const nphiesDataCreatedFromExsysData = getNphiesDataCreatedFromExsysData({
     ...data,
