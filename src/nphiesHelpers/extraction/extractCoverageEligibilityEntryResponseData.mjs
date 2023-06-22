@@ -19,6 +19,11 @@ const extractCoverageEligibilityEntryResponseData = ({
   const [{ code: type }] = error || [{}];
   const { code, display } = extractNphiesCodeAndDisplayFromCodingType(type);
 
+  const isPatientEligible =
+    outcome === "complete" &&
+    status === "active" &&
+    disposition === "Coverage is in-force";
+
   return {
     resourceType,
     responseId: id,
@@ -29,6 +34,7 @@ const extractCoverageEligibilityEntryResponseData = ({
     periodEnd: end,
     payerClaimResponseUrl: system,
     claimResponse: value,
+    isPatientEligible,
     error: display,
     errorCode: code,
   };

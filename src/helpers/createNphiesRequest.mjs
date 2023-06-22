@@ -24,8 +24,10 @@ const createNphiesRequest = async ({
   transformApiResults,
   retryTimes = RETRY_TIMES,
   retryDelay = RETRY_DELAY,
+  API_URL,
 }) => {
-  const apiUrl = production ? NPHIES_PRODUCTION : NPHIES_DEVELOPMENT;
+  const apiUrl =
+    API_URL || (production ? NPHIES_PRODUCTION : NPHIES_DEVELOPMENT);
   const certificate = ignoreCert
     ? undefined
     : await readFile(NPHIES_CERT_FILE_NAME);
@@ -36,7 +38,7 @@ const createNphiesRequest = async ({
 
   const httpsAgent = new https.Agent({
     pfx: certificate,
-    passphrase: passphrase,
+    passphrase,
   });
 
   return await createFetchRequest({
@@ -47,7 +49,13 @@ const createNphiesRequest = async ({
     body: bodyData,
     retryTimes,
     retryDelay,
+    requestMethod: API_URL ? "GET" : "POST",
   });
 };
 
 export default createNphiesRequest;
+
+await createNphiesRequest({
+  API_URL:
+    "https://hsb.nphies.sa/check-insurance?PatientKey=2267803688&SystemType=1",
+});
