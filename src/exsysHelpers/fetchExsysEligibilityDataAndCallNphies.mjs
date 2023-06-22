@@ -120,11 +120,16 @@ const callNphiesAPIAndCollectResults = async (options, retryTimes) => {
 
   if (extractedData) {
     const {
-      [COVERAGE_ELIGIBILITY_REQUEST]: { errorCode, error },
-      [COVERAGE]: { errorCode: coverageErrorCode, error: coverageError },
+      [COVERAGE_ELIGIBILITY_REQUEST]: coverageEligibilityRequest,
+      [COVERAGE]: coverageEntry,
       errorCode: issueErrorCode,
       error: issueError,
     } = extractedData;
+
+    const { errorCode, error } = coverageEligibilityRequest || {};
+    const { errorCode: coverageErrorCode, error: coverageError } =
+      coverageEntry || {};
+
     // "errorCode": "GE-00012"
     // "error": "Payer is unreachable or temporarily offline, Please try again in a moment. If issue persists please follow up with the payer contact center."
     // "errorCode": "BV-00542"

@@ -15,7 +15,7 @@ import {
 } from "../constants.mjs";
 
 const { NPHIES_PRODUCTION, NPHIES_DEVELOPMENT } = NPHIES_API_URLS;
-const { production, ignoreCert } = CLI_CONFIG;
+const { production, ignoreCert, passphrase } = CLI_CONFIG;
 
 const createNphiesRequest = async ({
   bodyData,
@@ -34,7 +34,7 @@ const createNphiesRequest = async ({
 
   const httpsAgent = new https.Agent({
     pfx: certificate,
-    passphrase: "qLFCpUS8CF_c",
+    passphrase: passphrase,
   });
 
   return await createFetchRequest({
