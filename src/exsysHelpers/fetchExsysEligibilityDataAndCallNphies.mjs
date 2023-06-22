@@ -170,7 +170,9 @@ const fetchExsysEligibilityDataAndCallNphies = async ({ exsysAPiBodyData }) => {
     body: exsysAPiBodyData,
   });
 
-  if (!isSuccess) {
+  const { error_message } = result || {};
+
+  if (!isSuccess || error_message) {
     console.error(`Exsys API failed with results`, {
       result,
       exsysAPiBodyData,
