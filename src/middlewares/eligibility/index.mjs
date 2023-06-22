@@ -22,42 +22,41 @@ import { ELIGIBILITY_TYPES } from "../../constants.mjs";
 // "episode_invoice_no": "" ,
 // "statement_no": "" ,
 
-const createEligibilityMiddleware =
-  (app, production) => async (req, res, next) => {
-    const { originalUrl } = req;
+const createEligibilityMiddleware = (app) => async (req, res, next) => {
+  const { originalUrl } = req;
 
-    app.post(originalUrl, async (req, _, next) => {
-      const {
-        body: {
-          patientFileNo,
-          contractNo,
-          patientIdNo,
-          organization_no,
-          authorization,
-          type,
-        },
-      } = req;
-
-      const message_event = originalUrl.replace("/", "");
-      const message_event_type =
-        ELIGIBILITY_TYPES[type] || ELIGIBILITY_TYPES.validation;
-
-      const bodyData = {
-        authorization,
-        message_event,
-        message_event_type,
+  app.post(originalUrl, async (req, _, next) => {
+    const {
+      body: {
+        patientFileNo,
+        contractNo,
+        patientIdNo,
         organization_no,
-        patient_file_no: patientFileNo,
-        memberid: patientIdNo,
-        contract_no: contractNo,
-      };
+        authorization,
+        type,
+      },
+    } = req;
 
-      await fetchExsysEligibilityDataAndCallNphies({
-        exsysAPiBodyData: bodyData,
-      });
+    const message_event = originalUrl.replace("/", "");
+    const message_event_type =
+      ELIGIBILITY_TYPES[type] || ELIGIBILITY_TYPES.validation;
+
+    const bodyData = {
+      authorization,
+      message_event,
+      message_event_type,
+      organization_no,
+      patient_file_no: patientFileNo,
+      memberid: patientIdNo,
+      contract_no: contractNo,
+    };
+
+    await fetchExsysEligibilityDataAndCallNphies({
+      exsysAPiBodyData: bodyData,
     });
+  });
 
-    next();
-  };
+  next();
+};
 
 export default createEligibilityMiddleware;

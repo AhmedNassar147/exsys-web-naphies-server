@@ -4,17 +4,27 @@
  *
  */
 import readJsonFile from "./nodeHelpers/readJsonFile.mjs";
+import collectProcessOptions from "./nodeHelpers/collectProcessOptions.mjs";
+
+// --dev, --certificate-path="" , ---ignore-cert, ---production
+export const CLI_CONFIG = await collectProcessOptions();
 export const SERVER_CONFIG = await readJsonFile("config.json", true);
 
 export const SERVER_PORT = 5000;
 export const RETRY_TIMES = 5;
 export const RETRY_DELAY = 20000;
 export const RESTART_SERVER_MS = 60000;
+const { dev, certificatePath } = CLI_CONFIG;
 
-export const EXSYS_BASE_URL = SERVER_CONFIG.serverUrl;
+const BASE_API_IP_ADDRESS = dev ? "http://149.102.140.8" : "http://localhost";
+const API_URL_PORT = 9090;
+
+export const EXSYS_BASE_URL = `${BASE_API_IP_ADDRESS}:${API_URL_PORT}/ords/exsys_api`;
+
 export const EXSYS_API_IDS_NAMES = {
   createNphiesRequest: "createNphiesRequest",
 };
+
 export const EXSYS_API_IDS = {
   [EXSYS_API_IDS_NAMES.createNphiesRequest]: "nphies_pkg/create_nphies_request",
 };
@@ -60,7 +70,9 @@ export const NPHIES_API_URLS = {
   LOCATION_LICENSE_URL: "http://nphies.sa/license/location-license",
 };
 
-export const NPHIES_CERT_FILE_NAME = "certs/Certificate_pkcs12.p12";
+export const NPHIES_CERT_FILE_NAME = `certs/${
+  certificatePath || "Certificate_pkcs12.p12"
+}`;
 
 export const NPHIES_BUNDLE_TYPES = {
   MESSAGE: "message",

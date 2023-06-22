@@ -8,7 +8,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "start": "node ./src/index.js",
+    "start": "nodemon -q ./src/index.js --ignore-cert",
     "dev": "yarn start --dev",
     "build": "rollup --config",
     "prod": "node ./bin/index.js --production"
@@ -17,7 +17,8 @@
     "axios": "^1.4.0",
     "body-parser": "^1.20.0",
     "cors": "^2.8.5",
-    "express": "^4.18.1"
+    "express": "^4.18.1",
+    "nodemon": "^2.0.22"
   },
   "engines": {
     "node": ">= 16.5.0",
@@ -25,9 +26,9 @@
     "npm": ">= 7.19.1"
   },
   "devDependencies": {
+    "chalk": "^5.0.1",
     "rollup": "^2.78.1",
     "rollup-plugin-shebang-bin": "^0.0.4",
-    "rollup-plugin-terser": "^7.0.2",
-    "chalk": "^5.0.1"
+    "rollup-plugin-terser": "^7.0.2"
   }
 }

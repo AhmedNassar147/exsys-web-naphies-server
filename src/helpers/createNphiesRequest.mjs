@@ -3,27 +3,43 @@
  * Helper: `createNphiesRequest`.
  *
  */
+import { readFile } from "fs/promises";
+import https from "https";
 import createFetchRequest from "./createFetchRequest.mjs";
-import createNphiesOptions from "./createNphiesOptions.mjs";
-import { NPHIES_API_URLS, RETRY_TIMES, RETRY_DELAY } from "../constants.mjs";
+import {
+  NPHIES_API_URLS,
+  RETRY_TIMES,
+  RETRY_DELAY,
+  CLI_CONFIG,
+  NPHIES_CERT_FILE_NAME,
+} from "../constants.mjs";
 
 const { NPHIES_PRODUCTION, NPHIES_DEVELOPMENT } = NPHIES_API_URLS;
+const { production, ignoreCert } = CLI_CONFIG;
 
 const createNphiesRequest = async ({
-  isProduction,
   bodyData,
   transformApiResults,
   retryTimes = RETRY_TIMES,
   retryDelay = RETRY_DELAY,
 }) => {
-  const apiUrl = isProduction ? NPHIES_PRODUCTION : NPHIES_DEVELOPMENT;
-  const { httpsAgent, headers } = await createNphiesOptions({
-    ignoreCert: !isProduction,
+  const apiUrl = production ? NPHIES_PRODUCTION : NPHIES_DEVELOPMENT;
+  const certificate = ignoreCert
+    ? undefined
+    : await readFile(NPHIES_CERT_FILE_NAME);
+
+  const requestHeaders = {
+    "Content-type": "application/fhir+json",
+  };
+
+  const httpsAgent = new https.Agent({
+    pfx: certificate,
+    passphrase: "qLFCpUS8CF_c",
   });
 
   return await createFetchRequest({
     baseAPiUrl: apiUrl,
-    requestHeaders: headers,
+    requestHeaders,
     httpsAgent,
     transformApiResults,
     body: bodyData,
