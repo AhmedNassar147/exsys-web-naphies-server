@@ -19,7 +19,7 @@ import {
   NPHIES_RESOURCE_TYPES,
 } from "../constants.mjs";
 
-const { COVERAGE, COVERAGE_ELIGIBILITY_REQUEST } = NPHIES_RESOURCE_TYPES;
+const { COVERAGE } = NPHIES_RESOURCE_TYPES;
 
 const BENEFITS_AND_VALIDATION_TYPE = [
   ELIGIBILITY_TYPES.benefits,
@@ -110,7 +110,7 @@ const callNphiesAPIAndCollectResults = async (options, retryTimes) => {
   let hasError = !isSuccess;
 
   const extractedData = mapEntriesAndExtractNeededData(nphiesResponse, {
-    [COVERAGE_ELIGIBILITY_REQUEST]: extractCoverageEligibilityEntryResponseData,
+    CoverageEligibilityResponse: extractCoverageEligibilityEntryResponseData,
     [COVERAGE]: extractCoverageEntryResponseData,
   });
 
@@ -120,13 +120,13 @@ const callNphiesAPIAndCollectResults = async (options, retryTimes) => {
 
   if (extractedData) {
     const {
-      [COVERAGE_ELIGIBILITY_REQUEST]: coverageEligibilityRequest,
+      CoverageEligibilityResponse: coverageEligibilityResponse,
       [COVERAGE]: coverageEntry,
       errorCode: issueErrorCode,
       error: issueError,
     } = extractedData;
 
-    const { errorCode, error } = coverageEligibilityRequest || {};
+    const { errorCode, error } = coverageEligibilityResponse || {};
     const { errorCode: coverageErrorCode, error: coverageError } =
       coverageEntry || {};
 
@@ -134,16 +134,13 @@ const callNphiesAPIAndCollectResults = async (options, retryTimes) => {
     // "error": "Payer is unreachable or temporarily offline, Please try again in a moment. If issue persists please follow up with the payer contact center."
     // "errorCode": "BV-00542"
     // "error": "NPHIES has already received and is currently processing a message for which this message is a duplicate",
-    // "errorCode": "GE-00026"
-    // "error": "The HIC unable to process your message, for more information please contact the payer.",
     // "errorCode": "BV-00163"
     // "error": "The main resource identifier SHALL be unique on the HCP/HIC level",
-    shouldReloadApiDataCreation = [
-      "GE-00012",
-      "BV-00542",
-      "GE-00026",
-      "BV-00163",
-    ].includes(errorCode);
+    // "errorCode": "GE-00026" => send to front end
+    // "error": "The HIC unable to process your message, for more information please contact the payer.",
+    shouldReloadApiDataCreation = ["GE-00012", "BV-00542", "BV-00163"].includes(
+      errorCode
+    );
 
     if (!hasError) {
       hasError = [
