@@ -15,7 +15,6 @@ import {
 import checkPathExists from "./nodeHelpers/checkPathExists.mjs";
 import restartProcess from "./nodeHelpers/restartProcess.mjs";
 import createEligibilityMiddleware from "./middlewares/eligibility/index.mjs";
-import "./nphiesHelpers/eligibility/try.mjs";
 
 const { ignoreCert } = CLI_CONFIG;
 
