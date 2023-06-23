@@ -172,12 +172,18 @@ const callNphiesAPIAndCollectResults = ({
             issueError,
           ].some((value) => !!value);
 
-          errorMessage = [error, coverageError, issueError].join(" , ");
-          errorMessageCode = [
+          console.log("error", [error, coverageError, issueError]);
+          errorMessage = [error, coverageError, issueError]
+            .filter(Boolean)
+            .join(" , ");
+          console.log("errorCode", [
             errorCode,
             coverageErrorCode,
             issueErrorCode,
-          ].join(" , ");
+          ]);
+          errorMessageCode = [errorCode, coverageErrorCode, issueErrorCode]
+            .filter(Boolean)
+            .join(" , ");
         }
       }
 
