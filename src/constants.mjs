@@ -18,7 +18,6 @@ export const RESTART_SERVER_MS = 60000;
 const { dev, certificatePath } = CLI_CONFIG;
 
 const BASE_API_IP_ADDRESS = dev ? "http://149.102.140.8" : "http://localhost";
-export const SERVER_HOST_PATH = `${BASE_API_IP_ADDRESS}:${SERVER_PORT}`;
 const API_URL_PORT = 9090;
 
 export const EXSYS_BASE_URL = `${BASE_API_IP_ADDRESS}:${API_URL_PORT}/ords/exsys_api`;
