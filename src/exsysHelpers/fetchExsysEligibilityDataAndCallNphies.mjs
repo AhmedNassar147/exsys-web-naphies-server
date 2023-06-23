@@ -122,7 +122,7 @@ const callNphiesAPIAndCollectResults = ({
 
       let hasError = !isSuccess;
       let errorMessage = restResult.error;
-      let errorCode = "";
+      let errorMessageCode = undefined;
 
       const extractedData = mapEntriesAndExtractNeededData(nphiesResponse, {
         CoverageEligibilityResponse:
@@ -173,9 +173,11 @@ const callNphiesAPIAndCollectResults = ({
           ].some((value) => !!value);
 
           errorMessage = [error, coverageError, issueError].join(" , ");
-          errorCode = [errorCode, coverageErrorCode, issueErrorCode].join(
-            " , "
-          );
+          errorMessageCode = [
+            errorCode,
+            coverageErrorCode,
+            issueErrorCode,
+          ].join(" , ");
         }
       }
 
@@ -190,7 +192,7 @@ const callNphiesAPIAndCollectResults = ({
         return;
       }
 
-      resolve({ nphiesResultData, hasError, errorMessage, errorCode });
+      resolve({ nphiesResultData, hasError, errorMessage, errorMessageCode });
     };
     await wrapper(retryTimes);
   });
@@ -234,7 +236,7 @@ const fetchExsysEligibilityDataAndCallNphies = async ({
 
   const { patient_file_no, message_event_type } = exsysAPiBodyData;
 
-  const { nphiesResultData, hasError, errorMessage, errorCode } =
+  const { nphiesResultData, hasError, errorMessage, errorMessageCode } =
     await callNphiesAPIAndCollectResults({
       exsysResultsData: {
         ...data,
@@ -263,7 +265,7 @@ const fetchExsysEligibilityDataAndCallNphies = async ({
     nphiesExtractedData,
     isPatientEligible,
     errorMessage,
-    errorCode,
+    errorMessageCode,
     hasError,
   };
 };
