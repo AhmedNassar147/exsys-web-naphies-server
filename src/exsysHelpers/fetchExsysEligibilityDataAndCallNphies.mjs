@@ -163,27 +163,17 @@ const callNphiesAPIAndCollectResults = ({
         ].includes(errorCode);
 
         if (!hasError) {
-          hasError = [
+          const errors = [error, coverageError, issueError].filter(Boolean);
+          const errorCodes = [
             errorCode,
-            error,
             coverageErrorCode,
-            coverageError,
             issueErrorCode,
-            issueError,
-          ].some((value) => !!value);
+          ].filter(Boolean);
 
-          console.log("error", [error, coverageError, issueError]);
-          errorMessage = [error, coverageError, issueError]
-            .filter(Boolean)
-            .join(" , ");
-          console.log("errorCode", [
-            errorCode,
-            coverageErrorCode,
-            issueErrorCode,
-          ]);
-          errorMessageCode = [errorCode, coverageErrorCode, issueErrorCode]
-            .filter(Boolean)
-            .join(" , ");
+          hasError = [...errors, errorCodes].some((value) => !!value);
+
+          errorMessage = errors.join(" , ");
+          errorMessageCode = errorCodes.join(" , ");
         }
       }
 
