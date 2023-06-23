@@ -170,7 +170,7 @@ const callNphiesAPIAndCollectResults = ({
             issueErrorCode,
           ].filter(Boolean);
 
-          hasError = [...errors, errorCodes].some((value) => !!value);
+          hasError = [...errors, ...errorCodes].some((value) => !!value);
 
           errorMessage = errors.join(" , ");
           errorMessageCode = errorCodes.join(" , ");
