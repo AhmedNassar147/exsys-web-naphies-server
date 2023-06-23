@@ -26,7 +26,8 @@ const BENEFITS_AND_VALIDATION_TYPE = [
   ELIGIBILITY_TYPES.validation,
 ];
 
-const { createNphiesRequest, saveNphiesResponseToExsys } = EXSYS_API_IDS_NAMES;
+const { getExsysDataBasedPatient, saveNphiesResponseToExsys } =
+  EXSYS_API_IDS_NAMES;
 
 const getNphiesDataCreatedFromExsysData = ({
   site_url,
@@ -190,7 +191,7 @@ const fetchExsysEligibilityDataAndCallNphies = async ({
   printValues = true,
 }) => {
   const { isSuccess, result } = await createExsysRequest({
-    resourceName: createNphiesRequest,
+    resourceName: getExsysDataBasedPatient,
     body: exsysAPiBodyData,
   });
 
@@ -212,7 +213,8 @@ const fetchExsysEligibilityDataAndCallNphies = async ({
     }
 
     const errorMessage =
-      error_message || `error calling exsys \`${createNphiesRequest}\` API`;
+      error_message ||
+      `error calling exsys \`${getExsysDataBasedPatient}\` API`;
 
     return {
       errorMessage,

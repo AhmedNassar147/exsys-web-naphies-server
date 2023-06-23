@@ -23,12 +23,13 @@ const API_URL_PORT = 9090;
 export const EXSYS_BASE_URL = `${BASE_API_IP_ADDRESS}:${API_URL_PORT}/ords/exsys_api`;
 
 export const EXSYS_API_IDS_NAMES = {
-  createNphiesRequest: "createNphiesRequest",
+  getExsysDataBasedPatient: "getExsysDataBasedPatient",
   saveNphiesResponseToExsys: "saveNphiesResponseToExsys",
 };
 
 export const EXSYS_API_IDS = {
-  [EXSYS_API_IDS_NAMES.createNphiesRequest]: "nphies_pkg/create_nphies_request",
+  [EXSYS_API_IDS_NAMES.getExsysDataBasedPatient]:
+    "nphies_pkg/create_nphies_request",
   [EXSYS_API_IDS_NAMES.saveNphiesResponseToExsys]:
     "nphies_pkg/update_nphies_request_status",
 };
