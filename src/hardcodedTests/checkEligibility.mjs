@@ -9,7 +9,14 @@ import { SERVER_CONFIG } from "../constants.mjs";
 
 const { patients, authorization, organizationNo } = SERVER_CONFIG;
 
-if (Array.isArray(patients) && patients.length) {
+(async () => {
+  const canRunTest = Array.isArray(patients) && patients.length;
+
+  if (!canRunTest) {
+    console.log(`you need to configure patients in \`config.json\` file`);
+    return;
+  }
+
   const exsysAPiBodyDataArray = patients.map(
     ({ patientFileNo, memberId, contractNo }) => ({
       message_event: "eligibility",
@@ -37,8 +44,4 @@ if (Array.isArray(patients) && patients.length) {
     .flat();
 
   await Promise.all(configPromises);
-
-  return;
-}
-
-console.log(`you need to configure patients in \`config.json\` file`);
+})();
