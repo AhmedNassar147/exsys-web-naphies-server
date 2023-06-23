@@ -12,7 +12,7 @@
     "dev": "yarn start --ignore-cert --dev",
     "build": "rollup --config",
     "pretest-dev": "yarn build",
-    "test-dev": "node ./bin/index.js --ignore-cert --dev",
+    "test-dev": "node ./src/hardcodedTests/checkEligibility.mjs --ignore-cert --dev",
     "prod": "node ./bin/index.js --production"
   },
   "dependencies": {

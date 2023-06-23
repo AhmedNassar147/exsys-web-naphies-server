@@ -24,10 +24,13 @@ export const EXSYS_BASE_URL = `${BASE_API_IP_ADDRESS}:${API_URL_PORT}/ords/exsys
 
 export const EXSYS_API_IDS_NAMES = {
   createNphiesRequest: "createNphiesRequest",
+  saveNphiesResponseToExsys: "saveNphiesResponseToExsys",
 };
 
 export const EXSYS_API_IDS = {
   [EXSYS_API_IDS_NAMES.createNphiesRequest]: "nphies_pkg/create_nphies_request",
+  [EXSYS_API_IDS_NAMES.saveNphiesResponseToExsys]:
+    "nphies_pkg/update_nphies_request_status",
 };
 
 export const HTTP_STATUS_CODE = {

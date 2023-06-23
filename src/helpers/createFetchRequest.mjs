@@ -4,9 +4,8 @@
  *
  */
 import axios from "axios";
+import delayProcess from "../nodeHelpers/delayProcess.mjs";
 import { BASE_API_HEADERS, HTTP_STATUS_CODE } from "../constants.mjs";
-
-const delay = (ms) => new Promise((resolve) => setTimeout(() => resolve(), ms));
 
 const createFetchRequest = (options) => {
   const {
@@ -62,7 +61,7 @@ const createFetchRequest = (options) => {
           const { response } = error || {};
           const { data: responseData, status } = response || {};
           if (n > 0) {
-            await delay(retryDelay);
+            await delayProcess(retryDelay);
             wrapper(--n);
           } else {
             resolve({

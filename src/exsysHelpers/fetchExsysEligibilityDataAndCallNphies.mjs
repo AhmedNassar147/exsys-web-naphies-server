@@ -26,6 +26,8 @@ const BENEFITS_AND_VALIDATION_TYPE = [
   ELIGIBILITY_TYPES.validation,
 ];
 
+const { createNphiesRequest, saveNphiesResponseToExsys } = EXSYS_API_IDS_NAMES;
+
 const getNphiesDataCreatedFromExsysData = ({
   site_url,
   site_name,
@@ -146,16 +148,6 @@ const callNphiesAPIAndCollectResults = ({
         const { errorCode: coverageErrorCode, error: coverageError } =
           coverageEntry || {};
 
-        // "errorCode": "GE-00012"
-        // "error": "Payer is unreachable or temporarily offline, Please try again in a moment. If issue persists please follow up with the payer contact center."
-        // "errorCode": "BV-00542"
-        // "error": "NPHIES has already received and is currently processing a message for which this message is a duplicate",
-        // "errorCode": "BV-00163"
-        // "error": "The main resource identifier SHALL be unique on the HCP/HIC level",
-        // "errorCode": "GE-00026" => send to front end
-        // "error": "The HIC unable to process your message, for more information please contact the payer.",
-        // "errorCode": "GE-00010",
-        // "error": "The HIC/TPA you are trying to access is not onboarded/active on nphies",
         shouldReloadApiDataCreation = [
           "GE-00012",
           "BV-00542",
@@ -198,7 +190,7 @@ const fetchExsysEligibilityDataAndCallNphies = async ({
   printValues = true,
 }) => {
   const { isSuccess, result } = await createExsysRequest({
-    resourceName: EXSYS_API_IDS_NAMES.createNphiesRequest,
+    resourceName: createNphiesRequest,
     body: exsysAPiBodyData,
   });
 
@@ -206,10 +198,7 @@ const fetchExsysEligibilityDataAndCallNphies = async ({
   const { error_message } = data || {};
 
   if (error_message || !isSuccess) {
-    console.error(`Exsys API failed with results`, {
-      result,
-      exsysAPiBodyData,
-    });
+    console.error("Exsys API failed");
 
     if (printValues) {
       await writeResultFile({
@@ -222,10 +211,11 @@ const fetchExsysEligibilityDataAndCallNphies = async ({
       });
     }
 
+    const errorMessage =
+      error_message || `error calling exsys \`${createNphiesRequest}\` API`;
+
     return {
-      errorMessage:
-        error_message ||
-        `error with calling exsys \`${EXSYS_API_IDS_NAMES.createNphiesRequest}\` API`,
+      errorMessage,
       hasError: true,
     };
   }
@@ -246,16 +236,27 @@ const fetchExsysEligibilityDataAndCallNphies = async ({
       retryTimes: NPHIES_RETRY_TIMES,
     });
 
+  const { nphiesExtractedData, nodeServerDataSentToNaphies, nphiesResponse } =
+    nphiesResultData;
+  const { CoverageEligibilityResponse } = nphiesExtractedData || {};
+  const { isPatientEligible } = CoverageEligibilityResponse || {};
+
+  await createExsysRequest({
+    resourceName: saveNphiesResponseToExsys,
+    body: {
+      primaryKey,
+      nodeServerDataSentToNaphies,
+      nphiesResponse,
+      nphiesExtractedData,
+    },
+  });
+
   if (printValues) {
     await writeResultFile({
       data: nphiesResultData,
       isError: hasError,
     });
   }
-
-  const { nphiesExtractedData } = nphiesResultData;
-  const { CoverageEligibilityResponse } = nphiesExtractedData || {};
-  const { isPatientEligible } = CoverageEligibilityResponse || {};
 
   return {
     nphiesExtractedData,
