@@ -258,7 +258,7 @@ const fetchExsysEligibilityDataAndCallNphies = async ({
   }
 
   const { nphiesExtractedData } = nphiesResultData;
-  const { CoverageEligibilityResponse } = extractedData || {};
+  const { CoverageEligibilityResponse } = nphiesExtractedData || {};
   const { isPatientEligible } = CoverageEligibilityResponse || {};
 
   return {
