@@ -122,6 +122,7 @@ const callNphiesAPIAndCollectResults = ({
 
       let hasError = !isSuccess;
       let errorMessage = restResult.error;
+      let errorCode = "";
 
       const extractedData = mapEntriesAndExtractNeededData(nphiesResponse, {
         CoverageEligibilityResponse:
@@ -172,6 +173,9 @@ const callNphiesAPIAndCollectResults = ({
           ].some((value) => !!value);
 
           errorMessage = [error, coverageError, issueError].join(" , ");
+          errorCode = [errorCode, coverageErrorCode, issueErrorCode].join(
+            " , "
+          );
         }
       }
 
@@ -186,7 +190,7 @@ const callNphiesAPIAndCollectResults = ({
         return;
       }
 
-      resolve({ nphiesResultData, hasError, errorMessage });
+      resolve({ nphiesResultData, hasError, errorMessage, errorCode });
     };
     await wrapper(retryTimes);
   });
@@ -230,18 +234,19 @@ const fetchExsysEligibilityDataAndCallNphies = async ({
 
   const { patient_file_no, message_event_type } = exsysAPiBodyData;
 
-  const { nphiesResultData, hasError } = await callNphiesAPIAndCollectResults({
-    exsysResultsData: {
-      ...data,
-      message_event_type,
-      patientFileNo: patient_file_no,
-      business_arrangement: undefined,
-      network_name: undefined,
-      classes: undefined,
-    },
-    primaryKey,
-    retryTimes: NPHIES_RETRY_TIMES,
-  });
+  const { nphiesResultData, hasError, errorMessage, errorCode } =
+    await callNphiesAPIAndCollectResults({
+      exsysResultsData: {
+        ...data,
+        message_event_type,
+        patientFileNo: patient_file_no,
+        business_arrangement: undefined,
+        network_name: undefined,
+        classes: undefined,
+      },
+      primaryKey,
+      retryTimes: NPHIES_RETRY_TIMES,
+    });
 
   if (printValues) {
     await writeResultFile({
@@ -251,20 +256,16 @@ const fetchExsysEligibilityDataAndCallNphies = async ({
   }
 
   const { nphiesExtractedData } = nphiesResultData;
+  const { CoverageEligibilityResponse } = extractedData || {};
+  const { isPatientEligible } = CoverageEligibilityResponse || {};
 
   return {
-    data: nphiesExtractedData,
+    nphiesExtractedData,
+    isPatientEligible,
+    errorMessage,
+    errorCode,
     hasError,
   };
 };
 
 export default fetchExsysEligibilityDataAndCallNphies;
-
-// {
-//   "authorization": 162880685,
-//   "patientFileNo": "0366316",
-//   "contractNo": 163449,
-//   "memberId": "6007694176",
-//   "organizationNo": "001",
-//   "passphrase": "kRwYHgS0kVGP"
-// }
