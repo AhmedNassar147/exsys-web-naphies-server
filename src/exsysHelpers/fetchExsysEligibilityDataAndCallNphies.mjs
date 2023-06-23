@@ -241,7 +241,7 @@ const fetchExsysEligibilityDataAndCallNphies = async ({
   const { nphiesExtractedData, nodeServerDataSentToNaphies, nphiesResponse } =
     nphiesResultData;
   const { CoverageEligibilityResponse } = nphiesExtractedData || {};
-  const { isPatientEligible } = CoverageEligibilityResponse || {};
+  const { isPatientEligible, responseId } = CoverageEligibilityResponse || {};
 
   await createExsysRequest({
     resourceName: saveNphiesResponseToExsys,
@@ -261,6 +261,8 @@ const fetchExsysEligibilityDataAndCallNphies = async ({
   }
 
   return {
+    primaryKey,
+    eligibilityResponseId: responseId,
     nphiesExtractedData,
     isPatientEligible,
     errorMessage,
