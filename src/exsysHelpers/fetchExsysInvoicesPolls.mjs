@@ -9,6 +9,7 @@ import {
   EXSYS_POLLS_TIMEOUT,
 } from "../constants.mjs";
 import fetchExsysEligibilityDataAndCallNphies from "./fetchExsysEligibilityDataAndCallNphies.mjs";
+import delayProcess from "../nodeHelpers/delayProcess.mjs";
 
 const { authorization } = SERVER_CONFIG;
 const { checkExsysPollPendingRequests } = EXSYS_API_IDS_NAMES;
@@ -21,12 +22,15 @@ const requestOptions = {
   },
 };
 
-const nodeJsInternal = setInterval(
-  async () => await fetchExsysEligibilityDataAndCallNphies(requestOptions),
-  EXSYS_POLLS_TIMEOUT
-);
+const fetchPendingRequestsData = async () => {
+  try {
+    await fetchExsysEligibilityDataAndCallNphies(requestOptions);
+  } catch (error) {
+    console.log("error from polling", error);
+  } finally {
+    delayProcess(EXSYS_POLLS_TIMEOUT);
+    await fetchPendingRequestsData();
+  }
+};
 
-const closeInterval = () => clearInterval(nodeJsInternal);
-
-process.on("beforeExit", closeInterval);
-process.on("exit", closeInterval);
+await fetchPendingRequestsData();

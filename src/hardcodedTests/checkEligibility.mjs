@@ -5,7 +5,7 @@
  */
 import fetchExsysEligibilityDataAndCallNphies from "../exsysHelpers/fetchExsysEligibilityDataAndCallNphies.mjs";
 import delayProcess from "../nodeHelpers/delayProcess.mjs";
-import { SERVER_CONFIG } from "../constants.mjs";
+import { SERVER_CONFIG, EXSYS_POLLS_TIMEOUT } from "../constants.mjs";
 
 const { patients, authorization, organizationNo } = SERVER_CONFIG;
 
@@ -38,7 +38,7 @@ const { patients, authorization, organizationNo } = SERVER_CONFIG;
         fetchExsysEligibilityDataAndCallNphies({
           exsysAPiBodyData,
         }),
-        index < lastIndex ? delayProcess() : false,
+        index < lastIndex ? delayProcess(EXSYS_POLLS_TIMEOUT) : false,
       ].filter(Boolean)
     )
     .flat();
