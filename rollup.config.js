@@ -18,10 +18,12 @@ export default {
     "https",
     "crypto",
     "axios",
+    "axios",
+    /node_modules/,
   ],
-  input: "src/index.js",
+  input: "packages/server/src/index.js",
   output: {
-    dir: "bin",
+    file: "packages/start-exsys-nphies-web-server/bin/start-exsys-nphies-web-server.js",
     format: "esm",
   },
   plugins: [

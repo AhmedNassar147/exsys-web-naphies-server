@@ -1,0 +1,22 @@
+{
+  "name": "@exsys-web-server/server",
+  "version": "1.0.0",
+  "private": true,
+  "author": "ahmed nassar",
+  "license": "ISC",
+  "sideEffects": false,
+  "main": "src/index.js",
+  "type": "module",
+  "files": [
+    "src"
+  ],
+  "scripts": {
+    "start": "nodemon --ignore results/ -q ./src/index.js"
+  },
+  "peerDependencies": {
+    "@exsys-web-server/helpers": "1.0.0",
+    "axios": "^0.x.x",
+    "https": "^1.x.x",
+    "nodemon": "^2.x.x"
+  }
+}

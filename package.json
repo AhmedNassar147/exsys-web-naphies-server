@@ -1,27 +1,37 @@
 {
-  "name": "exsys-web-naphies-server",
+  "name": "exsys-web-server",
   "version": "1.0.0",
   "description": "Contains a web server for exsys and nphies endpoints",
-  "main": "src/index.js",
   "author": "ahmed nassar",
   "license": "MIT",
   "private": true,
-  "type": "module",
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
-    "start": "nodemon --ignore results/ --ignore bin/ -q ./src/index.js ",
-    "dev": "yarn start --ignore-cert --dev",
+    "clean": "rm -rf ./node_modules",
+    "clean-locks": "rm -rf ./yarn.lock",
+    "bootstrap": "lerna bootstrap",
+    "reset": "yarn clean && yarn clean-locks && yarn bootstrap",
+    "// postinstall": "yarn build",
+    "prepare": "yarn workspace @exsys-web-server/start-exsys-nphies-web-server start",
     "build": "rollup --config",
-    "test-dev": "node ./src/hardcodedTests/checkEligibility.mjs --ignore-cert --dev",
-    "preprod": "yarn build",
-    "prod": "node ./bin/index.js --production",
-    "test-prod": "node ./src/hardcodedTests/checkEligibility.mjs --production"
+    "start": "yarn workspace @exsys-web-server/server start",
+    "dev": "yarn start --ignore-cert --dev",
+    "test-dev": "node ./packages/server/src/hardcodedTests/checkEligibility.mjs --ignore-cert --dev",
+    "// preprod": "yarn build",
+    "prod": "yarn start --production",
+    "test-prod": "node ./packages/server/src/hardcodedTests/checkEligibility.mjs --production"
   },
   "dependencies": {
+    "@exsys-web-server/start-exsys-nphies-web-server": "1.0.0",
+    "@exsys-web-server/helpers": "1.0.0",
+    "@exsys-web-server/server": "1.0.0",
     "axios": "^1.4.0",
     "body-parser": "^1.20.0",
     "cors": "^2.8.5",
     "express": "^4.18.1",
-    "nodemon": "^2.0.22"
+    "chalk": "^5.0.1"
   },
   "engines": {
     "node": ">= 16.5.0",
@@ -29,7 +39,7 @@
     "npm": ">= 7.19.1"
   },
   "devDependencies": {
-    "chalk": "^5.0.1",
+    "nodemon": "^2.0.22",
     "rollup": "^2.78.1",
     "rollup-plugin-shebang-bin": "^0.0.4",
     "rollup-plugin-terser": "^7.0.2"

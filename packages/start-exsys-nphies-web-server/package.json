@@ -1,0 +1,26 @@
+{
+  "name": "@exsys-web-server/start-exsys-nphies-web-server",
+  "version": "1.0.0",
+  "private": true,
+  "author": "ahmed nassar",
+  "license": "ISC",
+  "sideEffects": false,
+  "main": "src/index.js",
+  "type": "module",
+  "files": [
+    "src"
+  ],
+  "bin": {
+    "start-exsys-nphies-web-server": "./bin/start-exsys-nphies-web-server.js"
+  },
+  "scripts": {
+    "start": "node src/index.js"
+  },
+  "dependencies": {
+    "@exsys-web-server/helpers": "1.0.0"
+  },
+  "peerDependencies": {
+    "axios": "^0.x.x",
+    "chalk": "^5.x.x"
+  }
+}

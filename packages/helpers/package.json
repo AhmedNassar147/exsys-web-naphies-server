@@ -1,0 +1,16 @@
+{
+  "name": "@exsys-web-server/helpers",
+  "version": "1.0.0",
+  "private": true,
+  "author": "ahmed nassar",
+  "license": "ISC",
+  "sideEffects": false,
+  "main": "src/index.js",
+  "type": "module",
+  "files": [
+    "src"
+  ],
+  "peerDependencies": {
+    "chalk": "^5.x.x"
+  }
+}
