@@ -21,9 +21,12 @@ const requestOptions = {
   },
 };
 
-(() => {
-  setInterval(async () => {
-    console.log("polls");
-    await fetchExsysEligibilityDataAndCallNphies(requestOptions);
-  }, EXSYS_POLLS_TIMEOUT);
-})();
+const nodeJsInternal = setInterval(
+  async () => await fetchExsysEligibilityDataAndCallNphies(requestOptions),
+  EXSYS_POLLS_TIMEOUT
+);
+
+const closeInterval = () => clearInterval(nodeJsInternal);
+
+process.on("beforeExit", closeInterval);
+process.on("exit", closeInterval);

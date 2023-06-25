@@ -14,7 +14,7 @@ export const SERVER_PORT = 5000;
 export const RETRY_TIMES = 3;
 export const NPHIES_RETRY_TIMES = 2;
 export const RETRY_DELAY = 10000;
-export const EXSYS_POLLS_TIMEOUT = 4000;
+export const EXSYS_POLLS_TIMEOUT = 5000;
 export const RESTART_SERVER_MS = 60000;
 const { dev, certificatePath } = CLI_CONFIG;
 
