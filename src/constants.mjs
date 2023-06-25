@@ -14,6 +14,7 @@ export const SERVER_PORT = 5000;
 export const RETRY_TIMES = 3;
 export const NPHIES_RETRY_TIMES = 2;
 export const RETRY_DELAY = 10000;
+export const EXSYS_POLLS_TIMEOUT = 4000;
 export const RESTART_SERVER_MS = 60000;
 const { dev, certificatePath } = CLI_CONFIG;
 
@@ -25,6 +26,7 @@ export const EXSYS_BASE_URL = `${BASE_API_IP_ADDRESS}:${API_URL_PORT}/ords/exsys
 export const EXSYS_API_IDS_NAMES = {
   getExsysDataBasedPatient: "getExsysDataBasedPatient",
   saveNphiesResponseToExsys: "saveNphiesResponseToExsys",
+  checkExsysPollPendingRequests: "checkExsysPollPendingRequests",
 };
 
 export const EXSYS_API_IDS = {
@@ -32,6 +34,8 @@ export const EXSYS_API_IDS = {
     "nphies_pkg/create_nphies_request",
   [EXSYS_API_IDS_NAMES.saveNphiesResponseToExsys]:
     "nphies_pkg/update_nphies_request_status",
+  [EXSYS_API_IDS_NAMES.checkExsysPollPendingRequests]:
+    "nphies_pkg/check_poll_pending_request",
 };
 
 export const HTTP_STATUS_CODE = {

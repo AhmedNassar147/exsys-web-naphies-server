@@ -15,6 +15,8 @@ import {
 import checkPathExists from "./nodeHelpers/checkPathExists.mjs";
 import restartProcess from "./nodeHelpers/restartProcess.mjs";
 import createEligibilityMiddleware from "./middlewares/eligibility/index.mjs";
+// keep polls at bottom
+import "./exsysHelpers/fetchExsysInvoicesPolls.mjs";
 
 const { ignoreCert } = CLI_CONFIG;
 

@@ -187,16 +187,21 @@ const callNphiesAPIAndCollectResults = ({
   });
 
 const fetchExsysEligibilityDataAndCallNphies = async ({
+  requestParams,
+  exsysApiId,
+  requestMethod,
   exsysAPiBodyData,
   printValues = true,
 }) => {
   const { isSuccess, result } = await createExsysRequest({
-    resourceName: getExsysDataBasedPatient,
+    resourceName: exsysApiId || getExsysDataBasedPatient,
     body: exsysAPiBodyData,
+    requestMethod,
+    requestParams,
   });
 
   const { primaryKey, data } = result || {};
-  const { error_message } = data || {};
+  const { error_message, patient_file_no, message_event_type } = data || {};
 
   if (error_message || !isSuccess) {
     console.error("Exsys API failed");
@@ -222,7 +227,10 @@ const fetchExsysEligibilityDataAndCallNphies = async ({
     };
   }
 
-  const { patient_file_no, message_event_type } = exsysAPiBodyData;
+  if (!primaryKey || !data) {
+    console.error("Exsys API failed sent empty primaryKey or data keys");
+    return {};
+  }
 
   const { nphiesResultData, hasError, errorMessage, errorMessageCode } =
     await callNphiesAPIAndCollectResults({
