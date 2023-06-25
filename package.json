@@ -12,8 +12,9 @@
     "dev": "yarn start --ignore-cert --dev",
     "build": "rollup --config",
     "test-dev": "node ./src/hardcodedTests/checkEligibility.mjs --ignore-cert --dev",
+    "preprod": "yarn build",
     "prod": "node ./bin/index.js --production",
-    "prod-test": "node ./src/hardcodedTests/checkEligibility.mjs --production"
+    "test-prod": "node ./src/hardcodedTests/checkEligibility.mjs --production"
   },
   "dependencies": {
     "axios": "^1.4.0",
