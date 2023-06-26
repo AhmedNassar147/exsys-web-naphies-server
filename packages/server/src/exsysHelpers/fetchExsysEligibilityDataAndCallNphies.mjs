@@ -135,8 +135,8 @@ const callNphiesAPIAndCollectResults = ({ exsysResultsData, primaryKey }) =>
         hasError = [
           issueErrorCode,
           issueError,
-          ...eligibilityErrors,
-          ...coverageErrors,
+          ...(eligibilityErrors || []),
+          ...(coverageErrors || []),
         ]
           .filter(Boolean)
           .some((item) => !!item);
