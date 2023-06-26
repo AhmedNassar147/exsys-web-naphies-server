@@ -61,8 +61,6 @@ const createEligibilityMiddleware = (app) => async (req, _, next) => {
       .status(200)
       .json(apiResults)
       .end();
-
-    next();
   });
 
   next();
