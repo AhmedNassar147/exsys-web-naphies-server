@@ -13,8 +13,6 @@ import createNaphiesRequestFullData from "../nphiesHelpers/eligibility/index.mjs
 import {
   ELIGIBILITY_TYPES,
   EXSYS_API_IDS_NAMES,
-  RETRY_DELAY,
-  NPHIES_RETRY_TIMES,
   NPHIES_RESOURCE_TYPES,
 } from "../constants.mjs";
 
@@ -93,96 +91,59 @@ const getNphiesDataCreatedFromExsysData = ({
   });
 };
 
-const callNphiesAPIAndCollectResults = ({
-  retryTimes,
-  exsysResultsData,
-  primaryKey,
-}) =>
+const callNphiesAPIAndCollectResults = ({ exsysResultsData, primaryKey }) =>
   new Promise(async (resolve) => {
-    const wrapper = async (_retryTimes) => {
-      const nphiesDataCreatedFromExsysData =
-        getNphiesDataCreatedFromExsysData(exsysResultsData);
+    const nphiesDataCreatedFromExsysData =
+      getNphiesDataCreatedFromExsysData(exsysResultsData);
 
-      const nphiesResults = await createNphiesRequest({
-        bodyData: nphiesDataCreatedFromExsysData,
-      });
+    const nphiesResults = await createNphiesRequest({
+      bodyData: nphiesDataCreatedFromExsysData,
+    });
 
-      const {
-        isSuccess,
-        result: nphiesResponse,
-        ...restResult
-      } = nphiesResults;
+    const { isSuccess, result: nphiesResponse, ...restResult } = nphiesResults;
 
-      let nphiesResultData = {
-        isSuccess,
-        ...restResult,
-        primaryKey,
-        exsysResultsData,
-        nodeServerDataSentToNaphies: nphiesDataCreatedFromExsysData,
-        nphiesResponse,
-      };
-
-      let hasError = !isSuccess;
-      let errorMessage = restResult.error;
-      let errorMessageCode = undefined;
-
-      const extractedData = mapEntriesAndExtractNeededData(nphiesResponse, {
-        CoverageEligibilityResponse:
-          extractCoverageEligibilityEntryResponseData,
-        [COVERAGE]: extractCoverageEntryResponseData,
-      });
-
-      nphiesResultData.nphiesExtractedData = extractedData;
-
-      let shouldReloadApiDataCreation = false;
-
-      if (extractedData) {
-        const {
-          CoverageEligibilityResponse: coverageEligibilityResponse,
-          [COVERAGE]: coverageEntry,
-          errorCode: issueErrorCode,
-          error: issueError,
-        } = extractedData;
-
-        const { errorCode, error } = coverageEligibilityResponse || {};
-        const { errorCode: coverageErrorCode, error: coverageError } =
-          coverageEntry || {};
-
-        shouldReloadApiDataCreation = [
-          "GE-00012",
-          "BV-00542",
-          "BV-00163",
-        ].includes(errorCode);
-
-        if (!hasError) {
-          const errors = [error, coverageError, issueError].filter(Boolean);
-          const errorCodes = [
-            errorCode,
-            coverageErrorCode,
-            issueErrorCode,
-          ].filter(Boolean);
-
-          hasError = [...errors, ...errorCodes].some((value) => !!value);
-
-          errorMessage = errors.join(" , ");
-          errorMessageCode = errorCodes.join(" , ");
-        }
-      }
-
-      const shouldReloadWithFoundRetryTime =
-        shouldReloadApiDataCreation && _retryTimes > 0;
-
-      if (shouldReloadWithFoundRetryTime) {
-        console.log(
-          `--ReloadApiDataCreation-- in ${RETRY_DELAY / 1000} seconds`
-        );
-        setTimeout(async () => await wrapper(_retryTimes - 1), RETRY_DELAY);
-        return;
-      }
-
-      resolve({ nphiesResultData, hasError, errorMessage, errorMessageCode });
+    let nphiesResultData = {
+      isSuccess,
+      ...restResult,
+      primaryKey,
+      exsysResultsData,
+      nodeServerDataSentToNaphies: nphiesDataCreatedFromExsysData,
+      nphiesResponse,
     };
-    await wrapper(retryTimes);
+
+    let errorMessage = restResult.error;
+    let errorMessageCode = undefined;
+    let hasError = !isSuccess;
+
+    const extractedData = mapEntriesAndExtractNeededData(nphiesResponse, {
+      CoverageEligibilityResponse: extractCoverageEligibilityEntryResponseData,
+      [COVERAGE]: extractCoverageEntryResponseData,
+    });
+
+    nphiesResultData.nphiesExtractedData = extractedData;
+
+    if (extractedData) {
+      const { eligibilityErrors, coverageErrors, issueErrorCode, issueError } =
+        extractedData;
+
+      if (!errorMessage) {
+        errorMessage = issueError;
+        errorMessageCode = issueErrorCode;
+      }
+
+      if (!hasError) {
+        hasError = [
+          issueErrorCode,
+          issueError,
+          ...eligibilityErrors,
+          ...coverageErrors,
+        ]
+          .filter(Boolean)
+          .some((item) => !!item);
+      }
+    }
+
+    resolve({ nphiesResultData, errorMessage, errorMessageCode, hasError });
   });
 
 const fetchExsysEligibilityDataAndCallNphies = async ({
@@ -242,13 +203,10 @@ const fetchExsysEligibilityDataAndCallNphies = async ({
         classes: undefined,
       },
       primaryKey,
-      retryTimes: NPHIES_RETRY_TIMES,
     });
 
   const { nphiesExtractedData, nodeServerDataSentToNaphies, nphiesResponse } =
     nphiesResultData;
-  const { CoverageEligibilityResponse } = nphiesExtractedData || {};
-  const { isPatientEligible, responseId } = CoverageEligibilityResponse || {};
 
   await createExsysRequest({
     resourceName: saveNphiesResponseToExsys,
@@ -269,9 +227,7 @@ const fetchExsysEligibilityDataAndCallNphies = async ({
 
   return {
     primaryKey,
-    eligibilityResponseId: responseId,
     nphiesExtractedData,
-    isPatientEligible,
     errorMessage,
     errorMessageCode,
     hasError,
@@ -279,3 +235,50 @@ const fetchExsysEligibilityDataAndCallNphies = async ({
 };
 
 export default fetchExsysEligibilityDataAndCallNphies;
+
+// {
+//   bundleId: "",
+//   issueErrorCode: "",
+//   issueError: "",
+//   eligibilityResourceType: "value",
+//   eligibilityResponseId: "value",
+//   eligibilityStatus: "active",
+//   eligibilityOutcome: "error",
+//   eligibilityDisposition: "value",
+//   eligibilityPeriodStart: "2023-10-19",
+//   eligibilityPeriodEnd: "2023-10-20",
+//   eligibilityPayerClaimResponseUrl: "value",
+//   eligibilityClaimResponse: "value",
+//   isPatientEligible: "N",
+//   eligibilityErrors: [
+//     {
+//       error: "",
+//       errorCode: ""
+//     }
+//   ],
+//   coverageResourceType: "value",
+//   coverageResponseId: "value",
+//   coverageStatus: "value",
+//   coverageMemberid: "value",
+//   coverageFirstPayorName: "value",
+//   coverageFirstPayorCode: "value",
+//   coverageNetwork: "network",
+//   coverageDependent: "dependent",
+//   coverageMaxCopay: "",
+//   coverageCurrency: "",
+//   coverageCopayPct: "",
+//   coverageCopayPctCode: "",
+//   coverageClasses: [
+//     {
+//       name: "name",
+//       key: "key",
+//       value: "value",
+//     }
+//   ],
+//   coverageErrors: [
+//     {
+//       error: "",
+//       errorCode: ""
+//     }
+//   ],
+// }

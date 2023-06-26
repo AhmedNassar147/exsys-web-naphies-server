@@ -12,8 +12,8 @@ const formatNphiesResponseIssue = (issue) => {
       extractNphiesCodeAndDisplayFromCodingType(details);
 
     return {
-      error: display,
-      errorCode: code,
+      issueError: display,
+      issueErrorCode: code,
     };
   }
 

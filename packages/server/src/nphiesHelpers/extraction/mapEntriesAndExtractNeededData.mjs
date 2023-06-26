@@ -22,7 +22,10 @@ const mapEntriesAndExtractNeededData = (
       const extractionFn = extractionFunctionsMap[resourceType];
 
       if (extractionFn) {
-        acc[resourceType] = extractionFn(resource);
+        acc = {
+          ...acc,
+          ...extractionFn(resource),
+        };
       }
 
       return acc;
@@ -32,8 +35,8 @@ const mapEntriesAndExtractNeededData = (
   return shouldResultsToObjectOfData
     ? {
         bundleId: bundle_id,
-        ...(entryResults || null),
         ...issueValues,
+        ...(entryResults || null),
       }
     : undefined;
 };

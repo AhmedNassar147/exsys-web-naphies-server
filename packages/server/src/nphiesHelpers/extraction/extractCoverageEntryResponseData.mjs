@@ -4,6 +4,7 @@
  *
  */
 import extractNphiesCodeAndDisplayFromCodingType from "./extractNphiesCodeAndDisplayFromCodingType.mjs";
+import extractErrorsArray from "./extractErrorsArray.mjs";
 
 const extractCostToBeneficiaryItemValues = (item, keyOfValue) => {
   const { [keyOfValue]: value, type } = item;
@@ -34,8 +35,7 @@ const extractCoverageEntryResponseData = ({
 }) => {
   const [{ value: memberid }] = identifier || [{}];
   const [{ value: firstPayorName, code: firstPayorCode }] = classes || [{}];
-  const [{ code: type }] = error || [{}];
-  const { code, display } = extractNphiesCodeAndDisplayFromCodingType(type);
+  const errors = extractErrorsArray(error);
 
   const copayValues = Array.isArray(costToBeneficiary)
     ? costToBeneficiary.reduce((acc, item) => {
@@ -44,8 +44,8 @@ const extractCoverageEntryResponseData = ({
             item,
             "valueMoney"
           );
-          acc.maxCopay = value;
-          acc.currency = currency;
+          acc.coverageMaxCopay = value;
+          acc.coverageCurrency = currency;
           return acc;
         }
 
@@ -54,8 +54,8 @@ const extractCoverageEntryResponseData = ({
             item,
             "valueQuantity"
           );
-          acc.copayPct = value;
-          acc.copayPctCode = code;
+          acc.coverageCopayPct = value;
+          acc.coverageCopayPctCode = code;
           return acc;
         }
 
@@ -72,18 +72,17 @@ const extractCoverageEntryResponseData = ({
     : undefined;
 
   return {
-    resourceType,
-    responseId: id,
-    status,
-    memberid,
-    firstPayorName,
-    firstPayorCode,
-    network,
-    dependent,
-    error: display,
-    errorCode: code,
+    coverageResourceType: resourceType,
+    coverageResponseId: id,
+    coverageStatus: status,
+    coverageMemberid: memberid,
+    coverageFirstPayorName: firstPayorName,
+    coverageFirstPayorCode: firstPayorCode,
+    coverageNetwork: network,
+    coverageDependent: dependent,
     ...copayValues,
-    classes: classesValues,
+    coverageClasses: classesValues,
+    coverageErrors: errors,
   };
 };
 

@@ -4,6 +4,7 @@
  *
  */
 import extractNphiesCodeAndDisplayFromCodingType from "./extractNphiesCodeAndDisplayFromCodingType.mjs";
+import extractErrorsArray from "./extractErrorsArray.mjs";
 
 const extractCoverageEligibilityEntryResponseData = ({
   resourceType,
@@ -18,11 +19,10 @@ const extractCoverageEligibilityEntryResponseData = ({
 }) => {
   const { start, end } = servicedPeriod || {};
   const [{ system, value }] = identifier || [{}];
-  const [{ code: type }] = error || [{}];
-  const { code, display } = extractNphiesCodeAndDisplayFromCodingType(type);
   const [{ valueCodeableConcept }] = extension || [{}];
   const { code: valueCodeableConceptCode } =
     extractNphiesCodeAndDisplayFromCodingType(valueCodeableConcept);
+  const errors = extractErrorsArray(error);
 
   const isPatientEligible =
     outcome === "complete" &&
@@ -30,18 +30,17 @@ const extractCoverageEligibilityEntryResponseData = ({
     valueCodeableConceptCode === "eligible";
 
   return {
-    resourceType,
-    responseId: id,
-    status,
-    outcome,
-    disposition,
-    periodStart: start,
-    periodEnd: end,
-    payerClaimResponseUrl: system,
-    claimResponse: value,
+    eligibilityResourceType: resourceType,
+    eligibilityResponseId: id,
+    eligibilityStatus: status,
+    eligibilityOutcome: outcome,
+    eligibilityDisposition: disposition,
+    eligibilityPeriodStart: start,
+    eligibilityPeriodEnd: end,
+    eligibilityPayerClaimResponseUrl: system,
+    eligibilityClaimResponse: value,
     isPatientEligible: isPatientEligible ? "Y" : "N",
-    error: display,
-    errorCode: code,
+    eligibilityErrors: errors,
   };
 };
 
