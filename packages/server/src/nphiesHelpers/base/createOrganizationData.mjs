@@ -1,9 +1,9 @@
 /*
  *
- * Helpers: `createEligibilityOrganization`.
+ * Helpers: `createOrganizationData`.
  *
  */
-import createNphiesBaseResource from "../base/createNphiesBaseResource.mjs";
+import createNphiesBaseResource from "./createNphiesBaseResource.mjs";
 import {
   NPHIES_BASE_PROFILE_TYPES,
   NPHIES_RESOURCE_TYPES,
@@ -18,7 +18,7 @@ const { BASE_CODE_SYS_URL, PROVIDER_LICENSE_URL, PAYER_LICENSE_URL } =
   NPHIES_API_URLS;
 const { ORGANIZATION_TYPE } = NPHIES_BASE_CODE_TYPES;
 
-const createEligibilityOrganization = ({
+const createOrganizationData = ({
   organizationLicense,
   organizationReference,
   siteName,
@@ -35,7 +35,6 @@ const createEligibilityOrganization = ({
     identifier: [
       {
         system: isProvider ? PROVIDER_LICENSE_URL : PAYER_LICENSE_URL,
-        // use: "official",
         value: organizationLicense,
       },
     ],
@@ -54,4 +53,4 @@ const createEligibilityOrganization = ({
   },
 });
 
-export default createEligibilityOrganization;
+export default createOrganizationData;

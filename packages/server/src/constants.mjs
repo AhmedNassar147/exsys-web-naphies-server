@@ -64,14 +64,28 @@ export const ELIGIBILITY_TYPES = {
   benefits: "benefits",
 };
 
+export const NPHIES_REQUEST_TYPES = {
+  ELIGIBILITY: "eligibility",
+  PREAUTH: "priorauth",
+};
+
 export const NPHIES_RESOURCE_TYPES = {
   BUNDLE: "Bundle",
   RESOURCE_MESSAGE_HEADER: "MessageHeader",
   COVERAGE_ELIGIBILITY_REQUEST: "CoverageEligibilityRequest",
   ORGANIZATION: "Organization",
   PATIENT: "Patient",
+  PRACTITIONER: "Practitioner",
   LOCATION: "Location",
   COVERAGE: "Coverage",
+  CLAIM: "Claim",
+  VISION_PRESCRIPTION: "Visionprescription",
+};
+
+export const NPHIES_RESOURCE_MAP_TO_REQUEST_TYPE = {
+  [NPHIES_REQUEST_TYPES.ELIGIBILITY]:
+    NPHIES_RESOURCE_TYPES.COVERAGE_ELIGIBILITY_REQUEST,
+  [NPHIES_REQUEST_TYPES.PREAUTH]: NPHIES_RESOURCE_TYPES.CLAIM,
 };
 
 export const NPHIES_API_URLS = {
@@ -83,6 +97,8 @@ export const NPHIES_API_URLS = {
   PROVIDER_LICENSE_URL: "http://nphies.sa/license/provider-license",
   PAYER_LICENSE_URL: "http://nphies.sa/license/payer-license",
   LOCATION_LICENSE_URL: "http://nphies.sa/license/location-license",
+  IQAMA_URL: "http://nphies.sa/identifier/iqama",
+  PRACTITIONER_URL: "http://nphies.sa/license/practitioner-license",
 };
 
 export const NPHIES_CERT_FILE_NAME = `${rootYarnWorkSpacePath}/certs/${
@@ -99,17 +115,19 @@ export const NPHIES_BASE_PROFILE_TYPES = {
   ELIGIBILITY_REQUEST: "eligibility-request|1.0.0",
   PROVIDER_ORGANIZATION: "provider-organization|1.0.0",
   PROFILE_PATIENT: "patient|1.0.0",
+  PROFILE_PRACTITIONER: "practitioner|1.0.0",
   EXT_KSA_ADMIN_GENDER: "extension-ksa-administrative-gender",
   INSURER_ORGANIZATION: "insurer-organization|1.0.0",
   PROFILE_COVERAGE: "coverage|1.0.0",
   PROFILE_LOCATION: "location|1.0.0",
+  PROFILE_VISION_PRESCRIPTION: "vision-prescription|1.0.0",
 };
 
 export const NPHIES_BASE_CODE_TYPES = {
   KSA_MSG_EVENTS: "ksa-message-events",
   ORGANIZATION_TYPE: "organization-type",
   KSA_ADMIN_GENDER: "ksa-administrative-gender",
-  PATIENT_IDENTIFIER_TYPE: "patient-identifier-type",
+  // PATIENT_IDENTIFIER_TYPE: "patient-identifier-type",
   MARITAL_STATUS: "v3-MaritalStatus",
   KAS_EXT_ADMIN_GENDER: "extension-ksa-administrative-gender",
   COVERAGE_TYPE: "coverage-type",
@@ -117,4 +135,5 @@ export const NPHIES_BASE_CODE_TYPES = {
   SUBSCRIBER_RELATIONSHIP: "subscriber-relationship",
   PROCESS_PRIORITY: "processpriority",
   ROLE_CODE: "v3-RoleCode",
+  LENSE_TYPE: "lens-type",
 };

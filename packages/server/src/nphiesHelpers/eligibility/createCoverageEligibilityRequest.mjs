@@ -20,7 +20,6 @@ const { PROCESS_PRIORITY } = NPHIES_BASE_CODE_TYPES;
 const createCoverageEligibilityRequest = ({
   requestId,
   purpose,
-  priorityCode,
   providerOrganization,
   payerOrganization,
   periodStartDate,
@@ -30,14 +29,14 @@ const createCoverageEligibilityRequest = ({
   providerPatientUrl,
   providerOrganizationUrl,
   providerCoverageUrl,
-  providerCoverageEligibilityUrl,
+  providerFocusUrl,
   providerLocationUrl,
   providerLocation,
 }) => {
   const { dateString } = getCurrentDate();
 
   return {
-    fullUrl: `${providerCoverageEligibilityUrl}/${requestId}`,
+    fullUrl: `${providerFocusUrl}/${requestId}`,
     resource: {
       ...createNphiesBaseResource({
         resourceType: COVERAGE_ELIGIBILITY_REQUEST,
@@ -46,7 +45,7 @@ const createCoverageEligibilityRequest = ({
       }),
       identifier: [
         {
-          system: providerCoverageEligibilityUrl,
+          system: providerFocusUrl,
           value: `req_${requestId}`,
         },
       ],
@@ -55,7 +54,7 @@ const createCoverageEligibilityRequest = ({
         coding: [
           {
             system: `${BASE_TERMINOLOGY_CODE_SYS_URL}/${PROCESS_PRIORITY}`,
-            code: priorityCode,
+            code: "normal",
           },
         ],
       },

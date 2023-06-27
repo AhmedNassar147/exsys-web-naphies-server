@@ -1,18 +1,21 @@
 /*
  *
- * Helper: `createNaphiesRequestFullData`.
+ * Helper: `createNaphiesEligibilityRequestFullData`.
  *
  */
-import createNphiesMessageHeader from "./createNphiesMessageHeader.mjs";
-import createCoverageEligibilityRequest from "./createCoverageEligibilityRequest.mjs";
-import createNphiesCoverage from "./createNphiesCoverage.mjs";
-import createNphiesPatientData from "./createNphiesPatientData.mjs";
-import createEligibilityOrganization from "./createEligibilityOrganization.mjs";
-import createLocationData from "./createLocationData.mjs";
-import createNphiesBaseRequestData from "../base/createNphiesBaseRequestData.mjs";
 import createProviderUrls from "../base/createProviderUrls.mjs";
+import createNphiesBaseRequestData from "../base/createNphiesBaseRequestData.mjs";
+import createNphiesMessageHeader from "../base/createNphiesMessageHeader.mjs";
+import createNphiesDoctorOrPatientData from "../base/createNphiesDoctorOrPatientData.mjs";
+import createNphiesCoverage from "../base/createNphiesCoverage.mjs";
+import createOrganizationData from "../base/createOrganizationData.mjs";
+import createCoverageEligibilityRequest from "./createCoverageEligibilityRequest.mjs";
+import createLocationData from "./createLocationData.mjs";
+import { NPHIES_REQUEST_TYPES } from "../../constants.mjs";
 
-const createNaphiesRequestFullData = ({
+const { ELIGIBILITY } = NPHIES_REQUEST_TYPES;
+
+const createNaphiesEligibilityRequestFullData = ({
   provider_license,
   request_id,
   payer_license,
@@ -26,12 +29,11 @@ const createNaphiesRequestFullData = ({
   location_license,
   payer_base_url,
   purpose,
-  priority_code = "normal",
   coverage_type,
   member_id,
   patient_id,
   national_id,
-  national_id_type = "PRC",
+  national_id_type,
   staff_first_name,
   staff_family_name,
   gender,
@@ -48,10 +50,12 @@ const createNaphiesRequestFullData = ({
     providerPatientUrl,
     providerCoverageUrl,
     providerOrganizationUrl,
-    providerCoverageEligibilityUrl,
-    providerMessageHeaderUrl,
+    providerFocusUrl,
     providerLocationUrl,
-  } = createProviderUrls(site_url);
+  } = createProviderUrls({
+    providerBaseUrl: site_url,
+    requestType: ELIGIBILITY,
+  });
 
   const requestPayload = {
     ...createNphiesBaseRequestData(),
@@ -60,13 +64,12 @@ const createNaphiesRequestFullData = ({
         providerLicense: provider_license,
         payerLicense: payer_license,
         requestId: request_id,
-        providerCoverageEligibilityUrl,
-        providerMessageHeaderUrl,
+        providerFocusUrl,
+        requestType: ELIGIBILITY,
       }),
       createCoverageEligibilityRequest({
         requestId: request_id,
         purpose,
-        priorityCode: priority_code,
         providerOrganization: provider_organization,
         payerOrganization: payer_organization,
         providerLocation: provider_location,
@@ -77,13 +80,13 @@ const createNaphiesRequestFullData = ({
         providerPatientUrl,
         providerOrganizationUrl,
         providerCoverageUrl,
-        providerCoverageEligibilityUrl,
+        providerFocusUrl,
         providerLocationUrl,
       }),
       createNphiesCoverage({
         requestId: request_id,
         coverageType: coverage_type,
-        memberId: member_id ? member_id.toString() : member_id,
+        memberId: member_id,
         patientId: patient_id,
         relationship,
         payerOrganization: payer_organization,
@@ -94,26 +97,26 @@ const createNaphiesRequestFullData = ({
         networkName: network_name,
         classes,
       }),
-      createEligibilityOrganization({
+      createOrganizationData({
         organizationLicense: provider_license,
         organizationReference: provider_organization,
         siteName: site_name,
         providerOrganizationUrl,
         isProvider: true,
       }),
-      createNphiesPatientData({
-        patientId: patient_id,
-        nationalId: national_id,
-        nationalIdType: national_id_type,
+      createNphiesDoctorOrPatientData({
+        patientOrDoctorId: patient_id,
+        identifierId: national_id,
+        identifierIdType: national_id_type,
         staffFirstName: staff_first_name,
         staffFamilyName: staff_family_name,
         staffPhone: site_tel,
-        patientGender: gender,
+        gender,
         patientBirthdate: birthDate,
         patientMaritalStatus: patient_martial_status,
-        providerPatientUrl,
+        providerDoctorOrPatientUrl: providerPatientUrl,
       }),
-      createEligibilityOrganization({
+      createOrganizationData({
         organizationLicense: payer_license,
         organizationReference: payer_organization,
         siteName: payer_name,
@@ -133,4 +136,4 @@ const createNaphiesRequestFullData = ({
   return requestPayload;
 };
 
-export default createNaphiesRequestFullData;
+export default createNaphiesEligibilityRequestFullData;

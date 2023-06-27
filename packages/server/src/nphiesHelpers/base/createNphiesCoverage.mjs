@@ -4,7 +4,7 @@
  *
  */
 import { capitalizeFirstLetter } from "@exsys-web-server/helpers";
-import createNphiesBaseResource from "../base/createNphiesBaseResource.mjs";
+import createNphiesBaseResource from "./createNphiesBaseResource.mjs";
 import {
   NPHIES_BASE_PROFILE_TYPES,
   NPHIES_RESOURCE_TYPES,
@@ -25,6 +25,7 @@ const createNphiesCoverage = ({
   coverageType,
   memberId,
   patientId,
+  subscriberPatientId,
   relationship,
   networkName,
   classes,
@@ -35,10 +36,15 @@ const createNphiesCoverage = ({
   providerCoverageUrl,
 }) => {
   const patientUrlReference = `${providerPatientUrl}/${patientId}`;
+  const subscriberUrl = subscriberPatientId
+    ? `${providerPatientUrl}/${subscriberPatientId}`
+    : patientUrlReference;
 
-  if (!requestId || !coverageType) {
+  if (!requestId) {
     return false;
   }
+
+  const _memberId = memberId ? memberId.toString() : memberId;
 
   return {
     fullUrl: `${providerCoverageUrl}/${requestId}`,
@@ -51,7 +57,7 @@ const createNphiesCoverage = ({
       identifier: [
         {
           system: `${payerBaseUrl}/memberid`,
-          value: memberId,
+          value: _memberId,
         },
       ],
       status: "active",
@@ -59,14 +65,15 @@ const createNphiesCoverage = ({
         coding: [
           {
             system: `${BASE_CODE_SYS_URL}/${COVERAGE_TYPE}`,
-            code: coverageType,
+            code: coverageType || "EHCPOL",
+            // "display": "extended healthcare"
           },
         ],
       },
       subscriber: {
-        reference: patientUrlReference,
+        reference: subscriberUrl,
       },
-      subscriberId: memberId,
+      // subscriberId: _memberId,
       beneficiary: {
         reference: patientUrlReference,
       },

@@ -3,24 +3,32 @@
  * Helper: `createProviderUrls`.
  *
  */
-import { NPHIES_RESOURCE_TYPES } from "../../constants.mjs";
+import {
+  NPHIES_RESOURCE_TYPES,
+  NPHIES_RESOURCE_MAP_TO_REQUEST_TYPE,
+} from "../../constants.mjs";
 
 const {
   PATIENT,
   COVERAGE,
   ORGANIZATION,
-  COVERAGE_ELIGIBILITY_REQUEST,
-  RESOURCE_MESSAGE_HEADER,
   LOCATION,
+  PRACTITIONER,
+  VISION_PRESCRIPTION,
 } = NPHIES_RESOURCE_TYPES;
 
-const createProviderUrls = (provider_base_url) => ({
-  providerPatientUrl: `${provider_base_url}/${PATIENT}`,
-  providerCoverageUrl: `${provider_base_url}/${COVERAGE}`,
-  providerOrganizationUrl: `${provider_base_url}/${ORGANIZATION}`,
-  providerCoverageEligibilityUrl: `${provider_base_url}/${COVERAGE_ELIGIBILITY_REQUEST}`,
-  providerMessageHeaderUrl: `${provider_base_url}/${RESOURCE_MESSAGE_HEADER}`,
-  providerLocationUrl: `${provider_base_url}/${LOCATION}`,
-});
+const createProviderUrls = ({ providerBaseUrl, requestType }) => {
+  const requestTypeValue = NPHIES_RESOURCE_MAP_TO_REQUEST_TYPE[requestType];
+
+  return {
+    providerPatientUrl: `${providerBaseUrl}/${PATIENT}`,
+    providerDoctorUrl: `${providerBaseUrl}/${PRACTITIONER}`,
+    providerCoverageUrl: `${providerBaseUrl}/${COVERAGE}`,
+    providerOrganizationUrl: `${providerBaseUrl}/${ORGANIZATION}`,
+    providerFocusUrl: `${providerBaseUrl}/${requestTypeValue}`,
+    providerLocationUrl: `${providerBaseUrl}/${LOCATION}`,
+    visionPrescriptionUrl: `${providerBaseUrl}/${VISION_PRESCRIPTION}`,
+  };
+};
 
 export default createProviderUrls;
