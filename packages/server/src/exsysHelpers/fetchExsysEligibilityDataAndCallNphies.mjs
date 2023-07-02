@@ -53,6 +53,7 @@ const getNphiesDataCreatedFromExsysData = ({
   classes,
   message_event_type,
   patientFileNo,
+  national_id_type,
 }) => {
   const purpose = BENEFITS_AND_VALIDATION_TYPE.includes(message_event_type)
     ? BENEFITS_AND_VALIDATION_TYPE
