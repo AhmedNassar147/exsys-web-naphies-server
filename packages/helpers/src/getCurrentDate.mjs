@@ -12,7 +12,7 @@ const getCurrentDate = () => {
   const ts = Date.now();
 
   const date = new Date(ts);
-  const day = date.getDate();
+  const day = formalizeValue(date.getDate());
   const year = date.getFullYear();
   const month = formalizeValue(date.getMonth() + 1);
   const hours = formalizeValue(date.getHours());
