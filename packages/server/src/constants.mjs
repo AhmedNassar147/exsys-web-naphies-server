@@ -99,6 +99,8 @@ export const NPHIES_API_URLS = {
   LOCATION_LICENSE_URL: "http://nphies.sa/license/location-license",
   IQAMA_URL: "http://nphies.sa/identifier/iqama",
   PRACTITIONER_URL: "http://nphies.sa/license/practitioner-license",
+  DIAG_ICD_URL: "http://hl7.org/fhir/sid/icd-10-am",
+  LOINC_URL: "http://loinc.org",
 };
 
 export const NPHIES_CERT_FILE_NAME = `${rootYarnWorkSpacePath}/certs/${
@@ -121,6 +123,11 @@ export const NPHIES_BASE_PROFILE_TYPES = {
   PROFILE_COVERAGE: "coverage|1.0.0",
   PROFILE_LOCATION: "location|1.0.0",
   PROFILE_VISION_PRESCRIPTION: "vision-prescription|1.0.0",
+  PROFILE_VISION_PREAUTH: "vision-priorauth|1.0.0",
+  PROFILE_INSTITUTIONAL_PREAUTH: "institutional-priorauth|1.0.0",
+  PROFILE_ORAL_PREAUTH: "oral-priorauth|1.0.0",
+  PROFILE_PHARMACY_PREAUTH: "pharmacy-priorauth|1.0.0",
+  PROFILE_PROFESSIONAL_PREAUTH: "professional-priorauth|1.0.0",
 };
 
 export const NPHIES_BASE_CODE_TYPES = {
@@ -136,4 +143,15 @@ export const NPHIES_BASE_CODE_TYPES = {
   PROCESS_PRIORITY: "processpriority",
   ROLE_CODE: "v3-RoleCode",
   LENSE_TYPE: "lens-type",
+  CLAIM_TYPE: "claim-type",
+  CLAIM_SUBTYPE: "claim-subtype",
+  PAYEE_TYPE: "payeetype",
+  CLAIM_CARE_TEAM_ROLE: "claimcareteamrole",
+  PRACTICE_CODES: "practice-codes",
+  CLAIM_INFO_CATEGORY: "claim-information-category",
+  DIAG_ON_ADMISSION: "diagnosis-on-admission",
+  DIAG_TYPE: "diagnosis-type",
+  EXTENSION_TAX: "extension-tax",
+  EXTENSION_PATIENT_SHARE: "extension-patient-share",
+  EXTENSION_PACKAGE: "extension-package",
 };

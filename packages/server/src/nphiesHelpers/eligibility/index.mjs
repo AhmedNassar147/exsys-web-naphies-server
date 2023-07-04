@@ -63,6 +63,8 @@ const createNaphiesEligibilityRequestFullData = ({
       createNphiesMessageHeader({
         providerLicense: provider_license,
         payerLicense: payer_license,
+        payerOrganization: payer_organization,
+        providerOrganizationUrl,
         requestId: request_id,
         providerFocusUrl,
         requestType: ELIGIBILITY,

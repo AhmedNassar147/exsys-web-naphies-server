@@ -34,6 +34,8 @@ const createNphiesCoverage = ({
   providerOrganizationUrl,
   providerPatientUrl,
   providerCoverageUrl,
+  coveragePeriodStart,
+  coveragePeriodEnd,
 }) => {
   const patientUrlReference = `${providerPatientUrl}/${patientId}`;
   const subscriberUrl = subscriberPatientId
@@ -87,6 +89,14 @@ const createNphiesCoverage = ({
                   display: capitalizeFirstLetter(relationship),
                 },
               ],
+            },
+          }
+        : null),
+      ...(!!coveragePeriodStart && !!coveragePeriodEnd
+        ? {
+            period: {
+              start: coveragePeriodStart,
+              end: coveragePeriodEnd,
             },
           }
         : null),

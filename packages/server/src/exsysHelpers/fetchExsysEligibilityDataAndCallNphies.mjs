@@ -169,6 +169,7 @@ const fetchExsysEligibilityDataAndCallNphies = async ({
 
     if (printValues) {
       await writeResultFile({
+        folderName: "eligibility",
         data: {
           primaryKey,
           exsysResultsData: data,
@@ -221,6 +222,7 @@ const fetchExsysEligibilityDataAndCallNphies = async ({
 
   if (printValues) {
     await writeResultFile({
+      folderName: "eligibility",
       data: nphiesResultData,
       isError: hasError,
     });

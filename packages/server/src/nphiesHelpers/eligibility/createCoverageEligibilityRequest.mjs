@@ -3,19 +3,14 @@
  * Helpers: `createCoverageEligibilityRequest`.
  *
  */
-import { reverseDate, getCurrentDate } from "@exsys-web-server/helpers";
-import createNphiesBaseResource from "../base/createNphiesBaseResource.mjs";
+import createBaseEntryRequestData from "../base/createBaseEntryRequestData.mjs";
 import {
   NPHIES_BASE_PROFILE_TYPES,
   NPHIES_RESOURCE_TYPES,
-  NPHIES_API_URLS,
-  NPHIES_BASE_CODE_TYPES,
 } from "../../constants.mjs";
 
 const { ELIGIBILITY_REQUEST } = NPHIES_BASE_PROFILE_TYPES;
 const { COVERAGE_ELIGIBILITY_REQUEST } = NPHIES_RESOURCE_TYPES;
-const { BASE_TERMINOLOGY_CODE_SYS_URL } = NPHIES_API_URLS;
-const { PROCESS_PRIORITY } = NPHIES_BASE_CODE_TYPES;
 
 const createCoverageEligibilityRequest = ({
   requestId,
@@ -33,57 +28,32 @@ const createCoverageEligibilityRequest = ({
   providerLocationUrl,
   providerLocation,
 }) => {
-  const { dateString } = getCurrentDate();
+  const { fullUrl, resource } = createBaseEntryRequestData({
+    requestId,
+    providerOrganization,
+    payerOrganization,
+    patientId,
+    businessArrangement,
+    providerPatientUrl,
+    providerOrganizationUrl,
+    providerCoverageUrl,
+    providerFocusUrl,
+    resourceType: COVERAGE_ELIGIBILITY_REQUEST,
+    profileType: ELIGIBILITY_REQUEST,
+  });
 
   return {
-    fullUrl: `${providerFocusUrl}/${requestId}`,
+    fullUrl,
     resource: {
-      ...createNphiesBaseResource({
-        resourceType: COVERAGE_ELIGIBILITY_REQUEST,
-        profileType: ELIGIBILITY_REQUEST,
-        uuid: requestId,
-      }),
-      identifier: [
-        {
-          system: providerFocusUrl,
-          value: `req_${requestId}`,
-        },
-      ],
-      status: "active",
-      priority: {
-        coding: [
-          {
-            system: `${BASE_TERMINOLOGY_CODE_SYS_URL}/${PROCESS_PRIORITY}`,
-            code: "normal",
-          },
-        ],
-      },
+      ...resource,
       purpose,
-      patient: {
-        reference: `${providerPatientUrl}/${patientId}`,
-      },
       servicedPeriod: {
-        start: reverseDate(periodStartDate),
-        end: reverseDate(periodEndDate),
-      },
-      created: reverseDate(dateString),
-      provider: {
-        reference: `${providerOrganizationUrl}/${providerOrganization}`,
-      },
-      insurer: {
-        reference: `${providerOrganizationUrl}/${payerOrganization}`,
+        start: periodStartDate,
+        end: periodEndDate,
       },
       facility: {
         reference: `${providerLocationUrl}/${providerLocation}`,
       },
-      insurance: [
-        {
-          coverage: {
-            reference: `${providerCoverageUrl}/${requestId}`,
-          },
-          businessArrangement,
-        },
-      ],
     },
   };
 };

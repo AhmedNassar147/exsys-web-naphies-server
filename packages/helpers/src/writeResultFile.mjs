@@ -13,11 +13,13 @@ import {
   findRootYarnWorkSpaces,
 } from "@exsys-web-server/helpers";
 
-const writeResultFile = async ({ data, isError }) => {
+const writeResultFile = async ({ data, isError, folderName }) => {
   const { dateString, time } = getCurrentDate();
 
   const rootYarnWorkSpacePath = await findRootYarnWorkSpaces();
-  const resultsFolderPath = `results/${isError ? "error" : "success"}`;
+  const resultsFolderPath = `results/${folderName}/${
+    isError ? "error" : "success"
+  }`;
   const finalResultsFolderPath = join(rootYarnWorkSpacePath, resultsFolderPath);
 
   if (!(await checkPathExists(finalResultsFolderPath))) {

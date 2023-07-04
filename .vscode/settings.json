@@ -14,9 +14,13 @@
   "files.trimTrailingWhitespace": true,
   "editor.rulers": [100],
   "cSpell.words": [
+    "claimcareteamrole",
     "Codeable",
     "EXSYSF",
+    "LOINC",
+    "payeetype",
     "payor",
+    "preauthorization",
     "priorauth",
     "processpriority",
     "Visionprescription"
