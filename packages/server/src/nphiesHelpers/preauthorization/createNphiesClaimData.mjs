@@ -238,7 +238,6 @@ const createNphiesClaimData = ({
                     }
                   : undefined,
                 timingDate: isOnsetCode ? value : undefined,
-                valueString: isChiefComplaint ? value : undefined,
                 timingPeriod: isHospitalizedCode
                   ? {
                       start: value[0],
