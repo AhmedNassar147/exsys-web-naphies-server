@@ -100,7 +100,6 @@ export const NPHIES_API_URLS = {
   IQAMA_URL: "http://nphies.sa/identifier/iqama",
   PRACTITIONER_URL: "http://nphies.sa/license/practitioner-license",
   DIAG_ICD_URL: "http://hl7.org/fhir/sid/icd-10-am",
-  LOINC_URL: "http://loinc.org",
 };
 
 export const NPHIES_CERT_FILE_NAME = `${rootYarnWorkSpacePath}/certs/${
@@ -154,5 +153,4 @@ export const NPHIES_BASE_CODE_TYPES = {
   EXTENSION_TAX: "extension-tax",
   EXTENSION_PATIENT_SHARE: "extension-patient-share",
   EXTENSION_PACKAGE: "extension-package",
-  VISIT_REASON: "visit-reason",
 };

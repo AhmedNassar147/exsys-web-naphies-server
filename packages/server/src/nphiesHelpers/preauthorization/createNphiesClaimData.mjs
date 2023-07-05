@@ -16,7 +16,6 @@ const {
   BASE_TERMINOLOGY_CODE_SYS_URL,
   BASE_CODE_SYS_URL,
   DIAG_ICD_URL,
-  LOINC_URL,
   BASE_PROFILE_URL,
 } = NPHIES_API_URLS;
 const {
@@ -39,10 +38,7 @@ const {
   EXTENSION_TAX,
   EXTENSION_PATIENT_SHARE,
   EXTENSION_PACKAGE,
-  VISIT_REASON,
 } = NPHIES_BASE_CODE_TYPES;
-
-const visitReasonUrl = `${BASE_CODE_SYS_URL}/${VISIT_REASON}`;
 
 const PREAUTH_TYPES = {
   institutional: {
@@ -196,15 +192,19 @@ const createNphiesClaimData = ({
         : undefined,
       supportingInfo: hasSupportingInfoData
         ? supportingInfo.map(
-            ({ value, categoryCode, code, codeText }, index) => {
+            ({ value, categoryCode, systemUrl, code, display }, index) => {
               const isOnsetCode = categoryCode === "onset";
               const isHospitalizedCode = categoryCode === "hospitalized";
               const isLabTest = categoryCode === "lab-test";
               const isDaysSupply = categoryCode === "days-supply";
               const isReasonForVisit = categoryCode === "reason-for-visit";
               const isAttachment = categoryCode === "attachment";
+              const isChiefComplaint = categoryCode === "chief-complaint";
 
-              const valueQtyCode = categoryCode.includes("height")
+              const isOnSetOrReasonOrChief =
+                isOnsetCode || isReasonForVisit || isChiefComplaint;
+
+              const valueQuantityCode = categoryCode.includes("height")
                 ? "cm"
                 : categoryCode.includes("weight")
                 ? "kg"
@@ -213,6 +213,8 @@ const createNphiesClaimData = ({
                 : isDaysSupply
                 ? "d"
                 : "mm[Hg]";
+
+              const hasCodeSection = !!(systemUrl && code);
 
               return {
                 sequence: index + 1,
@@ -224,23 +226,19 @@ const createNphiesClaimData = ({
                     },
                   ],
                 },
-                code:
-                  isLabTest || isOnsetCode || isReasonForVisit
-                    ? {
-                        coding: [
-                          {
-                            system: isOnsetCode
-                              ? DIAG_ICD_URL
-                              : isReasonForVisit
-                              ? visitReasonUrl
-                              : LOINC_URL,
-                            code,
-                          },
-                        ],
-                        text: codeText,
-                      }
-                    : undefined,
+                code: hasCodeSection
+                  ? {
+                      coding: [
+                        {
+                          system: systemUrl,
+                          code: code,
+                        },
+                      ],
+                      text: display,
+                    }
+                  : undefined,
                 timingDate: isOnsetCode ? value : undefined,
+                valueString: isChiefComplaint ? value : undefined,
                 timingPeriod: isHospitalizedCode
                   ? {
                       start: value[0],
@@ -248,15 +246,12 @@ const createNphiesClaimData = ({
                     }
                   : undefined,
                 valueQuantity:
-                  isHospitalizedCode ||
-                  isOnsetCode ||
-                  isReasonForVisit ||
-                  isAttachment
+                  isHospitalizedCode || isOnSetOrReasonOrChief || isAttachment
                     ? undefined
                     : {
                         value: value,
                         system: "http://unitsofmeasure.org",
-                        code: valueQtyCode,
+                        code: valueQuantityCode,
                       },
                 valueAttachment: isAttachment ? value : undefined,
               };
