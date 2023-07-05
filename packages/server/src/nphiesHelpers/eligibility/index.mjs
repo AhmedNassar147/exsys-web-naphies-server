@@ -19,6 +19,7 @@ const createNaphiesEligibilityRequestFullData = ({
   provider_license,
   request_id,
   payer_license,
+  payer_child_license,
   site_url,
   site_tel,
   site_name,
@@ -63,7 +64,6 @@ const createNaphiesEligibilityRequestFullData = ({
       createNphiesMessageHeader({
         providerLicense: provider_license,
         payerLicense: payer_license,
-        payerOrganization: payer_organization,
         providerOrganizationUrl,
         requestId: request_id,
         providerFocusUrl,
@@ -119,7 +119,7 @@ const createNaphiesEligibilityRequestFullData = ({
         providerDoctorOrPatientUrl: providerPatientUrl,
       }),
       createOrganizationData({
-        organizationLicense: payer_license,
+        organizationLicense: payer_child_license || payer_license,
         organizationReference: payer_organization,
         siteName: payer_name,
         providerOrganizationUrl,

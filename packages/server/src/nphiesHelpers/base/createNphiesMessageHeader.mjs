@@ -20,7 +20,6 @@ const { BASE_CODE_SYS_URL, PROVIDER_LICENSE_URL, PAYER_LICENSE_URL } =
 const createNphiesMessageHeader = ({
   providerLicense,
   payerLicense,
-  payerOrganization,
   requestId,
   providerFocusUrl,
   requestType,
@@ -48,7 +47,6 @@ const createNphiesMessageHeader = ({
             identifier: {
               system: PAYER_LICENSE_URL,
               value: payerLicense,
-              // value: payerOrganization,
             },
           },
         },
