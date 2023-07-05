@@ -34,9 +34,8 @@ const extractCoverageEligibilityEntryResponseData = ({
     eligibilityResponseId: id,
     eligibilityStatus: status,
     eligibilityOutcome: outcome,
-    eligibilityDisposition: disposition,
-    siteEligibility: `${valueCodeableConceptCode} ${
-      display ? ` - ${display}` : ""
+    eligibilityDisposition: `site eligibility (${valueCodeableConceptCode})${
+      disposition ? ` ${disposition} -` : ""
     }`,
     eligibilityPeriodStart: start,
     eligibilityPeriodEnd: end,
