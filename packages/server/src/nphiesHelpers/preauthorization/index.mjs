@@ -22,6 +22,7 @@ const createNaphiesPreauthRequestFullData = ({
   provider_license,
   request_id,
   payer_license,
+  payer_child_license,
   site_url,
   site_tel,
   site_name,
@@ -202,7 +203,7 @@ const createNaphiesPreauthRequestFullData = ({
         isProvider: true,
       }),
       createOrganizationData({
-        organizationLicense: payer_license,
+        organizationLicense: payer_child_license || payer_license,
         organizationReference: payer_organization,
         siteName: payer_name,
         providerOrganizationUrl,
