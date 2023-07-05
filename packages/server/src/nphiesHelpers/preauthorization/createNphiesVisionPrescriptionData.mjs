@@ -3,6 +3,7 @@
  * Helpers: `createNphiesVisionPrescriptionData`.
  *
  */
+import { isArrayHasData } from "@exsys-web-server/helpers";
 import createNphiesBaseResource from "../base/createNphiesBaseResource.mjs";
 import {
   NPHIES_BASE_PROFILE_TYPES,
@@ -41,7 +42,7 @@ const createNphiesVisionPrescriptionData = ({
   fullUrl: `${visionPrescriptionUrl}/${requestId}`,
   resource: {
     ...createNphiesBaseResource({
-      resourceType: VISION_PRESCRIPTION,
+      resourceType: "VisionPrescription",
       profileType: PROFILE_VISION_PRESCRIPTION,
       uuid: requestId,
     }),
@@ -63,25 +64,23 @@ const createNphiesVisionPrescriptionData = ({
     prescriber: {
       reference: `${providerDoctorUrl}/${doctorId}`,
     },
-    lensSpecification:
-      Array.isArray(visionLensSpecification) && visionLensSpecification.length
-        ? visionLensSpecification.map(
-            ({ eye, sphere, cylinder, axis, prism }) => ({
-              product: lenseProductItem,
-              eye,
-              sphere,
-              cylinder,
-              axis,
-              prism:
-                Array.isArray(prism) && prism.length
-                  ? prism.map(({ amount, base }) => ({
-                      amount: amount,
-                      base,
-                    }))
-                  : undefined,
-            })
-          )
-        : undefined,
+    lensSpecification: isArrayHasData(visionLensSpecification)
+      ? visionLensSpecification.map(
+          ({ eye, sphere, cylinder, axis, prism }) => ({
+            product: lenseProductItem,
+            eye,
+            sphere,
+            cylinder,
+            axis,
+            prism: isArrayHasData(prism)
+              ? prism.map(({ amount, base }) => ({
+                  amount: amount,
+                  base,
+                }))
+              : undefined,
+          })
+        )
+      : undefined,
   },
 });
 

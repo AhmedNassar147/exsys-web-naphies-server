@@ -3,10 +3,11 @@
  * Helper: `extractErrorsArray`.
  *
  */
+import { isArrayHasData } from "@exsys-web-server/helpers";
 import extractNphiesCodeAndDisplayFromCodingType from "./extractNphiesCodeAndDisplayFromCodingType.mjs";
 
 const extractErrorsArray = (nphiesError) =>
-  Array.isArray(nphiesError) && nphiesError.length
+  isArrayHasData(nphiesError)
     ? nphiesError
         .map(({ code }) => {
           const { code: errorCode, display } =

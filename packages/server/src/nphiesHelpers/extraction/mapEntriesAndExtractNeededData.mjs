@@ -3,6 +3,7 @@
  * Helper: `mapEntriesAndExtractNeededData`.
  *
  */
+import { isArrayHasData } from "@exsys-web-server/helpers";
 import formatNphiesResponseIssue from "../base/formatNphiesResponseIssue.mjs";
 
 const mapEntriesAndExtractNeededData = (
@@ -12,7 +13,7 @@ const mapEntriesAndExtractNeededData = (
   const { entry, id: bundle_id, issue } = nphiesResponse || {};
   const issueValues = formatNphiesResponseIssue(issue);
 
-  const hasEntryData = !!(Array.isArray(entry) && entry.length);
+  const hasEntryData = isArrayHasData(entry);
   const shouldResultsToObjectOfData = hasEntryData || !!issueValues;
   let entryResults = null;
 

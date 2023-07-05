@@ -3,14 +3,14 @@
  * `checkEligibility`: `hardcodedTests`.
  *
  */
-import { delayProcess } from "@exsys-web-server/helpers";
+import { delayProcess, isArrayHasData } from "@exsys-web-server/helpers";
 import fetchExsysEligibilityDataAndCallNphies from "../exsysHelpers/fetchExsysEligibilityDataAndCallNphies.mjs";
 import { SERVER_CONFIG, EXSYS_POLLS_TIMEOUT } from "../constants.mjs";
 
 const { patients, authorization, organizationNo } = SERVER_CONFIG;
 
 (async () => {
-  const canRunTest = Array.isArray(patients) && patients.length;
+  const canRunTest = isArrayHasData(patients);
 
   if (!canRunTest) {
     console.log(`you need to configure patients in \`config.json\` file`);

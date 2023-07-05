@@ -3,10 +3,11 @@
  * Helper: `formatNphiesResponseIssue`.
  *
  */
+import { isArrayHasData } from "@exsys-web-server/helpers";
 import extractNphiesCodeAndDisplayFromCodingType from "../extraction/extractNphiesCodeAndDisplayFromCodingType.mjs";
 
 const formatNphiesResponseIssue = (issue) => {
-  if (Array.isArray(issue) && issue.length) {
+  if (isArrayHasData(issue)) {
     const [{ details }] = issue;
     const { code, display } =
       extractNphiesCodeAndDisplayFromCodingType(details);

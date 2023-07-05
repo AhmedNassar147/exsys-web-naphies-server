@@ -3,6 +3,7 @@
  * Helpers: `createNphiesClaimData`.
  *
  */
+import { isArrayHasData } from "@exsys-web-server/helpers";
 import createBaseEntryRequestData from "../base/createBaseEntryRequestData.mjs";
 import {
   NPHIES_BASE_PROFILE_TYPES,
@@ -38,7 +39,10 @@ const {
   EXTENSION_TAX,
   EXTENSION_PATIENT_SHARE,
   EXTENSION_PACKAGE,
+  VISIT_REASON,
 } = NPHIES_BASE_CODE_TYPES;
+
+const visitReasonUrl = `${BASE_CODE_SYS_URL}/${VISIT_REASON}`;
 
 const PREAUTH_TYPES = {
   institutional: {
@@ -65,14 +69,11 @@ const PREAUTH_TYPES = {
 
 const currency = "SAR";
 
-const getProductNetValue = ({
-  unitPrice,
-  extensionTax,
-  extensionPatientShare,
-  quantity,
-}) =>
-  ((unitPrice || 0) + (extensionTax || 0) + (extensionPatientShare || 0)) *
-  (quantity || 0);
+const getProductNetValue = ({ unitPrice, extensionTax, quantity }) => {
+  return +(((unitPrice || 0) + (extensionTax || 0)) * (quantity || 0)).toFixed(
+    2
+  );
+};
 
 const createNphiesClaimData = ({
   requestId,
@@ -93,6 +94,9 @@ const createNphiesClaimData = ({
   doctorsData,
   hasDoctorsData,
   productsData,
+  diagnosisData,
+  primaryDoctorSequence,
+  primaryDoctorFocal,
 }) => {
   const { profileType, subType } = PREAUTH_TYPES[preauthType];
 
@@ -106,39 +110,20 @@ const createNphiesClaimData = ({
     providerOrganizationUrl,
     providerCoverageUrl,
     providerFocusUrl,
-    insuranceFocal: hasDoctorsData ? true : undefined,
-    insuranceSequence: hasDoctorsData ? 1 : undefined,
+    insuranceFocal: primaryDoctorFocal,
+    insuranceSequence: primaryDoctorSequence,
     identifierUrl: `${siteUrl}/authorization`,
     resourceType: CLAIM,
     profileType,
-    diagnosisData,
   });
 
-  const hasDiagnosisData = !!(
-    Array.isArray(diagnosisData) && diagnosisData.length
-  );
-
-  const hasSupportingInfoData = !!(
-    Array.isArray(supportingInfo) && supportingInfo.length
-  );
-
-  const hasProductsData = !!(
-    Array.isArray(productsData) && productsData.length
-  );
+  const hasDiagnosisData = isArrayHasData(diagnosisData);
+  const hasSupportingInfoData = isArrayHasData(supportingInfo);
+  const hasProductsData = isArrayHasData(productsData);
 
   const totalValue = hasProductsData
     ? productsData.reduce(
-        (acc, { quantity, unitPrice, extensionTax, extensionPatientShare }) => {
-          return (
-            acc +
-            getProductNetValue({
-              quantity,
-              unitPrice,
-              extensionTax,
-              extensionPatientShare,
-            })
-          );
-        },
+        (acc, product) => +(acc + getProductNetValue(product)).toFixed(2),
         0
       )
     : 0;
@@ -215,13 +200,18 @@ const createNphiesClaimData = ({
               const isOnsetCode = categoryCode === "onset";
               const isHospitalizedCode = categoryCode === "hospitalized";
               const isLabTest = categoryCode === "lab-test";
+              const isDaysSupply = categoryCode === "days-supply";
+              const isReasonForVisit = categoryCode === "reason-for-visit";
+              const isAttachment = categoryCode === "attachment";
 
               const valueQtyCode = categoryCode.includes("height")
                 ? "cm"
-                : code.includes("weight")
+                : categoryCode.includes("weight")
                 ? "kg"
                 : isLabTest
                 ? "pT"
+                : isDaysSupply
+                ? "d"
                 : "mm[Hg]";
 
               return {
@@ -235,11 +225,15 @@ const createNphiesClaimData = ({
                   ],
                 },
                 code:
-                  isLabTest || isOnsetCode
+                  isLabTest || isOnsetCode || isReasonForVisit
                     ? {
                         coding: [
                           {
-                            system: isOnsetCode ? DIAG_ICD_URL : LOINC_URL,
+                            system: isOnsetCode
+                              ? DIAG_ICD_URL
+                              : isReasonForVisit
+                              ? visitReasonUrl
+                              : LOINC_URL,
                             code,
                           },
                         ],
@@ -254,13 +248,17 @@ const createNphiesClaimData = ({
                     }
                   : undefined,
                 valueQuantity:
-                  isHospitalizedCode || isOnsetCode
+                  isHospitalizedCode ||
+                  isOnsetCode ||
+                  isReasonForVisit ||
+                  isAttachment
                     ? undefined
                     : {
                         value: value,
                         system: "http://unitsofmeasure.org",
                         code: valueQtyCode,
                       },
+                valueAttachment: isAttachment ? value : undefined,
               };
             }
           )
@@ -268,14 +266,16 @@ const createNphiesClaimData = ({
       diagnosis: hasDiagnosisData
         ? diagnosisData.map(({ onAdmission, diagCode, diagType }, index) => ({
             sequence: index + 1,
-            onAdmission: {
-              coding: [
-                {
-                  system: `${BASE_CODE_SYS_URL}/${DIAG_ON_ADMISSION}`,
-                  code: onAdmission ? "y" : "n",
-                },
-              ],
-            },
+            onAdmission: ["y", "Y"].includes(onAdmission)
+              ? {
+                  coding: [
+                    {
+                      system: `${BASE_CODE_SYS_URL}/${DIAG_ON_ADMISSION}`,
+                      code: onAdmission,
+                    },
+                  ],
+                }
+              : undefined,
             diagnosisCodeableConcept: {
               coding: [
                 {
@@ -297,7 +297,7 @@ const createNphiesClaimData = ({
           }))
         : undefined,
       item: hasProductsData
-        ? hasProductsData.map(
+        ? productsData.map(
             (
               {
                 productCode,
@@ -359,7 +359,6 @@ const createNphiesClaimData = ({
                     quantity,
                     unitPrice,
                     extensionTax,
-                    extensionPatientShare,
                   }),
                   currency,
                 },

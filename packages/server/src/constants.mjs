@@ -154,4 +154,5 @@ export const NPHIES_BASE_CODE_TYPES = {
   EXTENSION_TAX: "extension-tax",
   EXTENSION_PATIENT_SHARE: "extension-patient-share",
   EXTENSION_PACKAGE: "extension-package",
+  VISIT_REASON: "visit-reason",
 };

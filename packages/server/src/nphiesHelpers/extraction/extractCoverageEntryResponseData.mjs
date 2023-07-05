@@ -3,6 +3,7 @@
  * Helper: `extractCoverageEntryResponseData`.
  *
  */
+import { isArrayHasData } from "@exsys-web-server/helpers";
 import extractNphiesCodeAndDisplayFromCodingType from "./extractNphiesCodeAndDisplayFromCodingType.mjs";
 import extractErrorsArray from "./extractErrorsArray.mjs";
 
@@ -37,7 +38,7 @@ const extractCoverageEntryResponseData = ({
   const [{ value: firstPayorName, code: firstPayorCode }] = classes || [{}];
   const errors = extractErrorsArray(error);
 
-  const copayValues = Array.isArray(costToBeneficiary)
+  const copayValues = isArrayHasData(costToBeneficiary)
     ? costToBeneficiary.reduce((acc, item) => {
         if (item.valueMoney) {
           const { value, currency } = extractCostToBeneficiaryItemValues(
@@ -63,7 +64,7 @@ const extractCoverageEntryResponseData = ({
       }, {})
     : null;
 
-  const classesValues = Array.isArray(classes)
+  const classesValues = isArrayHasData(classes)
     ? classes.map(({ value, name, type }) => ({
         key: extractNphiesCodeAndDisplayFromCodingType(type).code,
         value,
