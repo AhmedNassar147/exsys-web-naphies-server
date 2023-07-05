@@ -13,12 +13,12 @@ const extractErrorsArray = (nphiesError) =>
           const { code: errorCode, display } =
             extractNphiesCodeAndDisplayFromCodingType(code);
 
-          if (!(errorCode && display)) {
+          if (!errorCode) {
             return false;
           }
 
           return {
-            error: display,
+            error: display || "",
             errorCode,
           };
         })
