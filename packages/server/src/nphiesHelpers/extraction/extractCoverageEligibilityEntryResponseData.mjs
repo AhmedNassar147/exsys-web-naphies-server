@@ -20,7 +20,7 @@ const extractCoverageEligibilityEntryResponseData = ({
   const { start, end } = servicedPeriod || {};
   const [{ system, value }] = identifier || [{}];
   const [{ valueCodeableConcept }] = extension || [{}];
-  const { code: valueCodeableConceptCode, display } =
+  const { code: valueCodeableConceptCode } =
     extractNphiesCodeAndDisplayFromCodingType(valueCodeableConcept);
   const errors = extractErrorsArray(error);
 
@@ -34,9 +34,11 @@ const extractCoverageEligibilityEntryResponseData = ({
     eligibilityResponseId: id,
     eligibilityStatus: status,
     eligibilityOutcome: outcome,
-    eligibilityDisposition: `site eligibility (${valueCodeableConceptCode})${
-      disposition ? ` - ${disposition}` : ""
-    }`,
+    eligibilityDisposition: `${
+      valueCodeableConceptCode
+        ? `site eligibility (${valueCodeableConceptCode})`
+        : ""
+    }${disposition ? ` - ${disposition}` : ""}`,
     eligibilityPeriodStart: start,
     eligibilityPeriodEnd: end,
     eligibilityPayerClaimResponseUrl: system,
