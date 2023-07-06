@@ -5,8 +5,7 @@
  */
 import { createUUID, writeResultFile } from "@exsys-web-server/helpers";
 import createExsysRequest from "../helpers/createExsysRequest.mjs";
-import createNphiesRequest from "../helpers/createNphiesRequest.mjs";
-import mapEntriesAndExtractNeededData from "../nphiesHelpers/extraction/mapEntriesAndExtractNeededData.mjs";
+import callNphiesAPIAndCollectResults from "../nphiesHelpers/base/callNphiesApiAndCollectResults.mjs";
 import extractCoverageEligibilityEntryResponseData from "../nphiesHelpers/extraction/extractCoverageEligibilityEntryResponseData.mjs";
 import extractCoverageEntryResponseData from "../nphiesHelpers/extraction/extractCoverageEntryResponseData.mjs";
 import createNaphiesRequestFullData from "../nphiesHelpers/eligibility/index.mjs";
@@ -26,7 +25,17 @@ const BENEFITS_AND_VALIDATION_TYPE = [
 const { getExsysDataBasedPatient, saveNphiesResponseToExsys } =
   EXSYS_API_IDS_NAMES;
 
-const getNphiesDataCreatedFromExsysData = ({
+const extractionFunctionsMap = {
+  CoverageEligibilityResponse: extractCoverageEligibilityEntryResponseData,
+  [COVERAGE]: extractCoverageEntryResponseData,
+};
+
+const setErrorIfExtractedDataFoundFn = ({
+  eligibilityErrors,
+  coverageErrors,
+}) => [...(eligibilityErrors || []), ...(coverageErrors || [])];
+
+const createNphiesRequestPayloadFn = ({
   site_url,
   site_name,
   site_tel,
@@ -94,61 +103,6 @@ const getNphiesDataCreatedFromExsysData = ({
   });
 };
 
-const callNphiesAPIAndCollectResults = ({ exsysResultsData, primaryKey }) =>
-  new Promise(async (resolve) => {
-    const nphiesDataCreatedFromExsysData =
-      getNphiesDataCreatedFromExsysData(exsysResultsData);
-
-    const nphiesResults = await createNphiesRequest({
-      bodyData: nphiesDataCreatedFromExsysData,
-    });
-
-    const { isSuccess, result: nphiesResponse, ...restResult } = nphiesResults;
-
-    let nphiesResultData = {
-      isSuccess,
-      ...restResult,
-      primaryKey,
-      exsysResultsData,
-      nodeServerDataSentToNaphies: nphiesDataCreatedFromExsysData,
-      nphiesResponse,
-    };
-
-    let errorMessage = restResult.error;
-    let errorMessageCode = undefined;
-    let hasError = !isSuccess;
-
-    const extractedData = mapEntriesAndExtractNeededData(nphiesResponse, {
-      CoverageEligibilityResponse: extractCoverageEligibilityEntryResponseData,
-      [COVERAGE]: extractCoverageEntryResponseData,
-    });
-
-    nphiesResultData.nphiesExtractedData = extractedData;
-
-    if (extractedData) {
-      const { eligibilityErrors, coverageErrors, issueErrorCode, issueError } =
-        extractedData;
-
-      if (!errorMessage) {
-        errorMessage = issueError;
-        errorMessageCode = issueErrorCode;
-      }
-
-      if (!hasError) {
-        hasError = [
-          issueErrorCode,
-          issueError,
-          ...(eligibilityErrors || []),
-          ...(coverageErrors || []),
-        ]
-          .filter(Boolean)
-          .some((item) => !!item);
-      }
-    }
-
-    resolve({ nphiesResultData, errorMessage, errorMessageCode, hasError });
-  });
-
 const fetchExsysEligibilityDataAndCallNphies = async ({
   requestParams,
   exsysApiId,
@@ -196,17 +150,24 @@ const fetchExsysEligibilityDataAndCallNphies = async ({
     return {};
   }
 
+  const exsysResultsData = {
+    ...data,
+    message_event_type,
+    patientFileNo: patient_file_no,
+    business_arrangement: undefined,
+    network_name: undefined,
+    classes: undefined,
+  };
+
   const { nphiesResultData, hasError, errorMessage, errorMessageCode } =
     await callNphiesAPIAndCollectResults({
-      exsysResultsData: {
-        ...data,
-        message_event_type,
-        patientFileNo: patient_file_no,
-        business_arrangement: undefined,
-        network_name: undefined,
-        classes: undefined,
+      exsysResultsData,
+      createNphiesRequestPayloadFn,
+      extractionFunctionsMap,
+      setErrorIfExtractedDataFoundFn,
+      otherPrintValues: {
+        primaryKey,
       },
-      primaryKey,
     });
 
   const { nphiesExtractedData, nodeServerDataSentToNaphies, nphiesResponse } =

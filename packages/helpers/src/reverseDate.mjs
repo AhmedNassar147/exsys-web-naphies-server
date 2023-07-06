@@ -4,12 +4,16 @@
  *
  */
 
-const reverseDate = (birthDate) => {
-  const isAlreadyReversed = /\d{4,}-\d{2,}-\d{2,}/gim.test(birthDate || "");
-  if (isAlreadyReversed) {
-    return birthDate;
+const reverseDate = (dateValue) => {
+  if (!dateValue) {
+    return undefined;
   }
-  return birthDate ? birthDate.split("-").reverse().join("-") : birthDate;
+
+  const isAlreadyReversed = /\d{4,}-\d{2,}-\d{2,}/gim.test(dateValue || "");
+  if (isAlreadyReversed) {
+    return dateValue;
+  }
+  return dateValue ? dateValue.split("-").reverse().join("-") : dateValue;
 };
 
 export default reverseDate;

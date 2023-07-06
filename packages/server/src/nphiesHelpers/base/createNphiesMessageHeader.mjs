@@ -9,13 +9,19 @@ import {
   NPHIES_RESOURCE_TYPES,
   NPHIES_API_URLS,
   NPHIES_BASE_CODE_TYPES,
+  BASE_NPHIES_URL,
+  NPHIES_REQUEST_TYPES,
 } from "../../constants.mjs";
 
 const { MESSAGE_HEADER } = NPHIES_BASE_PROFILE_TYPES;
 const { KSA_MSG_EVENTS } = NPHIES_BASE_CODE_TYPES;
 const { RESOURCE_MESSAGE_HEADER, ORGANIZATION } = NPHIES_RESOURCE_TYPES;
-const { BASE_CODE_SYS_URL, PROVIDER_LICENSE_URL, PAYER_LICENSE_URL } =
-  NPHIES_API_URLS;
+const {
+  BASE_CODE_SYS_URL,
+  PROVIDER_LICENSE_URL,
+  PAYER_LICENSE_URL,
+  NPHIES_LICENSE_OWNER_URL,
+} = NPHIES_API_URLS;
 
 const createNphiesMessageHeader = ({
   providerLicense,
@@ -24,12 +30,25 @@ const createNphiesMessageHeader = ({
   providerFocusUrl,
   requestType,
 }) => {
+  const isAuthorizationPollData = requestType === NPHIES_REQUEST_TYPES.POLL;
+
   const baseResourceData = createNphiesBaseResource({
     resourceType: RESOURCE_MESSAGE_HEADER,
     profileType: MESSAGE_HEADER,
   });
 
   const { id } = baseResourceData;
+  const sourceEndPointBaseUrl = isAuthorizationPollData
+    ? PROVIDER_LICENSE_URL
+    : PAYER_LICENSE_URL;
+
+  const destinationEndPointUrl = isAuthorizationPollData
+    ? BASE_NPHIES_URL
+    : `${PAYER_LICENSE_URL}/${payerLicense}`;
+
+  const destinationIdentifierUrl = isAuthorizationPollData
+    ? NPHIES_LICENSE_OWNER_URL
+    : PAYER_LICENSE_URL;
 
   return {
     fullUrl: `urn:uuid:${id}`,
@@ -41,12 +60,12 @@ const createNphiesMessageHeader = ({
       },
       destination: [
         {
-          endpoint: `${PAYER_LICENSE_URL}/${payerLicense}`,
+          endpoint: destinationEndPointUrl,
           receiver: {
             type: ORGANIZATION,
             identifier: {
-              system: PAYER_LICENSE_URL,
-              value: payerLicense,
+              system: destinationIdentifierUrl,
+              value: isAuthorizationPollData ? "NPHIES" : payerLicense,
             },
           },
         },
@@ -59,7 +78,7 @@ const createNphiesMessageHeader = ({
         },
       },
       source: {
-        endpoint: `${PAYER_LICENSE_URL}/${providerLicense}`,
+        endpoint: `${sourceEndPointBaseUrl}/${providerLicense}`,
       },
       focus: [
         {

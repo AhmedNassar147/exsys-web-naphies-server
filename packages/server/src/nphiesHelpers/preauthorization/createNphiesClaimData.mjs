@@ -3,13 +3,15 @@
  * Helpers: `createNphiesClaimData`.
  *
  */
-import { isArrayHasData } from "@exsys-web-server/helpers";
+import { isArrayHasData, reverseDate } from "@exsys-web-server/helpers";
 import createBaseEntryRequestData from "../base/createBaseEntryRequestData.mjs";
 import {
   NPHIES_BASE_PROFILE_TYPES,
   NPHIES_RESOURCE_TYPES,
   NPHIES_BASE_CODE_TYPES,
   NPHIES_API_URLS,
+  SUPPORT_INFO_UNITS,
+  SUPPORT_INFO_KEY_NAMES,
 } from "../../constants.mjs";
 
 const {
@@ -69,6 +71,17 @@ const getProductNetValue = ({ unitPrice, extensionTax, quantity }) => {
   return +(((unitPrice || 0) + (extensionTax || 0)) * (quantity || 0)).toFixed(
     2
   );
+};
+
+const getSequences = (arrayData, ids, idPropName) => {
+  if (!isArrayHasData(arrayData) || !isArrayHasData(ids)) {
+    return undefined;
+  }
+  return arrayData
+    .map(({ [idPropName]: id }, index) =>
+      ids.includes(id) ? index : undefined
+    )
+    .filter(Boolean);
 };
 
 const createNphiesClaimData = ({
@@ -192,27 +205,24 @@ const createNphiesClaimData = ({
         : undefined,
       supportingInfo: hasSupportingInfoData
         ? supportingInfo.map(
-            ({ value, categoryCode, systemUrl, code, display }, index) => {
-              const isOnsetCode = categoryCode === "onset";
-              const isHospitalizedCode = categoryCode === "hospitalized";
-              const isLabTest = categoryCode === "lab-test";
-              const isDaysSupply = categoryCode === "days-supply";
-              const isReasonForVisit = categoryCode === "reason-for-visit";
-              const isAttachment = categoryCode === "attachment";
-              const isChiefComplaint = categoryCode === "chief-complaint";
+            (
+              { value, categoryCode, systemUrl, code, display, text },
+              index
+            ) => {
+              const isInfoCode = categoryCode === SUPPORT_INFO_KEY_NAMES.info;
+              const isOnsetCode = categoryCode === SUPPORT_INFO_KEY_NAMES.onset;
+              const isHospitalizedCode =
+                categoryCode === SUPPORT_INFO_KEY_NAMES.hospitalized;
+              const isAttachment =
+                categoryCode === SUPPORT_INFO_KEY_NAMES.attachment;
+              const isMissingTooth =
+                categoryCode === SUPPORT_INFO_KEY_NAMES.missingtooth;
+              const isEmploymentImpacted =
+                categoryCode === SUPPORT_INFO_KEY_NAMES.employmentImpacted;
+              const hasTimingPeriod =
+                isHospitalizedCode || isEmploymentImpacted;
 
-              const isOnSetOrReasonOrChief =
-                isOnsetCode || isReasonForVisit || isChiefComplaint;
-
-              const valueQuantityCode = categoryCode.includes("height")
-                ? "cm"
-                : categoryCode.includes("weight")
-                ? "kg"
-                : isLabTest
-                ? "pT"
-                : isDaysSupply
-                ? "d"
-                : "mm[Hg]";
+              const valueQuantityCode = SUPPORT_INFO_UNITS[categoryCode];
 
               const hasCodeSection = !!(systemUrl && code);
 
@@ -231,28 +241,37 @@ const createNphiesClaimData = ({
                       coding: [
                         {
                           system: systemUrl,
-                          code: code,
+                          code,
+                          display,
                         },
                       ],
-                      text: display,
+                      text,
                     }
                   : undefined,
-                timingDate: isOnsetCode ? value : undefined,
-                timingPeriod: isHospitalizedCode
+                valueString: isInfoCode ? value : undefined,
+                timingDate:
+                  isOnsetCode || isMissingTooth
+                    ? reverseDate(value)
+                    : undefined,
+                timingPeriod: hasTimingPeriod
                   ? {
-                      start: value[0],
-                      end: value[1],
+                      start: reverseDate(value[0]),
+                      end: reverseDate(value[1]),
                     }
                   : undefined,
-                valueQuantity:
-                  isHospitalizedCode || isOnSetOrReasonOrChief || isAttachment
-                    ? undefined
-                    : {
-                        value: value,
-                        system: "http://unitsofmeasure.org",
-                        code: valueQuantityCode,
-                      },
-                valueAttachment: isAttachment ? value : undefined,
+                valueQuantity: valueQuantityCode
+                  ? {
+                      value: value,
+                      system: "http://unitsofmeasure.org",
+                      code: valueQuantityCode,
+                    }
+                  : undefined,
+                valueAttachment: !!(isAttachment && value)
+                  ? {
+                      ...value,
+                      creation: reverseDate(value.creation),
+                    }
+                  : undefined,
               };
             }
           )
@@ -294,70 +313,78 @@ const createNphiesClaimData = ({
         ? productsData.map(
             (
               {
-                productCode,
-                productCodeType,
-                productName,
+                nphiesProductCode,
+                nphiesProductCodeType,
+                nphiesProductName,
                 servicedDate,
                 quantity,
                 unitPrice,
                 extensionTax,
                 extensionPatientShare,
                 extensionPackage,
+                diagnosisIds,
+                doctorsIds,
               },
               index
-            ) => {
-              return {
-                extension: [
-                  {
-                    url: `${BASE_PROFILE_URL}/${EXTENSION_TAX}`,
-                    valueMoney: {
-                      value: extensionTax,
-                      currency,
-                    },
+            ) => ({
+              extension: [
+                extensionTax
+                  ? {
+                      url: `${BASE_PROFILE_URL}/${EXTENSION_TAX}`,
+                      valueMoney: {
+                        value: extensionTax,
+                        currency,
+                      },
+                    }
+                  : undefined,
+                {
+                  url: `${BASE_PROFILE_URL}/${EXTENSION_PATIENT_SHARE}`,
+                  valueMoney: {
+                    value: extensionPatientShare,
+                    currency,
                   },
+                },
+                {
+                  url: `${BASE_PROFILE_URL}/${EXTENSION_PACKAGE}`,
+                  valueBoolean: extensionPackage === "Y",
+                },
+              ].filter(Boolean),
+              sequence: index + 1,
+              careTeamSequence: getSequences(doctorsData, doctorsIds, "id"),
+              diagnosisSequence: getSequences(
+                diagnosisData,
+                diagnosisIds,
+                "diagCode"
+              ),
+              informationSequence: hasSupportingInfoData
+                ? supportingInfo.map((_, index) => index + 1)
+                : undefined,
+              productOrService: {
+                coding: [
                   {
-                    url: `${BASE_PROFILE_URL}/${EXTENSION_PATIENT_SHARE}`,
-                    valueMoney: {
-                      value: extensionPatientShare,
-                      currency,
-                    },
-                  },
-                  {
-                    url: `${BASE_PROFILE_URL}/${EXTENSION_PACKAGE}`,
-                    valueBoolean: extensionPackage === "Y",
+                    system: `${BASE_CODE_SYS_URL}/${nphiesProductCodeType}`,
+                    code: nphiesProductCode,
+                    display: nphiesProductName,
                   },
                 ],
-                sequence: index + 1,
-                careTeamSequence: [1],
-                diagnosisSequence: [1],
-                informationSequence: [1, 2, 3, 4, 5, 6, 7],
-                productOrService: {
-                  coding: [
-                    {
-                      system: `${BASE_CODE_SYS_URL}/${productCodeType}`,
-                      code: productCode,
-                      display: productName,
-                    },
-                  ],
-                },
-                servicedDate,
-                quantity: {
-                  value: quantity,
-                },
-                unitPrice: {
-                  value: unitPrice,
-                  currency,
-                },
-                net: {
-                  value: getProductNetValue({
-                    quantity,
-                    unitPrice,
-                    extensionTax,
-                  }),
-                  currency,
-                },
-              };
-            }
+              },
+              servicedDate: reverseDate(servicedDate),
+              quantity: {
+                value: quantity,
+              },
+              unitPrice: {
+                value: unitPrice,
+                currency,
+              },
+              net: {
+                value: getProductNetValue({
+                  quantity,
+                  unitPrice,
+                  extensionTax,
+                }),
+                currency,
+              },
+            })
           )
         : undefined,
       total: {

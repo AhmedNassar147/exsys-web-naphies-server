@@ -305,9 +305,9 @@ export default createNaphiesPreauthRequestFullData;
   //     ],
   //     productsData: [
   //       {
-  //         productCode: "38618-00-00",
-  //         productCodeType: "procedures",
-  //         productName: "Insertion of left and right ventricular assist device",
+  //         nphiesProductCode: "38618-00-00",
+  //         nphiesProductCodeType: "procedures",
+  //         nphiesProductName: "Insertion of left and right ventricular assist device",
   //         servicedDate: "2021-08-30",
   //         quantity: 1,
   //         unitPrice: 5000,
@@ -373,9 +373,10 @@ export default createNaphiesPreauthRequestFullData;
   //     doctorsData: undefined,
   //     productsData: [
   //       {
-  //         productCode: "06285096001627",
-  //         productCodeType: "medication-codes",
-  //         productName: "Anti-viral for chest congestion",
+
+  //         nphiesProductCode: "06285096001627",
+  //         nphiesProductCodeType: "medication-codes",
+  //         nphiesProductName: "Anti-viral for chest congestion",
   //         servicedDate: "2021-08-30",
   //         quantity: 1,
   //         unitPrice: 60,
@@ -384,9 +385,9 @@ export default createNaphiesPreauthRequestFullData;
   //         extensionPackage: "N",
   //       },
   //       {
-  //         productCode: "05944736008570",
-  //         productCodeType: "medication-codes",
-  //         productName: "AMPICILLIN 500MG POWDER FOR IV AND IM INJECTION",
+  //         nphiesProductCode: "05944736008570",
+  //         nphiesProductCodeType: "medication-codes",
+  //         nphiesProductName: "AMPICILLIN 500MG POWDER FOR IV AND IM INJECTION",
   //         servicedDate: "2021-08-30",
   //         quantity: 1,
   //         unitPrice: 100,
@@ -458,9 +459,10 @@ export default createNaphiesPreauthRequestFullData;
   //     ],
   //     productsData: [
   //       {
-  //         productCode: "83620-00-10",
-  //         productCodeType: "services",
-  //         productName: "Physio Therapy",
+
+  //         nphiesProductCode: "83620-00-10",
+  //         nphiesProductCodeType: "services",
+  //         nphiesProductName: "Physio Therapy",
   //         servicedDate: "2021-10-07",
   //         quantity: 1,
   //         unitPrice: 106,
@@ -547,9 +549,9 @@ export default createNaphiesPreauthRequestFullData;
   //     ],
   //     productsData: [
   //       {
-  //         productCode: "012",
-  //         productCodeType: "oral-health-op",
-  //         productName: "Periodic oral examination",
+  //         nphiesProductCode: "012",
+  //         nphiesProductCodeType: "oral-health-op",
+  //         nphiesProductName: "Periodic oral examination",
   //         servicedDate: "2021-10-07",
   //         quantity: 1,
   //         unitPrice: 200,
@@ -558,9 +560,9 @@ export default createNaphiesPreauthRequestFullData;
   //         extensionPackage: "N",
   //       },
   //       {
-  //         productCode: "515",
-  //         productCodeType: "oral-health-op",
-  //         productName: "Metallic restoration five surfaces direct",
+  //         nphiesProductCode: "515",
+  //         nphiesProductCodeType: "oral-health-op",
+  //         nphiesProductName: "Metallic restoration five surfaces direct",
   //         servicedDate: "2021-10-07",
   //         quantity: 1,
   //         unitPrice: 300,
@@ -569,9 +571,9 @@ export default createNaphiesPreauthRequestFullData;
   //         extensionPackage: "N",
   //       },
   //       {
-  //         productCode: "618",
-  //         productCodeType: "oral-health-op",
-  //         productName: "Full crown metallic indirect",
+  //         nphiesProductCode: "618",
+  //         nphiesProductCodeType: "oral-health-op",
+  //         nphiesProductName: "Full crown metallic indirect",
   //         servicedDate: "2021-10-07",
   //         quantity: 1,
   //         unitPrice: 1300,
@@ -647,9 +649,9 @@ export default createNaphiesPreauthRequestFullData;
   //     ],
   //     productsData: [
   //       {
-  //         productCode: "96092-00-10",
-  //         productCodeType: "procedures",
-  //         // productName: "",
+  //         nphiesProductCode: "96092-00-10",
+  //         nphiesProductCodeType: "procedures",
+  //         nphiesProductName: "name",
   //         servicedDate: "2021-08-29",
   //         quantity: 1,
   //         unitPrice: 800,

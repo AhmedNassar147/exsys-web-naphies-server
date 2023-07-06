@@ -67,6 +67,7 @@ export const ELIGIBILITY_TYPES = {
 export const NPHIES_REQUEST_TYPES = {
   ELIGIBILITY: "eligibility",
   PREAUTH: "priorauth",
+  POLL: "poll",
 };
 
 export const NPHIES_RESOURCE_TYPES = {
@@ -80,26 +81,32 @@ export const NPHIES_RESOURCE_TYPES = {
   COVERAGE: "Coverage",
   CLAIM: "Claim",
   VISION_PRESCRIPTION: "Visionprescription",
+  TASK: "Task",
 };
 
 export const NPHIES_RESOURCE_MAP_TO_REQUEST_TYPE = {
   [NPHIES_REQUEST_TYPES.ELIGIBILITY]:
     NPHIES_RESOURCE_TYPES.COVERAGE_ELIGIBILITY_REQUEST,
   [NPHIES_REQUEST_TYPES.PREAUTH]: NPHIES_RESOURCE_TYPES.CLAIM,
+  [NPHIES_REQUEST_TYPES.POLL]: NPHIES_RESOURCE_TYPES.TASK,
 };
+
+export const BASE_NPHIES_URL = "http://nphies.sa";
+export const BASE_NPHIES_LICENSE_URL = `${BASE_NPHIES_URL}/license`;
 
 export const NPHIES_API_URLS = {
   NPHIES_PRODUCTION: "https://HSB.nphies.sa/$process-message",
   NPHIES_DEVELOPMENT: "http://176.105.150.83:80/$process-message",
-  BASE_PROFILE_URL: "http://nphies.sa/fhir/ksa/nphies-fs/StructureDefinition",
-  BASE_CODE_SYS_URL: "http://nphies.sa/terminology/CodeSystem",
   BASE_TERMINOLOGY_CODE_SYS_URL: "http://terminology.hl7.org/CodeSystem",
-  PROVIDER_LICENSE_URL: "http://nphies.sa/license/provider-license",
-  PAYER_LICENSE_URL: "http://nphies.sa/license/payer-license",
-  LOCATION_LICENSE_URL: "http://nphies.sa/license/location-license",
-  IQAMA_URL: "http://nphies.sa/identifier/iqama",
-  PRACTITIONER_URL: "http://nphies.sa/license/practitioner-license",
   DIAG_ICD_URL: "http://hl7.org/fhir/sid/icd-10-am",
+  BASE_PROFILE_URL: `${BASE_NPHIES_URL}/fhir/ksa/nphies-fs/StructureDefinition`,
+  BASE_CODE_SYS_URL: `${BASE_NPHIES_URL}/terminology/CodeSystem`,
+  IQAMA_URL: `${BASE_NPHIES_URL}/identifier/iqama`,
+  PROVIDER_LICENSE_URL: `${BASE_NPHIES_LICENSE_URL}/provider-license`,
+  PAYER_LICENSE_URL: `${BASE_NPHIES_LICENSE_URL}/payer-license`,
+  LOCATION_LICENSE_URL: `${BASE_NPHIES_LICENSE_URL}/location-license`,
+  PRACTITIONER_URL: `${BASE_NPHIES_LICENSE_URL}/practitioner-license`,
+  NPHIES_LICENSE_OWNER_URL: `${BASE_NPHIES_LICENSE_URL}/nphies`,
 };
 
 export const NPHIES_CERT_FILE_NAME = `${rootYarnWorkSpacePath}/certs/${
@@ -127,6 +134,7 @@ export const NPHIES_BASE_PROFILE_TYPES = {
   PROFILE_ORAL_PREAUTH: "oral-priorauth|1.0.0",
   PROFILE_PHARMACY_PREAUTH: "pharmacy-priorauth|1.0.0",
   PROFILE_PROFESSIONAL_PREAUTH: "professional-priorauth|1.0.0",
+  PROFILE_TASK: "task|1.0.0",
 };
 
 export const NPHIES_BASE_CODE_TYPES = {
@@ -153,4 +161,35 @@ export const NPHIES_BASE_CODE_TYPES = {
   EXTENSION_TAX: "extension-tax",
   EXTENSION_PATIENT_SHARE: "extension-patient-share",
   EXTENSION_PACKAGE: "extension-package",
+  TASK_CODE: "task-code",
+  TASK_INPUT_TYPE: "task-input-type",
+};
+
+export const SUPPORT_INFO_KEY_NAMES = {
+  info: "info",
+  onset: "onset",
+  attachment: "attachment",
+  missingtooth: "missingtooth",
+  hospitalized: "hospitalized",
+  employmentImpacted: "employmentImpacted",
+  lab_test: "lab_test",
+  reason_for_visit: "reason_for_visit",
+  days_supply: "days_supply",
+  vital_sign_weight: "vital_sign_weight",
+  vital_sign_systolic: "vital_sign_systolic",
+  vital_sign_diastolic: "vital_sign_diastolic",
+  vital_sign_height: "vital_sign_height",
+  icu_hours: "icu_hours",
+  ventilation_hours: "ventilation_hours",
+};
+
+export const SUPPORT_INFO_UNITS = {
+  [SUPPORT_INFO_KEY_NAMES.days_supply]: "d",
+  [SUPPORT_INFO_KEY_NAMES.vital_sign_height]: "cm",
+  [SUPPORT_INFO_KEY_NAMES.vital_sign_weight]: "kg",
+  [SUPPORT_INFO_KEY_NAMES.vital_sign_systolic]: "mm[Hg]",
+  [SUPPORT_INFO_KEY_NAMES.vital_sign_diastolic]: "mm[Hg]",
+  [SUPPORT_INFO_KEY_NAMES.lab_test]: "pT",
+  [SUPPORT_INFO_KEY_NAMES.icu_hours]: "h",
+  [SUPPORT_INFO_KEY_NAMES.ventilation_hours]: "h",
 };

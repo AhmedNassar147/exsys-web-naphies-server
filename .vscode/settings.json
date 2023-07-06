@@ -18,6 +18,7 @@
     "Codeable",
     "EXSYSF",
     "LOINC",
+    "missingtooth",
     "payeetype",
     "payor",
     "preauthorization",

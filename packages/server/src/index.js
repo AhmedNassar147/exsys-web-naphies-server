@@ -18,6 +18,7 @@ import {
 } from "./constants.mjs";
 import createEligibilityMiddleware from "./middlewares/eligibility/index.mjs";
 // keep polls at bottom
+import "./exsysHelpers/runAuthorizationPoll.mjs";
 import "./exsysHelpers/fetchExsysInvoicesPolls.mjs";
 
 const { ignoreCert } = CLI_CONFIG;
