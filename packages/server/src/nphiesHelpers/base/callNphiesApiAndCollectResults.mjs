@@ -20,6 +20,20 @@ const callNphiesAPIAndCollectResults = ({
       bodyData: nphiesRequestPayload,
     });
 
+    const { message_event } = exsysResultsData;
+
+    if (message_event && message_event.includes("priorauth-")) {
+      console.log("preauth called");
+      await writeResultFile({
+        folderName: "preauth-test",
+        data: {
+          exsysResultsData,
+          nodeServerDataSentToNaphies: nphiesRequestPayload,
+        },
+        isError: false,
+      });
+    }
+
     const { isSuccess, result: nphiesResponse, ...restResult } = nphiesResults;
 
     let nphiesResultData = {
