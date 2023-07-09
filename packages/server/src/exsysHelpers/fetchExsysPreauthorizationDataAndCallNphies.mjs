@@ -89,6 +89,18 @@ const fetchExsysPreauthorizationDataAndCallNphies = async ({
   if (!preauth_pk || !data) {
     const error = "Exsys API failed sent empty preauth_pk or data keys";
     console.error(error);
+
+    if (printValues) {
+      await writeResultFile({
+        folderName: printFolderName,
+        data: {
+          exsysResultsData,
+          requestParams,
+        },
+        isError: true,
+      });
+    }
+
     return {
       errorMessage: error,
       hasError: true,
