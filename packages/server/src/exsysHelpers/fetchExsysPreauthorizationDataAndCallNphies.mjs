@@ -85,8 +85,8 @@ const fetchExsysPreauthorizationDataAndCallNphies = async ({
     };
   }
 
-  if (!preauth_pk || !data) {
-    const error = "Exsys API failed sent empty preauth_pk or data keys";
+  if (!preauth_pk || !result) {
+    const error = "Exsys API failed sent empty preauth_pk or result keys";
     console.error(error);
 
     if (printValues) {
