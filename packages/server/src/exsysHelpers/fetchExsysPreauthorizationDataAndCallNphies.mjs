@@ -63,6 +63,15 @@ const fetchExsysPreauthorizationDataAndCallNphies = async ({
     ...__frontEndData,
   };
 
+  await writeResultFile({
+    folderName: PREAUTH,
+    data: {
+      exsysResultsData,
+      requestParams,
+    },
+  });
+  return {};
+
   if (error_message || !isSuccess) {
     console.error("Exsys API failed");
 
