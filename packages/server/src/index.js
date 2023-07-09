@@ -36,10 +36,12 @@ const { ignoreCert } = CLI_CONFIG;
     return;
   }
 
+  const limit = "60mb";
+
   const app = express();
   app.use(cors());
-  app.use(bodyParser.urlencoded({ extended: true }));
-  app.use(bodyParser.json());
+  app.use(bodyParser.urlencoded({ extended: true, limit }));
+  app.use(bodyParser.json({ limit }));
   app.use(bodyParser.text());
   app.use(bodyParser.raw());
   app.use("/eligibility", createEligibilityMiddleware(app));
