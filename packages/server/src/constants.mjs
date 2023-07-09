@@ -187,13 +187,13 @@ export const SUPPORT_INFO_KEY_NAMES = {
   ventilation_hours: "ventilation_hours",
 };
 
-export const SUPPORT_INFO_UNITS = {
-  [SUPPORT_INFO_KEY_NAMES.days_supply]: "d",
-  [SUPPORT_INFO_KEY_NAMES.vital_sign_height]: "cm",
-  [SUPPORT_INFO_KEY_NAMES.vital_sign_weight]: "kg",
-  [SUPPORT_INFO_KEY_NAMES.vital_sign_systolic]: "mm[Hg]",
-  [SUPPORT_INFO_KEY_NAMES.vital_sign_diastolic]: "mm[Hg]",
-  [SUPPORT_INFO_KEY_NAMES.lab_test]: "pT",
-  [SUPPORT_INFO_KEY_NAMES.icu_hours]: "h",
-  [SUPPORT_INFO_KEY_NAMES.ventilation_hours]: "h",
-};
+export const SUPPORT_INFO_USING_UNITS = [
+  SUPPORT_INFO_KEY_NAMES.days_supply,
+  SUPPORT_INFO_KEY_NAMES.vital_sign_height,
+  SUPPORT_INFO_KEY_NAMES.vital_sign_weight,
+  SUPPORT_INFO_KEY_NAMES.vital_sign_systolic,
+  SUPPORT_INFO_KEY_NAMES.vital_sign_diastolic,
+  SUPPORT_INFO_KEY_NAMES.lab_test,
+  SUPPORT_INFO_KEY_NAMES.icu_hours,
+  SUPPORT_INFO_KEY_NAMES.ventilation_hours,
+];

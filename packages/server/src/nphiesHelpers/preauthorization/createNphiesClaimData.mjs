@@ -10,7 +10,7 @@ import {
   NPHIES_RESOURCE_TYPES,
   NPHIES_BASE_CODE_TYPES,
   NPHIES_API_URLS,
-  SUPPORT_INFO_UNITS,
+  SUPPORT_INFO_USING_UNITS,
   SUPPORT_INFO_KEY_NAMES,
 } from "../../constants.mjs";
 
@@ -222,7 +222,7 @@ const createNphiesClaimData = ({
               const hasTimingPeriod =
                 isHospitalizedCode || isEmploymentImpacted;
 
-              const valueQuantityCode = SUPPORT_INFO_UNITS[categoryCode];
+              const isUsingUnit = SUPPORT_INFO_USING_UNITS[categoryCode];
 
               const hasCodeSection = !!(systemUrl && code);
 
@@ -236,18 +236,19 @@ const createNphiesClaimData = ({
                     },
                   ],
                 },
-                code: hasCodeSection
-                  ? {
-                      coding: [
-                        {
-                          system: systemUrl,
-                          code,
-                          display,
-                        },
-                      ],
-                      text,
-                    }
-                  : undefined,
+                code:
+                  hasCodeSection && !isUsingUnit
+                    ? {
+                        coding: [
+                          {
+                            system: systemUrl,
+                            code,
+                            display,
+                          },
+                        ],
+                        text,
+                      }
+                    : undefined,
                 valueString: isInfoCode ? value : undefined,
                 timingDate:
                   isOnsetCode || isMissingTooth
@@ -259,11 +260,11 @@ const createNphiesClaimData = ({
                       end: reverseDate(value[1]),
                     }
                   : undefined,
-                valueQuantity: valueQuantityCode
+                valueQuantity: isUsingUnit
                   ? {
                       value: value,
                       system: systemUrl,
-                      code: valueQuantityCode,
+                      code,
                     }
                   : undefined,
                 valueAttachment: !!(isAttachment && value)

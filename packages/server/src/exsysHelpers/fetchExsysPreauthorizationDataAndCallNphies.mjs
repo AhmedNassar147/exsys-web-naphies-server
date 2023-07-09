@@ -8,14 +8,11 @@ import createExsysRequest from "../helpers/createExsysRequest.mjs";
 import callNphiesAPIAndCollectResults from "../nphiesHelpers/base/callNphiesApiAndCollectResults.mjs";
 import extractCoverageEntryResponseData from "../nphiesHelpers/extraction/extractCoverageEntryResponseData.mjs";
 import createNphiesRequestPayloadFn from "../nphiesHelpers/preauthorization/index.mjs";
-import {
-  EXSYS_API_IDS_NAMES,
-  NPHIES_RESOURCE_TYPES,
-  NPHIES_REQUEST_TYPES,
-} from "../constants.mjs";
+import { EXSYS_API_IDS_NAMES, NPHIES_RESOURCE_TYPES } from "../constants.mjs";
 
 const { COVERAGE } = NPHIES_RESOURCE_TYPES;
-const { PREAUTH } = NPHIES_REQUEST_TYPES;
+
+const printFolderName = "preauthorization";
 
 const { collectExsysPreauthData, saveNphiesResponseToExsys } =
   EXSYS_API_IDS_NAMES;
@@ -63,21 +60,12 @@ const fetchExsysPreauthorizationDataAndCallNphies = async ({
     ...__frontEndData,
   };
 
-  await writeResultFile({
-    folderName: PREAUTH,
-    data: {
-      exsysResultsData,
-      requestParams,
-    },
-  });
-  return {};
-
   if (error_message || !isSuccess) {
     console.error("Exsys API failed");
 
     if (printValues) {
       await writeResultFile({
-        folderName: PREAUTH,
+        folderName: printFolderName,
         data: {
           exsysResultsData,
           requestParams,
@@ -130,7 +118,7 @@ const fetchExsysPreauthorizationDataAndCallNphies = async ({
 
   if (printValues) {
     await writeResultFile({
-      folderName: PREAUTH,
+      folderName: printFolderName,
       data: nphiesResultData,
       isError: hasError,
     });
