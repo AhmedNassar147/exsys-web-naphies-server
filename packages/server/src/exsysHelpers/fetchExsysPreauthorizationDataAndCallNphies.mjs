@@ -51,12 +51,11 @@ const fetchExsysPreauthorizationDataAndCallNphies = async ({
     requestParams,
   });
 
-  const { data } = result || {};
-  const { error_message, preauth_pk } = data || {};
+  const { error_message, preauth_pk } = result || {};
   const __frontEndData = frontEndData || {};
 
   const exsysResultsData = {
-    ...(data || {}),
+    ...(result || {}),
     ...__frontEndData,
   };
 
