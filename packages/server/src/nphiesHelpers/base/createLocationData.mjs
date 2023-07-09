@@ -3,7 +3,7 @@
  * Helpers: `createLocationData`.
  *
  */
-import createNphiesBaseResource from "../base/createNphiesBaseResource.mjs";
+import createNphiesBaseResource from "./createNphiesBaseResource.mjs";
 import {
   NPHIES_BASE_PROFILE_TYPES,
   NPHIES_RESOURCE_TYPES,

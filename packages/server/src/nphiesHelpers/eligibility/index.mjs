@@ -10,8 +10,8 @@ import createNphiesMessageHeader from "../base/createNphiesMessageHeader.mjs";
 import createNphiesDoctorOrPatientData from "../base/createNphiesDoctorOrPatientData.mjs";
 import createNphiesCoverage from "../base/createNphiesCoverage.mjs";
 import createOrganizationData from "../base/createOrganizationData.mjs";
+import createLocationData from "../base/createLocationData.mjs";
 import createCoverageEligibilityRequest from "./createCoverageEligibilityRequest.mjs";
-import createLocationData from "./createLocationData.mjs";
 import { NPHIES_REQUEST_TYPES, ELIGIBILITY_TYPES } from "../../constants.mjs";
 
 const { ELIGIBILITY } = NPHIES_REQUEST_TYPES;

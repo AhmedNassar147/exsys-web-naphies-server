@@ -10,7 +10,12 @@ const createPreauthorizationMiddleware = (app) => async (req, _, next) => {
 
   app.post(originalUrl, async (req, res) => {
     const {
-      body: { preauth_pk, authorization },
+      body: {
+        preauth_pk,
+        authorization,
+        productsData,
+        extraSupportInformationData,
+      },
     } = req;
 
     const requestParams = {
@@ -18,10 +23,16 @@ const createPreauthorizationMiddleware = (app) => async (req, _, next) => {
       preauth_pk,
     };
 
+    const frontEndData = {
+      productsData,
+      extraSupportInformationData,
+    };
+
     const apiResults = await fetchExsysPreauthorizationDataAndCallNphies({
       printValues: false,
       requestMethod: "GET",
       requestParams,
+      frontEndData,
     });
 
     res

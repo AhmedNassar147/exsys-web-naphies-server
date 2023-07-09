@@ -14,10 +14,9 @@ import createNphiesMessageHeader from "../base/createNphiesMessageHeader.mjs";
 import createNphiesDoctorOrPatientData from "../base/createNphiesDoctorOrPatientData.mjs";
 import createNphiesCoverage from "../base/createNphiesCoverage.mjs";
 import createOrganizationData from "../base/createOrganizationData.mjs";
+import createLocationData from "../base/createLocationData.mjs";
 import createNphiesClaimData from "./createNphiesClaimData.mjs";
 import createNphiesVisionPrescriptionData from "./createNphiesVisionPrescriptionData.mjs";
-// import createCoverageEligibilityRequest from "./createCoverageEligibilityRequest.mjs";
-// import createLocationData from "./createLocationData.mjs";
 import { NPHIES_REQUEST_TYPES } from "../../constants.mjs";
 
 const { PREAUTH } = NPHIES_REQUEST_TYPES;
@@ -44,6 +43,8 @@ const createNaphiesPreauthRequestFullData = ({
   official_f_name,
   gender,
   birthDate,
+  provider_location,
+  location_license,
   patient_martial_status,
   subscriber_patient_file_no,
   subscriber_iqama_no,
@@ -58,14 +59,15 @@ const createNaphiesPreauthRequestFullData = ({
   network_name,
   classes,
   business_arrangement,
-  visionPrescriptionId,
-  visionPrescriptionCreatedAt,
-  visionLensSpecification,
-  preauthType,
-  supportingInfo,
+  message_event_type,
+  supportInformationData,
+  extraSupportInformationData,
   doctorsData,
   productsData,
   diagnosisData,
+  visionPrescriptionId,
+  visionPrescriptionCreatedAt,
+  visionLensSpecification,
 }) => {
   const {
     providerPatientUrl,
@@ -74,6 +76,7 @@ const createNaphiesPreauthRequestFullData = ({
     providerOrganizationUrl,
     providerFocusUrl,
     visionPrescriptionUrl,
+    providerLocationUrl,
   } = createProviderUrls({
     providerBaseUrl: site_url,
     requestType: PREAUTH,
@@ -96,6 +99,11 @@ const createNaphiesPreauthRequestFullData = ({
     : {};
 
   const requestId = createUUID();
+
+  const supportingInfo = [
+    ...(supportInformationData || []),
+    ...(extraSupportInformationData || []),
+  ];
 
   const requestPayload = {
     ...baseData,
@@ -126,7 +134,7 @@ const createNaphiesPreauthRequestFullData = ({
           : undefined,
         primaryDoctorFocal: isPrimaryDoctorIndexFound ? true : undefined,
         providerDoctorUrl,
-        preauthType,
+        preauthType: message_event_type,
         supportingInfo,
         doctorsData,
         productsData,
@@ -213,6 +221,14 @@ const createNaphiesPreauthRequestFullData = ({
         siteName: payer_name,
         providerOrganizationUrl,
       }),
+      // createLocationData({
+      //   locationLicense: location_license,
+      //   siteName: site_name,
+      //   providerLocation: provider_location,
+      //   providerOrganization: provider_organization,
+      //   providerLocationUrl,
+      //   providerOrganizationUrl,
+      // }),
     ].filter(Boolean),
   };
 
@@ -263,8 +279,8 @@ export default createNaphiesPreauthRequestFullData;
 //       },
 //     ],
 //     network_name: "Golden C",
-//     preauthType: "institutional",
-//     supportingInfo: [
+//     message_event_type: "institutional",
+//     supportInformationData: [
 //       {
 //         value: 130,
 //         categoryCode: "vital-sign-systolic",
@@ -307,13 +323,13 @@ export default createNaphiesPreauthRequestFullData;
 // {
 //   folderName: "preauth/dental",
 //   data: {
-//     preauthType: "oral",
+//     message_event_type: "oral",
 //   },
 // },
 // {
 //   folderName: "preauth/visionPrescription",
 //   data: {
-//     preauthType: "vision",
+//     message_event_type: "vision",
 //     visionPrescriptionId: "2199055",
 //     visionPrescriptionCreatedAt: "2021-08-28T14:56:49.034+03:00",
 //     visionLensSpecification: [

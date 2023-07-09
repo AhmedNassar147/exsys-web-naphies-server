@@ -376,7 +376,7 @@ const createNphiesClaimData = ({
                 value: quantity,
               },
               unitPrice: {
-                value: unitPrice,
+                value: unitPrice || 0,
                 currency,
               },
               net: {

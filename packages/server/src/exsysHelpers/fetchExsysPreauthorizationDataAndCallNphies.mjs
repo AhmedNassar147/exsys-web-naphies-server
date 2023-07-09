@@ -8,9 +8,14 @@ import createExsysRequest from "../helpers/createExsysRequest.mjs";
 import callNphiesAPIAndCollectResults from "../nphiesHelpers/base/callNphiesApiAndCollectResults.mjs";
 import extractCoverageEntryResponseData from "../nphiesHelpers/extraction/extractCoverageEntryResponseData.mjs";
 import createNphiesRequestPayloadFn from "../nphiesHelpers/preauthorization/index.mjs";
-import { EXSYS_API_IDS_NAMES, NPHIES_RESOURCE_TYPES } from "../constants.mjs";
+import {
+  EXSYS_API_IDS_NAMES,
+  NPHIES_RESOURCE_TYPES,
+  NPHIES_REQUEST_TYPES,
+} from "../constants.mjs";
 
 const { COVERAGE } = NPHIES_RESOURCE_TYPES;
+const { PREAUTH } = NPHIES_REQUEST_TYPES;
 
 const { collectExsysPreauthData, saveNphiesResponseToExsys } =
   EXSYS_API_IDS_NAMES;
@@ -23,10 +28,24 @@ const setErrorIfExtractedDataFoundFn = ({ coverageErrors }) => [
   ...(coverageErrors || []),
 ];
 
+const respondToExsysWithError = (preauth_pk, errorMessage) => null;
+// createExsysRequest({
+//   resourceName: saveNphiesResponseToExsys,
+//   body: {
+//     preauth_pk,
+//     nphiesExtractedData: {
+//       eligibilityOutcome: "error",
+//       isPatientEligible: "N",
+//       eligibilityDisposition: errorMessage,
+//     },
+//   },
+// });
+
 const fetchExsysPreauthorizationDataAndCallNphies = async ({
   requestParams,
   // exsysApiId,
   requestMethod,
+  frontEndData,
   printValues = true,
 }) => {
   const { isSuccess, result } = await createExsysRequest({
@@ -35,26 +54,23 @@ const fetchExsysPreauthorizationDataAndCallNphies = async ({
     requestParams,
   });
 
-  await writeResultFile({
-    folderName: "preauthData",
-    data: result,
-    isError: !isSuccess,
-  });
+  const { data } = result || {};
+  const { error_message, preauth_pk } = data || {};
+  const __frontEndData = frontEndData || {};
 
-  return result;
-
-  const { preauth_pk, data } = result || {};
-  const { error_message } = data || {};
+  const exsysResultsData = {
+    ...(data || {}),
+    ...__frontEndData,
+  };
 
   if (error_message || !isSuccess) {
     console.error("Exsys API failed");
 
     if (printValues) {
       await writeResultFile({
-        folderName: "eligibility",
+        folderName: PREAUTH,
         data: {
-          primaryKey,
-          exsysResultsData: data,
+          exsysResultsData,
           requestParams,
         },
         isError: true,
@@ -65,26 +81,29 @@ const fetchExsysPreauthorizationDataAndCallNphies = async ({
       error_message ||
       `error calling exsys \`${getExsysDataBasedPatient}\` API`;
 
+    await respondToExsysWithError(preauth_pk, errorMessage);
+
     return {
       errorMessage,
       hasError: true,
     };
   }
 
-  if (!primaryKey || !data) {
-    console.error("Exsys API failed sent empty primaryKey or data keys");
-    return {};
+  if (!preauth_pk || !data) {
+    const error = "Exsys API failed sent empty preauth_pk or data keys";
+    console.error(error);
+    return {
+      errorMessage: error,
+      hasError: true,
+    };
   }
 
   const { nphiesResultData, hasError, errorMessage, errorMessageCode } =
     await callNphiesAPIAndCollectResults({
-      exsysResultsData: data,
+      exsysResultsData: exsysResultsData,
       createNphiesRequestPayloadFn,
       extractionFunctionsMap,
       setErrorIfExtractedDataFoundFn,
-      otherPrintValues: {
-        primaryKey,
-      },
     });
 
   const { nphiesExtractedData, nodeServerDataSentToNaphies, nphiesResponse } =
@@ -93,7 +112,7 @@ const fetchExsysPreauthorizationDataAndCallNphies = async ({
   await createExsysRequest({
     resourceName: saveNphiesResponseToExsys,
     body: {
-      primaryKey,
+      preauth_pk,
       nodeServerDataSentToNaphies,
       nphiesResponse,
       nphiesExtractedData,
@@ -102,7 +121,7 @@ const fetchExsysPreauthorizationDataAndCallNphies = async ({
 
   if (printValues) {
     await writeResultFile({
-      folderName: "preauthorization",
+      folderName: PREAUTH,
       data: nphiesResultData,
       isError: hasError,
     });
