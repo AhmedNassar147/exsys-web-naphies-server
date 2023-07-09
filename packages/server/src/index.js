@@ -43,7 +43,7 @@ const { ignoreCert } = CLI_CONFIG;
   app.use(bodyParser.urlencoded({ extended: true, limit }));
   app.use(bodyParser.json({ limit }));
   app.use(bodyParser.text());
-  app.use(bodyParser.raw());
+  app.use(bodyParser.raw({ limit }));
   app.use("/eligibility", createEligibilityMiddleware(app));
   app.use("/preauth", createPreauthorizationMiddleware(app));
 
