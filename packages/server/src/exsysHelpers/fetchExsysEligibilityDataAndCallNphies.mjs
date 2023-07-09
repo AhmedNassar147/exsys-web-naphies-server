@@ -26,7 +26,7 @@ const setErrorIfExtractedDataFoundFn = ({
   coverageErrors,
 }) => [...(eligibilityErrors || []), ...(coverageErrors || [])];
 
-const respondToExsysWithError = (errorMessage) =>
+const respondToExsysWithError = (primaryKey, errorMessage) =>
   createExsysRequest({
     resourceName: saveNphiesResponseToExsys,
     body: {
@@ -75,7 +75,7 @@ const fetchExsysEligibilityDataAndCallNphies = async ({
       error_message ||
       `error calling exsys \`${getExsysDataBasedPatient}\` API`;
 
-    await respondToExsysWithError(errorMessage);
+    await respondToExsysWithError(primaryKey, errorMessage);
 
     return {
       errorMessage,
@@ -97,7 +97,7 @@ const fetchExsysEligibilityDataAndCallNphies = async ({
     //     isError: true,
     //   });
     // }
-    // await respondToExsysWithError(error);
+    // await respondToExsysWithError(primaryKey,error);
     return {
       errorMessage: error,
       hasError: true,
