@@ -20,7 +20,7 @@ import createEligibilityMiddleware from "./middlewares/eligibility/index.mjs";
 import createPreauthorizationMiddleware from "./middlewares/preauthorization/index.mjs";
 // keep polls at bottom
 // import "./exsysHelpers/runPreauthorizationPoll.mjs";
-// import "./exsysHelpers/fetchExsysInvoicesPolls.mjs";
+import "./exsysHelpers/fetchExsysInvoicesPolls.mjs";
 
 const { ignoreCert } = CLI_CONFIG;
 

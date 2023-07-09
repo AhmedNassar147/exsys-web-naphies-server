@@ -79,7 +79,7 @@ const getSequences = (arrayData, ids, idPropName) => {
   }
   return arrayData
     .map(({ [idPropName]: id }, index) =>
-      ids.includes(id) ? index : undefined
+      ids.includes(id) ? index + 1 : undefined
     )
     .filter(Boolean);
 };
@@ -222,7 +222,8 @@ const createNphiesClaimData = ({
               const hasTimingPeriod =
                 isHospitalizedCode || isEmploymentImpacted;
 
-              const isUsingUnit = SUPPORT_INFO_USING_UNITS[categoryCode];
+              const isUsingUnit =
+                SUPPORT_INFO_USING_UNITS.includes[categoryCode];
 
               const hasCodeSection = !!(systemUrl && code);
 
@@ -237,7 +238,7 @@ const createNphiesClaimData = ({
                   ],
                 },
                 code:
-                  hasCodeSection && !isUsingUnit
+                  !isUsingUnit && hasCodeSection
                     ? {
                         coding: [
                           {
