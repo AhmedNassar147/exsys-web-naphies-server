@@ -106,15 +106,15 @@ const fetchExsysPreauthorizationDataAndCallNphies = async ({
   const { nphiesExtractedData, nodeServerDataSentToNaphies, nphiesResponse } =
     nphiesResultData;
 
-  await createExsysRequest({
-    resourceName: saveNphiesResponseToExsys,
-    body: {
-      preauth_pk,
-      nodeServerDataSentToNaphies,
-      nphiesResponse,
-      nphiesExtractedData,
-    },
-  });
+  // await createExsysRequest({
+  //   resourceName: saveNphiesResponseToExsys,
+  //   body: {
+  //     preauth_pk,
+  //     nodeServerDataSentToNaphies,
+  //     nphiesResponse,
+  //     nphiesExtractedData,
+  //   },
+  // });
 
   if (printValues) {
     await writeResultFile({
