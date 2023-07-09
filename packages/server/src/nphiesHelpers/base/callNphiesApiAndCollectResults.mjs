@@ -3,6 +3,7 @@
  * Helper: `callNphiesApiAndCollectResults`.
  *
  */
+import { writeResultFile } from "@exsys-web-server/helpers";
 import createNphiesRequest from "../../helpers/createNphiesRequest.mjs";
 import mapEntriesAndExtractNeededData from "../extraction/mapEntriesAndExtractNeededData.mjs";
 
