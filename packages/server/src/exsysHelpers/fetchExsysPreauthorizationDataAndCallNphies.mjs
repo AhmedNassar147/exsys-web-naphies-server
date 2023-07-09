@@ -1,14 +1,13 @@
 /*
  *
- * Helper: `fetchExsysEligibilityDataAndCallNphies`.
+ * Helper: `fetchExsysPreauthorizationDataAndCallNphies`.
  *
  */
 import { writeResultFile } from "@exsys-web-server/helpers";
 import createExsysRequest from "../helpers/createExsysRequest.mjs";
 import callNphiesAPIAndCollectResults from "../nphiesHelpers/base/callNphiesApiAndCollectResults.mjs";
-import extractCoverageEligibilityEntryResponseData from "../nphiesHelpers/extraction/extractCoverageEligibilityEntryResponseData.mjs";
 import extractCoverageEntryResponseData from "../nphiesHelpers/extraction/extractCoverageEntryResponseData.mjs";
-import createNphiesRequestPayloadFn from "../nphiesHelpers/eligibility/index.mjs";
+import createNphiesRequestPayloadFn from "../nphiesHelpers/preauthorization/index.mjs";
 import { EXSYS_API_IDS_NAMES, NPHIES_RESOURCE_TYPES } from "../constants.mjs";
 
 const { COVERAGE } = NPHIES_RESOURCE_TYPES;
@@ -17,29 +16,14 @@ const { getExsysDataBasedPatient, saveNphiesResponseToExsys } =
   EXSYS_API_IDS_NAMES;
 
 const extractionFunctionsMap = {
-  CoverageEligibilityResponse: extractCoverageEligibilityEntryResponseData,
   [COVERAGE]: extractCoverageEntryResponseData,
 };
 
-const setErrorIfExtractedDataFoundFn = ({
-  eligibilityErrors,
-  coverageErrors,
-}) => [...(eligibilityErrors || []), ...(coverageErrors || [])];
+const setErrorIfExtractedDataFoundFn = ({ coverageErrors }) => [
+  ...(coverageErrors || []),
+];
 
-const respondToExsysWithError = (errorMessage) =>
-  createExsysRequest({
-    resourceName: saveNphiesResponseToExsys,
-    body: {
-      primaryKey,
-      nphiesExtractedData: {
-        eligibilityOutcome: "error",
-        isPatientEligible: "N",
-        eligibilityDisposition: errorMessage,
-      },
-    },
-  });
-
-const fetchExsysEligibilityDataAndCallNphies = async ({
+const fetchExsysPreauthorizationDataAndCallNphies = async ({
   requestParams,
   exsysApiId,
   requestMethod,
@@ -75,8 +59,6 @@ const fetchExsysEligibilityDataAndCallNphies = async ({
       error_message ||
       `error calling exsys \`${getExsysDataBasedPatient}\` API`;
 
-    await respondToExsysWithError(errorMessage);
-
     return {
       errorMessage,
       hasError: true,
@@ -84,24 +66,8 @@ const fetchExsysEligibilityDataAndCallNphies = async ({
   }
 
   if (!primaryKey || !data) {
-    const error = "Exsys API failed sent empty primaryKey or data keys";
-    console.error(error);
-    // if (printValues) {
-    //   await writeResultFile({
-    //     folderName: "eligibility",
-    //     data: {
-    //       primaryKey,
-    //       exsysResultsData: data,
-    //       exsysAPiBodyData,
-    //     },
-    //     isError: true,
-    //   });
-    // }
-    // await respondToExsysWithError(error);
-    return {
-      errorMessage: error,
-      hasError: true,
-    };
+    console.error("Exsys API failed sent empty primaryKey or data keys");
+    return {};
   }
 
   const { nphiesResultData, hasError, errorMessage, errorMessageCode } =
@@ -130,7 +96,7 @@ const fetchExsysEligibilityDataAndCallNphies = async ({
 
   if (printValues) {
     await writeResultFile({
-      folderName: "eligibility",
+      folderName: "preauthorization",
       data: nphiesResultData,
       isError: hasError,
     });
@@ -145,4 +111,4 @@ const fetchExsysEligibilityDataAndCallNphies = async ({
   };
 };
 
-export default fetchExsysEligibilityDataAndCallNphies;
+export default fetchExsysPreauthorizationDataAndCallNphies;

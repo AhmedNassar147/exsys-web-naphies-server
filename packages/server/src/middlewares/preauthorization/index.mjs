@@ -1,9 +1,9 @@
 /*
  *
- * `createEligibilityMiddleware`: `middleware`
+ * `createPreauthorizationMiddleware`: `middleware`
  *
  */
-import fetchExsysEligibilityDataAndCallNphies from "../../exsysHelpers/fetchExsysEligibilityDataAndCallNphies.mjs";
+import fetchExsysPreauthorizationDataAndCallNphies from "../../exsysHelpers/fetchExsysPreauthorizationDataAndCallNphies.mjs";
 import { ELIGIBILITY_TYPES } from "../../constants.mjs";
 
 // all body params
@@ -22,7 +22,7 @@ import { ELIGIBILITY_TYPES } from "../../constants.mjs";
 // "episode_invoice_no": "" ,
 // "statement_no": "" ,
 
-const createEligibilityMiddleware = (app) => async (req, _, next) => {
+const createPreauthorizationMiddleware = (app) => async (req, _, next) => {
   const { originalUrl } = req;
 
   app.post(originalUrl, async (req, res) => {
@@ -51,7 +51,7 @@ const createEligibilityMiddleware = (app) => async (req, _, next) => {
       contract_no: contractNo,
     };
 
-    const apiResults = await fetchExsysEligibilityDataAndCallNphies({
+    const apiResults = await fetchExsysPreauthorizationDataAndCallNphies({
       exsysAPiBodyData: bodyData,
       printValues: false,
     });
@@ -66,4 +66,4 @@ const createEligibilityMiddleware = (app) => async (req, _, next) => {
   next();
 };
 
-export default createEligibilityMiddleware;
+export default createPreauthorizationMiddleware;

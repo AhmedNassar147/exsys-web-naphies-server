@@ -1,6 +1,6 @@
 /*
  *
- * Helper: `runAuthorizationPoll`.
+ * Helper: `runPreauthorizationPoll`.
  *
  */
 import {
@@ -62,7 +62,7 @@ const createNphiesRequestPayloadFn = () => {
   };
 };
 
-const runAuthorizationPoll = async () => {
+const runPreauthorizationPoll = async () => {
   try {
     const options = {
       createNphiesRequestPayloadFn,
@@ -83,11 +83,11 @@ const runAuthorizationPoll = async () => {
       isError: hasError,
     });
   } catch (error) {
-    console.log("error from polling runAuthorizationPoll", error);
+    console.log("error from polling runPreauthorizationPoll", error);
   } finally {
     delayProcess(EXSYS_POLLS_TIMEOUT);
-    await runAuthorizationPoll();
+    await runPreauthorizationPoll();
   }
 };
 
-await runAuthorizationPoll();
+await runPreauthorizationPoll();

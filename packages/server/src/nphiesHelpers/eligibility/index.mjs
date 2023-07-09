@@ -3,6 +3,7 @@
  * Helper: `createNaphiesEligibilityRequestFullData`.
  *
  */
+import { createUUID } from "@exsys-web-server/helpers";
 import createProviderUrls from "../base/createProviderUrls.mjs";
 import createNphiesBaseRequestData from "../base/createNphiesBaseRequestData.mjs";
 import createNphiesMessageHeader from "../base/createNphiesMessageHeader.mjs";
@@ -11,13 +12,17 @@ import createNphiesCoverage from "../base/createNphiesCoverage.mjs";
 import createOrganizationData from "../base/createOrganizationData.mjs";
 import createCoverageEligibilityRequest from "./createCoverageEligibilityRequest.mjs";
 import createLocationData from "./createLocationData.mjs";
-import { NPHIES_REQUEST_TYPES } from "../../constants.mjs";
+import { NPHIES_REQUEST_TYPES, ELIGIBILITY_TYPES } from "../../constants.mjs";
 
 const { ELIGIBILITY } = NPHIES_REQUEST_TYPES;
 
+const BENEFITS_AND_VALIDATION_TYPE = [
+  ELIGIBILITY_TYPES.benefits,
+  ELIGIBILITY_TYPES.validation,
+];
+
 const createNaphiesEligibilityRequestFullData = ({
   provider_license,
-  request_id,
   payer_license,
   payer_child_license,
   site_url,
@@ -29,14 +34,13 @@ const createNaphiesEligibilityRequestFullData = ({
   provider_location,
   location_license,
   payer_base_url,
-  purpose,
   coverage_type,
-  member_id,
-  patient_id,
-  national_id,
+  memberid,
+  patient_file_no,
+  iqama_no,
   national_id_type,
-  staff_first_name,
-  staff_family_name,
+  official_name,
+  official_f_name,
   gender,
   birthDate,
   patient_martial_status,
@@ -46,6 +50,7 @@ const createNaphiesEligibilityRequestFullData = ({
   business_arrangement,
   network_name,
   classes,
+  message_event_type,
 }) => {
   const {
     providerPatientUrl,
@@ -58,6 +63,12 @@ const createNaphiesEligibilityRequestFullData = ({
     requestType: ELIGIBILITY,
   });
 
+  const requestId = createUUID();
+
+  const purpose = BENEFITS_AND_VALIDATION_TYPE.includes(message_event_type)
+    ? BENEFITS_AND_VALIDATION_TYPE
+    : [message_event_type];
+
   const requestPayload = {
     ...createNphiesBaseRequestData(),
     entry: [
@@ -65,19 +76,19 @@ const createNaphiesEligibilityRequestFullData = ({
         providerLicense: provider_license,
         payerLicense: payer_license,
         providerOrganizationUrl,
-        requestId: request_id,
+        requestId,
         providerFocusUrl,
         requestType: ELIGIBILITY,
       }),
       createCoverageEligibilityRequest({
-        requestId: request_id,
+        requestId,
         purpose,
         providerOrganization: provider_organization,
         payerOrganization: payer_organization,
         providerLocation: provider_location,
         periodStartDate: period_start_date,
         periodEndDate: period_end_date,
-        patientId: patient_id,
+        patientId: patient_file_no,
         businessArrangement: business_arrangement,
         providerPatientUrl,
         providerOrganizationUrl,
@@ -86,10 +97,10 @@ const createNaphiesEligibilityRequestFullData = ({
         providerLocationUrl,
       }),
       createNphiesCoverage({
-        requestId: request_id,
+        requestId,
         coverageType: coverage_type,
-        memberId: member_id,
-        patientId: patient_id,
+        memberId: memberid,
+        patientId: patient_file_no,
         relationship,
         payerOrganization: payer_organization,
         payerBaseUrl: payer_base_url,
@@ -107,11 +118,11 @@ const createNaphiesEligibilityRequestFullData = ({
         isProvider: true,
       }),
       createNphiesDoctorOrPatientData({
-        patientOrDoctorId: patient_id,
-        identifierId: national_id,
+        patientOrDoctorId: patient_file_no,
+        identifierId: iqama_no,
         identifierIdType: national_id_type,
-        staffFirstName: staff_first_name,
-        staffFamilyName: staff_family_name,
+        staffFirstName: official_name,
+        staffFamilyName: official_f_name,
         staffPhone: site_tel,
         gender,
         patientBirthdate: birthDate,

@@ -262,7 +262,7 @@ const createNphiesClaimData = ({
                 valueQuantity: valueQuantityCode
                   ? {
                       value: value,
-                      system: "http://unitsofmeasure.org",
+                      system: systemUrl,
                       code: valueQuantityCode,
                     }
                   : undefined,
@@ -277,37 +277,40 @@ const createNphiesClaimData = ({
           )
         : undefined,
       diagnosis: hasDiagnosisData
-        ? diagnosisData.map(({ onAdmission, diagCode, diagType }, index) => ({
-            sequence: index + 1,
-            onAdmission: ["y", "Y"].includes(onAdmission)
-              ? {
-                  coding: [
-                    {
-                      system: `${BASE_CODE_SYS_URL}/${DIAG_ON_ADMISSION}`,
-                      code: onAdmission,
-                    },
-                  ],
-                }
-              : undefined,
-            diagnosisCodeableConcept: {
-              coding: [
-                {
-                  system: DIAG_ICD_URL,
-                  code: diagCode,
-                },
-              ],
-            },
-            type: [
-              {
+        ? diagnosisData.map(
+            ({ onAdmission, diagCode, diagType, diagDisplay }, index) => ({
+              sequence: index + 1,
+              onAdmission: ["y", "Y"].includes(onAdmission)
+                ? {
+                    coding: [
+                      {
+                        system: `${BASE_CODE_SYS_URL}/${DIAG_ON_ADMISSION}`,
+                        code: onAdmission,
+                        display: diagDisplay,
+                      },
+                    ],
+                  }
+                : undefined,
+              diagnosisCodeableConcept: {
                 coding: [
                   {
-                    system: `${BASE_CODE_SYS_URL}/${DIAG_TYPE}`,
-                    code: diagType,
+                    system: DIAG_ICD_URL,
+                    code: diagCode,
                   },
                 ],
               },
-            ],
-          }))
+              type: [
+                {
+                  coding: [
+                    {
+                      system: `${BASE_CODE_SYS_URL}/${DIAG_TYPE}`,
+                      code: diagType,
+                    },
+                  ],
+                },
+              ],
+            })
+          )
         : undefined,
       item: hasProductsData
         ? productsData.map(
