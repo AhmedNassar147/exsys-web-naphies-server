@@ -269,6 +269,7 @@ const createNphiesClaimData = ({
                 valueAttachment: !!(isAttachment && value)
                   ? {
                       ...value,
+                      data: value.data.replace(/.+base64,/, "/"),
                       creation: reverseDate(value.creation),
                     }
                   : undefined,
