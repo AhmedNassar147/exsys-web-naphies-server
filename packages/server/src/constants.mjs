@@ -33,6 +33,8 @@ export const EXSYS_API_IDS_NAMES = {
   getExsysDataBasedPatient: "getExsysDataBasedPatient",
   saveNphiesResponseToExsys: "saveNphiesResponseToExsys",
   checkExsysPollPendingRequests: "checkExsysPollPendingRequests",
+  // http://149.102.140.8:9090/ords/exsysexsysdba/hs_nphies_preauth_pkg/collect_preauth_data_to_send?authorization=11796985&preauth_pk=1
+  collectExsysPreauthData: "hs_nphies_preauth_pkg/collect_preauth_data_to_send",
 };
 
 export const EXSYS_API_IDS = {

@@ -12,7 +12,7 @@ import { EXSYS_API_IDS_NAMES, NPHIES_RESOURCE_TYPES } from "../constants.mjs";
 
 const { COVERAGE } = NPHIES_RESOURCE_TYPES;
 
-const { getExsysDataBasedPatient, saveNphiesResponseToExsys } =
+const { collectExsysPreauthData, saveNphiesResponseToExsys } =
   EXSYS_API_IDS_NAMES;
 
 const extractionFunctionsMap = {
@@ -25,19 +25,25 @@ const setErrorIfExtractedDataFoundFn = ({ coverageErrors }) => [
 
 const fetchExsysPreauthorizationDataAndCallNphies = async ({
   requestParams,
-  exsysApiId,
+  // exsysApiId,
   requestMethod,
-  exsysAPiBodyData,
   printValues = true,
 }) => {
   const { isSuccess, result } = await createExsysRequest({
-    resourceName: exsysApiId || getExsysDataBasedPatient,
-    body: exsysAPiBodyData,
+    resourceName: collectExsysPreauthData,
     requestMethod,
     requestParams,
   });
 
-  const { primaryKey, data } = result || {};
+  await writeResultFile({
+    folderName: "preauthData",
+    data: result,
+    isError: !isSuccess,
+  });
+
+  return result;
+
+  const { preauth_pk, data } = result || {};
   const { error_message } = data || {};
 
   if (error_message || !isSuccess) {
@@ -49,7 +55,7 @@ const fetchExsysPreauthorizationDataAndCallNphies = async ({
         data: {
           primaryKey,
           exsysResultsData: data,
-          exsysAPiBodyData,
+          requestParams,
         },
         isError: true,
       });
