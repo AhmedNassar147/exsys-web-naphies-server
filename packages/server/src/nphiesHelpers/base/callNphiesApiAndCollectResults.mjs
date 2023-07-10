@@ -3,7 +3,6 @@
  * Helper: `callNphiesApiAndCollectResults`.
  *
  */
-// import { writeResultFile } from "@exsys-web-server/helpers";
 import createNphiesRequest from "../../helpers/createNphiesRequest.mjs";
 import mapEntriesAndExtractNeededData from "../extraction/mapEntriesAndExtractNeededData.mjs";
 
@@ -17,25 +16,13 @@ const callNphiesAPIAndCollectResults = ({
   new Promise(async (resolve) => {
     const nphiesRequestPayload = createNphiesRequestPayloadFn(exsysResultsData);
 
-    // const { message_event } = exsysResultsData;
-    // if (message_event && message_event.includes("priorauth-")) {
-    //   await writeResultFile({
-    //     folderName: "preauth-test",
-    //     data: {
-    //       exsysResultsData,
-    //       nodeServerDataSentToNaphies: nphiesRequestPayload,
-    //     },
-    //     isError: false,
-    //   });
-    // }
-
     const nphiesResults = await createNphiesRequest({
       bodyData: nphiesRequestPayload,
     });
 
     const { isSuccess, result: nphiesResponse, ...restResult } = nphiesResults;
 
-    let nphiesResultData = {
+    const nphiesResultData = {
       isSuccess,
       ...restResult,
       ...(otherPrintValues || null),

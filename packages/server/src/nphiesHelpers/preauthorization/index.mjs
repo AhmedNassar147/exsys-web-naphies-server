@@ -4,7 +4,7 @@
  *
  */
 import {
-  writeResultFile,
+  // writeResultFile,
   isArrayHasData,
   createUUID,
 } from "@exsys-web-server/helpers";
@@ -14,7 +14,7 @@ import createNphiesMessageHeader from "../base/createNphiesMessageHeader.mjs";
 import createNphiesDoctorOrPatientData from "../base/createNphiesDoctorOrPatientData.mjs";
 import createNphiesCoverage from "../base/createNphiesCoverage.mjs";
 import createOrganizationData from "../base/createOrganizationData.mjs";
-import createLocationData from "../base/createLocationData.mjs";
+// import createLocationData from "../base/createLocationData.mjs";
 import createNphiesClaimData from "./createNphiesClaimData.mjs";
 import createNphiesVisionPrescriptionData from "./createNphiesVisionPrescriptionData.mjs";
 import { NPHIES_REQUEST_TYPES } from "../../constants.mjs";
@@ -43,8 +43,8 @@ const createNaphiesPreauthRequestFullData = ({
   official_f_name,
   gender,
   birthDate,
-  provider_location,
-  location_license,
+  // provider_location,
+  // location_license,
   patient_martial_status,
   subscriber_patient_file_no,
   subscriber_iqama_no,
@@ -76,7 +76,7 @@ const createNaphiesPreauthRequestFullData = ({
     providerOrganizationUrl,
     providerFocusUrl,
     visionPrescriptionUrl,
-    providerLocationUrl,
+    // providerLocationUrl,
   } = createProviderUrls({
     providerBaseUrl: site_url,
     requestType: PREAUTH,
@@ -239,94 +239,6 @@ const createNaphiesPreauthRequestFullData = ({
 export default createNaphiesPreauthRequestFullData;
 
 // const promises = [
-// {
-//   folderName: "institutional || pharmacy || professional",
-//   data: {
-//     payer_license: "N-I-00001",
-//     provider_license: "N-F-00001",
-//     payer_child_license: undefined,
-//     site_url: "http://sgh.sa.com",
-//     site_tel: "+966515111691",
-//     site_name: "Saudi General Hospital",
-//     provider_organization: "b1b3432921324f97af3be9fd0b1a14ae",
-//     payer_organization: "bff3aa1fbd3648619ac082357bf135db",
-//     payer_name: "Saudi National Insurance",
-//     payer_base_url: "http://sni.com.sa",
-//     coverage_type: "EHCPOL",
-//     patient_file_no: "151116788",
-//     memberid: "0000000002",
-//     iqama_no: "0000000002",
-//     national_id_type: undefined,
-//     official_name: "Muhammad",
-//     official_f_name: "Ali",
-//     gender: "male",
-//     birthDate: "2010-08-21",
-//     patient_martial_status: undefined,
-//     subscriber_patient_file_no: "3662364643",
-//     subscriber_iqama_no: "0000000001",
-//     subscriber_national_id_type: undefined,
-//     subscriber_official_name: "Ahmad",
-//     subscriber_official_f_name: "Khaled",
-//     subscriber_gender: "male",
-//     subscriber_birthDate: "1984-12-25",
-//     subscriber_tel: "+966515111643",
-//     subscriber_martial_status: undefined,
-//     relationship: "child",
-//     classes: [
-//       {
-//         code: "group",
-//         value: "CB135",
-//         name: "Insurance Group A",
-//       },
-//     ],
-//     network_name: "Golden C",
-//     message_event_type: "institutional",
-//     supportInformationData: [
-//       {
-//         value: 130,
-//         categoryCode: "vital-sign-systolic",
-//       },
-//     ],
-//     doctorsData: [
-//       {
-//         id: "7",
-//         license: "N-P-00001",
-//         first_name: "Ameera",
-//         family_name: "Hassan",
-//         roleCode: "primary",
-//         practiceCode: "08.26",
-//       },
-//     ],
-//     productsData: [
-//       {
-//         nphiesProductCode: "38618-00-00",
-//         nphiesProductCodeType: "procedures",
-//         nphiesProductName: "Insertion of left and right ventricular assist device",
-//         servicedDate: "2021-08-30",
-//         quantity: 1,
-//         unitPrice: 5000,
-//         extensionTax: 750,
-//         extensionPatientShare: 0,
-//         extensionPackage: "N",
-//         diagnosisIds: ['R07.1'],
-//         doctorsIds: ['7'],
-//       },
-//     ],
-//     diagnosisData: [
-//       {
-//         onAdmission: "Y",
-//         diagCode: "R07.1",
-//         diagType: "principal",
-//       },
-//     ],
-//   },
-// },
-// {
-//   folderName: "preauth/dental",
-//   data: {
-//     message_event_type: "oral",
-//   },
-// },
 // {
 //   folderName: "preauth/visionPrescription",
 //   data: {

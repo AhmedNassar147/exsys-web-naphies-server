@@ -6,6 +6,7 @@
 import { writeResultFile } from "@exsys-web-server/helpers";
 import createExsysRequest from "../helpers/createExsysRequest.mjs";
 import callNphiesAPIAndCollectResults from "../nphiesHelpers/base/callNphiesApiAndCollectResults.mjs";
+// import convertSupportInfoAttachmentUrlsToBase64 from "../nphiesHelpers/base/convertSupportInfoAttachmentUrlsToBase64.mjs";
 import extractClaimResponseData from "../nphiesHelpers/extraction/extractClaimResponseData.mjs";
 import extractCoverageEntryResponseData from "../nphiesHelpers/extraction/extractCoverageEntryResponseData.mjs";
 import createNphiesRequestPayloadFn from "../nphiesHelpers/preauthorization/index.mjs";
@@ -15,8 +16,7 @@ const { COVERAGE } = NPHIES_RESOURCE_TYPES;
 
 const printFolderName = "preauthorization";
 
-const { collectExsysPreauthData, saveNphiesResponseToExsys } =
-  EXSYS_API_IDS_NAMES;
+const { collectExsysPreauthData, savePreauthData } = EXSYS_API_IDS_NAMES;
 
 const extractionFunctionsMap = {
   [COVERAGE]: extractCoverageEntryResponseData,
@@ -28,22 +28,25 @@ const setErrorIfExtractedDataFoundFn = ({ coverageErrors, claimErrors }) => [
   ...(claimErrors || []),
 ];
 
-const respondToExsysWithError = (preauth_pk, errorMessage) => null;
-// createExsysRequest({
-//   resourceName: saveNphiesResponseToExsys,
-//   body: {
-//     preauth_pk,
-//     nphiesExtractedData: {
-//       eligibilityOutcome: "error",
-//       isPatientEligible: "N",
-//       eligibilityDisposition: errorMessage,
-//     },
-//   },
-// });
+const respondToExsysWithError = (preauth_pk, errorMessage) =>
+  createExsysRequest({
+    resourceName: savePreauthData,
+    requestParams: {
+      preauth_pk,
+      outcome: "error",
+      // adjudication_outcome
+    },
+    body: {
+      preauth_pk,
+      nphiesExtractedData: {
+        claimOutcome: "error",
+        issueError: errorMessage,
+      },
+    },
+  });
 
 const fetchExsysPreauthorizationDataAndCallNphies = async ({
   requestParams,
-  // exsysApiId,
   requestMethod,
   frontEndData,
   printValues = true,
@@ -55,15 +58,21 @@ const fetchExsysPreauthorizationDataAndCallNphies = async ({
   });
 
   const { error_message, preauth_pk } = result || {};
-  const __frontEndData = frontEndData || {};
+  const _frontEndData = frontEndData || {};
+
+  // const { extraSupportInformationData, ...otherFrontData } = _frontEndData;
+  // const curedExtraSupportInformationData =
+  //   await convertSupportInfoAttachmentUrlsToBase64(extraSupportInformationData);
 
   const exsysResultsData = {
     ...(result || {}),
-    ...__frontEndData,
+    ..._frontEndData,
+    // ...otherFrontData,
+    // extraSupportInformationData: curedExtraSupportInformationData
   };
 
   if (error_message || !isSuccess) {
-    console.error("Exsys API failed");
+    console.error("Preauth Exsys API failed");
 
     if (printValues) {
       await writeResultFile({
@@ -78,7 +87,7 @@ const fetchExsysPreauthorizationDataAndCallNphies = async ({
 
     const errorMessage =
       error_message ||
-      `error calling exsys \`${getExsysDataBasedPatient}\` API`;
+      `error calling exsys Preauth \`${getExsysDataBasedPatient}\` API`;
 
     await respondToExsysWithError(preauth_pk, errorMessage);
 
@@ -119,16 +128,24 @@ const fetchExsysPreauthorizationDataAndCallNphies = async ({
 
   const { nphiesExtractedData, nodeServerDataSentToNaphies, nphiesResponse } =
     nphiesResultData;
+  const { claimRequestId, claimResponseId, claimOutcome } = nphiesExtractedData;
 
-  // await createExsysRequest({
-  //   resourceName: saveNphiesResponseToExsys,
-  //   body: {
-  //     preauth_pk,
-  //     nodeServerDataSentToNaphies,
-  //     nphiesResponse,
-  //     nphiesExtractedData,
-  //   },
-  // });
+  await createExsysRequest({
+    resourceName: savePreauthData,
+    requestParams: {
+      preauth_pk,
+      request_preauth_id: claimRequestId,
+      claim_response_id: claimResponseId,
+      outcome: claimOutcome,
+      // adjudication_outcome
+    },
+    body: {
+      preauth_pk,
+      nodeServerDataSentToNaphies,
+      nphiesResponse,
+      nphiesExtractedData,
+    },
+  });
 
   if (printValues) {
     await writeResultFile({

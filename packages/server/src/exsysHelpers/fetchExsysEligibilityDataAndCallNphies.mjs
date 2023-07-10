@@ -57,7 +57,7 @@ const fetchExsysEligibilityDataAndCallNphies = async ({
   const { error_message } = data || {};
 
   if (error_message || !isSuccess) {
-    console.error("Exsys API failed");
+    console.error("Eligibility exsys API failed");
 
     if (printValues) {
       await writeResultFile({
@@ -73,7 +73,9 @@ const fetchExsysEligibilityDataAndCallNphies = async ({
 
     const errorMessage =
       error_message ||
-      `error calling exsys \`${getExsysDataBasedPatient}\` API`;
+      `error calling exsys Eligibility \`${
+        exsysApiId || getExsysDataBasedPatient
+      }\` API`;
 
     await respondToExsysWithError(primaryKey, errorMessage);
 

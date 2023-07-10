@@ -34,6 +34,7 @@ export const EXSYS_API_IDS_NAMES = {
   saveNphiesResponseToExsys: "saveNphiesResponseToExsys",
   checkExsysPollPendingRequests: "checkExsysPollPendingRequests",
   collectExsysPreauthData: "collectExsysPreauthData",
+  savePreauthData: "savePreauthData",
 };
 
 export const EXSYS_API_IDS = {
@@ -46,6 +47,9 @@ export const EXSYS_API_IDS = {
   // http://149.102.140.8:9090/ords/exsysexsysdba/hs_nphies_preauth_pkg/collect_preauth_data_to_send?authorization=11796985&preauth_pk=1
   [EXSYS_API_IDS_NAMES.collectExsysPreauthData]:
     "hs_nphies_preauth_pkg/collect_preauth_data_to_send",
+  // http://149.102.140.8:9090/ords/exsys_api/hs_nphies_preauth_pkg/update_preauth_send_status?preauth_pk=&claim_response_id=&request_preauth_id&outcome=&adjudication_outcome
+  [EXSYS_API_IDS_NAMES.savePreauthData]:
+    "hs_nphies_preauth_pkg/update_preauth_send_status",
 };
 
 export const HTTP_STATUS_CODE = {
