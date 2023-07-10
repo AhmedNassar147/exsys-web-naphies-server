@@ -336,17 +336,19 @@ const createNphiesClaimData = ({
                 diagnosisIds,
                 "diagCode"
               ),
-              // informationSequence: hasSupportingInfoData
-              //   ? supportingInfo.map((_, index) => index + 1)
-              //   : undefined,
+              informationSequence: hasSupportingInfoData
+                ? supportingInfo.map((_, index) => index + 1)
+                : undefined,
               extension: [
-                {
-                  url: `${BASE_PROFILE_URL}/${EXTENSION_TAX}`,
-                  valueMoney: {
-                    value: extensionTax,
-                    currency,
-                  },
-                },
+                extensionTax
+                  ? {
+                      url: `${BASE_PROFILE_URL}/${EXTENSION_TAX}`,
+                      valueMoney: {
+                        value: extensionTax,
+                        currency,
+                      },
+                    }
+                  : undefined,
                 {
                   url: `${BASE_PROFILE_URL}/${EXTENSION_PATIENT_SHARE}`,
                   valueMoney: {
@@ -354,10 +356,10 @@ const createNphiesClaimData = ({
                     currency,
                   },
                 },
-                {
-                  url: `${BASE_PROFILE_URL}/${EXTENSION_PACKAGE}`,
-                  valueBoolean: extensionPackage === "Y",
-                },
+                // {
+                //   url: `${BASE_PROFILE_URL}/${EXTENSION_PACKAGE}`,
+                //   valueBoolean: extensionPackage === "Y",
+                // },
               ].filter(Boolean),
               productOrService: {
                 coding: [
