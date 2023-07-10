@@ -285,7 +285,6 @@ const createNphiesClaimData = ({
                       {
                         system: `${BASE_CODE_SYS_URL}/${DIAG_ON_ADMISSION}`,
                         code: onAdmission,
-                        display: diagDisplay,
                       },
                     ],
                   }
@@ -295,6 +294,7 @@ const createNphiesClaimData = ({
                   {
                     system: DIAG_ICD_URL,
                     code: diagCode,
+                    display: diagDisplay,
                   },
                 ],
               },
@@ -329,16 +329,24 @@ const createNphiesClaimData = ({
               },
               index
             ) => ({
+              sequence: index + 1,
+              careTeamSequence: getSequences(doctorsData, doctorsIds, "id"),
+              diagnosisSequence: getSequences(
+                diagnosisData,
+                diagnosisIds,
+                "diagCode"
+              ),
+              // informationSequence: hasSupportingInfoData
+              //   ? supportingInfo.map((_, index) => index + 1)
+              //   : undefined,
               extension: [
-                extensionTax
-                  ? {
-                      url: `${BASE_PROFILE_URL}/${EXTENSION_TAX}`,
-                      valueMoney: {
-                        value: extensionTax,
-                        currency,
-                      },
-                    }
-                  : undefined,
+                {
+                  url: `${BASE_PROFILE_URL}/${EXTENSION_TAX}`,
+                  valueMoney: {
+                    value: extensionTax,
+                    currency,
+                  },
+                },
                 {
                   url: `${BASE_PROFILE_URL}/${EXTENSION_PATIENT_SHARE}`,
                   valueMoney: {
@@ -351,16 +359,6 @@ const createNphiesClaimData = ({
                   valueBoolean: extensionPackage === "Y",
                 },
               ].filter(Boolean),
-              sequence: index + 1,
-              careTeamSequence: getSequences(doctorsData, doctorsIds, "id"),
-              diagnosisSequence: getSequences(
-                diagnosisData,
-                diagnosisIds,
-                "diagCode"
-              ),
-              informationSequence: hasSupportingInfoData
-                ? supportingInfo.map((_, index) => index + 1)
-                : undefined,
               productOrService: {
                 coding: [
                   {
