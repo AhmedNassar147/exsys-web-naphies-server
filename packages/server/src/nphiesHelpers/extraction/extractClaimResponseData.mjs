@@ -23,9 +23,11 @@ const formatProductItem = (adjudicationItem) => {
   const { code } = extractNphiesCodeAndDisplayFromCodingType(category);
   const { currency, value } = amount || {};
 
+  const _code = code.replace(/-/g, "_");
+
   return {
-    [`${code}_value`]: value || itemValue,
-    [`${code.replace("-", "_")}_currency`]: currency,
+    [`${_code}_value`]: typeof itemValue === "number" ? itemValue : value,
+    [`${_code}_currency`]: currency,
   };
 };
 
@@ -54,7 +56,8 @@ const extractClaimResponseData = ({
     : undefined;
 
   const productsData = isArrayHasData(item)
-    ? item.map(({ extension, adjudication }) => ({
+    ? item.map(({ extension, adjudication, itemSequence }) => ({
+        sequence: itemSequence,
         status: getExtensionCode(extension),
         ...(isArrayHasData(adjudication)
           ? adjudication.reduce((acc, element) => {
