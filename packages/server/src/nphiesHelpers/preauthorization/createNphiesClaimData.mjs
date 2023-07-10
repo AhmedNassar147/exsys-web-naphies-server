@@ -140,12 +140,6 @@ const createNphiesClaimData = ({
     fullUrl,
     resource: {
       ...resource,
-      extension: [
-        {
-          url: "http://nphies.sa/fhir/ksa/nphies-fs/StructureDefinition/extension-transfer",
-          valueBoolean: true,
-        },
-      ],
       type: {
         coding: [
           {
@@ -239,18 +233,19 @@ const createNphiesClaimData = ({
                     },
                   ],
                 },
-                code: hasCodeSection
-                  ? {
-                      coding: [
-                        {
-                          system: systemUrl,
-                          code,
-                          display,
-                        },
-                      ],
-                      text,
-                    }
-                  : undefined,
+                code:
+                  hasCodeSection && !isAttachment
+                    ? {
+                        coding: [
+                          {
+                            system: systemUrl,
+                            code,
+                            display,
+                          },
+                        ],
+                        text,
+                      }
+                    : undefined,
                 valueString: isInfoCode ? value : undefined,
                 timingDate:
                   isOnsetCode || isMissingTooth
