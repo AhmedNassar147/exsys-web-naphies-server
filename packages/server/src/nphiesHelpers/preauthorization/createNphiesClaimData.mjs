@@ -206,7 +206,7 @@ const createNphiesClaimData = ({
       supportingInfo: hasSupportingInfoData
         ? supportingInfo.map(
             (
-              { value, categoryCode, systemUrl, code, display, text },
+              { value, categoryCode, systemUrl, code, display, text, unit },
               index
             ) => {
               const isInfoCode = categoryCode === SUPPORT_INFO_KEY_NAMES.info;
@@ -222,9 +222,6 @@ const createNphiesClaimData = ({
               const hasTimingPeriod =
                 isHospitalizedCode || isEmploymentImpacted;
 
-              const isUsingUnit =
-                SUPPORT_INFO_USING_UNITS.includes[categoryCode];
-
               const hasCodeSection = !!(systemUrl && code);
 
               return {
@@ -237,19 +234,18 @@ const createNphiesClaimData = ({
                     },
                   ],
                 },
-                code:
-                  !isUsingUnit && hasCodeSection
-                    ? {
-                        coding: [
-                          {
-                            system: systemUrl,
-                            code,
-                            display,
-                          },
-                        ],
-                        text,
-                      }
-                    : undefined,
+                code: hasCodeSection
+                  ? {
+                      coding: [
+                        {
+                          system: systemUrl,
+                          code,
+                          display,
+                        },
+                      ],
+                      text,
+                    }
+                  : undefined,
                 valueString: isInfoCode ? value : undefined,
                 timingDate:
                   isOnsetCode || isMissingTooth
@@ -261,11 +257,11 @@ const createNphiesClaimData = ({
                       end: reverseDate(value[1]),
                     }
                   : undefined,
-                valueQuantity: isUsingUnit
+                valueQuantity: !!unit
                   ? {
                       value: value,
                       system: systemUrl,
-                      code,
+                      code: unit,
                     }
                   : undefined,
                 valueAttachment: !!(isAttachment && value)
