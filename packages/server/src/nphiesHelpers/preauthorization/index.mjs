@@ -152,20 +152,6 @@ const createNaphiesPreauthRequestFullData = ({
         patientMaritalStatus: patient_martial_status,
         providerDoctorOrPatientUrl: providerPatientUrl,
       }),
-      !!subscriber_patient_file_no &&
-        !!subscriber_iqama_no &&
-        createNphiesDoctorOrPatientData({
-          patientOrDoctorId: subscriber_patient_file_no,
-          identifierId: subscriber_iqama_no,
-          identifierIdType: subscriber_national_id_type,
-          staffFirstName: subscriber_official_name,
-          staffFamilyName: subscriber_official_f_name,
-          staffPhone: subscriber_tel,
-          gender: subscriber_gender,
-          patientBirthdate: subscriber_birthDate,
-          patientMaritalStatus: subscriber_martial_status,
-          providerDoctorOrPatientUrl: providerPatientUrl,
-        }),
       createNphiesCoverage({
         requestId,
         coverageType: coverage_type,
@@ -183,18 +169,33 @@ const createNaphiesPreauthRequestFullData = ({
         coveragePeriodStart,
         coveragePeriodEnd,
       }),
-      hasDoctorsData &&
-        doctorsData.map(({ id, license, first_name, family_name }) =>
-          createNphiesDoctorOrPatientData({
-            patientOrDoctorId: id,
-            identifierId: license,
-            // identifierIdType: "MD",
-            staffFirstName: first_name,
-            staffFamilyName: family_name,
-            providerDoctorOrPatientUrl: providerDoctorUrl,
-            isPatient: false,
-          })
-        ),
+      ...(hasDoctorsData
+        ? doctorsData.map(({ id, license, first_name, family_name }) =>
+            createNphiesDoctorOrPatientData({
+              patientOrDoctorId: id,
+              identifierId: license,
+              // identifierIdType: "MD",
+              staffFirstName: first_name,
+              staffFamilyName: family_name,
+              providerDoctorOrPatientUrl: providerDoctorUrl,
+              isPatient: false,
+            })
+          )
+        : []),
+      !!subscriber_patient_file_no &&
+        !!subscriber_iqama_no &&
+        createNphiesDoctorOrPatientData({
+          patientOrDoctorId: subscriber_patient_file_no,
+          identifierId: subscriber_iqama_no,
+          identifierIdType: subscriber_national_id_type,
+          staffFirstName: subscriber_official_name,
+          staffFamilyName: subscriber_official_f_name,
+          staffPhone: subscriber_tel,
+          gender: subscriber_gender,
+          patientBirthdate: subscriber_birthDate,
+          patientMaritalStatus: subscriber_martial_status,
+          providerDoctorOrPatientUrl: providerPatientUrl,
+        }),
       buildVisionPrescription &&
         createNphiesVisionPrescriptionData({
           visionPrescriptionUrl,

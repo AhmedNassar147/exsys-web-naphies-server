@@ -32,8 +32,8 @@ const createBaseEntryRequestData = ({
     fullUrl: `${providerFocusUrl}/${requestId}`,
     resource: {
       ...createNphiesBaseResource({
-        resourceType: resourceType,
-        profileType: profileType,
+        resourceType,
+        profileType,
         uuid: requestId,
       }),
       identifier: [

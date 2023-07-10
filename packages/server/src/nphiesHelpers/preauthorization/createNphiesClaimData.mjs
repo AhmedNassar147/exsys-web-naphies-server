@@ -10,7 +10,6 @@ import {
   NPHIES_RESOURCE_TYPES,
   NPHIES_BASE_CODE_TYPES,
   NPHIES_API_URLS,
-  SUPPORT_INFO_USING_UNITS,
   SUPPORT_INFO_KEY_NAMES,
 } from "../../constants.mjs";
 
@@ -141,6 +140,12 @@ const createNphiesClaimData = ({
     fullUrl,
     resource: {
       ...resource,
+      extension: [
+        {
+          url: "http://nphies.sa/fhir/ksa/nphies-fs/StructureDefinition/extension-transfer",
+          valueBoolean: true,
+        },
+      ],
       type: {
         coding: [
           {
@@ -356,10 +361,10 @@ const createNphiesClaimData = ({
                     currency,
                   },
                 },
-                // {
-                //   url: `${BASE_PROFILE_URL}/${EXTENSION_PACKAGE}`,
-                //   valueBoolean: extensionPackage === "Y",
-                // },
+                {
+                  url: `${BASE_PROFILE_URL}/${EXTENSION_PACKAGE}`,
+                  valueBoolean: extensionPackage === "Y",
+                },
               ].filter(Boolean),
               productOrService: {
                 coding: [
