@@ -223,6 +223,9 @@ const createNphiesClaimData = ({
 
               const hasCodeSection = !!(systemUrl && code);
 
+              const { contentType } =
+                typeof value === "object" && !Array.isArray(value) ? value : {};
+
               return {
                 sequence: index + 1,
                 category: {
@@ -267,6 +270,9 @@ const createNphiesClaimData = ({
                 valueAttachment: !!(isAttachment && value)
                   ? {
                       ...value,
+                      contentType: contentType.includes("image")
+                        ? contentType.replace(/\/.+/gm, "/jpeg")
+                        : contentType,
                       data: value.data.replace(/.+base64,/, ""),
                       creation: reverseDate(value.creation),
                     }
