@@ -136,7 +136,7 @@ const fetchExsysPreauthorizationDataAndCallNphies = async ({
   }
 
   return {
-    primaryKey,
+    primaryKey: preauth_pk,
     nphiesExtractedData,
     errorMessage,
     errorMessageCode,
