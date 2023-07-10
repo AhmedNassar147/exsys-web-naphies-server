@@ -4,6 +4,7 @@
  *
  */
 import { isArrayHasData } from "@exsys-web-server/helpers";
+import extractErrorsArray from "./extractErrorsArray.mjs";
 import extractNphiesCodeAndDisplayFromCodingType from "./extractNphiesCodeAndDisplayFromCodingType.mjs";
 
 const getExtensionCode = (extension) => {
