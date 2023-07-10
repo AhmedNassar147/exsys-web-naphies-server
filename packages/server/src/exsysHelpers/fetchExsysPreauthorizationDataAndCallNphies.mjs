@@ -6,6 +6,7 @@
 import { writeResultFile } from "@exsys-web-server/helpers";
 import createExsysRequest from "../helpers/createExsysRequest.mjs";
 import callNphiesAPIAndCollectResults from "../nphiesHelpers/base/callNphiesApiAndCollectResults.mjs";
+import extractClaimResponseData from "../nphiesHelpers/extraction/extractClaimResponseData.mjs";
 import extractCoverageEntryResponseData from "../nphiesHelpers/extraction/extractCoverageEntryResponseData.mjs";
 import createNphiesRequestPayloadFn from "../nphiesHelpers/preauthorization/index.mjs";
 import { EXSYS_API_IDS_NAMES, NPHIES_RESOURCE_TYPES } from "../constants.mjs";
@@ -19,10 +20,12 @@ const { collectExsysPreauthData, saveNphiesResponseToExsys } =
 
 const extractionFunctionsMap = {
   [COVERAGE]: extractCoverageEntryResponseData,
+  ClaimResponse: extractClaimResponseData,
 };
 
-const setErrorIfExtractedDataFoundFn = ({ coverageErrors }) => [
+const setErrorIfExtractedDataFoundFn = ({ coverageErrors, claimErrors }) => [
   ...(coverageErrors || []),
+  ...(claimErrors || []),
 ];
 
 const respondToExsysWithError = (preauth_pk, errorMessage) => null;
