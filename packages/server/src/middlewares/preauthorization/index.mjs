@@ -25,7 +25,7 @@ const createPreauthorizationMiddleware = (app) => async (req, _, next) => {
 
     const frontEndData = {
       productsData,
-      extraSupportInformationData,
+      // extraSupportInformationData,
     };
 
     const apiResults = await fetchExsysPreauthorizationDataAndCallNphies({
