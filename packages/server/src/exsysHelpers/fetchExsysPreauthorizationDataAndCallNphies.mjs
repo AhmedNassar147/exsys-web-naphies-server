@@ -16,8 +16,12 @@ import {
 
 const { COVERAGE } = NPHIES_RESOURCE_TYPES;
 
-const { collectExsysPreauthData, collectExsysClaimData, savePreauthData } =
-  EXSYS_API_IDS_NAMES;
+const {
+  collectExsysPreauthData,
+  collectExsysClaimData,
+  savePreauthData,
+  saveClaimData,
+} = EXSYS_API_IDS_NAMES;
 
 const extractionFunctionsMap = {
   [COVERAGE]: extractCoverageEntryResponseData,
@@ -29,12 +33,18 @@ const setErrorIfExtractedDataFoundFn = ({ coverageErrors, claimErrors }) => [
   ...(claimErrors || []),
 ];
 
-const createExsysSaveApiParams = (
+const createExsysSaveApiParams = ({
   primaryKey,
-  { claimRequestId, claimResponseId, claimOutcome, claimExtensionCode }
-) => ({
-  preauth_pk: primaryKey,
-  request_preauth_id: claimRequestId,
+  exsysDataApiPrimaryKeyName,
+  nphiesExtractedData: {
+    claimRequestId,
+    claimResponseId,
+    claimOutcome,
+    claimExtensionCode,
+  },
+}) => ({
+  [exsysDataApiPrimaryKeyName]: primaryKey,
+  claim_request_id: claimRequestId,
   claim_response_id: claimResponseId,
   outcome: claimOutcome,
   adjudication_outcome: claimExtensionCode,
@@ -51,9 +61,9 @@ const CONFIG_MAP = {
   [NPHIES_REQUEST_TYPES.CLAIM]: {
     printFolderName: "claim",
     nphiesRequestName: "Claim",
-    exsysDataApiPrimaryKeyName: "episode_invoice_no",
+    exsysDataApiPrimaryKeyName: "claim_pk",
     exsysQueryApiId: collectExsysClaimData,
-    exsysSaveApiId: "",
+    exsysSaveApiId: saveClaimData,
   },
   [NPHIES_REQUEST_TYPES.PREAUTH]: {
     printFolderName: "preauthorization",

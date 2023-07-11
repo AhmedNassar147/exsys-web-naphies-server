@@ -36,6 +36,7 @@ export const EXSYS_API_IDS_NAMES = {
   collectExsysPreauthData: "collectExsysPreauthData",
   savePreauthData: "savePreauthData",
   collectExsysClaimData: "collectExsysClaimData",
+  saveClaimData: "saveClaimData",
 };
 
 export const EXSYS_API_IDS = {
@@ -48,12 +49,14 @@ export const EXSYS_API_IDS = {
   // http://149.102.140.8:9090/ords/exsysexsysdba/hs_nphies_preauth_pkg/collect_preauth_data_to_send?authorization=11796985&preauth_pk=1
   [EXSYS_API_IDS_NAMES.collectExsysPreauthData]:
     "hs_nphies_preauth_pkg/collect_preauth_data_to_send",
-  // http://149.102.140.8:9090/ords/exsys_api/hs_nphies_preauth_pkg/update_preauth_send_status?preauth_pk=&claim_response_id=&request_preauth_id&outcome=&adjudication_outcome
+  // http://149.102.140.8:9090/ords/exsys_api/hs_nphies_preauth_pkg/update_preauth_send_status?preauth_pk=&claim_response_id=&claim_request_id&outcome=&adjudication_outcome
   [EXSYS_API_IDS_NAMES.savePreauthData]:
     "hs_nphies_preauth_pkg/update_preauth_send_status",
   // http://149.102.140.8:9090/ords/exsys_api/nphies_pkg/collect_claim_episode_to_send?authorization=11796985&organization_no=001&patient_file_no=073393&episode_no=12&episode_invoice_no=I22/38154
   [EXSYS_API_IDS_NAMES.collectExsysClaimData]:
     "nphies_pkg/collect_claim_episode_to_send",
+  // http://149.102.140.8:9090/ords/exsys_api/nphies_pkg/update_claim_send_status?claim_pk=&claim_response_id=&claim_request_id&outcome=&adjudication_outcome
+  [EXSYS_API_IDS_NAMES.saveClaimData]: "nphies_pkg/update_claim_send_status",
 };
 
 export const HTTP_STATUS_CODE = {

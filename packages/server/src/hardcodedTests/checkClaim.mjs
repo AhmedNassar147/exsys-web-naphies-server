@@ -8,7 +8,7 @@ import fetchExsysPreauthorizationDataAndCallNphies from "../exsysHelpers/fetchEx
 import { SERVER_CONFIG, NPHIES_REQUEST_TYPES } from "../constants.mjs";
 
 const { claimTestData, authorization, organizationNo } = SERVER_CONFIG;
-const DELAY_TIME = 1.5 * 1000;
+const DELAY_TIME = 2 * 60 * 1000;
 
 (async () => {
   const canRunTest = isArrayHasData(claimTestData);

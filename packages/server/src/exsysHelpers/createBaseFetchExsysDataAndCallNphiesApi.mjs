@@ -61,7 +61,11 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
 
     if (exsysSaveApiId) {
       const errorSaveParams = createExsysSaveApiParams
-        ? createExsysSaveApiParams(primaryKey, {})
+        ? createExsysSaveApiParams({
+            primaryKey,
+            exsysDataApiPrimaryKeyName,
+            nphiesExtractedData: {},
+          })
         : undefined;
 
       await createExsysRequest({
@@ -109,7 +113,11 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
 
   if (exsysSaveApiId) {
     const successSaveParams = createExsysSaveApiParams
-      ? createExsysSaveApiParams(primaryKey, nphiesExtractedData)
+      ? createExsysSaveApiParams({
+          primaryKey,
+          exsysDataApiPrimaryKeyName,
+          nphiesExtractedData,
+        })
       : undefined;
 
     await createExsysRequest({
