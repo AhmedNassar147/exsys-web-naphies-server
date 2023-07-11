@@ -38,7 +38,7 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
     error_message,
     [exsysDataApiPrimaryKeyName]: primaryKey,
     ...otherResults
-  } = allExsysData;
+  } = exsysResultsData;
 
   const printedErrorData = {
     requestParams,
