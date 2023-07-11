@@ -44,7 +44,7 @@ const extractClaimResponseData = ({
   processNote,
   error,
 }) => {
-  const [{ value: claimResponseId }] = identifier || [{}];
+  const [{ value: claimRequestId }] = identifier || [{}];
 
   const claimExtensionCode = getExtensionCode(extension);
 
@@ -74,8 +74,8 @@ const extractClaimResponseData = ({
 
   return {
     claimResourceType: resourceType,
-    claimResponseId,
-    claimRequestId: id,
+    claimResponseId: id,
+    claimRequestId: claimRequestId.replace("req_", ""),
     claimStatus: status,
     claimOutcome: outcome,
     claimPreauthRef: preAuthRef,

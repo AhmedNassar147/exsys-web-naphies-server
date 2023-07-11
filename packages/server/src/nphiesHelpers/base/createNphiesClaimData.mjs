@@ -3,7 +3,11 @@
  * Helpers: `createNphiesClaimData`.
  *
  */
-import { isArrayHasData, reverseDate } from "@exsys-web-server/helpers";
+import {
+  isArrayHasData,
+  reverseDate,
+  createTimestamp,
+} from "@exsys-web-server/helpers";
 import createBaseEntryRequestData from "./createBaseEntryRequestData.mjs";
 import {
   NPHIES_BASE_PROFILE_TYPES,
@@ -11,7 +15,6 @@ import {
   NPHIES_BASE_CODE_TYPES,
   NPHIES_API_URLS,
   SUPPORT_INFO_KEY_NAMES,
-  NPHIES_REQUEST_TYPES,
 } from "../../constants.mjs";
 
 const {
@@ -44,6 +47,8 @@ const {
   EXTENSION_PATIENT_SHARE,
   EXTENSION_PACKAGE,
   EXTENSION_PATIENT_INVOICE,
+  EXTENSION_AUTH_OFFLINE_DATE,
+  EXTENSION_EPISODE,
 } = NPHIES_BASE_CODE_TYPES;
 
 const PREAUTH_TYPES = {
@@ -87,6 +92,20 @@ const getSequences = (arrayData, ids, idPropName) => {
     )
     .filter(Boolean);
 };
+
+const createAuthorizationExtensions = ({ siteUrl, episodeInvoiceNo }) => [
+  {
+    url: `${BASE_PROFILE_URL}/${EXTENSION_AUTH_OFFLINE_DATE}`,
+    valueDateTime: createTimestamp(),
+  },
+  {
+    url: `${BASE_PROFILE_URL}/${EXTENSION_EPISODE}`,
+    valueIdentifier: {
+      system: `${siteUrl}/episode`,
+      value: episodeInvoiceNo,
+    },
+  },
+];
 
 const createNphiesClaimData = ({
   requestId,
@@ -157,6 +176,12 @@ const createNphiesClaimData = ({
 
   return {
     fullUrl,
+    extension: isClaimRequest
+      ? createAuthorizationExtensions({
+          siteUrl,
+          episodeInvoiceNo,
+        })
+      : undefined,
     resource: {
       ...resource,
       type: {
