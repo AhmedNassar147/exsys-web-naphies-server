@@ -102,7 +102,7 @@ const createAuthorizationExtensions = ({ siteUrl, episodeInvoiceNo }) => [
     url: `${BASE_PROFILE_URL}/${EXTENSION_EPISODE}`,
     valueIdentifier: {
       system: `${siteUrl}/episode`,
-      value: episodeInvoiceNo,
+      value: "SGH_EpisodeID_2314596",
     },
   },
 ];
