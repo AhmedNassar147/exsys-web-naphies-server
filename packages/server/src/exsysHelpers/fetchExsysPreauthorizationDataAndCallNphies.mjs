@@ -34,7 +34,10 @@ const respondToExsysWithError = (preauth_pk, errorMessage) =>
     requestParams: {
       preauth_pk,
       outcome: "error",
-      // adjudication_outcome
+      request_preauth_id: undefined,
+      claim_response_id: undefined,
+      outcome: undefined,
+      adjudication_outcome: undefined,
     },
     body: {
       preauth_pk,
@@ -128,7 +131,8 @@ const fetchExsysPreauthorizationDataAndCallNphies = async ({
 
   const { nphiesExtractedData, nodeServerDataSentToNaphies, nphiesResponse } =
     nphiesResultData;
-  const { claimRequestId, claimResponseId, claimOutcome } = nphiesExtractedData;
+  const { claimRequestId, claimResponseId, claimOutcome, claimExtensionCode } =
+    nphiesExtractedData;
 
   await createExsysRequest({
     resourceName: savePreauthData,
@@ -137,7 +141,7 @@ const fetchExsysPreauthorizationDataAndCallNphies = async ({
       request_preauth_id: claimRequestId,
       claim_response_id: claimResponseId,
       outcome: claimOutcome,
-      // adjudication_outcome
+      adjudication_outcome: claimExtensionCode,
     },
     body: {
       preauth_pk,
