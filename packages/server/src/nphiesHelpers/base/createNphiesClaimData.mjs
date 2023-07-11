@@ -408,7 +408,8 @@ const createNphiesClaimData = ({
                   url: `${BASE_PROFILE_URL}/${EXTENSION_PATIENT_INVOICE}`,
                   valueIdentifier: {
                     system: `${siteUrl}/patientInvoice`,
-                    value: episodeInvoiceNo,
+                    // value: episodeInvoiceNo,
+                    value: "Invc-20220120/OP-883923",
                   },
                 },
                 {
