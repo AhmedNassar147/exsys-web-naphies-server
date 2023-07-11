@@ -96,12 +96,14 @@ const getSequences = (arrayData, ids, idPropName) => {
 const createAuthorizationExtensions = ({ siteUrl, episodeInvoiceNo }) => [
   {
     url: `${BASE_PROFILE_URL}/${EXTENSION_AUTH_OFFLINE_DATE}`,
-    valueDateTime: createTimestamp(),
+    // valueDateTime: createTimestamp(),
+    valueDateTime: "2021-06-30T11:05:48+03:00",
   },
   {
     url: `${BASE_PROFILE_URL}/${EXTENSION_EPISODE}`,
     valueIdentifier: {
       system: `${siteUrl}/episode`,
+      // value: episodeInvoiceNo,
       value: "SGH_EpisodeID_2314596",
     },
   },
@@ -408,8 +410,7 @@ const createNphiesClaimData = ({
                   url: `${BASE_PROFILE_URL}/${EXTENSION_PATIENT_INVOICE}`,
                   valueIdentifier: {
                     system: `${siteUrl}/patientInvoice`,
-                    // value: episodeInvoiceNo,
-                    value: "Invc-20220120/OP-883923",
+                    value: episodeInvoiceNo,
                   },
                 },
                 {
