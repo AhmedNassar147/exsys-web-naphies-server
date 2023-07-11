@@ -3,6 +3,7 @@
  * `createPreauthorizationMiddleware`: `middleware`
  *
  */
+import { NPHIES_REQUEST_TYPES } from "../../constants.mjs";
 import fetchExsysPreauthorizationDataAndCallNphies from "../../exsysHelpers/fetchExsysPreauthorizationDataAndCallNphies.mjs";
 
 const createPreauthorizationMiddleware = (app) => async (req, _, next) => {
@@ -29,8 +30,8 @@ const createPreauthorizationMiddleware = (app) => async (req, _, next) => {
     };
 
     const apiResults = await fetchExsysPreauthorizationDataAndCallNphies({
-      printValues: false,
       requestMethod: "GET",
+      nphiesRequestType: NPHIES_REQUEST_TYPES.PREAUTH,
       requestParams,
       frontEndData,
       printValues: true,

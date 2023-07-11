@@ -35,6 +35,7 @@ export const EXSYS_API_IDS_NAMES = {
   checkExsysPollPendingRequests: "checkExsysPollPendingRequests",
   collectExsysPreauthData: "collectExsysPreauthData",
   savePreauthData: "savePreauthData",
+  collectExsysClaimData: "collectExsysClaimData",
 };
 
 export const EXSYS_API_IDS = {
@@ -50,6 +51,9 @@ export const EXSYS_API_IDS = {
   // http://149.102.140.8:9090/ords/exsys_api/hs_nphies_preauth_pkg/update_preauth_send_status?preauth_pk=&claim_response_id=&request_preauth_id&outcome=&adjudication_outcome
   [EXSYS_API_IDS_NAMES.savePreauthData]:
     "hs_nphies_preauth_pkg/update_preauth_send_status",
+  // http://149.102.140.8:9090/ords/exsys_api/nphies_pkg/collect_claim_episode_to_send?authorization=11796985&organization_no=001&patient_file_no=073393&episode_no=12&episode_invoice_no=I22/38154
+  [EXSYS_API_IDS_NAMES.collectExsysClaimData]:
+    "nphies_pkg/collect_claim_episode_to_send",
 };
 
 export const HTTP_STATUS_CODE = {
@@ -75,6 +79,7 @@ export const ELIGIBILITY_TYPES = {
 export const NPHIES_REQUEST_TYPES = {
   ELIGIBILITY: "eligibility",
   PREAUTH: "priorauth",
+  CLAIM: "claim",
   POLL: "poll",
 };
 
@@ -96,6 +101,7 @@ export const NPHIES_RESOURCE_MAP_TO_REQUEST_TYPE = {
   [NPHIES_REQUEST_TYPES.ELIGIBILITY]:
     NPHIES_RESOURCE_TYPES.COVERAGE_ELIGIBILITY_REQUEST,
   [NPHIES_REQUEST_TYPES.PREAUTH]: NPHIES_RESOURCE_TYPES.CLAIM,
+  [NPHIES_REQUEST_TYPES.CLAIM]: NPHIES_RESOURCE_TYPES.CLAIM,
   [NPHIES_REQUEST_TYPES.POLL]: NPHIES_RESOURCE_TYPES.TASK,
 };
 
@@ -169,6 +175,7 @@ export const NPHIES_BASE_CODE_TYPES = {
   EXTENSION_TAX: "extension-tax",
   EXTENSION_PATIENT_SHARE: "extension-patient-share",
   EXTENSION_PACKAGE: "extension-package",
+  EXTENSION_PATIENT_INVOICE: "extension-patientInvoice",
   TASK_CODE: "task-code",
   TASK_INPUT_TYPE: "task-input-type",
 };

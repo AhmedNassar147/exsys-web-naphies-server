@@ -18,6 +18,7 @@ import restartProcess from "./restartProcess.mjs";
 import reverseDate from "./reverseDate.mjs";
 import writeResultFile from "./writeResultFile.mjs";
 import isArrayHasData from "./isArrayHasData.mjs";
+import isObjectHasData from "./isObjectHasData.mjs";
 
 export {
   capitalizeFirstLetter,
@@ -35,6 +36,7 @@ export {
   reverseDate,
   writeResultFile,
   isArrayHasData,
+  isObjectHasData,
 };
 
 export * from "./constants.mjs";

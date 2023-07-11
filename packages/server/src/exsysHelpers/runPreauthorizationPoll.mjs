@@ -20,11 +20,11 @@ import createNphiesTaskData from "../nphiesHelpers/base/createNphiesTaskData.mjs
 import createOrganizationData from "../nphiesHelpers/base/createOrganizationData.mjs";
 import callNphiesApiAndCollectResults from "../nphiesHelpers/base/callNphiesApiAndCollectResults.mjs";
 
-const { preauthData } = SERVER_CONFIG;
+const { preauthPollData } = SERVER_CONFIG;
 const { POLL } = NPHIES_REQUEST_TYPES;
 
 const { siteUrl, siteName, providerLicense, providerOrganization } =
-  preauthData;
+  preauthPollData;
 
 const setErrorIfExtractedDataFoundFn = console.log;
 const extractionFunctionsMap = {};
@@ -66,7 +66,7 @@ const runPreauthorizationPoll = async () => {
   try {
     const options = {
       createNphiesRequestPayloadFn,
-      exsysResultsData: preauthData,
+      exsysResultsData: preauthPollData,
       setErrorIfExtractedDataFoundFn,
       extractionFunctionsMap,
     };

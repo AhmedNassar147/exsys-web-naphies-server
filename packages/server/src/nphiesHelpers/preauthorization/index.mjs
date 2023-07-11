@@ -3,11 +3,7 @@
  * Helper: `createNaphiesPreauthRequestFullData`.
  *
  */
-import {
-  // writeResultFile,
-  isArrayHasData,
-  createUUID,
-} from "@exsys-web-server/helpers";
+import { isArrayHasData, createUUID } from "@exsys-web-server/helpers";
 import createProviderUrls from "../base/createProviderUrls.mjs";
 import createNphiesBaseRequestData from "../base/createNphiesBaseRequestData.mjs";
 import createNphiesMessageHeader from "../base/createNphiesMessageHeader.mjs";
@@ -15,11 +11,11 @@ import createNphiesDoctorOrPatientData from "../base/createNphiesDoctorOrPatient
 import createNphiesCoverage from "../base/createNphiesCoverage.mjs";
 import createOrganizationData from "../base/createOrganizationData.mjs";
 // import createLocationData from "../base/createLocationData.mjs";
-import createNphiesClaimData from "./createNphiesClaimData.mjs";
+import createNphiesClaimData from "../base/createNphiesClaimData.mjs";
 import createNphiesVisionPrescriptionData from "./createNphiesVisionPrescriptionData.mjs";
 import { NPHIES_REQUEST_TYPES } from "../../constants.mjs";
 
-const { PREAUTH } = NPHIES_REQUEST_TYPES;
+const { PREAUTH, CLAIM } = NPHIES_REQUEST_TYPES;
 
 const createNaphiesPreauthRequestFullData = ({
   provider_license,
@@ -59,6 +55,7 @@ const createNaphiesPreauthRequestFullData = ({
   network_name,
   classes,
   business_arrangement,
+  message_event,
   message_event_type,
   supportInformationData,
   extraSupportInformationData,
@@ -68,7 +65,12 @@ const createNaphiesPreauthRequestFullData = ({
   visionPrescriptionId,
   visionPrescriptionCreatedAt,
   visionLensSpecification,
+  episode_invoice_no,
+  preauthRefs,
 }) => {
+  const isClaimRequest = message_event.includes("claim-request");
+  const requestType = isClaimRequest ? CLAIM : PREAUTH;
+
   const {
     providerPatientUrl,
     providerDoctorUrl,
@@ -79,7 +81,7 @@ const createNaphiesPreauthRequestFullData = ({
     // providerLocationUrl,
   } = createProviderUrls({
     providerBaseUrl: site_url,
-    requestType: PREAUTH,
+    requestType,
   });
 
   const baseData = createNphiesBaseRequestData();
@@ -113,7 +115,7 @@ const createNaphiesPreauthRequestFullData = ({
         payerLicense: payer_license,
         requestId,
         providerFocusUrl,
-        requestType: PREAUTH,
+        requestType,
       }),
       createNphiesClaimData({
         requestId,
@@ -134,11 +136,14 @@ const createNaphiesPreauthRequestFullData = ({
           : undefined,
         primaryDoctorFocal: isPrimaryDoctorIndexFound ? true : undefined,
         providerDoctorUrl,
-        preauthType: message_event_type,
+        isClaimRequest,
+        message_event_type,
         supportingInfo,
         doctorsData,
         productsData,
         diagnosisData,
+        episodeInvoiceNo: episode_invoice_no,
+        preauthRefs,
       }),
       createNphiesDoctorOrPatientData({
         patientOrDoctorId: patient_file_no,
@@ -237,41 +242,3 @@ const createNaphiesPreauthRequestFullData = ({
 };
 
 export default createNaphiesPreauthRequestFullData;
-
-// const promises = [
-// {
-//   folderName: "preauth/visionPrescription",
-//   data: {
-//     message_event_type: "vision",
-//     visionPrescriptionId: "2199055",
-//     visionPrescriptionCreatedAt: "2021-08-28T14:56:49.034+03:00",
-//     visionLensSpecification: [
-//       {
-//         eye: "left",
-//         sphere: 1.5,
-//         cylinder: 0.75,
-//         axis: 110,
-//         prism: [
-//           {
-//             amount: 2,
-//             base: "up",
-//           },
-//         ],
-//       },
-//       {
-//         eye: "right",
-//         sphere: 2.25,
-//         cylinder: 0.75,
-//         axis: 80,
-//       },
-//     ],
-//   },
-// },
-// ].map(({ folderName, data }) =>
-//   writeResultFile({
-//     folderName,
-//     data: createNaphiesPreauthRequestFullData(data),
-//   })
-// );
-
-// await Promise.all(promises);

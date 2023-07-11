@@ -3,9 +3,7 @@
  * Helper: `fetchExsysEligibilityDataAndCallNphies`.
  *
  */
-import { writeResultFile } from "@exsys-web-server/helpers";
-import createExsysRequest from "../helpers/createExsysRequest.mjs";
-import callNphiesAPIAndCollectResults from "../nphiesHelpers/base/callNphiesApiAndCollectResults.mjs";
+import createBaseFetchExsysDataAndCallNphiesApi from "./createBaseFetchExsysDataAndCallNphiesApi.mjs";
 import extractCoverageEligibilityEntryResponseData from "../nphiesHelpers/extraction/extractCoverageEligibilityEntryResponseData.mjs";
 import extractCoverageEntryResponseData from "../nphiesHelpers/extraction/extractCoverageEntryResponseData.mjs";
 import createNphiesRequestPayloadFn from "../nphiesHelpers/eligibility/index.mjs";
@@ -26,18 +24,18 @@ const setErrorIfExtractedDataFoundFn = ({
   coverageErrors,
 }) => [...(eligibilityErrors || []), ...(coverageErrors || [])];
 
-const respondToExsysWithError = (primaryKey, errorMessage) =>
-  createExsysRequest({
-    resourceName: saveNphiesResponseToExsys,
-    body: {
-      primaryKey,
-      nphiesExtractedData: {
-        eligibilityOutcome: "error",
-        isPatientEligible: "N",
-        eligibilityDisposition: errorMessage,
-      },
-    },
-  });
+const createResultsDataFromExsysResponse = ({ primaryKey, data }) => ({
+  primaryKey,
+  ...(data || null),
+});
+
+const createExsysErrorSaveApiBody = (errorMessage) => ({
+  nphiesExtractedData: {
+    eligibilityOutcome: "error",
+    isPatientEligible: "N",
+    eligibilityDisposition: errorMessage,
+  },
+});
 
 const fetchExsysEligibilityDataAndCallNphies = async ({
   requestParams,
@@ -46,105 +44,24 @@ const fetchExsysEligibilityDataAndCallNphies = async ({
   exsysAPiBodyData,
   printValues = true,
 }) => {
-  const { isSuccess, result } = await createExsysRequest({
-    resourceName: exsysApiId || getExsysDataBasedPatient,
-    body: exsysAPiBodyData,
-    requestMethod,
+  const result = await createBaseFetchExsysDataAndCallNphiesApi({
+    exsysQueryApiId: exsysApiId || getExsysDataBasedPatient,
+    exsysSaveApiId: saveNphiesResponseToExsys,
     requestParams,
+    requestBody: exsysAPiBodyData,
+    requestMethod,
+    printValues,
+    printFolderName: "eligibility",
+    nphiesRequestName: "Eligibility",
+    exsysDataApiPrimaryKeyName: "primaryKey",
+    createResultsDataFromExsysResponse,
+    createNphiesRequestPayloadFn,
+    extractionFunctionsMap,
+    setErrorIfExtractedDataFoundFn,
+    createExsysErrorSaveApiBody,
   });
 
-  const { primaryKey, data } = result || {};
-  const { error_message } = data || {};
-
-  if (error_message || !isSuccess) {
-    console.error("Eligibility exsys API failed");
-
-    if (printValues) {
-      await writeResultFile({
-        folderName: "eligibility",
-        data: {
-          primaryKey,
-          exsysResultsData: data,
-          exsysAPiBodyData,
-        },
-        isError: true,
-      });
-    }
-
-    const errorMessage =
-      error_message ||
-      `error calling exsys Eligibility \`${
-        exsysApiId || getExsysDataBasedPatient
-      }\` API`;
-
-    await respondToExsysWithError(primaryKey, errorMessage);
-
-    return {
-      errorMessage,
-      hasError: true,
-    };
-  }
-
-  if (!primaryKey || !data) {
-    const error = "Exsys API failed sent empty primaryKey or data keys";
-    console.error(error);
-    // if (printValues) {
-    //   await writeResultFile({
-    //     folderName: "eligibility",
-    //     data: {
-    //       primaryKey,
-    //       exsysResultsData: data,
-    //       exsysAPiBodyData,
-    //     },
-    //     isError: true,
-    //   });
-    // }
-    // await respondToExsysWithError(primaryKey,error);
-    return {
-      errorMessage: error,
-      hasError: true,
-    };
-  }
-
-  const { nphiesResultData, hasError, errorMessage, errorMessageCode } =
-    await callNphiesAPIAndCollectResults({
-      exsysResultsData: data,
-      createNphiesRequestPayloadFn,
-      extractionFunctionsMap,
-      setErrorIfExtractedDataFoundFn,
-      otherPrintValues: {
-        primaryKey,
-      },
-    });
-
-  const { nphiesExtractedData, nodeServerDataSentToNaphies, nphiesResponse } =
-    nphiesResultData;
-
-  await createExsysRequest({
-    resourceName: saveNphiesResponseToExsys,
-    body: {
-      primaryKey,
-      nodeServerDataSentToNaphies,
-      nphiesResponse,
-      nphiesExtractedData,
-    },
-  });
-
-  if (printValues) {
-    await writeResultFile({
-      folderName: "eligibility",
-      data: nphiesResultData,
-      isError: hasError,
-    });
-  }
-
-  return {
-    primaryKey,
-    nphiesExtractedData,
-    errorMessage,
-    errorMessageCode,
-    hasError,
-  };
+  return result;
 };
 
 export default fetchExsysEligibilityDataAndCallNphies;

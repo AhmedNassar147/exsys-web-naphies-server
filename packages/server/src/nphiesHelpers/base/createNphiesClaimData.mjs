@@ -4,13 +4,14 @@
  *
  */
 import { isArrayHasData, reverseDate } from "@exsys-web-server/helpers";
-import createBaseEntryRequestData from "../base/createBaseEntryRequestData.mjs";
+import createBaseEntryRequestData from "./createBaseEntryRequestData.mjs";
 import {
   NPHIES_BASE_PROFILE_TYPES,
   NPHIES_RESOURCE_TYPES,
   NPHIES_BASE_CODE_TYPES,
   NPHIES_API_URLS,
   SUPPORT_INFO_KEY_NAMES,
+  NPHIES_REQUEST_TYPES,
 } from "../../constants.mjs";
 
 const {
@@ -19,6 +20,7 @@ const {
   DIAG_ICD_URL,
   BASE_PROFILE_URL,
 } = NPHIES_API_URLS;
+
 const {
   PROFILE_VISION_PREAUTH,
   PROFILE_INSTITUTIONAL_PREAUTH,
@@ -26,7 +28,9 @@ const {
   PROFILE_PHARMACY_PREAUTH,
   PROFILE_PROFESSIONAL_PREAUTH,
 } = NPHIES_BASE_PROFILE_TYPES;
+
 const { CLAIM } = NPHIES_RESOURCE_TYPES;
+
 const {
   CLAIM_TYPE,
   CLAIM_SUBTYPE,
@@ -39,6 +43,7 @@ const {
   EXTENSION_TAX,
   EXTENSION_PATIENT_SHARE,
   EXTENSION_PACKAGE,
+  EXTENSION_PATIENT_INVOICE,
 } = NPHIES_BASE_CODE_TYPES;
 
 const PREAUTH_TYPES = {
@@ -94,7 +99,8 @@ const createNphiesClaimData = ({
   providerCoverageUrl,
   providerFocusUrl,
   siteUrl,
-  preauthType,
+  isClaimRequest,
+  message_event_type,
   visionPrescriptionUrl,
   useVisionPrescriptionUrl,
   providerDoctorUrl,
@@ -105,8 +111,18 @@ const createNphiesClaimData = ({
   diagnosisData,
   primaryDoctorSequence,
   primaryDoctorFocal,
+  episodeInvoiceNo,
+  preauthRefs,
 }) => {
-  const { profileType, subType } = PREAUTH_TYPES[preauthType];
+  const { profileType, subType } = PREAUTH_TYPES[message_event_type];
+
+  const _profileType = isClaimRequest
+    ? profileType.replace("priorauth", "claim")
+    : profileType;
+
+  const identifierUrl = `${siteUrl}/${
+    isClaimRequest ? "claim" : "authorization"
+  }`;
 
   const { fullUrl, resource } = createBaseEntryRequestData({
     requestId,
@@ -120,9 +136,10 @@ const createNphiesClaimData = ({
     providerFocusUrl,
     insuranceFocal: primaryDoctorFocal,
     insuranceSequence: primaryDoctorSequence,
-    identifierUrl: `${siteUrl}/authorization`,
+    insurancePreauthRefs: preauthRefs,
+    identifierUrl,
     resourceType: CLAIM,
-    profileType,
+    profileType: _profileType,
   });
 
   const hasDiagnosisData = isArrayHasData(diagnosisData);
@@ -136,6 +153,8 @@ const createNphiesClaimData = ({
       )
     : 0;
 
+  const useValue = isClaimRequest ? "claim" : "preauthorization";
+
   return {
     fullUrl,
     resource: {
@@ -144,7 +163,7 @@ const createNphiesClaimData = ({
         coding: [
           {
             system: `${BASE_TERMINOLOGY_CODE_SYS_URL}/${CLAIM_TYPE}`,
-            code: preauthType,
+            code: message_event_type,
           },
         ],
       },
@@ -160,7 +179,7 @@ const createNphiesClaimData = ({
             },
           }
         : null),
-      use: "preauthorization",
+      use: useValue,
       ...(useVisionPrescriptionUrl
         ? {
             prescription: {
@@ -346,20 +365,25 @@ const createNphiesClaimData = ({
                 ? supportingInfo.map((_, index) => index + 1)
                 : undefined,
               extension: [
-                extensionTax
-                  ? {
-                      url: `${BASE_PROFILE_URL}/${EXTENSION_TAX}`,
-                      valueMoney: {
-                        value: extensionTax,
-                        currency,
-                      },
-                    }
-                  : undefined,
+                !!extensionTax && {
+                  url: `${BASE_PROFILE_URL}/${EXTENSION_TAX}`,
+                  valueMoney: {
+                    value: extensionTax,
+                    currency,
+                  },
+                },
                 {
                   url: `${BASE_PROFILE_URL}/${EXTENSION_PATIENT_SHARE}`,
                   valueMoney: {
                     value: extensionPatientShare,
                     currency,
+                  },
+                },
+                !!episodeInvoiceNo && {
+                  url: `${BASE_PROFILE_URL}/${EXTENSION_PATIENT_INVOICE}`,
+                  valueIdentifier: {
+                    system: `${siteUrl}/patientInvoice`,
+                    value: episodeInvoiceNo,
                   },
                 },
                 {

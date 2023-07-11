@@ -3,7 +3,11 @@
  * Helper: `createBaseEntryRequestData`.
  *
  */
-import { reverseDate, getCurrentDate } from "@exsys-web-server/helpers";
+import {
+  reverseDate,
+  getCurrentDate,
+  isArrayHasData,
+} from "@exsys-web-server/helpers";
 import createNphiesBaseResource from "./createNphiesBaseResource.mjs";
 import { NPHIES_API_URLS, NPHIES_BASE_CODE_TYPES } from "../../constants.mjs";
 
@@ -23,6 +27,7 @@ const createBaseEntryRequestData = ({
   identifierUrl,
   insuranceSequence,
   insuranceFocal,
+  insurancePreauthRefs,
   resourceType,
   profileType,
 }) => {
@@ -69,6 +74,9 @@ const createBaseEntryRequestData = ({
             reference: `${providerCoverageUrl}/${requestId}`,
           },
           businessArrangement,
+          preAuthRef: isArrayHasData(insurancePreauthRefs)
+            ? insurancePreauthRefs
+            : undefined,
         },
       ],
     },
