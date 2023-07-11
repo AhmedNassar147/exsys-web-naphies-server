@@ -18,10 +18,12 @@
     "build": "rollup --config",
     "start": "yarn workspace @exsys-web-server/server start",
     "dev": "yarn start --ignore-cert --dev",
-    "test-dev": "node ./packages/server/src/hardcodedTests/checkEligibility.mjs --ignore-cert --dev",
+    "test-elig-dev": "node ./packages/server/src/hardcodedTests/checkEligibility.mjs --ignore-cert --dev",
+    "test-elig-prod": "node ./packages/server/src/hardcodedTests/checkEligibility.mjs --production",
+    "test-claim-dev": "node ./packages/server/src/hardcodedTests/checkClaim.mjs --ignore-cert --dev",
+    "test-claim-prod": "node ./packages/server/src/hardcodedTests/checkClaim.mjs --production",
     "// preprod": "yarn build",
-    "prod": "yarn start --production",
-    "test-prod": "node ./packages/server/src/hardcodedTests/checkEligibility.mjs --production"
+    "prod": "yarn start --production"
   },
   "dependencies": {
     "@exsys-web-server/start-exsys-nphies-web-server": "1.0.0",
