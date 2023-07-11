@@ -93,21 +93,25 @@ const getSequences = (arrayData, ids, idPropName) => {
     .filter(Boolean);
 };
 
-const createAuthorizationExtensions = ({ siteUrl, episodeInvoiceNo }) => [
-  {
-    url: `${BASE_PROFILE_URL}/${EXTENSION_AUTH_OFFLINE_DATE}`,
-    // valueDateTime: createTimestamp(),
-    valueDateTime: "2021-06-30T11:05:48+03:00",
-  },
-  {
-    url: `${BASE_PROFILE_URL}/${EXTENSION_EPISODE}`,
-    valueIdentifier: {
-      system: `${siteUrl}/episode`,
-      // value: episodeInvoiceNo,
-      value: "SGH_EpisodeID_2314596",
+const createAuthorizationExtensions = ({
+  siteUrl,
+  episodeInvoiceNo,
+  preauthRefs,
+}) =>
+  [
+    isArrayHasData(preauthRefs) && {
+      url: `${BASE_PROFILE_URL}/${EXTENSION_AUTH_OFFLINE_DATE}`,
+      valueDateTime: createTimestamp(),
     },
-  },
-];
+    {
+      url: `${BASE_PROFILE_URL}/${EXTENSION_EPISODE}`,
+      valueIdentifier: {
+        system: `${siteUrl}/episode`,
+        value: episodeInvoiceNo,
+        // value: "SGH_EpisodeID_2314596",
+      },
+    },
+  ].filter(Boolean);
 
 const createNphiesClaimData = ({
   requestId,
@@ -178,14 +182,15 @@ const createNphiesClaimData = ({
 
   return {
     fullUrl,
-    extension: isClaimRequest
-      ? createAuthorizationExtensions({
-          siteUrl,
-          episodeInvoiceNo,
-        })
-      : undefined,
     resource: {
       ...resource,
+      extension: isClaimRequest
+        ? createAuthorizationExtensions({
+            siteUrl,
+            episodeInvoiceNo,
+            preauthRefs,
+          })
+        : undefined,
       type: {
         coding: [
           {
