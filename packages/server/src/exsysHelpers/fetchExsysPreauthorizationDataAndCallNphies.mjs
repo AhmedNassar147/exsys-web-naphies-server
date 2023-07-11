@@ -94,6 +94,7 @@ const fetchExsysPreauthorizationDataAndCallNphies = async ({
     printFolderName,
     nphiesRequestName,
     exsysDataApiPrimaryKeyName,
+    exsysSaveApiId,
   } = CONFIG_MAP[nphiesRequestType];
 
   const result = await createBaseFetchExsysDataAndCallNphiesApi({
