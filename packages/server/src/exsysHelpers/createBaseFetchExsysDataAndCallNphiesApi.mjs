@@ -140,9 +140,15 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
     });
   }
 
+  const { message_event_type, message_event } = exsysResultsData;
+
   return {
     primaryKey,
-    nphiesExtractedData,
+    nphiesExtractedData: {
+      ...nphiesExtractedData,
+      messageEvent: message_event,
+      messageEventType: message_event_type,
+    },
     errorMessage,
     errorMessageCode,
     hasError,
