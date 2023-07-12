@@ -12,6 +12,7 @@ import {
   SERVER_CONFIG,
   EXSYS_POLLS_TIMEOUT,
   NPHIES_REQUEST_TYPES,
+  NPHIES_RESOURCE_TYPES,
 } from "../constants.mjs";
 import createProviderUrls from "../nphiesHelpers/base/createProviderUrls.mjs";
 import createNphiesBaseRequestData from "../nphiesHelpers/base/createNphiesBaseRequestData.mjs";
@@ -25,6 +26,7 @@ import callNphiesApiAndCollectResults from "../nphiesHelpers/base/callNphiesApiA
 
 const { preauthPollData } = SERVER_CONFIG;
 const { POLL } = NPHIES_REQUEST_TYPES;
+const { COVERAGE } = NPHIES_RESOURCE_TYPES;
 
 const { siteUrl, siteName, providerLicense, providerOrganization } =
   preauthPollData;
