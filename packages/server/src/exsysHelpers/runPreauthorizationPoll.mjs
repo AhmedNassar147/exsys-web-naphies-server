@@ -98,8 +98,8 @@ const runPreauthorizationPoll = async () => {
   } catch (error) {
     console.log("error from polling runPreauthorizationPoll", error);
   } finally {
-    delayProcess(EXSYS_POLLS_TIMEOUT);
-    await runPreauthorizationPoll();
+    // delayProcess(EXSYS_POLLS_TIMEOUT);
+    // await runPreauthorizationPoll();
   }
 };
 
