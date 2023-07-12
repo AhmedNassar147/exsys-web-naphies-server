@@ -51,8 +51,6 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
       error_message ||
       `error when calling exsys ${nphiesRequestName} \`${exsysQueryApiId}\` API`;
 
-    console.error(errorMessage);
-
     await writeResultFile({
       folderName: printFolderName,
       data: printedErrorData,
@@ -86,7 +84,6 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
 
   if (!primaryKey || !isObjectHasData(otherResults)) {
     const error = `Exsys API failed sent empty ${exsysDataApiPrimaryKeyName} or result keys`;
-    console.error(error);
 
     await writeResultFile({
       folderName: printFolderName,
