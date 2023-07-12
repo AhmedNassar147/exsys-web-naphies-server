@@ -74,8 +74,10 @@ const runPreauthorizationPoll = async () => {
     const { nphiesResultData, hasError, errorMessage, errorMessageCode } =
       await callNphiesApiAndCollectResults(options);
 
-    console.error("errorMessage", errorMessage);
-    console.error("errorMessageCode", errorMessageCode);
+    console.error("authorizationPoll errorMessage", {
+      errorMessage,
+      errorMessageCode,
+    });
 
     await writeResultFile({
       folderName: "authorizationPoll",
@@ -90,4 +92,4 @@ const runPreauthorizationPoll = async () => {
   }
 };
 
-await runPreauthorizationPoll();
+export default runPreauthorizationPoll;

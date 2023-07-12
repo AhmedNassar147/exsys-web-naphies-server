@@ -18,9 +18,10 @@ import {
 } from "./constants.mjs";
 import createEligibilityMiddleware from "./middlewares/eligibility/index.mjs";
 import createPreauthorizationMiddleware from "./middlewares/preauthorization/index.mjs";
-// keep polls at bottom
-// import "./exsysHelpers/runPreauthorizationPoll.mjs";
-import "./exsysHelpers/fetchExsysInvoicesPolls.mjs";
+
+// polls
+import runPreauthorizationPoll from "./exsysHelpers/runPreauthorizationPoll.mjs";
+import runExsysEligibilityPendingRequestsPoll from "./exsysHelpers/runExsysEligibilityPendingRequestsPoll.mjs";
 
 const { ignoreCert } = CLI_CONFIG;
 
@@ -50,6 +51,11 @@ const { ignoreCert } = CLI_CONFIG;
   const res = app.listen(SERVER_PORT, () =>
     console.log(`app is running on http://localhost:${SERVER_PORT}`)
   );
+
+  res.on("connect", async () => {
+    await runExsysEligibilityPendingRequestsPoll();
+    await runPreauthorizationPoll();
+  });
 
   res.on("error", () => {
     res.close(() => {

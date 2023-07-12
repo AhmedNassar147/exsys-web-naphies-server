@@ -1,6 +1,6 @@
 /*
  *
- * Helper: `fetchExsysInvoicesPolls`.
+ * Helper: `runExsysEligibilityPendingRequestsPoll`.
  *
  */
 import { delayProcess } from "@exsys-web-server/helpers";
@@ -22,15 +22,15 @@ const requestOptions = {
   },
 };
 
-const fetchPendingRequestsData = async () => {
+const runExsysEligibilityPendingRequestsPoll = async () => {
   try {
     await fetchExsysEligibilityDataAndCallNphies(requestOptions);
   } catch (error) {
     console.log("error from polling", error);
   } finally {
     delayProcess(EXSYS_POLLS_TIMEOUT);
-    await fetchPendingRequestsData();
+    await runExsysEligibilityPendingRequestsPoll();
   }
 };
 
-await fetchPendingRequestsData();
+export default runExsysEligibilityPendingRequestsPoll;
