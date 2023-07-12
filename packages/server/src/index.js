@@ -24,6 +24,7 @@ import runPreauthorizationPoll from "./exsysHelpers/runPreauthorizationPoll.mjs"
 import runExsysEligibilityPendingRequestsPoll from "./exsysHelpers/runExsysEligibilityPendingRequestsPoll.mjs";
 
 const { ignoreCert } = CLI_CONFIG;
+const limit = "60mb";
 
 (async () => {
   if (!ignoreCert && !(await checkPathExists(NPHIES_CERT_FILE_NAME))) {
@@ -37,7 +38,8 @@ const { ignoreCert } = CLI_CONFIG;
     return;
   }
 
-  const limit = "60mb";
+  await runExsysEligibilityPendingRequestsPoll();
+  await runPreauthorizationPoll();
 
   const app = express();
   app.use(cors());
@@ -51,11 +53,6 @@ const { ignoreCert } = CLI_CONFIG;
   const res = app.listen(SERVER_PORT, () =>
     console.log(`app is running on http://localhost:${SERVER_PORT}`)
   );
-
-  res.on("connect", async () => {
-    await runExsysEligibilityPendingRequestsPoll();
-    await runPreauthorizationPoll();
-  });
 
   res.on("error", () => {
     res.close(() => {
