@@ -15,7 +15,7 @@ import stopTheProcessIfCertificateNotFound from "./helpers/stopTheProcessIfCerti
 (async () => await import("./polls/index.mjs"))();
 
 (async () => {
-  await stopTheProcessIfCertificateNotFound();
+  await stopTheProcessIfCertificateNotFound(false);
 
   const app = express();
   app.use(cors());

@@ -8,8 +8,10 @@ import { NPHIES_CERT_FILE_NAME, CLI_CONFIG } from "../constants.mjs";
 
 const { ignoreCert } = CLI_CONFIG;
 
-const stopTheProcessIfCertificateNotFound = async () => {
-  console.info("checking certificate ...");
+const stopTheProcessIfCertificateNotFound = async (showCheckingLog = true) => {
+  if (showCheckingLog) {
+    console.info("checking certificate ...");
+  }
 
   if (!ignoreCert && !(await checkPathExists(NPHIES_CERT_FILE_NAME))) {
     console.error(
