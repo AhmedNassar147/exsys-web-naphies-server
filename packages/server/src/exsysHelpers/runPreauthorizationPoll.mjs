@@ -18,6 +18,9 @@ import createNphiesBaseRequestData from "../nphiesHelpers/base/createNphiesBaseR
 import createNphiesMessageHeader from "../nphiesHelpers/base/createNphiesMessageHeader.mjs";
 import createNphiesTaskData from "../nphiesHelpers/base/createNphiesTaskData.mjs";
 import createOrganizationData from "../nphiesHelpers/base/createOrganizationData.mjs";
+// import mapEntriesAndExtractNeededData from "../nphiesHelpers/extraction/mapEntriesAndExtractNeededData.mjs";
+import extractCoverageEntryResponseData from "../nphiesHelpers/extraction/extractCoverageEntryResponseData.mjs";
+// import extractClaimResponseData from "../nphiesHelpers/extraction/extractClaimResponseData.mjs";
 import callNphiesApiAndCollectResults from "../nphiesHelpers/base/callNphiesApiAndCollectResults.mjs";
 
 const { preauthPollData } = SERVER_CONFIG;
@@ -26,8 +29,18 @@ const { POLL } = NPHIES_REQUEST_TYPES;
 const { siteUrl, siteName, providerLicense, providerOrganization } =
   preauthPollData;
 
-const setErrorIfExtractedDataFoundFn = console.log;
-const extractionFunctionsMap = {};
+const setErrorIfExtractedDataFoundFn = ({ coverageErrors, claimErrors }) => [
+  ...(coverageErrors || []),
+  ...(claimErrors || []),
+];
+const extractionFunctionsMap = {
+  [COVERAGE]: extractCoverageEntryResponseData,
+  // Bundle: (nphiesResponse) =>
+  //   mapEntriesAndExtractNeededData(nphiesResponse, {
+  //     [COVERAGE]: extractCoverageEntryResponseData,
+  //     ClaimResponse: extractClaimResponseData,
+  //   }),
+};
 
 const createNphiesRequestPayloadFn = () => {
   const requestId = createUUID();
@@ -71,13 +84,9 @@ const runPreauthorizationPoll = async () => {
       extractionFunctionsMap,
     };
 
-    const { nphiesResultData, hasError, errorMessage, errorMessageCode } =
-      await callNphiesApiAndCollectResults(options);
-
-    console.error("authorizationPoll errorMessage", {
-      errorMessage,
-      errorMessageCode,
-    });
+    const { nphiesResultData, hasError } = await callNphiesApiAndCollectResults(
+      options
+    );
 
     await writeResultFile({
       folderName: "authorizationPoll",
