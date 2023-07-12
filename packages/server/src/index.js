@@ -26,6 +26,11 @@ import runExsysEligibilityPendingRequestsPoll from "./exsysHelpers/runExsysEligi
 const { ignoreCert } = CLI_CONFIG;
 const limit = "60mb";
 
+const pollPromises = [
+  runExsysEligibilityPendingRequestsPoll(),
+  runPreauthorizationPoll(),
+];
+
 (async () => {
   if (!ignoreCert && !(await checkPathExists(NPHIES_CERT_FILE_NAME))) {
     console.log(
@@ -38,29 +43,31 @@ const limit = "60mb";
     return;
   }
 
-  await runExsysEligibilityPendingRequestsPoll();
-  await runPreauthorizationPoll();
+  await Promise.all(pollPromises).then(() => {
+    const app = express();
+    app.use(cors());
+    app.use(bodyParser.urlencoded({ extended: true, limit }));
+    app.use(bodyParser.json({ limit }));
+    app.use(bodyParser.text());
+    app.use(bodyParser.raw({ limit }));
+    // app.use(async (_, __, next) => {
 
-  const app = express();
-  app.use(cors());
-  app.use(bodyParser.urlencoded({ extended: true, limit }));
-  app.use(bodyParser.json({ limit }));
-  app.use(bodyParser.text());
-  app.use(bodyParser.raw({ limit }));
-  app.use("/eligibility", createEligibilityMiddleware(app));
-  app.use("/preauth", createPreauthorizationMiddleware(app));
+    // });
+    app.use("/eligibility", createEligibilityMiddleware(app));
+    app.use("/preauth", createPreauthorizationMiddleware(app));
 
-  const res = app.listen(SERVER_PORT, () =>
-    console.log(`app is running on http://localhost:${SERVER_PORT}`)
-  );
+    const res = app.listen(SERVER_PORT, () =>
+      console.log(`app is running on http://localhost:${SERVER_PORT}`)
+    );
 
-  res.on("error", () => {
-    res.close(() => {
-      process.kill(process.pid);
-      console.log(
-        `restarting server after ${RESTART_SERVER_MS / 1000} seconds`
-      );
-      restartProcess();
+    res.on("error", () => {
+      res.close(() => {
+        process.kill(process.pid);
+        console.log(
+          `restarting server after ${RESTART_SERVER_MS / 1000} seconds`
+        );
+        restartProcess();
+      });
     });
   });
 })();
