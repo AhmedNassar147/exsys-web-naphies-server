@@ -9,7 +9,7 @@ import {
   EXSYS_API_IDS_NAMES,
   EXSYS_POLLS_TIMEOUT,
 } from "../constants.mjs";
-import fetchExsysEligibilityDataAndCallNphies from "./fetchExsysEligibilityDataAndCallNphies.mjs";
+import fetchExsysEligibilityDataAndCallNphies from "../exsysHelpers/fetchExsysEligibilityDataAndCallNphies.mjs";
 
 const { authorization } = SERVER_CONFIG;
 const { checkExsysPollPendingRequests } = EXSYS_API_IDS_NAMES;

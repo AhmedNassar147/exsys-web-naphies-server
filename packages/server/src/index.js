@@ -6,66 +6,37 @@
 import express from "express";
 import cors from "cors";
 import bodyParser from "body-parser";
-import {
-  checkPathExists,
-  restartProcess,
-  RESTART_SERVER_MS,
-} from "@exsys-web-server/helpers";
-import {
-  SERVER_PORT,
-  NPHIES_CERT_FILE_NAME,
-  CLI_CONFIG,
-} from "./constants.mjs";
+import { restartProcess, RESTART_SERVER_MS } from "@exsys-web-server/helpers";
+import { SERVER_PORT, FILES_ENCODING_LIMIT } from "./constants.mjs";
 import createEligibilityMiddleware from "./middlewares/eligibility/index.mjs";
 import createPreauthorizationMiddleware from "./middlewares/preauthorization/index.mjs";
+import stopTheProcessIfCertificateNotFound from "./helpers/stopTheProcessIfCertificateNotFound.mjs";
 
-// polls
-import runPreauthorizationPoll from "./exsysHelpers/runPreauthorizationPoll.mjs";
-import runExsysEligibilityPendingRequestsPoll from "./exsysHelpers/runExsysEligibilityPendingRequestsPoll.mjs";
-
-const { ignoreCert } = CLI_CONFIG;
-const limit = "60mb";
+(async () => await import("./polls/index.mjs"))();
 
 (async () => {
-  if (!ignoreCert && !(await checkPathExists(NPHIES_CERT_FILE_NAME))) {
-    console.log(
-      `can't find the certificate where the path is ${NPHIES_CERT_FILE_NAME}`
-    );
+  await stopTheProcessIfCertificateNotFound();
 
-    console.log(`restarting server after ${RESTART_SERVER_MS / 1000} seconds`);
-    restartProcess();
+  const app = express();
+  app.use(cors());
+  app.use(bodyParser.urlencoded({ extended: true }));
+  app.use(bodyParser.json({ limit: FILES_ENCODING_LIMIT }));
+  app.use(bodyParser.text());
+  app.use(bodyParser.raw({ limit: FILES_ENCODING_LIMIT }));
+  app.use("/eligibility", createEligibilityMiddleware(app));
+  app.use("/preauth", createPreauthorizationMiddleware(app));
 
-    return;
-  }
+  const res = app.listen(SERVER_PORT, () =>
+    console.log(`app is running on http://localhost:${SERVER_PORT}`)
+  );
 
-  await Promise.all([
-    runExsysEligibilityPendingRequestsPoll(),
-    // runPreauthorizationPoll(),
-  ]).then(() => {
-    const app = express();
-    app.use(cors());
-    app.use(bodyParser.urlencoded({ extended: true, limit }));
-    app.use(bodyParser.json({ limit }));
-    app.use(bodyParser.text());
-    app.use(bodyParser.raw({ limit }));
-    // app.use(async (_, __, next) => {
-
-    // });
-    app.use("/eligibility", createEligibilityMiddleware(app));
-    app.use("/preauth", createPreauthorizationMiddleware(app));
-
-    const res = app.listen(SERVER_PORT, () =>
-      console.log(`app is running on http://localhost:${SERVER_PORT}`)
-    );
-
-    res.on("error", () => {
-      res.close(() => {
-        process.kill(process.pid);
-        console.log(
-          `restarting server after ${RESTART_SERVER_MS / 1000} seconds`
-        );
-        restartProcess();
-      });
+  res.on("error", () => {
+    res.close(() => {
+      process.kill(process.pid);
+      console.log(
+        `restarting server after ${RESTART_SERVER_MS / 1000} seconds`
+      );
+      restartProcess();
     });
   });
 })();

@@ -17,6 +17,8 @@ const configFilePath = `${rootYarnWorkSpacePath}/config.json`;
 export const CLI_CONFIG = await collectProcessOptions();
 export const SERVER_CONFIG = await readJsonFile(configFilePath, true);
 
+export const FILES_ENCODING_LIMIT = "60mb";
+
 export const SERVER_PORT = 5000;
 export const RETRY_TIMES = 3;
 export const NPHIES_RETRY_TIMES = 2;
