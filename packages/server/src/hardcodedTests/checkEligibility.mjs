@@ -4,12 +4,14 @@
  *
  */
 import { delayProcess, isArrayHasData } from "@exsys-web-server/helpers";
+import stopTheProcessIfCertificateNotFound from "../helpers/stopTheProcessIfCertificateNotFound.mjs";
 import fetchExsysEligibilityDataAndCallNphies from "../exsysHelpers/fetchExsysEligibilityDataAndCallNphies.mjs";
 import { SERVER_CONFIG, EXSYS_POLLS_TIMEOUT } from "../constants.mjs";
 
 const { patients, authorization, organizationNo } = SERVER_CONFIG;
 
 (async () => {
+  await stopTheProcessIfCertificateNotFound();
   const canRunTest = isArrayHasData(patients);
 
   if (!canRunTest) {

@@ -4,6 +4,7 @@
  *
  */
 import { delayProcess, isArrayHasData } from "@exsys-web-server/helpers";
+import stopTheProcessIfCertificateNotFound from "../helpers/stopTheProcessIfCertificateNotFound.mjs";
 import fetchExsysPreauthorizationDataAndCallNphies from "../exsysHelpers/fetchExsysPreauthorizationDataAndCallNphies.mjs";
 import { SERVER_CONFIG, NPHIES_REQUEST_TYPES } from "../constants.mjs";
 
@@ -11,6 +12,7 @@ const { claimTestData, authorization, organizationNo } = SERVER_CONFIG;
 const DELAY_TIME = 2 * 60 * 1000;
 
 (async () => {
+  await stopTheProcessIfCertificateNotFound();
   const canRunTest = isArrayHasData(claimTestData);
 
   if (!canRunTest) {
