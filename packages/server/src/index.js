@@ -26,11 +26,6 @@ import runExsysEligibilityPendingRequestsPoll from "./exsysHelpers/runExsysEligi
 const { ignoreCert } = CLI_CONFIG;
 const limit = "60mb";
 
-const pollPromises = [
-  runExsysEligibilityPendingRequestsPoll(),
-  runPreauthorizationPoll(),
-];
-
 (async () => {
   if (!ignoreCert && !(await checkPathExists(NPHIES_CERT_FILE_NAME))) {
     console.log(
@@ -43,7 +38,10 @@ const pollPromises = [
     return;
   }
 
-  await Promise.all(pollPromises).then(() => {
+  await Promise.all([
+    runExsysEligibilityPendingRequestsPoll(),
+    // runPreauthorizationPoll(),
+  ]).then(() => {
     const app = express();
     app.use(cors());
     app.use(bodyParser.urlencoded({ extended: true, limit }));
