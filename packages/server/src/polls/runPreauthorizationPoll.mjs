@@ -92,8 +92,6 @@ const runPreauthorizationPoll = async () => {
       options
     );
 
-    console.log("nphiesResultData", nphiesResultData);
-
     await writeResultFile({
       folderName: "authorizationPoll",
       data: nphiesResultData,
