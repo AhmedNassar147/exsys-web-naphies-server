@@ -28,7 +28,7 @@ const runExsysEligibilityPendingRequestsPoll = async () => {
   } catch (error) {
     console.log("error from Eligibility polling", error);
   } finally {
-    delayProcess(EXSYS_POLLS_TIMEOUT);
+    await delayProcess(EXSYS_POLLS_TIMEOUT);
     await runExsysEligibilityPendingRequestsPoll();
   }
 };

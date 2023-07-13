@@ -92,6 +92,8 @@ const runPreauthorizationPoll = async () => {
       options
     );
 
+    console.log("nphiesResultData", nphiesResultData);
+
     await writeResultFile({
       folderName: "authorizationPoll",
       data: nphiesResultData,
@@ -100,7 +102,7 @@ const runPreauthorizationPoll = async () => {
   } catch (error) {
     console.log("error from polling runPreauthorizationPoll", error);
   } finally {
-    delayProcess(PREAUTH_TIMEOUT);
+    await delayProcess(PREAUTH_TIMEOUT);
     await runPreauthorizationPoll();
   }
 };
