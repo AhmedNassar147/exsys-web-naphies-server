@@ -10,7 +10,6 @@ import {
 } from "@exsys-web-server/helpers";
 import {
   SERVER_CONFIG,
-  EXSYS_POLLS_TIMEOUT,
   NPHIES_REQUEST_TYPES,
   NPHIES_RESOURCE_TYPES,
 } from "../constants.mjs";
@@ -19,9 +18,9 @@ import createNphiesBaseRequestData from "../nphiesHelpers/base/createNphiesBaseR
 import createNphiesMessageHeader from "../nphiesHelpers/base/createNphiesMessageHeader.mjs";
 import createNphiesTaskData from "../nphiesHelpers/base/createNphiesTaskData.mjs";
 import createOrganizationData from "../nphiesHelpers/base/createOrganizationData.mjs";
-// import mapEntriesAndExtractNeededData from "../nphiesHelpers/extraction/mapEntriesAndExtractNeededData.mjs";
+import mapEntriesAndExtractNeededData from "../nphiesHelpers/extraction/mapEntriesAndExtractNeededData.mjs";
 import extractCoverageEntryResponseData from "../nphiesHelpers/extraction/extractCoverageEntryResponseData.mjs";
-// import extractClaimResponseData from "../nphiesHelpers/extraction/extractClaimResponseData.mjs";
+import extractClaimResponseData from "../nphiesHelpers/extraction/extractClaimResponseData.mjs";
 import callNphiesApiAndCollectResults from "../nphiesHelpers/base/callNphiesApiAndCollectResults.mjs";
 
 const { preauthPollData } = SERVER_CONFIG;
@@ -37,12 +36,14 @@ const setErrorIfExtractedDataFoundFn = ({ coverageErrors, claimErrors }) => [
 ];
 const extractionFunctionsMap = {
   [COVERAGE]: extractCoverageEntryResponseData,
-  // Bundle: (nphiesResponse) =>
-  //   mapEntriesAndExtractNeededData(nphiesResponse, {
-  //     [COVERAGE]: extractCoverageEntryResponseData,
-  //     ClaimResponse: extractClaimResponseData,
-  //   }),
+  Bundle: (nphiesResponse) =>
+    mapEntriesAndExtractNeededData(nphiesResponse, {
+      [COVERAGE]: extractCoverageEntryResponseData,
+      ClaimResponse: extractClaimResponseData,
+    }),
 };
+
+const PREAUTH_TIMEOUT = 3 * 60 * 1000;
 
 const createNphiesRequestPayloadFn = () => {
   const requestId = createUUID();
@@ -84,6 +85,7 @@ const runPreauthorizationPoll = async () => {
       exsysResultsData: preauthPollData,
       setErrorIfExtractedDataFoundFn,
       extractionFunctionsMap,
+      isAuthorizationPoll: true,
     };
 
     const { nphiesResultData, hasError } = await callNphiesApiAndCollectResults(
@@ -98,7 +100,7 @@ const runPreauthorizationPoll = async () => {
   } catch (error) {
     console.log("error from polling runPreauthorizationPoll", error);
   } finally {
-    delayProcess(EXSYS_POLLS_TIMEOUT);
+    delayProcess(PREAUTH_TIMEOUT);
     await runPreauthorizationPoll();
   }
 };

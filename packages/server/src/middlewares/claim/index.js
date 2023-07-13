@@ -1,22 +1,26 @@
 /*
  *
- * `createPreauthorizationMiddleware`: `middleware`
+ * `createClaimMiddleware`: `middleware`
  *
  */
 import { NPHIES_REQUEST_TYPES } from "../../constants.mjs";
-import createPreauthorizationMiddleware from "../../helpers/createBaseExpressMiddleware.mjs";
+import createClaimMiddleware from "../../helpers/createBaseExpressMiddleware.mjs";
 import fetchExsysPreauthorizationDataAndCallNphies from "../../exsysHelpers/fetchExsysPreauthorizationDataAndCallNphies.mjs";
 
-export default createPreauthorizationMiddleware(
+export default createClaimMiddleware(
   async ({
-    preauth_pk,
     authorization,
+    patientFileNo,
+    episodeNo,
+    episodeInvoiceNo,
     productsData,
     extraSupportInformationData,
   }) => {
     const requestParams = {
       authorization,
-      preauth_pk,
+      patientFileNo,
+      episodeNo,
+      episodeInvoiceNo,
     };
 
     const frontEndData = {
@@ -26,7 +30,7 @@ export default createPreauthorizationMiddleware(
 
     return await fetchExsysPreauthorizationDataAndCallNphies({
       requestMethod: "GET",
-      nphiesRequestType: NPHIES_REQUEST_TYPES.PREAUTH,
+      nphiesRequestType: NPHIES_REQUEST_TYPES.CLAIM,
       requestParams,
       frontEndData,
       printValues: true,

@@ -12,6 +12,7 @@ const callNphiesAPIAndCollectResults = ({
   extractionFunctionsMap,
   otherPrintValues,
   setErrorIfExtractedDataFoundFn,
+  isAuthorizationPoll,
 }) =>
   new Promise(async (resolve) => {
     const nphiesRequestPayload = createNphiesRequestPayloadFn(exsysResultsData);
@@ -35,12 +36,20 @@ const callNphiesAPIAndCollectResults = ({
     let errorMessageCode = undefined;
     let hasError = !isSuccess;
 
+    const { id: mainBundleId } = nphiesResponse || {};
+
     const extractedData = mapEntriesAndExtractNeededData(
       nphiesResponse,
       extractionFunctionsMap
     );
 
-    nphiesResultData.nphiesExtractedData = extractedData;
+    nphiesResultData.nphiesExtractedData =
+      isAuthorizationPoll && mainBundleId
+        ? {
+            mainBundleId,
+            ...(extractedData || null),
+          }
+        : extractedData;
 
     if (extractedData && setErrorIfExtractedDataFoundFn) {
       const { issueErrorCode, issueError } = extractedData;

@@ -81,8 +81,8 @@ const extractClaimResponseData = ({
 
   return {
     claimResourceType: resourceType,
-    claimResponseId: claimResponseId.replace("req_", ""),
-    claimRequestId: claimRequestId.replace("req_", "") || id,
+    claimResponseId: claimResponseId.replace("req_", "") || id,
+    claimRequestId: claimRequestId.replace("req_", ""),
     claimStatus: status,
     claimOutcome: outcome,
     claimPreauthRef: preAuthRef,

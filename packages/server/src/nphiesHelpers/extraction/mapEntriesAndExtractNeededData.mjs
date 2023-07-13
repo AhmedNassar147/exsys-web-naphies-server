@@ -10,7 +10,7 @@ const mapEntriesAndExtractNeededData = (
   nphiesResponse,
   extractionFunctionsMap
 ) => {
-  const { entry, id: bundle_id, issue } = nphiesResponse || {};
+  const { entry, id, issue } = nphiesResponse || {};
   const issueValues = formatNphiesResponseIssue(issue);
 
   const hasEntryData = isArrayHasData(entry);
@@ -35,7 +35,7 @@ const mapEntriesAndExtractNeededData = (
 
   return shouldResultsToObjectOfData
     ? {
-        bundleId: bundle_id,
+        bundleId: id,
         ...issueValues,
         ...(entryResults || null),
       }
