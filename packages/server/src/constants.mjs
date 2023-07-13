@@ -23,7 +23,7 @@ export const SERVER_PORT = 5000;
 export const RETRY_TIMES = 3;
 export const NPHIES_RETRY_TIMES = 2;
 export const RETRY_DELAY = 10000;
-export const EXSYS_POLLS_TIMEOUT = 5000;
+export const EXSYS_POLLS_TIMEOUT = 10000;
 const { dev, certificatePath } = CLI_CONFIG;
 
 const BASE_API_IP_ADDRESS = dev ? "http://149.102.140.8" : "http://localhost";
