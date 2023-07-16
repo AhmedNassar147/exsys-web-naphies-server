@@ -97,13 +97,6 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
     };
   }
 
-  if (printFolderName === "claim") {
-    console.log({
-      prod: exsysResultsData.productsData,
-      result,
-    });
-  }
-
   const { nphiesResultData, hasError, errorMessage, errorMessageCode } =
     await callNphiesAPIAndCollectResults({
       exsysResultsData: exsysResultsData,

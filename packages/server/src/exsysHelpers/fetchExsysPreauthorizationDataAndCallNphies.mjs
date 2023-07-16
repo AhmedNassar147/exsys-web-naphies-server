@@ -81,7 +81,8 @@ const fetchExsysPreauthorizationDataAndCallNphies = async ({
   nphiesRequestType,
   frontEndData,
 }) => {
-  const _frontEndData = frontEndData || {};
+  const { productsData: frontEndProductsData, extraSupportInformationData } =
+    frontEndData || {};
 
   // const { extraSupportInformationData, ...otherFrontData } = _frontEndData;
   // const curedExtraSupportInformationData =
@@ -94,9 +95,10 @@ const fetchExsysPreauthorizationDataAndCallNphies = async ({
   //   // extraSupportInformationData: curedExtraSupportInformationData
   // };
 
-  const createResultsDataFromExsysResponse = (result) => ({
+  const createResultsDataFromExsysResponse = ({ productsData, ...result }) => ({
     ...result,
-    ..._frontEndData,
+    extraSupportInformationData,
+    productsData: [productsData, frontEndProductsData].filter(Boolean).flat(),
   });
 
   const {
