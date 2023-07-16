@@ -13,14 +13,16 @@ export default createClaimMiddleware(
     patientFileNo,
     episodeNo,
     episodeInvoiceNo,
+    organizationNo,
     productsData,
     extraSupportInformationData,
   }) => {
     const requestParams = {
       authorization,
-      patientFileNo,
-      episodeNo,
-      episodeInvoiceNo,
+      patient_file_no: patientFileNo,
+      episode_no: episodeNo,
+      episode_invoice_no: episodeInvoiceNo,
+      organization_no: organizationNo,
     };
 
     const frontEndData = {
