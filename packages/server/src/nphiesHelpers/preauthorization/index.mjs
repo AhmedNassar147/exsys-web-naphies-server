@@ -67,6 +67,7 @@ const createNaphiesPreauthRequestFullData = ({
   visionLensSpecification,
   episode_invoice_no,
   preauthRefs,
+  daysSupply,
 }) => {
   const isClaimRequest = message_event.includes("claim-request");
   const requestType = isClaimRequest ? CLAIM : PREAUTH;
@@ -102,10 +103,24 @@ const createNaphiesPreauthRequestFullData = ({
 
   const requestId = createUUID();
 
-  const supportingInfo = [
+  let supportingInfo = [
     ...(supportInformationData || []),
     ...(extraSupportInformationData || []),
   ];
+
+  if (isArrayHasData(productsData) && isArrayHasData(daysSupply)) {
+    const productsWithDaysSupplyIDs = productsData
+      .map(({ days_supply_id }) => days_supply_id)
+      .filter((daysSupplyValue) => typeof daysSupplyValue === "number");
+
+    if (productsWithDaysSupplyIDs.length) {
+      const filteredDaySupply = daysSupply.filter(({ value }) =>
+        productsWithDaysSupplyIDs.includes(value)
+      );
+
+      supportingInfo = [...supportingInfo, ...filteredDaySupply];
+    }
+  }
 
   const requestPayload = {
     ...baseData,
