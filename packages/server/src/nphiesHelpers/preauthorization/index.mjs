@@ -114,9 +114,9 @@ const createNaphiesPreauthRequestFullData = ({
       .filter((daysSupplyValue) => typeof daysSupplyValue === "number");
 
     if (productsWithDaysSupplyIDs.length) {
-      const filteredDaySupply = daysSupply.filter(({ value }) =>
-        productsWithDaysSupplyIDs.includes(value)
-      );
+      const filteredDaySupply = daysSupply
+        .filter(({ value }) => productsWithDaysSupplyIDs.includes(value))
+        .filter(Boolean);
 
       supportingInfo = [...supportingInfo, ...filteredDaySupply];
     }
