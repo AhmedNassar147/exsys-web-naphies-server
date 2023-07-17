@@ -7,6 +7,7 @@ import {
   delayProcess,
   createUUID,
   writeResultFile,
+  isObjectHasData,
 } from "@exsys-web-server/helpers";
 import {
   SERVER_CONFIG,
@@ -91,6 +92,16 @@ const runPreauthorizationPoll = async () => {
     const { nphiesResultData, hasError } = await callNphiesApiAndCollectResults(
       options
     );
+
+    const { nphiesExtractedData } = nphiesResultData;
+
+    const { mainBundleId, bundleId, ...otherExtractedData } =
+      nphiesExtractedData || {};
+
+    if (!isObjectHasData(otherExtractedData)) {
+      console.log("authorization poll has no messages yet");
+      return;
+    }
 
     await writeResultFile({
       folderName: "authorizationPoll",
