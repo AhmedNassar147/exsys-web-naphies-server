@@ -3,7 +3,7 @@
  * Helper: `fetchExsysPreauthorizationDataAndCallNphies`.
  *
  */
-// import convertSupportInfoAttachmentUrlsToBase64 from "../nphiesHelpers/base/convertSupportInfoAttachmentUrlsToBase64.mjs";
+import convertSupportInfoAttachmentUrlsToBase64 from "../nphiesHelpers/base/convertSupportInfoAttachmentUrlsToBase64.mjs";
 import createBaseFetchExsysDataAndCallNphiesApi from "./createBaseFetchExsysDataAndCallNphiesApi.mjs";
 import extractClaimResponseData from "../nphiesHelpers/extraction/extractClaimResponseData.mjs";
 import extractCoverageEntryResponseData from "../nphiesHelpers/extraction/extractCoverageEntryResponseData.mjs";
@@ -81,23 +81,17 @@ const fetchExsysPreauthorizationDataAndCallNphies = async ({
   nphiesRequestType,
   frontEndData,
 }) => {
-  const { productsData: frontEndProductsData, extraSupportInformationData } =
-    frontEndData || {};
+  const { productsData: frontEndProductsData } = frontEndData || {};
 
-  // const { extraSupportInformationData, ...otherFrontData } = _frontEndData;
-  // const curedExtraSupportInformationData =
-  //   await convertSupportInfoAttachmentUrlsToBase64(extraSupportInformationData);
-
-  // const exsysResultsData = {
-  //   ...(result || {}),
-  //   ..._frontEndData,
-  //   // ...otherFrontData,
-  //   // extraSupportInformationData: curedExtraSupportInformationData
-  // };
-
-  const createResultsDataFromExsysResponse = ({ productsData, ...result }) => ({
+  const createResultsDataFromExsysResponse = async ({
+    productsData,
+    supportInformationData,
+    ...result
+  }) => ({
     ...result,
-    extraSupportInformationData,
+    supportInformationData: await convertSupportInfoAttachmentUrlsToBase64(
+      supportInformationData
+    ),
     productsData: [productsData, frontEndProductsData].filter(Boolean).flat(),
   });
 

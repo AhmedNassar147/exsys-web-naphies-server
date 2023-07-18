@@ -15,7 +15,6 @@ export default createClaimMiddleware(
     episodeInvoiceNo,
     organizationNo,
     productsData,
-    extraSupportInformationData,
   }) => {
     const requestParams = {
       authorization,
@@ -27,7 +26,6 @@ export default createClaimMiddleware(
 
     const frontEndData = {
       productsData,
-      extraSupportInformationData,
     };
 
     return await fetchExsysPreauthorizationDataAndCallNphies({

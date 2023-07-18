@@ -8,12 +8,7 @@ import createPreauthorizationMiddleware from "../../helpers/createBaseExpressMid
 import fetchExsysPreauthorizationDataAndCallNphies from "../../exsysHelpers/fetchExsysPreauthorizationDataAndCallNphies.mjs";
 
 export default createPreauthorizationMiddleware(
-  async ({
-    preauth_pk,
-    authorization,
-    productsData,
-    extraSupportInformationData,
-  }) => {
+  async ({ preauth_pk, authorization, productsData }) => {
     const requestParams = {
       authorization,
       preauth_pk,
@@ -21,7 +16,6 @@ export default createPreauthorizationMiddleware(
 
     const frontEndData = {
       productsData,
-      extraSupportInformationData,
     };
 
     return await fetchExsysPreauthorizationDataAndCallNphies({

@@ -76,11 +76,8 @@ const PREAUTH_TYPES = {
 
 const currency = "SAR";
 
-const getProductNetValue = ({ unitPrice, extensionTax, quantity }) => {
-  return +(((unitPrice || 0) + (extensionTax || 0)) * (quantity || 0)).toFixed(
-    2
-  );
-};
+const getProductNetValue = ({ unitPrice, extensionTax, quantity }) =>
+  +(((unitPrice || 0) + (extensionTax || 0)) * (quantity || 0)).toFixed(2);
 
 const getSequences = (arrayData, ids, idPropName) => {
   if (!isArrayHasData(arrayData) || !isArrayHasData(ids)) {
@@ -256,7 +253,20 @@ const createNphiesClaimData = ({
       supportingInfo: hasSupportingInfoData
         ? supportingInfo.map(
             (
-              { value, categoryCode, systemUrl, code, display, text, unit },
+              {
+                value,
+                categoryCode,
+                systemUrl,
+                code,
+                display,
+                text,
+                unit,
+                contentType,
+                title,
+                creation,
+                periodStart,
+                periodEnd,
+              },
               index
             ) => {
               const isInfoCode = categoryCode === SUPPORT_INFO_KEY_NAMES.info;
@@ -273,9 +283,6 @@ const createNphiesClaimData = ({
                 isHospitalizedCode || isEmploymentImpacted;
 
               const hasCodeSection = !!(systemUrl && code);
-
-              const { contentType } =
-                typeof value === "object" && !Array.isArray(value) ? value : {};
 
               return {
                 sequence: index + 1,
@@ -307,8 +314,8 @@ const createNphiesClaimData = ({
                     : undefined,
                 timingPeriod: hasTimingPeriod
                   ? {
-                      start: reverseDate(value[0]),
-                      end: reverseDate(value[1]),
+                      start: reverseDate(periodStart),
+                      end: reverseDate(periodEnd),
                     }
                   : undefined,
                 valueQuantity: !!unit
@@ -318,14 +325,12 @@ const createNphiesClaimData = ({
                       code: unit,
                     }
                   : undefined,
-                valueAttachment: !!(isAttachment && value)
+                valueAttachment: !!isAttachment
                   ? {
-                      ...value,
-                      contentType: contentType.includes("image")
-                        ? contentType.replace(/\/.+/gm, "/jpeg")
-                        : contentType,
-                      data: value.data.replace(/.+base64,/, ""),
-                      creation: reverseDate(value.creation),
+                      contentType,
+                      data: value,
+                      title,
+                      creation: reverseDate(creation),
                     }
                   : undefined,
               };
@@ -370,23 +375,22 @@ const createNphiesClaimData = ({
         : undefined,
       item: hasProductsData
         ? productsData.map(
-            (
-              {
-                nphiesProductCode,
-                nphiesProductCodeType,
-                nphiesProductName,
-                servicedDate,
-                quantity,
-                unitPrice,
-                extensionTax,
-                extensionPatientShare,
-                extensionPackage,
-                diagnosisIds,
-                doctorsIds,
-              },
-              index
-            ) => ({
-              sequence: index + 1,
+            ({
+              nphiesProductCode,
+              nphiesProductCodeType,
+              nphiesProductName,
+              servicedDate,
+              quantity,
+              unitPrice,
+              extensionTax,
+              extensionPatientShare,
+              extensionPackage,
+              diagnosisIds,
+              doctorsIds,
+              sequence,
+              recordDetailNo,
+            }) => ({
+              sequence,
               careTeamSequence: getSequences(doctorsData, doctorsIds, "id"),
               diagnosisSequence: getSequences(
                 diagnosisData,
@@ -411,11 +415,11 @@ const createNphiesClaimData = ({
                     currency,
                   },
                 },
-                !!episodeInvoiceNo && {
+                !!recordDetailNo && {
                   url: `${BASE_PROFILE_URL}/${EXTENSION_PATIENT_INVOICE}`,
                   valueIdentifier: {
                     system: `${siteUrl}/patientInvoice`,
-                    value: episodeInvoiceNo,
+                    value: `${recordDetailNo}`,
                   },
                 },
                 {

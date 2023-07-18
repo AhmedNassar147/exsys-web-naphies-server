@@ -58,7 +58,6 @@ const createNaphiesPreauthRequestFullData = ({
   message_event,
   message_event_type,
   supportInformationData,
-  extraSupportInformationData,
   doctorsData,
   productsData,
   diagnosisData,
@@ -103,10 +102,7 @@ const createNaphiesPreauthRequestFullData = ({
 
   const requestId = createUUID();
 
-  let supportingInfo = [
-    ...(supportInformationData || []),
-    ...(extraSupportInformationData || []),
-  ];
+  let supportingInfo = [...(supportInformationData || [])];
 
   if (isArrayHasData(productsData) && isArrayHasData(daysSupply)) {
     const productsWithDaysSupplyIDs = productsData
