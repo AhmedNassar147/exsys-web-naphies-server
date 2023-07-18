@@ -36,8 +36,6 @@ const convertSupportInfoAttachmentUrlsToBase64 = async (supportInfo) => {
       supportInfo.map(async ({ categoryCode, value, contentType, ...item }) => {
         const isAttachment = categoryCode === attachment;
 
-        const { value } = item;
-
         return {
           categoryCode,
           ...item,
