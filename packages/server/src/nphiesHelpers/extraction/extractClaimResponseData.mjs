@@ -19,15 +19,22 @@ const formatProductItem = (adjudicationItem) => {
   if (!adjudicationItem) {
     return {};
   }
-  const { category, amount, value: itemValue } = adjudicationItem;
+  const { category, amount, reason, value: itemValue } = adjudicationItem;
   const { code } = extractNphiesCodeAndDisplayFromCodingType(category);
   const { currency, value } = amount || {};
+  const { coding: reasonCoding } = reason | {};
 
   const _code = code.replace(/-/g, "_");
 
   return {
     [`${_code}_value`]: typeof itemValue === "number" ? itemValue : value,
     [`${_code}_currency`]: currency,
+    [`${_code}_reason`]: isArrayHasData(reasonCoding)
+      ? reasonCoding.reduce((acc, { code, display }) => {
+          acc += `${acc ? ` / ` : ""}${code} - ${display}`;
+          return acc;
+        }, "")
+      : undefined,
   };
 };
 
