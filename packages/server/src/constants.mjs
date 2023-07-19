@@ -39,6 +39,7 @@ export const EXSYS_API_IDS_NAMES = {
   savePreauthData: "savePreauthData",
   collectExsysClaimData: "collectExsysClaimData",
   saveClaimData: "saveClaimData",
+  savePreauthAndClaimPollData: "savePreauthAndClaimPollData",
 };
 
 export const EXSYS_API_IDS = {
@@ -59,6 +60,7 @@ export const EXSYS_API_IDS = {
     "nphies_pkg/collect_claim_episode_to_send",
   // http://149.102.140.8:9090/ords/exsys_api/nphies_pkg/update_claim_send_status?claim_pk=&claim_response_id=&claim_request_id&outcome=&adjudication_outcome
   [EXSYS_API_IDS_NAMES.saveClaimData]: "nphies_pkg/update_claim_send_status",
+  [EXSYS_API_IDS_NAMES.savePreauthAndClaimPollData]: "",
 };
 
 export const HTTP_STATUS_CODE = {

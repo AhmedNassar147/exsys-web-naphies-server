@@ -77,7 +77,7 @@ const PREAUTH_TYPES = {
 const currency = "SAR";
 
 const getProductNetValue = ({ unitPrice, extensionTax, quantity }) =>
-  +(((unitPrice || 0) + (extensionTax || 0)) * (quantity || 0)).toFixed(2);
+  +((unitPrice || 0) * (quantity || 0) + (extensionTax || 0)).toFixed(2);
 
 const getSequences = (arrayData, ids, idPropName) => {
   if (!isArrayHasData(arrayData) || !isArrayHasData(ids)) {
@@ -388,7 +388,6 @@ const createNphiesClaimData = ({
               diagnosisIds,
               doctorsIds,
               sequence,
-              recordDetailNo,
             }) => ({
               sequence,
               careTeamSequence: getSequences(doctorsData, doctorsIds, "id"),
@@ -415,11 +414,11 @@ const createNphiesClaimData = ({
                     currency,
                   },
                 },
-                !!recordDetailNo && {
+                !!episodeInvoiceNo && {
                   url: `${BASE_PROFILE_URL}/${EXTENSION_PATIENT_INVOICE}`,
                   valueIdentifier: {
                     system: `${siteUrl}/patientInvoice`,
-                    value: `${recordDetailNo}`,
+                    value: episodeInvoiceNo,
                   },
                 },
                 {
