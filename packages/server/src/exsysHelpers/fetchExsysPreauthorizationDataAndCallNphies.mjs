@@ -79,10 +79,7 @@ const fetchExsysPreauthorizationDataAndCallNphies = async ({
   requestMethod,
   printValues = true,
   nphiesRequestType,
-  frontEndData,
 }) => {
-  const { productsData: frontEndProductsData } = frontEndData || {};
-
   const createResultsDataFromExsysResponse = async ({
     productsData,
     supportInformationData,
@@ -92,7 +89,7 @@ const fetchExsysPreauthorizationDataAndCallNphies = async ({
     supportInformationData: await convertSupportInfoAttachmentUrlsToBase64(
       supportInformationData
     ),
-    productsData: [productsData, frontEndProductsData].filter(Boolean).flat(),
+    productsData: productsData.filter(Boolean),
   });
 
   const {

@@ -14,26 +14,17 @@ export default createClaimMiddleware(
     episodeNo,
     episodeInvoiceNo,
     organizationNo,
-    productsData,
-  }) => {
-    const requestParams = {
-      authorization,
-      patient_file_no: patientFileNo,
-      episode_no: episodeNo,
-      episode_invoice_no: episodeInvoiceNo,
-      organization_no: organizationNo,
-    };
-
-    const frontEndData = {
-      productsData,
-    };
-
-    return await fetchExsysPreauthorizationDataAndCallNphies({
+  }) =>
+    await fetchExsysPreauthorizationDataAndCallNphies({
       requestMethod: "GET",
       nphiesRequestType: NPHIES_REQUEST_TYPES.CLAIM,
-      requestParams,
-      frontEndData,
+      requestParams: {
+        authorization,
+        patient_file_no: patientFileNo,
+        episode_no: episodeNo,
+        episode_invoice_no: episodeInvoiceNo,
+        organization_no: organizationNo,
+      },
       printValues: true,
-    });
-  }
+    })
 );
