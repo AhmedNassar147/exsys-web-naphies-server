@@ -9,6 +9,7 @@ import {
   writeResultFile,
   isObjectHasData,
 } from "@exsys-web-server/helpers";
+import createExsysRequest from "../helpers/createExsysRequest.mjs";
 import {
   SERVER_CONFIG,
   NPHIES_REQUEST_TYPES,
@@ -25,7 +26,7 @@ import extractCoverageEntryResponseData from "../nphiesHelpers/extraction/extrac
 import extractClaimResponseData from "../nphiesHelpers/extraction/extractClaimResponseData.mjs";
 import callNphiesApiAndCollectResults from "../nphiesHelpers/base/callNphiesApiAndCollectResults.mjs";
 
-const { preauthPollData } = SERVER_CONFIG;
+const { preauthPollData, authorization } = SERVER_CONFIG;
 const { POLL } = NPHIES_REQUEST_TYPES;
 const { COVERAGE } = NPHIES_RESOURCE_TYPES;
 const { savePreauthAndClaimPollData } = EXSYS_API_IDS_NAMES;
@@ -106,23 +107,34 @@ const runPreauthorizationPoll = async () => {
       return;
     }
 
-    const { claimRequestId, claimOutcome, claimPreauthRef, claimResponseId } =
-      otherExtractedData;
+    const {
+      claimRequestId,
+      claimOutcome,
+      claimPreauthRef,
+      claimResponseId,
+      claimPeriodStart,
+      claimPeriodEnd,
+      claimExtensionCode,
+    } = otherExtractedData;
 
-    // await createExsysRequest({
-    //   resourceName: savePreauthAndClaimPollData,
-    //   requestParams: {
-    //     claimRequestId,
-    //     claimResponseId,
-    //     claimOutcome,
-    //     claimPreauthRef,
-    //   },
-    //   body: {
-    //     nodeServerDataSentToNaphies,
-    //     nphiesResponse,
-    //     nphiesExtractedData,
-    //   },
-    // });
+    await createExsysRequest({
+      resourceName: savePreauthAndClaimPollData,
+      requestParams: {
+        authorization,
+        claimRequestId,
+        claimResponseId,
+        claimOutcome,
+        claimPreauthRef,
+        claimPeriodStart,
+        claimPeriodEnd,
+        claimExtensionCode,
+      },
+      body: {
+        nodeServerDataSentToNaphies,
+        nphiesResponse,
+        nphiesExtractedData,
+      },
+    });
 
     await writeResultFile({
       folderName: "authorizationPoll",
