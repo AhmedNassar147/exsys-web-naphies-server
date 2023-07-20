@@ -10,15 +10,20 @@ const extractErrorsArray = (nphiesError) =>
   isArrayHasData(nphiesError)
     ? nphiesError
         .map(({ code }) => {
-          const { code: errorCode, display } =
-            extractNphiesCodeAndDisplayFromCodingType(code);
+          const {
+            code: errorCode,
+            display,
+            extensionValue,
+          } = extractNphiesCodeAndDisplayFromCodingType(code);
 
           if (!errorCode) {
             return false;
           }
 
           return {
-            error: display || "",
+            error: `${extensionValue ? `${extensionValue} / ` : ""}${
+              display || ""
+            }`,
             errorCode,
           };
         })

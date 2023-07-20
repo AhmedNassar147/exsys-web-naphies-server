@@ -8,11 +8,13 @@ const extractNphiesCodeAndDisplayFromCodingType = (type) => {
     return {};
   }
   const { coding } = type;
-  const [{ code, display }] = coding || [{}];
+  const [{ code, display, extension }] = coding || [{}];
+  const [{ valueString }] = extension || [{}];
 
   return {
     code,
     display,
+    extensionValue: valueString,
   };
 };
 
