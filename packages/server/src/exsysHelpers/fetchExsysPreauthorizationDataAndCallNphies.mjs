@@ -106,14 +106,12 @@ const fetchExsysPreauthorizationDataAndCallNphies = async ({
 
   const { authorization } = requestParams;
 
-  const onNphiesResponseWithSuccessFn = async (options) => {
-    const {
-      claimRequestId,
-      claimPreauthRef,
-      claimOutcome,
-      claimResponseId,
-      productsData,
-    } = nphiesExtractedData || {};
+  const onNphiesResponseWithSuccessFn = async ({
+    nphiesExtractedData,
+    ...options
+  }) => {
+    const { claimRequestId, claimPreauthRef, claimResponseId, productsData } =
+      nphiesExtractedData || {};
 
     if (
       claimRequestId &&
@@ -123,6 +121,7 @@ const fetchExsysPreauthorizationDataAndCallNphies = async ({
     ) {
       await savePreauthPollDataToExsys({
         authorization,
+        nphiesExtractedData,
         ...options,
       });
     }
