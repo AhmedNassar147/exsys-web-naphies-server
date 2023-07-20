@@ -6,8 +6,7 @@
 import createDateFromNativeDate from "./createDateFromNativeDate.mjs";
 
 const getCurrentDate = (returnReversedDate = false) =>
-  createDateFromNativeDate({
-    nativeDate: Date.now(),
+  createDateFromNativeDate(Date.now(), {
     returnReversedDate,
   });
 

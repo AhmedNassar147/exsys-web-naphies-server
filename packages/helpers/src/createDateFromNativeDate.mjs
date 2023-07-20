@@ -8,10 +8,16 @@ const formalizeValue = (value) => {
   return value < 10 ? `0${strValue}` : strValue;
 };
 
-const createDateFromNativeDate = ({
-  nativeDate,
-  returnReversedDate = true,
-}) => {
+const defaultOptions = {
+  returnReversedDate: true,
+};
+
+const createDateFromNativeDate = (nativeDate, options) => {
+  const { returnReversedDate } = {
+    ...defaultOptions,
+    ...(options || null),
+  };
+
   if (!nativeDate) {
     return {};
   }
