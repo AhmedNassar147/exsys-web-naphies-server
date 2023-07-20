@@ -18,6 +18,7 @@
     "claimextensioncode",
     "claimoutcome",
     "claimperiodend",
+    "claimperiodstart",
     "claimpreauthref",
     "claimrequestid",
     "claimresponseid",

@@ -32,7 +32,7 @@ const savePreauthPollDataToExsys = async ({
       claimresponseid: claimResponseId,
       claimoutcome: claimOutcome,
       claimpreauthref: claimPreauthRef,
-      claimperiodend: claimPeriodStart,
+      claimperiodstart: claimPeriodStart,
       claimperiodend: claimPeriodEnd,
       claimextensioncode: claimExtensionCode,
     },
