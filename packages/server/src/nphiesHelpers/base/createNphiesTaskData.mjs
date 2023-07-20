@@ -3,7 +3,7 @@
  * Helper: `createNphiesTaskData`.
  *
  */
-import { getCurrentDate, reverseDate } from "@exsys-web-server/helpers";
+import { getCurrentDate } from "@exsys-web-server/helpers";
 import createNphiesBaseResource from "./createNphiesBaseResource.mjs";
 import {
   NPHIES_BASE_PROFILE_TYPES,
@@ -22,8 +22,7 @@ const createNphiesTaskData = ({
   requestId,
   providerFocusUrl,
 }) => {
-  const { dateString } = getCurrentDate();
-  const currentDate = reverseDate(dateString);
+  const { dateString: currentDate } = getCurrentDate(true);
 
   return {
     fullUrl: `${providerFocusUrl}/${requestId}`,

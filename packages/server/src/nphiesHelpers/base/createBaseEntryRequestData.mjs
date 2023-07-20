@@ -3,11 +3,7 @@
  * Helper: `createBaseEntryRequestData`.
  *
  */
-import {
-  reverseDate,
-  getCurrentDate,
-  isArrayHasData,
-} from "@exsys-web-server/helpers";
+import { getCurrentDate, isArrayHasData } from "@exsys-web-server/helpers";
 import createNphiesBaseResource from "./createNphiesBaseResource.mjs";
 import { NPHIES_API_URLS, NPHIES_BASE_CODE_TYPES } from "../../constants.mjs";
 
@@ -31,7 +27,7 @@ const createBaseEntryRequestData = ({
   resourceType,
   profileType,
 }) => {
-  const { dateString } = getCurrentDate();
+  const { dateString } = getCurrentDate(true);
 
   return {
     fullUrl: `${providerFocusUrl}/${requestId}`,
@@ -51,7 +47,7 @@ const createBaseEntryRequestData = ({
       patient: {
         reference: `${providerPatientUrl}/${patientId}`,
       },
-      created: reverseDate(dateString),
+      created: dateString,
       insurer: {
         reference: `${providerOrganizationUrl}/${payerOrganization}`,
       },

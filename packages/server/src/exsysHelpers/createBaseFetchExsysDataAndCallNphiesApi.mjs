@@ -23,6 +23,7 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
   setErrorIfExtractedDataFoundFn,
   createExsysSaveApiParams,
   createExsysErrorSaveApiBody,
+  onNphiesResponseWithSuccessFn,
 }) => {
   const { isSuccess, result } = await createExsysRequest({
     resourceName: exsysQueryApiId,
@@ -126,6 +127,14 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
         nphiesResponse,
         nphiesExtractedData,
       },
+    });
+  }
+
+  if (onNphiesResponseWithSuccessFn) {
+    await onNphiesResponseWithSuccessFn({
+      nodeServerDataSentToNaphies,
+      nphiesResponse,
+      nphiesExtractedData,
     });
   }
 

@@ -9,12 +9,11 @@ import {
   writeResultFile,
   isObjectHasData,
 } from "@exsys-web-server/helpers";
-import createExsysRequest from "../helpers/createExsysRequest.mjs";
+import savePreauthPollDataToExsys from "./savePreauthPollDataToExsys.mjs";
 import {
   SERVER_CONFIG,
   NPHIES_REQUEST_TYPES,
   NPHIES_RESOURCE_TYPES,
-  EXSYS_API_IDS_NAMES,
 } from "../constants.mjs";
 import createProviderUrls from "../nphiesHelpers/base/createProviderUrls.mjs";
 import createNphiesBaseRequestData from "../nphiesHelpers/base/createNphiesBaseRequestData.mjs";
@@ -29,7 +28,6 @@ import callNphiesApiAndCollectResults from "../nphiesHelpers/base/callNphiesApiA
 const { preauthPollData, authorization } = SERVER_CONFIG;
 const { POLL } = NPHIES_REQUEST_TYPES;
 const { COVERAGE } = NPHIES_RESOURCE_TYPES;
-const { savePreauthAndClaimPollData } = EXSYS_API_IDS_NAMES;
 
 const { siteUrl, siteName, providerLicense, providerOrganization } =
   preauthPollData;
@@ -107,33 +105,11 @@ const runPreauthorizationPoll = async () => {
       return;
     }
 
-    const {
-      claimRequestId,
-      claimOutcome,
-      claimPreauthRef,
-      claimResponseId,
-      claimPeriodStart,
-      claimPeriodEnd,
-      claimExtensionCode,
-    } = otherExtractedData;
-
-    await createExsysRequest({
-      resourceName: savePreauthAndClaimPollData,
-      requestParams: {
-        authorization,
-        claimRequestId,
-        claimResponseId,
-        claimOutcome,
-        claimPreauthRef,
-        claimPeriodStart,
-        claimPeriodEnd,
-        claimExtensionCode,
-      },
-      body: {
-        nodeServerDataSentToNaphies,
-        nphiesResponse,
-        nphiesExtractedData,
-      },
+    await savePreauthPollDataToExsys({
+      authorization,
+      nodeServerDataSentToNaphies,
+      nphiesResponse,
+      nphiesExtractedData,
     });
 
     await writeResultFile({

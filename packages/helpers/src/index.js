@@ -12,6 +12,7 @@ import createUUID from "./createUUID.mjs";
 import delayProcess from "./delayProcess.mjs";
 import findRootYarnWorkSpaces from "./findRootYarnWorkSpaces.mjs";
 import getCurrentDate from "./getCurrentDate.mjs";
+import createDateFromNativeDate from "./createDateFromNativeDate.mjs";
 import isWindowsPlatform from "./isWindowsPlatform.mjs";
 import readJsonFile from "./readJsonFile.mjs";
 import restartProcess from "./restartProcess.mjs";
@@ -29,6 +30,7 @@ export {
   createUUID,
   delayProcess,
   findRootYarnWorkSpaces,
+  createDateFromNativeDate,
   getCurrentDate,
   isWindowsPlatform,
   readJsonFile,

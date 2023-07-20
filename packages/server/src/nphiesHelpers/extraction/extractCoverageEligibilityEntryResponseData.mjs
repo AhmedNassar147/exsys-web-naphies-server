@@ -3,6 +3,7 @@
  * Helper: `extractCoverageEligibilityEntryResponseData`.
  *
  */
+import { createDateFromNativeDate } from "@exsys-web-server/helpers";
 import extractNphiesCodeAndDisplayFromCodingType from "./extractNphiesCodeAndDisplayFromCodingType.mjs";
 import extractErrorsArray from "./extractErrorsArray.mjs";
 
@@ -39,8 +40,8 @@ const extractCoverageEligibilityEntryResponseData = ({
         ? `site eligibility (${valueCodeableConceptCode})`
         : ""
     }${disposition ? ` - ${disposition}` : ""}`,
-    eligibilityPeriodStart: start,
-    eligibilityPeriodEnd: end,
+    eligibilityPeriodStart: createDateFromNativeDate(start).dateString,
+    eligibilityPeriodEnd: createDateFromNativeDate(end).dateString,
     eligibilityPayerClaimResponseUrl: system,
     eligibilityClaimResponse: value,
     isPatientEligible: isPatientEligible ? "Y" : "N",

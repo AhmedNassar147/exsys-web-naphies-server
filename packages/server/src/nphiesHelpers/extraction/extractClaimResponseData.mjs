@@ -3,7 +3,10 @@
  * Helper: `extractClaimResponseData`.
  *
  */
-import { isArrayHasData } from "@exsys-web-server/helpers";
+import {
+  isArrayHasData,
+  createDateFromNativeDate,
+} from "@exsys-web-server/helpers";
 import extractErrorsArray from "./extractErrorsArray.mjs";
 import extractNphiesCodeAndDisplayFromCodingType from "./extractNphiesCodeAndDisplayFromCodingType.mjs";
 
@@ -95,8 +98,8 @@ const extractClaimResponseData = ({
     claimOutcome: outcome,
     claimDisposition: disposition,
     claimPreauthRef: preAuthRef,
-    claimPeriodStart: start,
-    claimPeriodEnd: end,
+    claimPeriodStart: createDateFromNativeDate(start).dateString,
+    claimPeriodEnd: createDateFromNativeDate(end).dateString,
     claimExtensionCode,
     processNotes: processNotes,
     productsData,

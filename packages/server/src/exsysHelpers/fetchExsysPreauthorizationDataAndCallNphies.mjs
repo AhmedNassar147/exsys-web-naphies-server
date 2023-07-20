@@ -9,6 +9,7 @@ import createBaseFetchExsysDataAndCallNphiesApi from "./createBaseFetchExsysData
 import extractClaimResponseData from "../nphiesHelpers/extraction/extractClaimResponseData.mjs";
 import extractCoverageEntryResponseData from "../nphiesHelpers/extraction/extractCoverageEntryResponseData.mjs";
 import createNphiesRequestPayloadFn from "../nphiesHelpers/preauthorization/index.mjs";
+import savePreauthPollDataToExsys from "../polls/savePreauthPollDataToExsys.mjs";
 import {
   EXSYS_API_IDS_NAMES,
   NPHIES_RESOURCE_TYPES,
@@ -103,6 +104,30 @@ const fetchExsysPreauthorizationDataAndCallNphies = async ({
     exsysSaveApiId,
   } = CONFIG_MAP[nphiesRequestType];
 
+  const { authorization } = requestParams;
+
+  const onNphiesResponseWithSuccessFn = async (options) => {
+    const {
+      claimRequestId,
+      claimPreauthRef,
+      claimOutcome,
+      claimResponseId,
+      productsData,
+    } = nphiesExtractedData || {};
+
+    if (
+      claimRequestId &&
+      claimResponseId &&
+      claimPreauthRef &&
+      isArrayHasData(productsData)
+    ) {
+      await savePreauthPollDataToExsys({
+        authorization,
+        ...options,
+      });
+    }
+  };
+
   const result = await createBaseFetchExsysDataAndCallNphiesApi({
     exsysQueryApiId,
     exsysSaveApiId,
@@ -118,6 +143,7 @@ const fetchExsysPreauthorizationDataAndCallNphies = async ({
     setErrorIfExtractedDataFoundFn,
     createExsysSaveApiParams,
     createExsysErrorSaveApiBody,
+    onNphiesResponseWithSuccessFn,
   });
 
   return result;
