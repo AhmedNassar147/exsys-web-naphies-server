@@ -24,10 +24,11 @@ export const RETRY_TIMES = 3;
 export const NPHIES_RETRY_TIMES = 2;
 export const RETRY_DELAY = 10000;
 export const EXSYS_POLLS_TIMEOUT = 10000;
-const { dev, certificatePath, port } = CLI_CONFIG;
+const { dev, certificatePath } = CLI_CONFIG;
+const { dataBaseServerPort } = SERVER_CONFIG;
 
 const BASE_API_IP_ADDRESS = dev ? "http://149.102.140.8" : "http://localhost";
-const API_URL_PORT = port || 9090;
+const API_URL_PORT = dataBaseServerPort || 9090;
 
 export const EXSYS_BASE_URL = `${BASE_API_IP_ADDRESS}:${API_URL_PORT}/ords/exsys_api`;
 
