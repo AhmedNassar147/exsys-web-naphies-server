@@ -3,6 +3,7 @@
  * Helper: `fetchExsysPreauthorizationDataAndCallNphies`.
  *
  */
+import { isArrayHasData } from "@exsys-web-server/helpers";
 import convertSupportInfoAttachmentUrlsToBase64 from "../nphiesHelpers/base/convertSupportInfoAttachmentUrlsToBase64.mjs";
 import createBaseFetchExsysDataAndCallNphiesApi from "./createBaseFetchExsysDataAndCallNphiesApi.mjs";
 import extractClaimResponseData from "../nphiesHelpers/extraction/extractClaimResponseData.mjs";
@@ -89,7 +90,9 @@ const fetchExsysPreauthorizationDataAndCallNphies = async ({
     supportInformationData: await convertSupportInfoAttachmentUrlsToBase64(
       supportInformationData
     ),
-    productsData: productsData.filter(Boolean),
+    productsData: isArrayHasData(productsData)
+      ? productsData.filter(Boolean)
+      : [],
   });
 
   const {
