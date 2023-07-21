@@ -3,8 +3,9 @@
  * Helper: `createFetchRequest`.
  *
  */
+import chalk from "chalk";
 import axios from "axios";
-import { delayProcess } from "@exsys-web-server/helpers";
+import { delayProcess, createCmdMessage } from "@exsys-web-server/helpers";
 import { BASE_API_HEADERS, HTTP_STATUS_CODE } from "../constants.mjs";
 
 const createFetchRequest = (options) => {
@@ -19,6 +20,7 @@ const createFetchRequest = (options) => {
     httpStatusCodes = HTTP_STATUS_CODE,
     retryTimes = 0,
     retryDelay = 0,
+    errorMessage = "something went wrong",
   } = options;
   const API_URL = resourceName ? `${baseAPiUrl}/${resourceName}` : baseAPiUrl;
 
@@ -64,9 +66,15 @@ const createFetchRequest = (options) => {
             await delayProcess(retryDelay);
             wrapper(--n);
           } else {
+            createCmdMessage({
+              type: "error",
+              message: `${errorMessage} when calling ${chalk.white.bold(
+                API_URL
+              )}`,
+            });
             resolve({
               isSuccess: false,
-              error: "something went wrong",
+              error: errorMessage,
               status,
               result: responseData,
             });

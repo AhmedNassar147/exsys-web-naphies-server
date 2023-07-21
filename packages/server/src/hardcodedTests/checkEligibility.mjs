@@ -3,7 +3,11 @@
  * `checkEligibility`: `hardcodedTests`.
  *
  */
-import { delayProcess, isArrayHasData } from "@exsys-web-server/helpers";
+import {
+  delayProcess,
+  isArrayHasData,
+  createCmdMessage,
+} from "@exsys-web-server/helpers";
 import stopTheProcessIfCertificateNotFound from "../helpers/stopTheProcessIfCertificateNotFound.mjs";
 import fetchExsysEligibilityDataAndCallNphies from "../exsysHelpers/fetchExsysEligibilityDataAndCallNphies.mjs";
 import { SERVER_CONFIG, EXSYS_POLLS_TIMEOUT } from "../constants.mjs";
@@ -15,7 +19,12 @@ const { patients, authorization, organizationNo } = SERVER_CONFIG;
   const canRunTest = isArrayHasData(patients);
 
   if (!canRunTest) {
-    console.log(`you need to configure patients in \`config.json\` file`);
+    createCmdMessage({
+      type: "error",
+      message: `You need to configure ${chalk.white.bold(
+        "patients"
+      )} in ${chalk.white.bold("config.json")} file`,
+    });
     return;
   }
 

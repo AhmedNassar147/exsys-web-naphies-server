@@ -3,7 +3,7 @@
  * Helper: `runExsysEligibilityPendingRequestsPoll`.
  *
  */
-import { delayProcess } from "@exsys-web-server/helpers";
+import { delayProcess, createCmdMessage } from "@exsys-web-server/helpers";
 import {
   SERVER_CONFIG,
   EXSYS_API_IDS_NAMES,
@@ -26,7 +26,10 @@ const runExsysEligibilityPendingRequestsPoll = async () => {
   try {
     await fetchExsysEligibilityDataAndCallNphies(requestOptions);
   } catch (error) {
-    console.log("error from Eligibility polling", error);
+    createCmdMessage({
+      type: "error",
+      message: `Error from Eligibility polling\n ${error}`,
+    });
   } finally {
     await delayProcess(EXSYS_POLLS_TIMEOUT);
     await runExsysEligibilityPendingRequestsPoll();

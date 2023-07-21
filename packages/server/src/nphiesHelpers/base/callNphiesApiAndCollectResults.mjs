@@ -38,40 +38,50 @@ const callNphiesAPIAndCollectResults = ({
 
     const { id: mainBundleId } = nphiesResponse || {};
 
-    const extractedData = mapEntriesAndExtractNeededData(
-      nphiesResponse,
-      extractionFunctionsMap
-    );
+    const isNphiesServerConnected = !!mainBundleId;
 
-    nphiesResultData.nphiesExtractedData =
-      isAuthorizationPoll && mainBundleId
-        ? {
-            mainBundleId,
-            ...(extractedData || null),
-          }
-        : extractedData;
-
-    if (extractedData && setErrorIfExtractedDataFoundFn) {
-      const { issueErrorCode, issueError } = extractedData;
-      const errors = setErrorIfExtractedDataFoundFn(
-        extractedData,
-        errorMessage,
-        hasError
+    if (isNphiesServerConnected) {
+      const extractedData = mapEntriesAndExtractNeededData(
+        nphiesResponse,
+        extractionFunctionsMap
       );
 
-      if (!errorMessage) {
-        errorMessage = issueError;
-        errorMessageCode = issueErrorCode;
-      }
+      nphiesResultData.nphiesExtractedData =
+        isAuthorizationPoll && mainBundleId
+          ? {
+              mainBundleId,
+              ...(extractedData || null),
+            }
+          : extractedData;
 
-      if (!hasError) {
-        hasError = [issueErrorCode, issueError, ...(errors || [])]
-          .filter(Boolean)
-          .some((item) => !!item);
+      if (extractedData && setErrorIfExtractedDataFoundFn) {
+        const { issueErrorCode, issueError } = extractedData;
+        const errors = setErrorIfExtractedDataFoundFn(
+          extractedData,
+          errorMessage,
+          hasError
+        );
+
+        if (!errorMessage) {
+          errorMessage = issueError;
+          errorMessageCode = issueErrorCode;
+        }
+
+        if (!hasError) {
+          hasError = [issueErrorCode, issueError, ...(errors || [])]
+            .filter(Boolean)
+            .some((item) => !!item);
+        }
       }
     }
 
-    resolve({ nphiesResultData, errorMessage, errorMessageCode, hasError });
+    resolve({
+      nphiesResultData,
+      errorMessage,
+      errorMessageCode,
+      hasError,
+      isNphiesServerConnected,
+    });
   });
 
 export default callNphiesAPIAndCollectResults;

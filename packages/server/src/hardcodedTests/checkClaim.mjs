@@ -3,7 +3,12 @@
  * `checkClaim`: `hardcodedTests`.
  *
  */
-import { delayProcess, isArrayHasData } from "@exsys-web-server/helpers";
+import chalk from "chalk";
+import {
+  delayProcess,
+  isArrayHasData,
+  createCmdMessage,
+} from "@exsys-web-server/helpers";
 import stopTheProcessIfCertificateNotFound from "../helpers/stopTheProcessIfCertificateNotFound.mjs";
 import fetchExsysPreauthorizationDataAndCallNphies from "../exsysHelpers/fetchExsysPreauthorizationDataAndCallNphies.mjs";
 import { SERVER_CONFIG, NPHIES_REQUEST_TYPES } from "../constants.mjs";
@@ -16,9 +21,12 @@ const DELAY_TIME = 2 * 60 * 1000;
   const canRunTest = isArrayHasData(claimTestData);
 
   if (!canRunTest) {
-    console.log(
-      `you need to configure \`claimTestData\` in \`config.json\` file`
-    );
+    createCmdMessage({
+      type: "error",
+      message: `You need to configure ${chalk.white.bold(
+        "claimTestData"
+      )} in ${chalk.white.bold("config.json")} file`,
+    });
     return;
   }
 

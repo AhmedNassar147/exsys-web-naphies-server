@@ -98,18 +98,23 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
     };
   }
 
-  const { nphiesResultData, hasError, errorMessage, errorMessageCode } =
-    await callNphiesAPIAndCollectResults({
-      exsysResultsData: exsysResultsData,
-      createNphiesRequestPayloadFn,
-      extractionFunctionsMap,
-      setErrorIfExtractedDataFoundFn,
-    });
+  const {
+    nphiesResultData,
+    hasError,
+    errorMessage,
+    errorMessageCode,
+    isNphiesServerConnected,
+  } = await callNphiesAPIAndCollectResults({
+    exsysResultsData: exsysResultsData,
+    createNphiesRequestPayloadFn,
+    extractionFunctionsMap,
+    setErrorIfExtractedDataFoundFn,
+  });
 
   const { nphiesExtractedData, nodeServerDataSentToNaphies, nphiesResponse } =
     nphiesResultData;
 
-  if (exsysSaveApiId) {
+  if (exsysSaveApiId && isNphiesServerConnected) {
     const successSaveParams = createExsysSaveApiParams
       ? createExsysSaveApiParams({
           primaryKey,
@@ -130,7 +135,7 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
     });
   }
 
-  if (onNphiesResponseWithSuccessFn) {
+  if (onNphiesResponseWithSuccessFn && isNphiesServerConnected) {
     await onNphiesResponseWithSuccessFn({
       nodeServerDataSentToNaphies,
       nphiesResponse,

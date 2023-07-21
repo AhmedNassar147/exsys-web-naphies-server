@@ -6,7 +6,11 @@
 import express from "express";
 import cors from "cors";
 import bodyParser from "body-parser";
-import { restartProcess, RESTART_SERVER_MS } from "@exsys-web-server/helpers";
+import {
+  restartProcess,
+  RESTART_SERVER_MS,
+  createCmdMessage,
+} from "@exsys-web-server/helpers";
 import { SERVER_PORT, FILES_ENCODING_LIMIT } from "./constants.mjs";
 import createEligibilityMiddleware from "./middlewares/eligibility/index.mjs";
 import createPreauthorizationMiddleware from "./middlewares/preauthorization/index.mjs";
@@ -29,15 +33,19 @@ import stopTheProcessIfCertificateNotFound from "./helpers/stopTheProcessIfCerti
   app.use("/claim", createClaimMiddleware(app));
 
   const res = app.listen(SERVER_PORT, () =>
-    console.log(`app is running on http://localhost:${SERVER_PORT}`)
+    createCmdMessage({
+      type: "success",
+      message: `app is running on http://localhost:${SERVER_PORT}`,
+    })
   );
 
   res.on("error", () => {
     res.close(() => {
       process.kill(process.pid);
-      console.log(
-        `restarting server after ${RESTART_SERVER_MS / 1000} seconds`
-      );
+      createCmdMessage({
+        type: "info",
+        message: `restarting server after ${RESTART_SERVER_MS / 1000} seconds`,
+      });
       restartProcess();
     });
   });

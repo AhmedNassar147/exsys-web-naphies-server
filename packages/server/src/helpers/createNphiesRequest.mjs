@@ -47,6 +47,7 @@ const createNphiesRequest = async ({
     body: bodyData,
     retryTimes,
     retryDelay,
+    errorMessage: "Nphies server is not connected",
   });
 };
 

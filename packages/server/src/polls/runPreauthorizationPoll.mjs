@@ -8,6 +8,7 @@ import {
   createUUID,
   writeResultFile,
   isObjectHasData,
+  createCmdMessage,
 } from "@exsys-web-server/helpers";
 import savePreauthPollDataToExsys from "./savePreauthPollDataToExsys.mjs";
 import {
@@ -101,7 +102,10 @@ const runPreauthorizationPoll = async () => {
       nphiesExtractedData || {};
 
     if (!isObjectHasData(otherExtractedData)) {
-      console.log("authorization poll has no messages yet", otherExtractedData);
+      createCmdMessage({
+        type: "info",
+        message: `Authorization poll has no messages yet`,
+      });
       return;
     }
 
@@ -118,7 +122,10 @@ const runPreauthorizationPoll = async () => {
       isError: hasError,
     });
   } catch (error) {
-    console.log("error from polling runPreauthorizationPoll", error);
+    createCmdMessage({
+      type: "info",
+      message: `Error from polling runPreauthorizationPoll\n ${error}`,
+    });
   } finally {
     await delayProcess(PREAUTH_TIMEOUT);
     await runPreauthorizationPoll();
