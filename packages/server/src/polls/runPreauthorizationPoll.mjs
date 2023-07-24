@@ -24,6 +24,7 @@ import createOrganizationData from "../nphiesHelpers/base/createOrganizationData
 import mapEntriesAndExtractNeededData from "../nphiesHelpers/extraction/mapEntriesAndExtractNeededData.mjs";
 import extractCoverageEntryResponseData from "../nphiesHelpers/extraction/extractCoverageEntryResponseData.mjs";
 import extractClaimResponseData from "../nphiesHelpers/extraction/extractClaimResponseData.mjs";
+import extractMessageHeaderData from "../nphiesHelpers/extraction/extractMessageHeaderData.mjs";
 import callNphiesApiAndCollectResults from "../nphiesHelpers/base/callNphiesApiAndCollectResults.mjs";
 
 const { preauthPollData, authorization } = SERVER_CONFIG;
@@ -42,6 +43,7 @@ const extractionFunctionsMap = {
   Bundle: (nphiesResponse) =>
     mapEntriesAndExtractNeededData(nphiesResponse, {
       [COVERAGE]: extractCoverageEntryResponseData,
+      MessageHeader: extractMessageHeaderData,
       ClaimResponse: extractClaimResponseData,
     }),
 };
@@ -98,8 +100,12 @@ const runPreauthorizationPoll = async () => {
     const { nphiesExtractedData, nodeServerDataSentToNaphies, nphiesResponse } =
       nphiesResultData;
 
-    const { mainBundleId, bundleId, ...otherExtractedData } =
-      nphiesExtractedData || {};
+    const {
+      mainBundleId,
+      bundleId,
+      messageHeaderRequestType,
+      ...otherExtractedData
+    } = nphiesExtractedData || {};
 
     if (!isObjectHasData(otherExtractedData)) {
       createCmdMessage({
@@ -114,6 +120,7 @@ const runPreauthorizationPoll = async () => {
       nodeServerDataSentToNaphies,
       nphiesResponse,
       nphiesExtractedData,
+      requestType: messageHeaderRequestType,
     });
 
     await writeResultFile({

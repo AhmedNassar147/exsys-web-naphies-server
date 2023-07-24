@@ -12,6 +12,7 @@ import {
 import mapEntriesAndExtractNeededData from "../nphiesHelpers/extraction/mapEntriesAndExtractNeededData.mjs";
 import extractCoverageEntryResponseData from "../nphiesHelpers/extraction/extractCoverageEntryResponseData.mjs";
 import extractClaimResponseData from "../nphiesHelpers/extraction/extractClaimResponseData.mjs";
+import extractMessageHeaderData from "../nphiesHelpers/extraction/extractMessageHeaderData.mjs";
 import { NPHIES_RESOURCE_TYPES } from "../constants.mjs";
 
 const { COVERAGE } = NPHIES_RESOURCE_TYPES;
@@ -21,10 +22,10 @@ const extractionFunctionsMap = {
   Bundle: (nphiesResponse) =>
     mapEntriesAndExtractNeededData(nphiesResponse, {
       [COVERAGE]: extractCoverageEntryResponseData,
+      MessageHeader: extractMessageHeaderData,
       ClaimResponse: extractClaimResponseData,
     }),
 };
-
 const extractPoll = async (filePath) => {
   if (!(await checkPathExists(filePath))) {
     console.error(`the file path doesn't exist. ${filePath}`);
@@ -52,4 +53,4 @@ const extractPoll = async (filePath) => {
   });
 };
 
-await extractPoll("results/pollsResponse/1-res.json");
+await extractPoll("results/claim-poll.json");

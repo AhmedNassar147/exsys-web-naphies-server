@@ -124,6 +124,7 @@ const fetchExsysPreauthorizationDataAndCallNphies = async ({
       await savePreauthPollDataToExsys({
         authorization,
         nphiesExtractedData,
+        requestType: nphiesRequestType,
         ...options,
       });
     }

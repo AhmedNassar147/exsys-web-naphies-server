@@ -28,16 +28,10 @@ const createExsysRequest = async ({
     throw new Error("resourceName is not found in `EXSYS_API_IDS`");
   }
 
-  let currentResourceName = resourceNameUrl;
-
-  if (requestParams) {
-    const searchParams = new URLSearchParams(requestParams);
-    currentResourceName += `?${searchParams.toString()}`;
-  }
-
   return await createFetchRequest({
     baseAPiUrl: xBaseApiUrl,
-    resourceName: currentResourceName,
+    resourceName: resourceNameUrl,
+    requestParams,
     requestMethod,
     requestHeaders,
     transformApiResults,

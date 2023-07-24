@@ -3,16 +3,24 @@
  * Helper: `savePreauthPollDataToExsys`.
  *
  */
+import chalk from "chalk";
+import { createCmdMessage } from "@exsys-web-server/helpers";
 import createExsysRequest from "../helpers/createExsysRequest.mjs";
-import { EXSYS_API_IDS_NAMES } from "../constants.mjs";
+import { EXSYS_API_IDS_NAMES, NPHIES_REQUEST_TYPES } from "../constants.mjs";
 
-const { savePreauthAndClaimPollData } = EXSYS_API_IDS_NAMES;
+const { saveClaimData, savePreauthPollData } = EXSYS_API_IDS_NAMES;
+
+const SAVE_API_BASED_REQUEST_TYPE = {
+  [NPHIES_REQUEST_TYPES.CLAIM]: saveClaimData,
+  [NPHIES_REQUEST_TYPES.PREAUTH]: savePreauthPollData,
+};
 
 const savePreauthPollDataToExsys = async ({
   authorization,
   nodeServerDataSentToNaphies,
   nphiesResponse,
   nphiesExtractedData,
+  requestType,
 }) => {
   const {
     claimRequestId,
@@ -24,8 +32,20 @@ const savePreauthPollDataToExsys = async ({
     claimExtensionCode,
   } = nphiesExtractedData;
 
+  const saveApiName = SAVE_API_BASED_REQUEST_TYPE[requestType];
+
+  if (!saveApiName) {
+    createCmdMessage({
+      type: "error",
+      message: `requestType should be one of ${chalk.white.bold(
+        Object.keys(SAVE_API_BASED_REQUEST_TYPE)
+      )}`,
+    });
+    return;
+  }
+
   return await createExsysRequest({
-    resourceName: savePreauthAndClaimPollData,
+    resourceName: saveApiName,
     requestParams: {
       authorization,
       claimrequestid: claimRequestId,

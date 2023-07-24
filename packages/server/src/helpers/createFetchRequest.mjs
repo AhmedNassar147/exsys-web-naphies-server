@@ -12,6 +12,7 @@ const createFetchRequest = (options) => {
   const {
     baseAPiUrl,
     resourceName,
+    requestParams,
     requestMethod = "POST",
     requestHeaders = BASE_API_HEADERS,
     httpsAgent,
@@ -22,7 +23,17 @@ const createFetchRequest = (options) => {
     retryDelay = 0,
     errorMessage = "something went wrong",
   } = options;
-  const API_URL = resourceName ? `${baseAPiUrl}/${resourceName}` : baseAPiUrl;
+
+  let currentResourceName = resourceName;
+
+  if (requestParams) {
+    const searchParams = new URLSearchParams(requestParams);
+    currentResourceName += `?${searchParams.toString()}`;
+  }
+
+  const API_URL = currentResourceName
+    ? `${baseAPiUrl}/${currentResourceName}`
+    : baseAPiUrl;
 
   const fetchOptions = {
     method: requestMethod,

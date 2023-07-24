@@ -21,11 +21,14 @@ const { passphrase } = SERVER_CONFIG;
 
 const createNphiesRequest = async ({
   bodyData,
+  requestParams,
   transformApiResults,
   retryTimes = NPHIES_RETRY_TIMES,
   retryDelay = RETRY_DELAY,
+  baseAPiUrl: _baseAPiUrl,
 }) => {
-  const apiUrl = production ? NPHIES_PRODUCTION : NPHIES_DEVELOPMENT;
+  const baseAPiUrl =
+    _baseAPiUrl || (production ? NPHIES_PRODUCTION : NPHIES_DEVELOPMENT);
   const certificate = ignoreCert
     ? undefined
     : await readFile(NPHIES_CERT_FILE_NAME);
@@ -40,7 +43,8 @@ const createNphiesRequest = async ({
   });
 
   return await createFetchRequest({
-    baseAPiUrl: apiUrl,
+    baseAPiUrl,
+    requestParams,
     requestHeaders,
     httpsAgent,
     transformApiResults,
