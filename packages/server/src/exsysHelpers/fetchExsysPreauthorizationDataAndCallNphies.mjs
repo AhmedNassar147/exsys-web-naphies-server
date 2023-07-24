@@ -39,6 +39,7 @@ const createExsysSaveApiParams = ({
   primaryKey,
   exsysDataApiPrimaryKeyName,
   nphiesExtractedData: {
+    bundleId,
     claimRequestId,
     claimResponseId,
     claimOutcome,
@@ -46,6 +47,7 @@ const createExsysSaveApiParams = ({
   },
 }) => ({
   [exsysDataApiPrimaryKeyName]: primaryKey,
+  bundle_id: bundleId,
   claim_request_id: claimRequestId,
   claim_response_id: claimResponseId,
   outcome: claimOutcome,
