@@ -110,6 +110,20 @@ const createAuthorizationExtensions = ({
     },
   ].filter(Boolean);
 
+const getSupportingInfoSequences = (supportingInfo, daysSupplyId) =>
+  supportingInfo.reduce((acc, { categoryCode, value }, currentIndex) => {
+    const isDaysSupply = categoryCode === "days-supply";
+    if (
+      !isDaysSupply ||
+      (isDaysSupply && !!daysSupplyId && daysSupplyId === value)
+    ) {
+      acc.push(currentIndex + 1);
+      return acc;
+    }
+
+    return acc;
+  }, []);
+
 const createNphiesClaimData = ({
   requestId,
   providerOrganization,
@@ -388,6 +402,7 @@ const createNphiesClaimData = ({
               diagnosisIds,
               doctorsIds,
               sequence,
+              days_supply_id,
             }) => ({
               sequence,
               careTeamSequence: getSequences(doctorsData, doctorsIds, "id"),
@@ -396,8 +411,9 @@ const createNphiesClaimData = ({
                 diagnosisIds,
                 "diagCode"
               ),
+
               informationSequence: hasSupportingInfoData
-                ? supportingInfo.map((_, index) => index + 1)
+                ? getSupportingInfoSequences(supportingInfo, days_supply_id)
                 : undefined,
               extension: [
                 !!extensionTax && {
