@@ -112,7 +112,7 @@ const createAuthorizationExtensions = ({
 
 const getSupportingInfoSequences = (supportingInfo, daysSupplyId) =>
   supportingInfo.reduce((acc, { categoryCode, value }, currentIndex) => {
-    const isDaysSupply = categoryCode === "days-supply";
+    const isDaysSupply = categoryCode === SUPPORT_INFO_KEY_NAMES.days_supply;
     if (
       !isDaysSupply ||
       (isDaysSupply && !!daysSupplyId && daysSupplyId === value)
@@ -411,7 +411,6 @@ const createNphiesClaimData = ({
                 diagnosisIds,
                 "diagCode"
               ),
-
               informationSequence: hasSupportingInfoData
                 ? getSupportingInfoSequences(supportingInfo, days_supply_id)
                 : undefined,
