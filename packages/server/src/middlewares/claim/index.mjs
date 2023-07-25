@@ -3,31 +3,14 @@
  * `createClaimMiddleware`: `middleware`
  *
  */
-import { NPHIES_REQUEST_TYPES } from "../../constants.mjs";
 import createClaimMiddleware from "../../helpers/createBaseExpressMiddleware.mjs";
-import fetchExsysPreauthorizationDataAndCallNphies from "../../exsysHelpers/fetchExsysPreauthorizationDataAndCallNphies.mjs";
+import createMappedClaimRequests from "../../exsysHelpers/createMappedClaimRequests.mjs";
 
 export default createClaimMiddleware(
-  async ({
-    authorization,
-    patientFileNo,
-    episodeNo,
-    episodeInvoiceNo,
-    organizationNo,
-    messageEventType,
-    printValues = false,
-  }) =>
-    await fetchExsysPreauthorizationDataAndCallNphies({
-      requestMethod: "GET",
-      nphiesRequestType: NPHIES_REQUEST_TYPES.CLAIM,
-      requestParams: {
-        authorization,
-        patient_file_no: patientFileNo,
-        episode_no: episodeNo,
-        episode_invoice_no: episodeInvoiceNo,
-        organization_no: organizationNo,
-        message_event_type: messageEventType,
-      },
+  async ({ authorization, printValues = false, data }) =>
+    await createMappedClaimRequests({
+      authorization,
       printValues,
+      data,
     })
 );

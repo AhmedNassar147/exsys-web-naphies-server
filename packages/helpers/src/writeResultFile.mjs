@@ -6,20 +6,16 @@
 
 import { join } from "path";
 import { writeFile, mkdir } from "fs/promises";
-import {
-  getCurrentDate,
-  checkPathExists,
-  readJsonFile,
-  findRootYarnWorkSpaces,
-} from "@exsys-web-server/helpers";
+import getCurrentDate from "./getCurrentDate.mjs";
+import checkPathExists from "./checkPathExists.mjs";
+import readJsonFile from "./readJsonFile.mjs";
+import findRootYarnWorkSpaces from "./findRootYarnWorkSpaces.mjs";
 
-const writeResultFile = async ({ data, isError, folderName }) => {
+const writeResultFile = async ({ data, folderName }) => {
   const { dateString, time } = getCurrentDate();
 
   const rootYarnWorkSpacePath = await findRootYarnWorkSpaces();
-  const resultsFolderPath = `results/${folderName}/${
-    isError ? "error" : "success"
-  }`;
+  const resultsFolderPath = `results/${folderName}`;
   const finalResultsFolderPath = join(rootYarnWorkSpacePath, resultsFolderPath);
 
   if (!(await checkPathExists(finalResultsFolderPath))) {
@@ -37,8 +33,8 @@ const writeResultFile = async ({ data, isError, folderName }) => {
   const nextFileResults = [
     ...(Array.isArray(data)
       ? data.map((item) => ({
-          ...item,
           time,
+          ...item,
         }))
       : [
           {

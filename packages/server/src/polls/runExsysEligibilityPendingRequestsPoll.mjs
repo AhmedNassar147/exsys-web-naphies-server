@@ -3,7 +3,11 @@
  * Helper: `runExsysEligibilityPendingRequestsPoll`.
  *
  */
-import { delayProcess, createCmdMessage } from "@exsys-web-server/helpers";
+import {
+  delayProcess,
+  createCmdMessage,
+  writeResultFile,
+} from "@exsys-web-server/helpers";
 import {
   SERVER_CONFIG,
   EXSYS_API_IDS_NAMES,
@@ -24,7 +28,17 @@ const requestOptions = {
 
 const runExsysEligibilityPendingRequestsPoll = async () => {
   try {
-    await fetchExsysEligibilityDataAndCallNphies(requestOptions);
+    const {
+      printData: { data, isError, folderName },
+    } = await fetchExsysEligibilityDataAndCallNphies(requestOptions);
+
+    await writeResultFile({
+      folderName,
+      data: {
+        isError,
+        ...data,
+      },
+    });
   } catch (error) {
     createCmdMessage({
       type: "error",

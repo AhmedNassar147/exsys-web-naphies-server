@@ -81,7 +81,6 @@ const CONFIG_MAP = {
 const fetchExsysPreauthorizationDataAndCallNphies = async ({
   requestParams,
   requestMethod,
-  printValues = true,
   nphiesRequestType,
 }) => {
   const createResultsDataFromExsysResponse = async ({
@@ -130,12 +129,11 @@ const fetchExsysPreauthorizationDataAndCallNphies = async ({
     }
   };
 
-  const result = await createBaseFetchExsysDataAndCallNphiesApi({
+  return await createBaseFetchExsysDataAndCallNphiesApi({
     exsysQueryApiId,
     exsysSaveApiId,
     requestParams,
     requestMethod,
-    printValues,
     printFolderName,
     nphiesRequestName,
     exsysDataApiPrimaryKeyName,
@@ -147,8 +145,6 @@ const fetchExsysPreauthorizationDataAndCallNphies = async ({
     createExsysErrorSaveApiBody,
     onNphiesResponseWithSuccessFn,
   });
-
-  return result;
 };
 
 export default fetchExsysPreauthorizationDataAndCallNphies;

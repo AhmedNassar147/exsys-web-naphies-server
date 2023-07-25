@@ -42,15 +42,13 @@ const fetchExsysEligibilityDataAndCallNphies = async ({
   exsysApiId,
   requestMethod,
   exsysAPiBodyData,
-  printValues = true,
-}) => {
-  const result = await createBaseFetchExsysDataAndCallNphiesApi({
+}) =>
+  await createBaseFetchExsysDataAndCallNphiesApi({
     exsysQueryApiId: exsysApiId || getExsysDataBasedPatient,
     exsysSaveApiId: saveNphiesResponseToExsys,
     requestParams,
     requestBody: exsysAPiBodyData,
     requestMethod,
-    printValues,
     printFolderName: "eligibility",
     nphiesRequestName: "Eligibility",
     exsysDataApiPrimaryKeyName: "primaryKey",
@@ -60,8 +58,5 @@ const fetchExsysEligibilityDataAndCallNphies = async ({
     setErrorIfExtractedDataFoundFn,
     createExsysErrorSaveApiBody,
   });
-
-  return result;
-};
 
 export default fetchExsysEligibilityDataAndCallNphies;
