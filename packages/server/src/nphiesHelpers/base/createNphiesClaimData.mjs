@@ -118,7 +118,6 @@ const getSupportingInfoSequences = (supportingInfo, daysSupplyId) =>
       (isDaysSupply && !!daysSupplyId && daysSupplyId === value)
     ) {
       acc.push(currentIndex + 1);
-      return acc;
     }
 
     return acc;
@@ -438,7 +437,7 @@ const createNphiesClaimData = ({
                   url: `${BASE_PROFILE_URL}/${EXTENSION_PATIENT_INVOICE}`,
                   valueIdentifier: {
                     system: `${siteUrl}/patientInvoice`,
-                    value: episodeInvoiceNo,
+                    value: `${episodeInvoiceNo}_${Date.now()}`,
                   },
                 },
                 {

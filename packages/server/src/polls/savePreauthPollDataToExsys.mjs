@@ -30,6 +30,7 @@ const savePreauthPollDataToExsys = async ({
     claimPeriodStart,
     claimPeriodEnd,
     claimExtensionCode,
+    claimMessageEventType,
   } = nphiesExtractedData;
 
   const saveApiName = SAVE_API_BASED_REQUEST_TYPE[requestType];
@@ -55,6 +56,7 @@ const savePreauthPollDataToExsys = async ({
       claimperiodstart: claimPeriodStart,
       claimperiodend: claimPeriodEnd,
       claimextensioncode: claimExtensionCode,
+      claimmessageeventtype: claimMessageEventType,
     },
     body: {
       nodeServerDataSentToNaphies,

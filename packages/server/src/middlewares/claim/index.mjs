@@ -14,6 +14,7 @@ export default createClaimMiddleware(
     episodeNo,
     episodeInvoiceNo,
     organizationNo,
+    messageEventType,
   }) =>
     await fetchExsysPreauthorizationDataAndCallNphies({
       requestMethod: "GET",
@@ -24,6 +25,7 @@ export default createClaimMiddleware(
         episode_no: episodeNo,
         episode_invoice_no: episodeInvoiceNo,
         organization_no: organizationNo,
+        message_event_type: messageEventType,
       },
       printValues: true,
     })

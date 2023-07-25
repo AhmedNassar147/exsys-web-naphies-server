@@ -57,15 +57,15 @@ export const EXSYS_API_IDS = {
   // http://149.102.140.8:9090/ords/exsys_api/hs_nphies_preauth_pkg/update_preauth_send_status?preauth_pk=&claim_response_id=&claim_request_id&outcome=&adjudication_outcome
   [EXSYS_API_IDS_NAMES.savePreauthData]:
     "hs_nphies_preauth_pkg/update_preauth_send_status",
-  // http://149.102.140.8:9090/ords/exsys_api/nphies_pkg/collect_claim_episode_to_send?authorization=11796985&organization_no=001&patient_file_no=073393&episode_no=12&episode_invoice_no=I22/38154
+  // http://149.102.140.8:9090/ords/exsys_api/hs_nphies_preauth_pkg/update_preauth_pool_status?authorization=11796985&&claimrequestid=&claimresponseid&claimoutcome=&claimpreauthref&claimperiodstart&claimperiodend&claimextensioncode&claimmessageeventtype
+  [EXSYS_API_IDS_NAMES.savePreauthPollData]:
+    "hs_nphies_preauth_pkg/update_preauth_pool_status",
+  // http://149.102.140.8:9090/ords/exsys_api/nphies_pkg/collect_claim_episode_to_send?authorization=11796985&organization_no=001&patient_file_no=073393&episode_no=12&episode_invoice_no=I22/38154&message_event_type=pharmacy
   [EXSYS_API_IDS_NAMES.collectExsysClaimData]:
     "nphies_pkg/collect_claim_episode_to_send",
   // http://149.102.140.8:9090/ords/exsys_api/nphies_pkg/update_claim_send_status?claim_pk=&claim_response_id=&claim_request_id&outcome=&adjudication_outcome
   [EXSYS_API_IDS_NAMES.saveClaimData]: "nphies_pkg/update_claim_send_status",
-  // http://149.102.140.8:9090/ords/exsys_api/hs_nphies_preauth_pkg/update_preauth_pool_status?authorization=11796985&&claimRequestId=&claimResponseId&claimOutcome=&claimPreauthRef&claimPeriodStart&claimPeriodEnd&claimExtensionCode
-  [EXSYS_API_IDS_NAMES.savePreauthPollData]:
-    "hs_nphies_preauth_pkg/update_preauth_pool_status",
-  // http://149.102.140.8:9090/ords/exsys_api/nphies_pkg/update_claim_pool_status?authorization=11796985&&claimRequestId=&claimResponseId&claimOutcome=&claimPreauthRef&claimPeriodStart&claimPeriodEnd&claimExtensionCode
+  // http://149.102.140.8:9090/ords/exsys_api/nphies_pkg/update_claim_pool_status?authorization=11796985&&claimrequestid=&claimresponseid&claimoutcome=&claimpreauthref&claimperiodstart&claimperiodend&claimextensioncode&claimmessageeventtype
   [EXSYS_API_IDS_NAMES.saveClaimPollData]:
     "nphies_pkg/update_claim_pool_status",
 };

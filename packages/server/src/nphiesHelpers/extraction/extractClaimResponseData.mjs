@@ -55,6 +55,7 @@ const extractClaimResponseData = ({
   processNote,
   error,
   request,
+  type,
 }) => {
   const {
     identifier: { value: claimRequestId },
@@ -64,6 +65,8 @@ const extractClaimResponseData = ({
 
   const [{ value: claimResponseId }] = identifier || [{}];
 
+  const { code: claimMessageEventType } =
+    extractNphiesCodeAndDisplayFromCodingType(type);
   const claimExtensionCode = getExtensionCode(extension);
 
   const { start, end } = preAuthPeriod || {};
@@ -101,6 +104,7 @@ const extractClaimResponseData = ({
     claimPeriodStart: createDateFromNativeDate(start).dateString,
     claimPeriodEnd: createDateFromNativeDate(end).dateString,
     claimExtensionCode,
+    claimMessageEventType,
     processNotes: processNotes,
     productsData,
     claimErrors: errors,
