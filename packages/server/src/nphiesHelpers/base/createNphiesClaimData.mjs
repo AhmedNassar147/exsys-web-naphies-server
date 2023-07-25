@@ -414,6 +414,11 @@ const createNphiesClaimData = ({
               informationSequence: hasSupportingInfoData
                 ? getSupportingInfoSequences(supportingInfo, days_supply_id)
                 : undefined,
+              // informationSequence: days_supply_id
+              //   ? getSequences(supportingInfo, [days_supply_id], "value")
+              //   : hasSupportingInfoData
+              //   ? supportingInfo.map((_, index) => index + 1)
+              //   : undefined,
               extension: [
                 !!extensionTax && {
                   url: `${BASE_PROFILE_URL}/${EXTENSION_TAX}`,
