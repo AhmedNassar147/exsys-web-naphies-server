@@ -3,9 +3,29 @@
  * Helper: `createBaseFetchExsysDataAndCallNphiesApi`.
  *
  */
-import { writeResultFile, isObjectHasData } from "@exsys-web-server/helpers";
+import {
+  writeResultFile,
+  isObjectHasData,
+  createCmdMessage,
+} from "@exsys-web-server/helpers";
 import createExsysRequest from "../helpers/createExsysRequest.mjs";
 import callNphiesAPIAndCollectResults from "../nphiesHelpers/base/callNphiesApiAndCollectResults.mjs";
+
+const createPrintResultsOrLog =
+  (printValues) =>
+  async ({ printData, error }) => {
+    if (printValues) {
+      await writeResultFile(printData);
+      return;
+    }
+
+    if (error) {
+      createCmdMessage({
+        type: "error",
+        message: error,
+      });
+    }
+  };
 
 const createBaseFetchExsysDataAndCallNphiesApi = async ({
   exsysQueryApiId,
@@ -47,15 +67,20 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
     exsysResultsData,
   };
 
+  const printResultsOrLog = createPrintResultsOrLog(printValues);
+
   if (error_message || !isSuccess) {
     const errorMessage =
       error_message ||
       `error when calling exsys ${nphiesRequestName} \`${exsysQueryApiId}\` API`;
 
-    await writeResultFile({
-      folderName: printFolderName,
-      data: printedErrorData,
-      isError: true,
+    await printResultsOrLog({
+      printData: {
+        folderName: printFolderName,
+        data: printedErrorData,
+        isError: true,
+      },
+      error: errorMessage,
     });
 
     if (exsysSaveApiId) {
@@ -84,16 +109,19 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
   }
 
   if (!primaryKey || !isObjectHasData(otherResults)) {
-    const error = `Exsys API failed sent empty ${exsysDataApiPrimaryKeyName} or result keys`;
+    const errorMessage = `Exsys API failed sent empty ${exsysDataApiPrimaryKeyName} or result keys`;
 
-    await writeResultFile({
-      folderName: printFolderName,
-      data: printedErrorData,
-      isError: true,
+    await printResultsOrLog({
+      printData: {
+        folderName: printFolderName,
+        data: printedErrorData,
+        isError: true,
+      },
+      error: errorMessage,
     });
 
     return {
-      errorMessage: error,
+      errorMessage,
       hasError: true,
     };
   }
@@ -143,13 +171,14 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
     });
   }
 
-  if (printValues) {
-    await writeResultFile({
+  await printResultsOrLog({
+    printData: {
       folderName: printFolderName,
       data: nphiesResultData,
       isError: hasError,
-    });
-  }
+    },
+    error: hasError ? `${errorMessageCode} - ${errorMessageCode}` : undefined,
+  });
 
   const { message_event_type, message_event } = exsysResultsData;
 

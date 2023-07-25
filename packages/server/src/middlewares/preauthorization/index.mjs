@@ -8,7 +8,7 @@ import createPreauthorizationMiddleware from "../../helpers/createBaseExpressMid
 import fetchExsysPreauthorizationDataAndCallNphies from "../../exsysHelpers/fetchExsysPreauthorizationDataAndCallNphies.mjs";
 
 export default createPreauthorizationMiddleware(
-  async ({ preauth_pk, authorization }) =>
+  async ({ preauth_pk, authorization, printValues = false }) =>
     await fetchExsysPreauthorizationDataAndCallNphies({
       requestMethod: "GET",
       nphiesRequestType: NPHIES_REQUEST_TYPES.PREAUTH,
@@ -16,6 +16,6 @@ export default createPreauthorizationMiddleware(
         authorization,
         preauth_pk,
       },
-      printValues: true,
+      printValues,
     })
 );

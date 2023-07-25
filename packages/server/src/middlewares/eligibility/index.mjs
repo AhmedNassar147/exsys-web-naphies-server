@@ -31,6 +31,7 @@ export default createEligibilityMiddleware(async (body, originalUrl) => {
     organization_no,
     authorization,
     type,
+    printValues = false,
   } = body;
 
   const message_event = originalUrl.replace("/", "");
@@ -49,6 +50,6 @@ export default createEligibilityMiddleware(async (body, originalUrl) => {
 
   return await fetchExsysEligibilityDataAndCallNphies({
     exsysAPiBodyData: bodyData,
-    printValues: false,
+    printValues,
   });
 });
