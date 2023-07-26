@@ -15,7 +15,6 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
   requestBody,
   requestMethod,
   createResultsDataFromExsysResponse,
-  nphiesRequestName,
   printFolderName,
   exsysDataApiPrimaryKeyName,
   createNphiesRequestPayloadFn,
@@ -69,7 +68,7 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
   if (hasErrorMessageOrFailed) {
     const errorMessage =
       error_message ||
-      `error when calling exsys ${nphiesRequestName} \`${exsysQueryApiId}\` API`;
+      `error when calling exsys \`${EXSYS_API_IDS[exsysQueryApiId]}\` API`;
 
     if (exsysSaveApiId) {
       const errorSaveParams = createExsysSaveApiParams

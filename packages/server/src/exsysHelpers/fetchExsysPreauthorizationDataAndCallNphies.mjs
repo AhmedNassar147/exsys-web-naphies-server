@@ -63,13 +63,11 @@ const createExsysErrorSaveApiBody = (errorMessage) => ({
 
 const CONFIG_MAP = {
   [NPHIES_REQUEST_TYPES.CLAIM]: {
-    nphiesRequestName: "Claim",
     exsysDataApiPrimaryKeyName: "claim_pk",
     exsysQueryApiId: collectExsysClaimData,
     exsysSaveApiId: saveClaimData,
   },
   [NPHIES_REQUEST_TYPES.PREAUTH]: {
-    nphiesRequestName: "Preauth",
     exsysDataApiPrimaryKeyName: "preauth_pk",
     exsysQueryApiId: collectExsysPreauthData,
     exsysSaveApiId: savePreauthData,
@@ -95,12 +93,8 @@ const fetchExsysPreauthorizationDataAndCallNphies = async ({
       : [],
   });
 
-  const {
-    exsysQueryApiId,
-    nphiesRequestName,
-    exsysDataApiPrimaryKeyName,
-    exsysSaveApiId,
-  } = CONFIG_MAP[nphiesRequestType];
+  const { exsysQueryApiId, exsysDataApiPrimaryKeyName, exsysSaveApiId } =
+    CONFIG_MAP[nphiesRequestType];
 
   const { authorization } = requestParams;
 
@@ -132,7 +126,6 @@ const fetchExsysPreauthorizationDataAndCallNphies = async ({
     requestParams,
     requestMethod,
     printFolderName: nphiesRequestType,
-    nphiesRequestName,
     exsysDataApiPrimaryKeyName,
     createResultsDataFromExsysResponse,
     createNphiesRequestPayloadFn,

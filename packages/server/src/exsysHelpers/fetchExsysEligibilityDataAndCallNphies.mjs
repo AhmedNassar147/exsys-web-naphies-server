@@ -52,7 +52,6 @@ const fetchExsysEligibilityDataAndCallNphies = async ({
     requestBody: exsysAPiBodyData,
     requestMethod,
     printFolderName: printFolderName || "eligibility",
-    nphiesRequestName: "Eligibility",
     exsysDataApiPrimaryKeyName: "primaryKey",
     createResultsDataFromExsysResponse,
     createNphiesRequestPayloadFn,
