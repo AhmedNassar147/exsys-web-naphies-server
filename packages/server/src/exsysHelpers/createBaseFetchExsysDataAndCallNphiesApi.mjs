@@ -54,10 +54,10 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
 
   if (
     !noPatientDataLogger &&
-    [patient_file_no, patient_name, memberid].some((v) => !v)
+    [patient_file_no, patient_name, memberid].some((value) => !value)
   ) {
     console.error(
-      "[patient_file_no, patient_name, memberid] fields should be in results data"
+      `[patient_file_no, patient_name, memberid] fields should be found in ${exsysQueryApiId}`
     );
   }
 

@@ -35,6 +35,7 @@ const createMappedRequestsArray = async ({
     const { printData, loggerValues, resultsData } = results.reduce(
       (acc, item) => {
         if (!isObjectHasData(item)) {
+          console.log("LOG ITEM", item);
           return acc;
         }
         const { printData, loggerValue, resultData } = item;
