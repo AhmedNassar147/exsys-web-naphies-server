@@ -5,6 +5,7 @@
  */
 import isArrayHasData from "./isArrayHasData.mjs";
 import createPrintResultsOrLog from "./createPrintResultsOrLog.mjs";
+import delayProcess from "./delayProcess.mjs";
 
 const initialReducerValue = {
   printData: {},
@@ -18,7 +19,16 @@ const createMappedRequestsArray = async ({
   printValues = true,
 }) => {
   if (isArrayHasData(dataArray)) {
-    const configPromises = dataArray.map(asyncFn);
+    const length = dataArray.length;
+
+    const configPromises = dataArray
+      .map((item, index) => [
+        asyncFn(item, index),
+        index < length - 1 ? delayProcess(1000) : false,
+      ])
+      .filter(Boolean)
+      .flat();
+
     const results = await Promise.all(configPromises);
 
     const { printData, loggerValues, resultsData } = results.reduce(
