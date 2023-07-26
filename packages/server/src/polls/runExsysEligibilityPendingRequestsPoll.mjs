@@ -22,6 +22,7 @@ const requestOptions = {
   requestMethod: "GET",
   exsysApiId: checkExsysPollPendingRequests,
   noPatientDataLogger: true,
+  printFolderName: "eligibilityPoll",
   requestParams: {
     authorization,
   },

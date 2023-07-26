@@ -43,6 +43,7 @@ const fetchExsysEligibilityDataAndCallNphies = async ({
   requestMethod,
   exsysAPiBodyData,
   noPatientDataLogger,
+  printFolderName,
 }) =>
   await createBaseFetchExsysDataAndCallNphiesApi({
     exsysQueryApiId: exsysApiId || getExsysDataBasedPatient,
@@ -50,7 +51,7 @@ const fetchExsysEligibilityDataAndCallNphies = async ({
     requestParams,
     requestBody: exsysAPiBodyData,
     requestMethod,
-    printFolderName: "eligibility",
+    printFolderName: printFolderName || "eligibility",
     nphiesRequestName: "Eligibility",
     exsysDataApiPrimaryKeyName: "primaryKey",
     createResultsDataFromExsysResponse,
