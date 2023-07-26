@@ -7,6 +7,7 @@ import isArrayHasData from "./isArrayHasData.mjs";
 import createPrintResultsOrLog from "./createPrintResultsOrLog.mjs";
 import delayProcess from "./delayProcess.mjs";
 import isObjectHasData from "./isObjectHasData.mjs";
+import writeResultFile from "./writeResultFile.mjs";
 
 const initialReducerValue = {
   printInfo: {},
@@ -22,15 +23,14 @@ const createMappedRequestsArray = async ({
   if (isArrayHasData(dataArray)) {
     const length = dataArray.length;
 
-    const configPromises = dataArray
-      .map((item, index) => [
-        asyncFn(item, index),
-        index < length ? delayProcess(4000) : false,
-      ])
-      .filter(Boolean)
-      .flat();
+    const configPromises = dataArray.map(asyncFn).filter(Boolean).flat();
 
     const results = await Promise.all(configPromises);
+
+    await writeResultFile({
+      data: results,
+      folderName: "AHMED NASSER",
+    });
 
     const { printInfo, loggerValues, resultsData } = results.reduce(
       (acc, item) => {

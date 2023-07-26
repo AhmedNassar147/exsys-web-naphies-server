@@ -4,6 +4,7 @@
  *
  */
 import { isObjectHasData } from "@exsys-web-server/helpers";
+import { EXSYS_API_IDS } from "../constants.mjs";
 import createExsysRequest from "../helpers/createExsysRequest.mjs";
 import callNphiesAPIAndCollectResults from "../nphiesHelpers/base/callNphiesApiAndCollectResults.mjs";
 
@@ -35,6 +36,7 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
   const exsysResultsData = await createResultsDataFromExsysResponse(
     result || {}
   );
+
   const {
     error_message,
     [exsysDataApiPrimaryKeyName]: primaryKey,
@@ -57,7 +59,7 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
     [patient_file_no, patient_name, memberid].some((value) => !value)
   ) {
     console.error(
-      `[patient_file_no, patient_name, memberid] fields should be found in ${exsysQueryApiId}`
+      `[patient_file_no, patient_name, memberid] fields should be found in ${EXSYS_API_IDS[exsysQueryApiId]}`
     );
   }
 
