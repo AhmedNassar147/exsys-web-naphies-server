@@ -67,7 +67,7 @@ const createMappedRequestsArray = async ({
     return Promise.resolve(resultsData);
   }
 
-  return Promise.resolve({});
+  return Promise.resolve([]);
 };
 
 export default createMappedRequestsArray;
