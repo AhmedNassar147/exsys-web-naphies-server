@@ -6,6 +6,7 @@
 import isArrayHasData from "./isArrayHasData.mjs";
 import createPrintResultsOrLog from "./createPrintResultsOrLog.mjs";
 import delayProcess from "./delayProcess.mjs";
+import isObjectHasData from "./isObjectHasData.mjs";
 
 const initialReducerValue = {
   printData: {},
@@ -24,7 +25,7 @@ const createMappedRequestsArray = async ({
     const configPromises = dataArray
       .map((item, index) => [
         asyncFn(item, index),
-        index < length - 1 ? delayProcess(1000) : false,
+        index < length - 1 ? delayProcess(2000) : false,
       ])
       .filter(Boolean)
       .flat();
@@ -32,7 +33,11 @@ const createMappedRequestsArray = async ({
     const results = await Promise.all(configPromises);
 
     const { printData, loggerValues, resultsData } = results.reduce(
-      (acc, { printData, loggerValue, resultData }) => {
+      (acc, item) => {
+        if (!isObjectHasData(item)) {
+          return acc;
+        }
+        const { printData, loggerValue, resultData } = item;
         const { folderName, isError, data } = printData | {};
 
         if (folderName && data) {
