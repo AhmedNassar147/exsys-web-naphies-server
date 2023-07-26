@@ -94,7 +94,7 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
       printData: {
         folderName: printFolderName,
         data: printedErrorData,
-        isError: true,
+        hasExsysApiError: true,
       },
       loggerValue: errorMessage,
       resultData: {
@@ -110,7 +110,7 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
       printData: {
         folderName: printFolderName,
         data: printedErrorData,
-        isError: true,
+        hasExsysApiError: true,
       },
       loggerValue: errorMessage,
       resultData: {
@@ -169,7 +169,7 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
     printData: {
       folderName: printFolderName,
       data: nphiesResultData,
-      isError: hasError,
+      hasNphiesApiError: hasError,
     },
     loggerValue: [errorMessage, errorMessageCode].filter(Boolean).join(" - "),
     resultData: {

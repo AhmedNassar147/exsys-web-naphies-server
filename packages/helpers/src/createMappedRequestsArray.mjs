@@ -29,14 +29,14 @@ const createMappedRequestsArray = async ({
           return acc;
         }
         const { printData, loggerValue, resultData } = item;
-        const { folderName, isError, data } = printData || {};
+        const { folderName, data, ...others } = printData || {};
 
         if (folderName && data) {
           acc.printInfo.folderName = folderName;
           acc.printInfo.data = acc.printInfo.data || [];
           acc.printInfo.data.push({
-            isError,
-            ...data,
+            ...others,
+            ...(data || null),
           });
         }
 
