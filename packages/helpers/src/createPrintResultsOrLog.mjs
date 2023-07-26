@@ -12,7 +12,7 @@ const createPrintResultsOrLog = async ({
   printData,
   loggerValues,
 }) => {
-  if (printValues && printValues.folderName) {
+  if (printValues && printData && printData.folderName) {
     await writeResultFile(printData);
     return;
   }
