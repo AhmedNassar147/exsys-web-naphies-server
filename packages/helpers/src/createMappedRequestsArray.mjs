@@ -24,14 +24,15 @@ const createMappedRequestsArray = async ({
 
     const results = await Promise.all(configPromises);
 
-    const { printInfo, loggerValues, resultsData } = results.reduce(
-      (acc, item) => {
+    const { printInfo, loggerValues, resultsData } = await Promise.resolve(
+      results.reduce((acc, item) => {
         if (!isObjectHasData(item)) {
           console.log("LOG ITEM", item);
           return acc;
         }
         const { printData, loggerValue, resultData } = item;
         const { folderName, isError, data } = printData | {};
+        console.log("printData", printData);
 
         if (folderName && data) {
           acc.printInfo.folderName = folderName;
@@ -42,12 +43,16 @@ const createMappedRequestsArray = async ({
           });
         }
 
-        acc.loggerValues.push(loggerValue);
-        acc.resultsData.push(resultData);
+        if (loggerValue) {
+          acc.loggerValues.push(loggerValue);
+        }
+
+        if (resultData) {
+          acc.resultsData.push(resultData);
+        }
 
         return acc;
-      },
-      initialReducerValue
+      }, initialReducerValue)
     );
 
     await writeResultFile({
