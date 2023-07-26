@@ -37,6 +37,11 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
   const {
     error_message,
     [exsysDataApiPrimaryKeyName]: primaryKey,
+    message_event_type,
+    message_event,
+    patient_file_no,
+    patient_name,
+    memberid,
     ...otherResults
   } = exsysResultsData;
 
@@ -45,6 +50,12 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
     requestBody,
     exsysResultsData,
   };
+
+  if ([patient_file_no, patient_name, memberid].some((v) => !v)) {
+    console.error(
+      "[patient_file_no, patient_name, memberid] fields should be in results data"
+    );
+  }
 
   if (error_message || !isSuccess) {
     const errorMessage =
@@ -145,8 +156,6 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
     });
   }
 
-  const { message_event_type, message_event } = exsysResultsData;
-
   return {
     printData: {
       folderName: printFolderName,
@@ -160,6 +169,9 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
         ...nphiesExtractedData,
         messageEvent: message_event,
         messageEventType: message_event_type,
+        patientFileNo: patient_file_no,
+        patientName: patient_name,
+        patientCardNo: memberid,
       },
       errorMessage,
       errorMessageCode,
