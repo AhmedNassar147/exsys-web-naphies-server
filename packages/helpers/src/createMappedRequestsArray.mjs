@@ -51,7 +51,7 @@ const createMappedRequestsArray = async ({
     return Promise.resolve(resultsData);
   }
 
-  return Promise.resolve(undefined);
+  return Promise.resolve({});
 };
 
 export default createMappedRequestsArray;

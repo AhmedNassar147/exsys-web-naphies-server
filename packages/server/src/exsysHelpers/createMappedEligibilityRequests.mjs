@@ -16,8 +16,13 @@ const createMappedEligibilityRequests = async ({
   await createMappedRequestsArray({
     dataArray: data,
     printValues,
-    asyncFn: ({ patientFileNo, contractNo, patientIdNo, organization_no }) =>
-      fetchExsysEligibilityDataAndCallNphies({
+    asyncFn: async ({
+      patientFileNo,
+      contractNo,
+      patientIdNo,
+      organization_no,
+    }) =>
+      await fetchExsysEligibilityDataAndCallNphies({
         exsysAPiBodyData: {
           authorization,
           message_event,
