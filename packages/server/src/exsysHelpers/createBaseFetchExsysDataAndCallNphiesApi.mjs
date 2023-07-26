@@ -23,6 +23,7 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
   createExsysSaveApiParams,
   createExsysErrorSaveApiBody,
   onNphiesResponseWithSuccessFn,
+  noPatientDataLogger,
 }) => {
   const { isSuccess, result } = await createExsysRequest({
     resourceName: exsysQueryApiId,
@@ -51,7 +52,10 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
     exsysResultsData,
   };
 
-  if ([patient_file_no, patient_name, memberid].some((v) => !v)) {
+  if (
+    !noPatientDataLogger &&
+    [patient_file_no, patient_name, memberid].some((v) => !v)
+  ) {
     console.error(
       "[patient_file_no, patient_name, memberid] fields should be in results data"
     );

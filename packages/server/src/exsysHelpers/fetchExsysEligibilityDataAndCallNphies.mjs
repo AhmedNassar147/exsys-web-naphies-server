@@ -42,6 +42,7 @@ const fetchExsysEligibilityDataAndCallNphies = async ({
   exsysApiId,
   requestMethod,
   exsysAPiBodyData,
+  noPatientDataLogger,
 }) =>
   await createBaseFetchExsysDataAndCallNphiesApi({
     exsysQueryApiId: exsysApiId || getExsysDataBasedPatient,
@@ -57,6 +58,7 @@ const fetchExsysEligibilityDataAndCallNphies = async ({
     extractionFunctionsMap,
     setErrorIfExtractedDataFoundFn,
     createExsysErrorSaveApiBody,
+    noPatientDataLogger,
   });
 
 export default fetchExsysEligibilityDataAndCallNphies;

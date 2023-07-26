@@ -21,6 +21,7 @@ const { checkExsysPollPendingRequests } = EXSYS_API_IDS_NAMES;
 const requestOptions = {
   requestMethod: "GET",
   exsysApiId: checkExsysPollPendingRequests,
+  noPatientDataLogger: true,
   requestParams: {
     authorization,
   },
