@@ -51,27 +51,12 @@ const {
   EXTENSION_EPISODE,
 } = NPHIES_BASE_CODE_TYPES;
 
-const PREAUTH_TYPES = {
-  institutional: {
-    profileType: PROFILE_INSTITUTIONAL_PREAUTH,
-    subType: "ip",
-  },
-  vision: {
-    profileType: PROFILE_VISION_PREAUTH,
-    subType: "op",
-  },
-  oral: {
-    profileType: PROFILE_ORAL_PREAUTH,
-    subType: "op",
-  },
-  pharmacy: {
-    profileType: PROFILE_PHARMACY_PREAUTH,
-    subType: "op",
-  },
-  professional: {
-    profileType: PROFILE_PROFESSIONAL_PREAUTH,
-    subType: "op",
-  },
+const PREAUTH_PROFILE_TYPES = {
+  institutional: PROFILE_INSTITUTIONAL_PREAUTH,
+  vision: PROFILE_VISION_PREAUTH,
+  oral: PROFILE_ORAL_PREAUTH,
+  pharmacy: PROFILE_PHARMACY_PREAUTH,
+  professional: PROFILE_PROFESSIONAL_PREAUTH,
 };
 
 const currency = "SAR";
@@ -136,6 +121,7 @@ const createNphiesClaimData = ({
   siteUrl,
   isClaimRequest,
   message_event_type,
+  claim_subType,
   visionPrescriptionUrl,
   useVisionPrescriptionUrl,
   providerDoctorUrl,
@@ -149,7 +135,7 @@ const createNphiesClaimData = ({
   episodeInvoiceNo,
   preauthRefs,
 }) => {
-  const { profileType, subType } = PREAUTH_TYPES[message_event_type];
+  const profileType = PREAUTH_PROFILE_TYPES[message_event_type];
 
   const _profileType = isClaimRequest
     ? profileType.replace("priorauth", "claim")
@@ -209,13 +195,13 @@ const createNphiesClaimData = ({
           },
         ],
       },
-      ...(subType
+      ...(claim_subType
         ? {
             subType: {
               coding: [
                 {
                   system: `${BASE_CODE_SYS_URL}/${CLAIM_SUBTYPE}`,
-                  code: subType,
+                  code: claim_subType,
                 },
               ],
             },
