@@ -24,11 +24,6 @@ const createMappedRequestsArray = async ({
 
     const results = await Promise.all(configPromises);
 
-    await writeResultFile({
-      data: results,
-      folderName: "AHMED NASSER",
-    });
-
     const { printInfo, loggerValues, resultsData } = results.reduce(
       (acc, item) => {
         if (!isObjectHasData(item)) {
@@ -54,6 +49,15 @@ const createMappedRequestsArray = async ({
       },
       initialReducerValue
     );
+
+    await writeResultFile({
+      data: {
+        printValues,
+        printData: printInfo,
+        loggerValues,
+      },
+      folderName: "AHMED NASSER",
+    });
 
     await createPrintResultsOrLog({
       printValues,
