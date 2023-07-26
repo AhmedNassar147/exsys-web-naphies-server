@@ -9,7 +9,7 @@ import delayProcess from "./delayProcess.mjs";
 import isObjectHasData from "./isObjectHasData.mjs";
 
 const initialReducerValue = {
-  printData: {},
+  printInfo: {},
   loggerValues: [],
   resultsData: [],
 };
@@ -25,14 +25,14 @@ const createMappedRequestsArray = async ({
     const configPromises = dataArray
       .map((item, index) => [
         asyncFn(item, index),
-        index < length - 1 ? delayProcess(2000) : false,
+        index < length ? delayProcess(4000) : false,
       ])
       .filter(Boolean)
       .flat();
 
     const results = await Promise.all(configPromises);
 
-    const { printData, loggerValues, resultsData } = results.reduce(
+    const { printInfo, loggerValues, resultsData } = results.reduce(
       (acc, item) => {
         if (!isObjectHasData(item)) {
           console.log("LOG ITEM", item);
@@ -42,9 +42,9 @@ const createMappedRequestsArray = async ({
         const { folderName, isError, data } = printData | {};
 
         if (folderName && data) {
-          acc.printData.folderName = folderName;
-          acc.printData.data = acc.printData.data || [];
-          acc.printData.data.push({
+          acc.printInfo.folderName = folderName;
+          acc.printInfo.data = acc.printInfo.data || [];
+          acc.printInfo.data.push({
             isError,
             ...data,
           });
@@ -60,7 +60,7 @@ const createMappedRequestsArray = async ({
 
     await createPrintResultsOrLog({
       printValues,
-      printData,
+      printData: printInfo,
       loggerValues,
     });
 
