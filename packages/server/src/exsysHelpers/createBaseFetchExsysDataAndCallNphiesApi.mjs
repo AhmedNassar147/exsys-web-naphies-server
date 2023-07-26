@@ -54,8 +54,11 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
     exsysResultsData,
   };
 
+  const hasErrorMessageOrFailed = !!error_message || !isSuccess;
+
   if (
     !noPatientDataLogger &&
+    !hasErrorMessageOrFailed &&
     [patient_file_no, patient_name, memberid].some((value) => !value)
   ) {
     console.error(
@@ -63,7 +66,7 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
     );
   }
 
-  if (error_message || !isSuccess) {
+  if (hasErrorMessageOrFailed) {
     const errorMessage =
       error_message ||
       `error when calling exsys ${nphiesRequestName} \`${exsysQueryApiId}\` API`;

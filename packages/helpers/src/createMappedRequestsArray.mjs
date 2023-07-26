@@ -5,7 +5,6 @@
  */
 import isArrayHasData from "./isArrayHasData.mjs";
 import createPrintResultsOrLog from "./createPrintResultsOrLog.mjs";
-import delayProcess from "./delayProcess.mjs";
 import isObjectHasData from "./isObjectHasData.mjs";
 import writeResultFile from "./writeResultFile.mjs";
 
@@ -21,8 +20,6 @@ const createMappedRequestsArray = async ({
   printValues = true,
 }) => {
   if (isArrayHasData(dataArray)) {
-    const length = dataArray.length;
-
     const configPromises = dataArray.map(asyncFn).filter(Boolean).flat();
 
     const results = await Promise.all(configPromises);
