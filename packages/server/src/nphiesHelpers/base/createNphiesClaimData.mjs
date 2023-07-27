@@ -89,8 +89,7 @@ const createAuthorizationExtensions = ({
       url: `${BASE_PROFILE_URL}/${EXTENSION_EPISODE}`,
       valueIdentifier: {
         system: `${siteUrl}/episode`,
-        value: episodeInvoiceNo,
-        // value: "SGH_EpisodeID_2314596",
+        value: `EpisodeID-${episodeInvoiceNo}`,
       },
     },
   ].filter(Boolean);
@@ -388,6 +387,9 @@ const createNphiesClaimData = ({
               doctorsIds,
               sequence,
               days_supply_id,
+              patientInvoiceNo,
+              tooth,
+              factor,
             }) => ({
               sequence,
               careTeamSequence: getSequences(doctorsData, doctorsIds, "id"),
@@ -419,11 +421,13 @@ const createNphiesClaimData = ({
                     currency,
                   },
                 },
-                !!episodeInvoiceNo && {
+                !!(episodeInvoiceNo || patientInvoiceNo) && {
                   url: `${BASE_PROFILE_URL}/${EXTENSION_PATIENT_INVOICE}`,
                   valueIdentifier: {
                     system: `${siteUrl}/patientInvoice`,
-                    value: `${episodeInvoiceNo}_${Date.now()}`,
+                    value: `Invc-${
+                      patientInvoiceNo || episodeInvoiceNo
+                    }/T_${Date.now()}`,
                   },
                 },
                 {
@@ -441,6 +445,7 @@ const createNphiesClaimData = ({
                 ],
               },
               servicedDate: reverseDate(servicedDate),
+              // factor: (discount / unitprice) - 1
               quantity: {
                 value: quantity,
               },
@@ -448,6 +453,7 @@ const createNphiesClaimData = ({
                 value: unitPrice || 0,
                 currency,
               },
+              factor,
               net: {
                 value: getProductNetValue({
                   quantity,
@@ -456,6 +462,19 @@ const createNphiesClaimData = ({
                 }),
                 currency,
               },
+              ...(tooth
+                ? {
+                    bodySite: {
+                      coding: [
+                        {
+                          system:
+                            "http://nphies.sa/terminology/CodeSystem/fdi-oral-region",
+                          code: tooth,
+                        },
+                      ],
+                    },
+                  }
+                : null),
             })
           )
         : undefined,
