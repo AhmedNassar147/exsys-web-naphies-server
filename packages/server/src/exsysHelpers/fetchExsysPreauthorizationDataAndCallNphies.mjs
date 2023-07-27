@@ -90,6 +90,30 @@ const createResultsDataFromExsysResponse = async ({
     : [],
 });
 
+const checkExsysDataValidationBeforeCallingNphies = ({
+  supportInformationData,
+}) => {
+  if (isArrayHasData(supportInformationData)) {
+    const indexOfSomeAttachmentNotFound = supportInformationData.findIndex(
+      ({ categoryCode, value }) => categoryCode === attachment && !value
+    );
+
+    const someAttachmentNotFound = indexOfSomeAttachmentNotFound !== -1;
+
+    const error = someAttachmentNotFound
+      ? `Skipping request because some attachments not found \`Index is\` => ${indexOfSomeAttachmentNotFound}`
+      : undefined;
+
+    if (error) {
+      createCmdMessage({ type: "error", message: error });
+    }
+
+    return error;
+  }
+
+  return undefined;
+};
+
 const fetchExsysPreauthorizationDataAndCallNphies = async ({
   requestParams,
   requestMethod,
@@ -122,29 +146,7 @@ const fetchExsysPreauthorizationDataAndCallNphies = async ({
     }
   };
 
-  const checkExsysDataValidationBeforeCallingNphies = ({
-    supportInformationData,
-  }) => {
-    if (isArrayHasData(supportInformationData)) {
-      const indexOfSomeAttachmentNotFound = supportInformationData.findIndex(
-        ({ categoryCode, value }) => categoryCode === attachment && !value
-      );
-
-      const someAttachmentNotFound = indexOfSomeAttachmentNotFound !== -1;
-
-      const error = someAttachmentNotFound
-        ? `Skipping request because some attachments not found \`Index is\` => ${indexOfSomeAttachmentNotFound}`
-        : undefined;
-
-      if (error) {
-        createCmdMessage({ type: "error", message: error });
-      }
-
-      return error;
-    }
-
-    return undefined;
-  };
+  const isClaimRequestType = nphiesRequestType === NPHIES_REQUEST_TYPES.CLAIM;
 
   return await createBaseFetchExsysDataAndCallNphiesApi({
     exsysQueryApiId,
@@ -160,7 +162,9 @@ const fetchExsysPreauthorizationDataAndCallNphies = async ({
     createExsysSaveApiParams,
     createExsysErrorSaveApiBody,
     onNphiesResponseWithSuccessFn,
-    checkExsysDataValidationBeforeCallingNphies,
+    checkExsysDataValidationBeforeCallingNphies: isClaimRequestType
+      ? checkExsysDataValidationBeforeCallingNphies
+      : undefined,
   });
 };
 
