@@ -61,9 +61,10 @@ const PREAUTH_PROFILE_TYPES = {
 
 const currency = "SAR";
 
+// ((quantity * unit price) * factor) + tax
 const getProductNetValue = ({ unitPrice, factor, extensionTax, quantity }) =>
   +(
-    (unitPrice || 0) * (quantity || 0 * (factor || 1)) +
+    (quantity || 1) * (unitPrice || 0) * (factor || 1) +
     (extensionTax || 0)
   ).toFixed(2);
 
