@@ -24,6 +24,7 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
   createExsysErrorSaveApiBody,
   onNphiesResponseWithSuccessFn,
   noPatientDataLogger,
+  checkExsysDataValidationBeforeCallingNphies,
 }) => {
   const { isSuccess, result } = await createExsysRequest({
     resourceName: exsysQueryApiId,
@@ -53,7 +54,12 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
     exsysResultsData,
   };
 
-  const hasErrorMessageOrFailed = !!error_message || !isSuccess;
+  const validationErrorMessage = checkExsysDataValidationBeforeCallingNphies
+    ? checkExsysDataValidationBeforeCallingNphies(exsysResultsData)
+    : undefined;
+
+  const hasErrorMessageOrFailed =
+    !!error_message || !isSuccess || !!validationErrorMessage;
 
   if (
     !noPatientDataLogger &&
@@ -68,6 +74,7 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
   if (hasErrorMessageOrFailed) {
     const errorMessage =
       error_message ||
+      validationErrorMessage ||
       `error when calling exsys \`${EXSYS_API_IDS[exsysQueryApiId]}\` API`;
 
     if (exsysSaveApiId) {

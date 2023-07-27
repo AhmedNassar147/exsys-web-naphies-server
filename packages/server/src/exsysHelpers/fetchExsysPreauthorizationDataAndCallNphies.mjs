@@ -14,9 +14,11 @@ import {
   EXSYS_API_IDS_NAMES,
   NPHIES_RESOURCE_TYPES,
   NPHIES_REQUEST_TYPES,
+  SUPPORT_INFO_KEY_NAMES,
 } from "../constants.mjs";
 
 const { COVERAGE } = NPHIES_RESOURCE_TYPES;
+const { attachment } = SUPPORT_INFO_KEY_NAMES;
 
 const {
   collectExsysPreauthData,
@@ -74,25 +76,25 @@ const CONFIG_MAP = {
   },
 };
 
+const createResultsDataFromExsysResponse = async ({
+  productsData,
+  supportInformationData,
+  ...result
+}) => ({
+  ...result,
+  supportInformationData: await convertSupportInfoAttachmentUrlsToBase64(
+    supportInformationData
+  ),
+  productsData: isArrayHasData(productsData)
+    ? productsData.filter(Boolean)
+    : [],
+});
+
 const fetchExsysPreauthorizationDataAndCallNphies = async ({
   requestParams,
   requestMethod,
   nphiesRequestType,
 }) => {
-  const createResultsDataFromExsysResponse = async ({
-    productsData,
-    supportInformationData,
-    ...result
-  }) => ({
-    ...result,
-    supportInformationData: await convertSupportInfoAttachmentUrlsToBase64(
-      supportInformationData
-    ),
-    productsData: isArrayHasData(productsData)
-      ? productsData.filter(Boolean)
-      : [],
-  });
-
   const { exsysQueryApiId, exsysDataApiPrimaryKeyName, exsysSaveApiId } =
     CONFIG_MAP[nphiesRequestType];
 
@@ -120,6 +122,24 @@ const fetchExsysPreauthorizationDataAndCallNphies = async ({
     }
   };
 
+  const checkExsysDataValidationBeforeCallingNphies = ({
+    supportInformationData,
+  }) => {
+    if (isArrayHasData(supportInformationData)) {
+      const indexOfSomeAttachmentNotFound = supportInformationData.findIndex(
+        ({ categoryCode, value }) => categoryCode === attachment && !value
+      );
+
+      const someAttachmentNotFound = indexOfSomeAttachmentNotFound !== -1;
+
+      return someAttachmentNotFound
+        ? `Skipping request because some attachments not found \`Index is\` => ${indexOfSomeAttachmentNotFound}`
+        : undefined;
+    }
+
+    return undefined;
+  };
+
   return await createBaseFetchExsysDataAndCallNphiesApi({
     exsysQueryApiId,
     exsysSaveApiId,
@@ -134,6 +154,7 @@ const fetchExsysPreauthorizationDataAndCallNphies = async ({
     createExsysSaveApiParams,
     createExsysErrorSaveApiBody,
     onNphiesResponseWithSuccessFn,
+    checkExsysDataValidationBeforeCallingNphies,
   });
 };
 
