@@ -174,7 +174,11 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
   return {
     printData: {
       folderName: printFolderName,
-      data: nphiesResultData,
+      data: {
+        exsysRequstParams: requestParams,
+        exsysRequstBody: requestBody,
+        ...nphiesResultData,
+      },
       hasNphiesApiError: hasError,
     },
     loggerValue: [errorMessage, errorMessageCode].filter(Boolean).join(" - "),
