@@ -3,7 +3,7 @@
  * Helper: `fetchExsysPreauthorizationDataAndCallNphies`.
  *
  */
-import { isArrayHasData } from "@exsys-web-server/helpers";
+import { createCmdMessage, isArrayHasData } from "@exsys-web-server/helpers";
 import convertSupportInfoAttachmentUrlsToBase64 from "../nphiesHelpers/base/convertSupportInfoAttachmentUrlsToBase64.mjs";
 import createBaseFetchExsysDataAndCallNphiesApi from "./createBaseFetchExsysDataAndCallNphiesApi.mjs";
 import extractClaimResponseData from "../nphiesHelpers/extraction/extractClaimResponseData.mjs";
@@ -132,9 +132,15 @@ const fetchExsysPreauthorizationDataAndCallNphies = async ({
 
       const someAttachmentNotFound = indexOfSomeAttachmentNotFound !== -1;
 
-      return someAttachmentNotFound
+      const error = someAttachmentNotFound
         ? `Skipping request because some attachments not found \`Index is\` => ${indexOfSomeAttachmentNotFound}`
         : undefined;
+
+      if (error) {
+        createCmdMessage({ type: "error", message: error });
+      }
+
+      return error;
     }
 
     return undefined;
