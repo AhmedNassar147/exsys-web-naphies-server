@@ -6,29 +6,22 @@
 import axios from "axios";
 import { delayProcess } from "@exsys-web-server/helpers";
 
-const convertFileUrlToBase64 = async (fileUrl, removeBaseData) =>
+const convertFileUrlToBase64 = async (fileUrl) =>
   await new Promise(async (resolve) => {
     const wrapper = (n) => {
       axios
         .get(fileUrl, {
-          responseType: "arraybuffer",
+          responseType: "text",
+          responseEncoding: "base64",
         })
-        .then(({ data }) => {
-          let fileBase64 = Buffer.from(data).toString("base64");
-
-          if (removeBaseData && fileBase64) {
-            fileBase64 = fileBase64.replace(/.+base64,/, "");
-          }
-
-          return resolve(fileBase64);
-        })
+        .then(({ data }) => resolve(data))
         .catch(async (error) => {
           const { response } = error || {};
           const { status } = response || {};
           const isNotFoundUrl = status === 404;
 
           if (n > 0 && typeof status === "undefined") {
-            await delayProcess(1100);
+            await delayProcess(500);
             wrapper(--n);
           } else {
             resolve(!isNotFoundUrl);
@@ -36,7 +29,7 @@ const convertFileUrlToBase64 = async (fileUrl, removeBaseData) =>
         });
     };
 
-    wrapper(7);
+    wrapper(4);
   });
 
 export default convertFileUrlToBase64;
