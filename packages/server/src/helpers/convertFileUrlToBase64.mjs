@@ -21,7 +21,7 @@ const convertFileUrlToBase64 = async (fileUrl) =>
           const isNotFoundUrl = status === 404;
 
           if (n > 0 && typeof status === "undefined") {
-            await delayProcess(500);
+            await delayProcess(400);
             wrapper(--n);
           } else {
             resolve(!isNotFoundUrl);
