@@ -330,10 +330,9 @@ const createNphiesClaimData = ({
                 valueAttachment: !!isAttachment
                   ? {
                       contentType,
-                      title: `${(title || "")`${contentType.replace(
-                        "/",
-                        "."
-                      )}`}`,
+                      title: `${
+                        title || ""` ${contentType.replace("/", ".")}`
+                      }`,
                       creation: reverseDate(creation),
                       data: value,
                     }
