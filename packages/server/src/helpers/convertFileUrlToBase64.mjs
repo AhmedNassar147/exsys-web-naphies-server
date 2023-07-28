@@ -5,8 +5,8 @@
  */
 import axios from "axios";
 
-const convertFileUrlToBase64 = (fileUrl, removeBaseData) =>
-  new Promise(async (resolve) => {
+const convertFileUrlToBase64 = async (fileUrl, removeBaseData) =>
+  await new Promise(async (resolve) => {
     try {
       const fileData = await axios.get(fileUrl, {
         responseType: "arraybuffer",

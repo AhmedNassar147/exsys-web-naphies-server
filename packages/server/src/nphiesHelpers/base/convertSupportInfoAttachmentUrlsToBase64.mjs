@@ -32,7 +32,7 @@ const fixContentType = (contentType) => {
 
 const convertSupportInfoAttachmentUrlsToBase64 = async (supportInfo) => {
   if (isArrayHasData(supportInfo)) {
-    return await Promise.all(
+    return await Promise.allSettled(
       supportInfo.map(async ({ categoryCode, value, contentType, ...item }) => {
         const isAttachment = categoryCode === attachment;
 
