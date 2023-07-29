@@ -453,7 +453,7 @@ const createNphiesClaimData = ({
                   {
                     system: `${siteUrl}/${nphiesProductCodeType}`,
                     code: customerProductCode,
-                    display: customerProductName,
+                    display: customerProductName || nphiesProductName,
                   },
                 ],
               },
