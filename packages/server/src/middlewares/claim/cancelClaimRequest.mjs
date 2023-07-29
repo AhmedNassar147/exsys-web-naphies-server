@@ -13,14 +13,19 @@ export default createClaimMiddleware(
     createMappedRequestsArray({
       dataArray: data,
       printValues,
-      asyncFn: async ({ patientFileNo, invoiceNo, organizationNo, claimPk }) =>
+      asyncFn: async ({
+        patientFileNo,
+        episodeInvoiceNo,
+        organizationNo,
+        claimPk,
+      }) =>
         await fetchExsysPreauthOrClaimDataForNphiesCancellation({
           requestMethod: "GET",
           nphiesRequestType: NPHIES_REQUEST_TYPES.CLAIM,
           requestParams: {
             authorization,
             patient_file_no: patientFileNo,
-            invoice_no: invoiceNo,
+            invoice_no: episodeInvoiceNo,
             organization_no: organizationNo,
             claim_pk: claimPk,
           },
