@@ -31,6 +31,7 @@ import stopTheProcessIfCertificateNotFound from "./helpers/stopTheProcessIfCerti
   app.use("/eligibility", createEligibilityMiddleware(app));
   app.use("/preauth", createPreauthorizationMiddleware(app));
   app.use("/claim", createClaimMiddleware(app));
+  app.use("/cancelClaimRequest", createClaimMiddleware(app));
 
   const res = app.listen(SERVER_PORT, () =>
     createCmdMessage({
