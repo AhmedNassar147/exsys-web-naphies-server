@@ -7,6 +7,7 @@ import {
   isArrayHasData,
   reverseDate,
   createTimestamp,
+  roundNumber,
 } from "@exsys-web-server/helpers";
 import createBaseEntryRequestData from "./createBaseEntryRequestData.mjs";
 import {
@@ -62,11 +63,12 @@ const PREAUTH_PROFILE_TYPES = {
 const currency = "SAR";
 
 // ((quantity * unit price) * factor) + tax
-const getProductNetValue = ({ unitPrice, factor, extensionTax, quantity }) =>
-  +(
-    (quantity || 1) * (unitPrice || 0) * (factor || 1) +
-    (extensionTax || 0)
-  ).toFixed(2);
+const getProductNetValue = ({ unitPrice, factor, extensionTax, quantity }) => {
+  const netValue =
+    (quantity || 1) * (unitPrice || 0) * (factor || 1) + (extensionTax || 0);
+
+  return roundNumber(netValue);
+};
 
 const getSequences = (arrayData, ids, idPropName) => {
   if (!isArrayHasData(arrayData) || !isArrayHasData(ids)) {

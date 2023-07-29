@@ -22,6 +22,7 @@ import isArrayHasData from "./isArrayHasData.mjs";
 import isObjectHasData from "./isObjectHasData.mjs";
 import createPrintResultsOrLog from "./createPrintResultsOrLog.mjs";
 import createMappedRequestsArray from "./createMappedRequestsArray.mjs";
+import roundNumber from "./roundNumber.mjs";
 
 export {
   capitalizeFirstLetter,
@@ -43,6 +44,7 @@ export {
   isObjectHasData,
   createPrintResultsOrLog,
   createMappedRequestsArray,
+  roundNumber,
 };
 
 export * from "./constants.mjs";
