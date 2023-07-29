@@ -54,6 +54,7 @@ const createExsysSaveApiParams = ({
   claim_response_id: claimResponseId,
   outcome: claimOutcome,
   adjudication_outcome: claimExtensionCode,
+  request_type: "request",
 });
 
 const createExsysErrorSaveApiBody = (errorMessage) => ({

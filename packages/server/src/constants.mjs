@@ -42,6 +42,7 @@ export const EXSYS_API_IDS_NAMES = {
   saveClaimData: "saveClaimData",
   savePreauthPollData: "savePreauthPollData",
   saveClaimPollData: "saveClaimPollData",
+  queryClaimRequestDataToCancellation: "queryClaimRequestDataToCancellation",
 };
 
 export const EXSYS_API_IDS = {
@@ -68,6 +69,9 @@ export const EXSYS_API_IDS = {
   // http://149.102.140.8:9090/ords/exsys_api/nphies_pkg/update_claim_pool_status?authorization=11796985&&claimrequestid=&claimresponseid&claimoutcome=&claimpreauthref&claimperiodstart&claimperiodend&claimextensioncode&claimmessageeventtype
   [EXSYS_API_IDS_NAMES.saveClaimPollData]:
     "nphies_pkg/update_claim_pool_status",
+  // http://149.102.140.8:9090/ords/exsys_api/nphies_pkg/collect_claim_to_cancel?authorization=12985704&patient_file_no=187285&invoice_no=I00122/23664&organization_no=001&claim_pk=604
+  [EXSYS_API_IDS_NAMES.queryClaimRequestDataToCancellation]:
+    "nphies_pkg/collect_claim_to_cancel",
 };
 
 export const HTTP_STATUS_CODE = {
@@ -95,6 +99,7 @@ export const NPHIES_REQUEST_TYPES = {
   PREAUTH: "priorauth",
   CLAIM: "claim",
   POLL: "poll",
+  CANCEL: "cancel",
 };
 
 export const NPHIES_RESOURCE_TYPES = {
@@ -117,6 +122,7 @@ export const NPHIES_RESOURCE_MAP_TO_REQUEST_TYPE = {
   [NPHIES_REQUEST_TYPES.PREAUTH]: NPHIES_RESOURCE_TYPES.CLAIM,
   [NPHIES_REQUEST_TYPES.CLAIM]: NPHIES_RESOURCE_TYPES.CLAIM,
   [NPHIES_REQUEST_TYPES.POLL]: NPHIES_RESOURCE_TYPES.TASK,
+  [NPHIES_REQUEST_TYPES.CANCEL]: NPHIES_RESOURCE_TYPES.TASK,
 };
 
 export const BASE_NPHIES_URL = "http://nphies.sa";
@@ -192,6 +198,7 @@ export const NPHIES_BASE_CODE_TYPES = {
   EXTENSION_PATIENT_INVOICE: "extension-patientInvoice",
   TASK_CODE: "task-code",
   TASK_INPUT_TYPE: "task-input-type",
+  TASK_REASON_CODE: "task-reason-code",
   EXTENSION_EPISODE: "extension-episode",
   EXTENSION_AUTH_OFFLINE_DATE: "extension-authorization-offline-date",
 };

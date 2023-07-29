@@ -33,9 +33,11 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
     body: requestBody,
   });
 
-  const exsysResultsData = await createResultsDataFromExsysResponse(
-    result || {}
-  );
+  const _result = result || {};
+
+  const exsysResultsData = createResultsDataFromExsysResponse
+    ? await createResultsDataFromExsysResponse(_result)
+    : _result;
 
   const {
     error_message,

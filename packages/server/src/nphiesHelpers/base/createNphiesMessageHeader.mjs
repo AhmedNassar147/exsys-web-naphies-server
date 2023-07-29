@@ -31,6 +31,8 @@ const createNphiesMessageHeader = ({
   requestType,
 }) => {
   const isAuthorizationPollData = requestType === NPHIES_REQUEST_TYPES.POLL;
+  const isCancellingPreauthOrClaimRequest =
+    requestType === NPHIES_REQUEST_TYPES.CANCEL;
 
   const baseResourceData = createNphiesBaseResource({
     resourceType: RESOURCE_MESSAGE_HEADER,
@@ -38,9 +40,10 @@ const createNphiesMessageHeader = ({
   });
 
   const { id } = baseResourceData;
-  const sourceEndPointBaseUrl = isAuthorizationPollData
-    ? PROVIDER_LICENSE_URL
-    : PAYER_LICENSE_URL;
+  const sourceEndPointBaseUrl =
+    isAuthorizationPollData || isCancellingPreauthOrClaimRequest
+      ? PROVIDER_LICENSE_URL
+      : PAYER_LICENSE_URL;
 
   const destinationEndPointUrl = isAuthorizationPollData
     ? BASE_NPHIES_URL

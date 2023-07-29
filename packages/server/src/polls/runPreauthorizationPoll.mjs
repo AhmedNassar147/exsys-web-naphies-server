@@ -5,22 +5,13 @@
  */
 import {
   delayProcess,
-  createUUID,
   writeResultFile,
   isObjectHasData,
   createCmdMessage,
 } from "@exsys-web-server/helpers";
 import savePreauthPollDataToExsys from "./savePreauthPollDataToExsys.mjs";
-import {
-  SERVER_CONFIG,
-  NPHIES_REQUEST_TYPES,
-  NPHIES_RESOURCE_TYPES,
-} from "../constants.mjs";
-import createProviderUrls from "../nphiesHelpers/base/createProviderUrls.mjs";
-import createNphiesBaseRequestData from "../nphiesHelpers/base/createNphiesBaseRequestData.mjs";
-import createNphiesMessageHeader from "../nphiesHelpers/base/createNphiesMessageHeader.mjs";
-import createNphiesTaskData from "../nphiesHelpers/base/createNphiesTaskData.mjs";
-import createOrganizationData from "../nphiesHelpers/base/createOrganizationData.mjs";
+import { SERVER_CONFIG, NPHIES_RESOURCE_TYPES } from "../constants.mjs";
+import createNphiesPreauthOrClaimPollData from "../nphiesHelpers/preauthorization/createNphiesPreauthOrClaimPollData.mjs";
 import mapEntriesAndExtractNeededData from "../nphiesHelpers/extraction/mapEntriesAndExtractNeededData.mjs";
 import extractCoverageEntryResponseData from "../nphiesHelpers/extraction/extractCoverageEntryResponseData.mjs";
 import extractClaimResponseData from "../nphiesHelpers/extraction/extractClaimResponseData.mjs";
@@ -28,7 +19,6 @@ import extractMessageHeaderData from "../nphiesHelpers/extraction/extractMessage
 import callNphiesApiAndCollectResults from "../nphiesHelpers/base/callNphiesApiAndCollectResults.mjs";
 
 const { preauthPollData, authorization } = SERVER_CONFIG;
-const { POLL } = NPHIES_REQUEST_TYPES;
 const { COVERAGE } = NPHIES_RESOURCE_TYPES;
 
 const { siteUrl, siteName, providerLicense, providerOrganization } =
@@ -50,43 +40,16 @@ const extractionFunctionsMap = {
 
 const PREAUTH_TIMEOUT = 3 * 60 * 1000;
 
-const createNphiesRequestPayloadFn = () => {
-  const requestId = createUUID();
-
-  const { providerOrganizationUrl, providerFocusUrl } = createProviderUrls({
-    providerBaseUrl: siteUrl,
-    requestType: POLL,
-  });
-
-  return {
-    ...createNphiesBaseRequestData(),
-    entry: [
-      createNphiesMessageHeader({
-        providerLicense,
-        requestId,
-        providerFocusUrl,
-        requestType: POLL,
-      }),
-      createNphiesTaskData({
-        providerOrganization,
-        requestId,
-        providerFocusUrl,
-      }),
-      createOrganizationData({
-        organizationLicense: providerLicense,
-        organizationReference: providerOrganization,
-        siteName,
-        providerOrganizationUrl,
-        isProvider: true,
-      }),
-    ],
-  };
-};
-
 const runPreauthorizationPoll = async () => {
   try {
     const options = {
-      createNphiesRequestPayloadFn,
+      createNphiesRequestPayloadFn: () =>
+        createNphiesPreauthOrClaimPollData({
+          providerLicense,
+          providerOrganization,
+          siteUrl,
+          siteName,
+        }),
       exsysResultsData: preauthPollData,
       setErrorIfExtractedDataFoundFn,
       extractionFunctionsMap,
