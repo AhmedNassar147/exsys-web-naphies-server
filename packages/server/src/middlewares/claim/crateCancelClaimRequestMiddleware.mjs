@@ -1,14 +1,14 @@
 /*
  *
- * `cancelClaimRequest`: `middleware`
+ * `crateCancelClaimRequestMiddleware`: `middleware`
  *
  */
 import { createMappedRequestsArray } from "@exsys-web-server/helpers";
-import createClaimMiddleware from "../../helpers/createBaseExpressMiddleware.mjs";
+import crateCancelClaimRequestMiddleware from "../../helpers/createBaseExpressMiddleware.mjs";
 import fetchExsysPreauthOrClaimDataForNphiesCancellation from "../../exsysHelpers/fetchExsysPreauthOrClaimDataForNphiesCancellation.mjs";
 import { NPHIES_REQUEST_TYPES } from "../../constants.mjs";
 
-export default createClaimMiddleware(
+export default crateCancelClaimRequestMiddleware(
   async ({ authorization, printValues = false, data }) =>
     createMappedRequestsArray({
       dataArray: data,
