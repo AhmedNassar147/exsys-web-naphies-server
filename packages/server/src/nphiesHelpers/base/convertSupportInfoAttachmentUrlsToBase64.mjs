@@ -10,7 +10,7 @@ import convertFileUrlToBase64 from "../../helpers/convertFileUrlToBase64.mjs";
 
 const { attachment } = SUPPORT_INFO_KEY_NAMES;
 
-const NPHIES_SUPPORTED_IMAGE_EXTENSIONS = ["/png", "/jpg", "/jpeg"];
+const NPHIES_SUPPORTED_IMAGE_EXTENSIONS = ["/jpeg", "/jpg"];
 
 const fixContentType = (contentType) => {
   if (contentType) {

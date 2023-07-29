@@ -67,7 +67,7 @@ const getProductNetValue = ({ unitPrice, factor, extensionTax, quantity }) => {
   const netValue =
     (quantity || 1) * (unitPrice || 0) * (factor || 1) + (extensionTax || 0);
 
-  return roundNumber(netValue);
+  return roundNumber(netValue, 2);
 };
 
 const getSequences = (arrayData, ids, idPropName) => {
