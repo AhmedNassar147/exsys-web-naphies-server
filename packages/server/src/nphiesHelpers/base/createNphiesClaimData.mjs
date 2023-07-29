@@ -174,7 +174,7 @@ const createNphiesClaimData = ({
 
   const totalValue = hasProductsData
     ? productsData.reduce(
-        (acc, product) => +(acc + getProductNetValue(product)).toFixed(2),
+        (acc, product) => roundNumber(acc + getProductNetValue(product), 2),
         0
       )
     : 0;
