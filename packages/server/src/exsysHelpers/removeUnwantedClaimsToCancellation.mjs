@@ -89,3 +89,5 @@ const removeUnwantedClaimsToCancellation = async (poffset = 0) => {
 
   stopProcessIfNoData();
 };
+
+await removeUnwantedClaimsToCancellation(0);
