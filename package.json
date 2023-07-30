@@ -23,6 +23,7 @@
     "test-claim-dev": "node ./packages/server/src/hardcodedTests/checkClaim.mjs --ignore-cert --dev",
     "test-claim-prod": "node ./packages/server/src/hardcodedTests/checkClaim.mjs --production",
     "test-cchi-prod": "node ./packages/server/src/exsysHelpers/testNphiesCCHI.js --production",
+    "remove-claims-prod": "node ./packages/server/src/exsysHelpers/removeUnwantedClaimsToCancellation.mjs --production",
     "// preprod": "yarn build",
     "prod": "yarn start --production"
   },
