@@ -16,6 +16,7 @@ import createEligibilityMiddleware from "./middlewares/eligibility/index.mjs";
 import createPreauthorizationMiddleware from "./middlewares/preauthorization/index.mjs";
 import createClaimMiddleware from "./middlewares/claim/index.mjs";
 import crateCancelClaimRequestMiddleware from "./middlewares/claim/crateCancelClaimRequestMiddleware.mjs";
+import crateFetchSavedClaimDataToFrontendMiddleware from "./middlewares/claim/crateFetchSavedClaimDataToFrontendMiddleware.mjs";
 import stopTheProcessIfCertificateNotFound from "./helpers/stopTheProcessIfCertificateNotFound.mjs";
 
 (async () => await import("./polls/index.mjs"))();
@@ -33,6 +34,10 @@ import stopTheProcessIfCertificateNotFound from "./helpers/stopTheProcessIfCerti
   app.use("/preauth", createPreauthorizationMiddleware(app));
   app.use("/claim", createClaimMiddleware(app));
   app.use("/cancelClaimRequest", crateCancelClaimRequestMiddleware(app));
+  app.use(
+    "/querySavedClaimOrPreauthData",
+    crateFetchSavedClaimDataToFrontendMiddleware(app)
+  );
 
   const res = app.listen(SERVER_PORT, () =>
     createCmdMessage({

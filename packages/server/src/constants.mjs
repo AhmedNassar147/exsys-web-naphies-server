@@ -45,6 +45,7 @@ export const EXSYS_API_IDS_NAMES = {
   queryClaimRequestDataToCancellation: "queryClaimRequestDataToCancellation",
   queryUnwantedClaimsDataToCancellation:
     "queryUnwantedClaimsDataToCancellation",
+  querySavedClaimsAndPreauthData: "querySavedClaimsAndPreauthData",
 };
 
 export const EXSYS_API_IDS = {
@@ -76,6 +77,9 @@ export const EXSYS_API_IDS = {
     "nphies_pkg/collect_claim_to_cancel",
   // http://149.102.140.8:9090/ords/exsys_api/nphies_pkg/bulk_claim_to_cancel?poffset=0&poffset_step=100
   [EXSYS_API_IDS_NAMES.queryUnwantedClaimsDataToCancellation]:
+    "nphies_pkg/bulk_claim_to_cancel",
+  // http://149.102.140.8:9090/ords/exsys_api/nphies_pkg/bulk_claim_to_cancel?poffset=0&poffset_step=100
+  [EXSYS_API_IDS_NAMES.querySavedClaimsAndPreauthData]:
     "nphies_pkg/bulk_claim_to_cancel",
 };
 

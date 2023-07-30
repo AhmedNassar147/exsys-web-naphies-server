@@ -10,21 +10,25 @@ import { NPHIES_API_URLS } from "../constants.mjs";
 const { BASE_CODE_SYS_URL } = NPHIES_API_URLS;
 
 const extractProductOrServiceData = (productOrService) => {
-  if (isArrayHasData(productOrService)) {
+  const { coding } = productOrService || {};
+  if (isArrayHasData(coding)) {
     const [
       { code: nphiesProductCode, display: nphiesProductName, system },
       customerItem,
-    ] = productOrService;
+    ] = coding;
 
     const { code: customerProductCode, display: customerProductName } =
       customerItem || {};
 
+    const codeType = extractValueFromUrl(system, BASE_CODE_SYS_URL);
+
     return {
       nphiesProductCode,
       nphiesProductName,
-      nphiesProductCodeType: extractValueFromUrl(system, BASE_CODE_SYS_URL),
+      nphiesProductCodeType: codeType,
       customerProductCode,
       customerProductName,
+      customerProductCodeType: codeType,
     };
   }
 

@@ -3,7 +3,7 @@
  * Helper: `extraProductExtensionsSentToNphies`.
  *
  */
-const { isArrayHasData, toCamelCase } = require("@exsys-web-server/helpers");
+import { isArrayHasData, toCamelCase } from "@exsys-web-server/helpers";
 import extractValueFromUrl from "../nphiesHelpers/extraction/extractValueFromUrl.mjs";
 import { NPHIES_API_URLS } from "../constants.mjs";
 
@@ -24,7 +24,7 @@ const extraProductExtensionsSentToNphies = (extension) => {
         }
 
         if (valueIdentifier) {
-          value = (valueIdentifier.value || "").replace(/Invc-|T_.+/g, "");
+          value = (valueIdentifier.value || "").replace(/Invc-|T_.+|_.+/g, "");
         }
 
         acc[filedName] = value;
