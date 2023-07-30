@@ -21,7 +21,6 @@ const { queryUnwantedClaimsDataToCancellation } = EXSYS_API_IDS_NAMES;
 const exsysApiBaseUrl = EXSYS_API_IDS[queryUnwantedClaimsDataToCancellation];
 
 const poffsetStep = 100;
-const nextCancellationTimeout = 1000;
 
 const stopProcessIfNoData = () => {
   createCmdMessage({

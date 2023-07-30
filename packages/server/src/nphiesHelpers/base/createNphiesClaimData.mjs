@@ -272,6 +272,8 @@ const createNphiesClaimData = ({
                 isHospitalizedCode || isEmploymentImpacted;
 
               const hasCodeSection = !!(systemUrl && code);
+              let _title = title || "";
+              _title += ` ${contentType.replace("/", ".")}`;
 
               return {
                 sequence: index + 1,
@@ -317,9 +319,7 @@ const createNphiesClaimData = ({
                 valueAttachment: !!isAttachment
                   ? {
                       contentType,
-                      title: `${
-                        title || ""` ${contentType.replace("/", ".")}`
-                      }`,
+                      title: _title,
                       creation: reverseDate(creation),
                       data: value,
                     }
@@ -397,11 +397,6 @@ const createNphiesClaimData = ({
               informationSequence: hasSupportingInfoData
                 ? getSupportingInfoSequences(supportingInfo, days_supply_id)
                 : undefined,
-              // informationSequence: days_supply_id
-              //   ? getSequences(supportingInfo, [days_supply_id], "value")
-              //   : hasSupportingInfoData
-              //   ? supportingInfo.map((_, index) => index + 1)
-              //   : undefined,
               extension: [
                 !!extensionTax && {
                   url: `${BASE_PROFILE_URL}/${EXTENSION_TAX}`,
