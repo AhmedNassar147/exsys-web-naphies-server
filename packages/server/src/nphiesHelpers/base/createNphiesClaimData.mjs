@@ -134,6 +134,7 @@ const createNphiesClaimData = ({
   doctorsData,
   hasDoctorsData,
   productsData,
+  productsTotalNet,
   diagnosisData,
   primaryDoctorSequence,
   primaryDoctorFocal,
@@ -173,8 +174,9 @@ const createNphiesClaimData = ({
   const hasProductsData = isArrayHasData(productsData);
 
   const totalValue = hasProductsData
-    ? productsData.reduce(
-        (acc, product) => +acc + getProductNetValue(product),
+    ? // ? productsData.reduce((acc, { net_price }) => +acc + (net_price || 0), 0)
+      productsData.reduce(
+        (acc, product) => acc + getProductNetValue(product),
         0
       )
     : 0;
@@ -397,6 +399,7 @@ const createNphiesClaimData = ({
               doctorsIds,
               sequence,
               days_supply_id,
+              net_price,
               patientInvoiceNo,
               tooth,
               factor,
@@ -470,12 +473,7 @@ const createNphiesClaimData = ({
               },
               factor,
               net: {
-                value: getProductNetValue({
-                  quantity,
-                  unitPrice,
-                  extensionTax,
-                  factor,
-                }),
+                value: net_price,
                 currency,
               },
               ...(tooth
@@ -495,7 +493,7 @@ const createNphiesClaimData = ({
           )
         : undefined,
       total: {
-        value: roundNumber(totalValue, 2),
+        value: productsTotalNet || roundNumber(totalValue, 2),
         currency,
       },
     },

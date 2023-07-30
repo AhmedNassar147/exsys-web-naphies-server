@@ -3,32 +3,14 @@
  * `crateCancelClaimRequestMiddleware`: `middleware`
  *
  */
-import { createMappedRequestsArray } from "@exsys-web-server/helpers";
 import crateCancelClaimRequestMiddleware from "../../helpers/createBaseExpressMiddleware.mjs";
-import fetchExsysPreauthOrClaimDataForNphiesCancellation from "../../exsysHelpers/fetchExsysPreauthOrClaimDataForNphiesCancellation.mjs";
-import { NPHIES_REQUEST_TYPES } from "../../constants.mjs";
+import createMappedClaimRequestsToCancellation from "../../exsysHelpers/createMappedClaimRequestsToCancellation.mjs";
 
 export default crateCancelClaimRequestMiddleware(
   async ({ authorization, printValues = false, data }) =>
-    createMappedRequestsArray({
-      dataArray: data,
+    await createMappedClaimRequestsToCancellation({
+      data,
+      authorization,
       printValues,
-      asyncFn: async ({
-        patientFileNo,
-        episodeInvoiceNo,
-        organizationNo,
-        claimPk,
-      }) =>
-        await fetchExsysPreauthOrClaimDataForNphiesCancellation({
-          requestMethod: "GET",
-          nphiesRequestType: NPHIES_REQUEST_TYPES.CLAIM,
-          requestParams: {
-            authorization,
-            patient_file_no: patientFileNo,
-            invoice_no: episodeInvoiceNo,
-            organization_no: organizationNo,
-            claim_pk: claimPk,
-          },
-        }),
     })
 );

@@ -43,6 +43,8 @@ export const EXSYS_API_IDS_NAMES = {
   savePreauthPollData: "savePreauthPollData",
   saveClaimPollData: "saveClaimPollData",
   queryClaimRequestDataToCancellation: "queryClaimRequestDataToCancellation",
+  queryUnwantedClaimsDataToCancellation:
+    "queryUnwantedClaimsDataToCancellation",
 };
 
 export const EXSYS_API_IDS = {
@@ -72,6 +74,9 @@ export const EXSYS_API_IDS = {
   // http://149.102.140.8:9090/ords/exsys_api/nphies_pkg/collect_claim_to_cancel?authorization=12985704&patient_file_no=187285&invoice_no=I00122/23664&organization_no=001&claim_pk=604
   [EXSYS_API_IDS_NAMES.queryClaimRequestDataToCancellation]:
     "nphies_pkg/collect_claim_to_cancel",
+  // http://149.102.140.8:9090/ords/exsys_api/nphies_pkg/bulk_claim_to_cancel?poffset=0&poffset_step=100
+  [EXSYS_API_IDS_NAMES.queryUnwantedClaimsDataToCancellation]:
+    "nphies_pkg/bulk_claim_to_cancel",
 };
 
 export const HTTP_STATUS_CODE = {

@@ -8,32 +8,19 @@ const roundNumber = (value, numberOfDigits) =>
 
 export default roundNumber;
 
-// const d = 3 * 154.35 * 0.9 + 0;
+function round(number, precision) {
+  var pair = (number + "e").split("e");
+  var value = Math.round(pair[0] + "e" + (+pair[1] + precision));
+  pair = (value + "e").split("e");
+  return +(pair[0] + "e" + (+pair[1] - precision));
+}
 
-// function createRound(methodName) {
-//   const func = Math[methodName];
-//   return (number, precision) => {
-//     precision =
-//       precision == null
-//         ? 0
-//         : precision >= 0
-//         ? Math.min(precision, 292)
-//         : Math.max(precision, -292);
-//     if (precision) {
-//       // Shift with exponential notation to avoid floating-point issues.
-//       // See [MDN](https://mdn.io/round#Examples) for more details.
-//       let pair = `${number}e`.split("e");
-//       const value = func(`${pair[0]}e${+pair[1] + precision}`);
-
-//       pair = `${value}e`.split("e");
-//       return +`${pair[0]}e${+pair[1] - precision}`;
-//     }
-//     return func(number);
-//   };
-// }
+const d = 3 * 154.35 * 0.9 + 0;
 
 // console.log("d", d);
-// console.log(createRound("round")(1.7777777, 2));
+console.log(
+  d.toLocaleString("en", { maximumFractionDigits: 2, useGrouping: false })
+);
 // "quantity": {
 //   "value": 3
 // },
