@@ -33,7 +33,7 @@ const stopProcessIfNoData = () => {
 };
 
 const removeUnwantedClaimsToCancellation = async (poffset = 0) => {
-  const { isSuccess, error, result } = createExsysRequest({
+  const { isSuccess, error, result } = await createExsysRequest({
     resourceName: queryUnwantedClaimsDataToCancellation,
     requestMethod: "GET",
     retryTimes: 1,
