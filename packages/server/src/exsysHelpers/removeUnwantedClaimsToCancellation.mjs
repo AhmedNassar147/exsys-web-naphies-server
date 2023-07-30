@@ -20,7 +20,8 @@ import createMappedClaimRequestsToCancellation from "./createMappedClaimRequests
 const { queryUnwantedClaimsDataToCancellation } = EXSYS_API_IDS_NAMES;
 const exsysApiBaseUrl = EXSYS_API_IDS[queryUnwantedClaimsDataToCancellation];
 
-const poffsetStep = 70;
+const poffsetStep = 100;
+const nextCancellationTimeout = 2000;
 
 const stopProcessIfNoData = () => {
   createCmdMessage({
@@ -28,13 +29,14 @@ const stopProcessIfNoData = () => {
     message: "no unwanted claims exsist anymore",
   });
 
-  process.kill(process.pid);
+  process.exit();
 };
 
 const removeUnwantedClaimsToCancellation = async (poffset = 0) => {
   const { isSuccess, error, result } = createExsysRequest({
     resourceName: queryUnwantedClaimsDataToCancellation,
     requestMethod: "GET",
+    retryTimes: 1,
     requestParams: {
       poffset,
       poffset_step: poffsetStep,
@@ -61,24 +63,23 @@ const removeUnwantedClaimsToCancellation = async (poffset = 0) => {
     const [{ total }] = data;
     // await createMappedClaimRequestsToCancellation({ data, printValues: false });
     const nextOffset = poffset + poffsetStep;
-    const remaining = total - (nextOffset + poffsetStep);
+    const remaining = total - (poffset || poffsetStep);
 
     console.log({
-      poffset,
-      poffsetStep,
-      nextOffset,
       total,
+      poffset,
+      nextOffset,
       remaining,
     });
 
-    if (remaining >= 0) {
+    if (remaining > 0) {
       createCmdMessage({
         type: "info",
         message: `starting next cancellation after ${chalk.bold.white(
-          "1 second"
+          `${nextCancellationTimeout / 1000} seconds`
         )}`,
       });
-      await delayProcess(1000);
+      await delayProcess(nextCancellationTimeout);
       await removeUnwantedClaimsToCancellation(nextOffset);
     }
 
