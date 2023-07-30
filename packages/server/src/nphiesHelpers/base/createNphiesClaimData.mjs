@@ -7,7 +7,6 @@ import {
   isArrayHasData,
   reverseDate,
   createTimestamp,
-  roundNumber,
 } from "@exsys-web-server/helpers";
 import createBaseEntryRequestData from "./createBaseEntryRequestData.mjs";
 import {
@@ -61,14 +60,6 @@ const PREAUTH_PROFILE_TYPES = {
 };
 
 const currency = "SAR";
-
-// ((quantity * unit price) * factor) + tax
-const getProductNetValue = ({ unitPrice, factor, extensionTax, quantity }) => {
-  const netValue =
-    (quantity || 1) * (unitPrice || 0) * (factor || 1) + (extensionTax || 0);
-
-  return roundNumber(netValue, 2);
-};
 
 const getSequences = (arrayData, ids, idPropName) => {
   if (!isArrayHasData(arrayData) || !isArrayHasData(ids)) {
@@ -172,14 +163,6 @@ const createNphiesClaimData = ({
   const hasDiagnosisData = isArrayHasData(diagnosisData);
   const hasSupportingInfoData = isArrayHasData(supportingInfo);
   const hasProductsData = isArrayHasData(productsData);
-
-  const totalValue = hasProductsData
-    ? // ? productsData.reduce((acc, { net_price }) => +acc + (net_price || 0), 0)
-      productsData.reduce(
-        (acc, product) => acc + getProductNetValue(product),
-        0
-      )
-    : 0;
 
   const useValue = isClaimRequest ? "claim" : "preauthorization";
 
@@ -493,7 +476,7 @@ const createNphiesClaimData = ({
           )
         : undefined,
       total: {
-        value: productsTotalNet || roundNumber(totalValue, 2),
+        value: productsTotalNet,
         currency,
       },
     },

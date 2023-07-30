@@ -61,7 +61,7 @@ const removeUnwantedClaimsToCancellation = async (poffset = 0) => {
     const [{ total }] = data;
     // await createMappedClaimRequestsToCancellation({ data, printValues: false });
     const nextOffset = poffset + poffsetStep;
-    const remaining = total - nextOffset;
+    const remaining = total - (nextOffset + poffsetStep);
 
     console.log({
       poffset,
@@ -71,7 +71,7 @@ const removeUnwantedClaimsToCancellation = async (poffset = 0) => {
       remaining,
     });
 
-    if (remaining) {
+    if (remaining >= 0) {
       createCmdMessage({
         type: "info",
         message: `starting next cancellation after ${chalk.bold.white(
