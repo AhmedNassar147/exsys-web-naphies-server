@@ -6,58 +6,70 @@
 import { isArrayHasData } from "@exsys-web-server/helpers";
 import mapEntriesAndExtractNeededData from "../nphiesHelpers/extraction/mapEntriesAndExtractNeededData.mjs";
 import extractNphiesCodeAndDisplayFromCodingType from "../nphiesHelpers/extraction/extractNphiesCodeAndDisplayFromCodingType.mjs";
+import extractMessageHeaderData from "../nphiesHelpers/extraction/extractMessageHeaderData.mjs";
 import getValueFromObject from "../nphiesHelpers/extraction/getValueFromObject.mjs";
 import extraProductExtensionsSentToNphies from "./extraProductExtensionsSentToNphies.mjs";
 import extractProductOrServiceData from "./extractProductOrServiceData.mjs";
 import extractNphiesSentDataErrors from "./extractNphiesSentDataErrors.mjs";
+import formatNphiesResponseIssue from "../nphiesHelpers/base/formatNphiesResponseIssue.mjs";
 
 const extractionFunctionsMap = {
+  MessageHeader: extractMessageHeaderData,
   Claim: ({
-    resource: {
-      supportingInfo,
-      diagnosis,
-      item,
-      total,
-      type,
-      insurance,
-      created,
-    },
+    resource: { supportingInfo, diagnosis, item, total, insurance, created },
   }) => ({
     supportingInfo,
     diagnosis,
     productsSentToNphies: item,
     productsTotalNet: getValueFromObject(total),
-    messageEventType: extractNphiesCodeAndDisplayFromCodingType(type).code,
     insurance,
     requestSentToNphiesAt: created,
   }),
 };
 
 const extractPreauthOrClaimDataSentToNphies = ({
-  nphiesExtractedData,
   nodeServerDataSentToNaphies,
+  nphiesResponse,
+  nphiesExtractedData,
 }) => {
   let productsData = undefined;
   let supportInfoData = undefined;
   let diagnosisData = undefined;
 
   const { id: creationBundleId } = nodeServerDataSentToNaphies;
+  const { issue } = nphiesResponse || {};
+
+  const issueValues = formatNphiesResponseIssue(issue);
 
   const {
     supportingInfo,
     diagnosis,
     productsSentToNphies,
     productsTotalNet,
-    messageEventType,
     insurance,
     requestSentToNphiesAt,
+    messageHeaderRequestType,
   } = mapEntriesAndExtractNeededData({
     nphiesResponse: nodeServerDataSentToNaphies,
     extractionFunctionsMap,
     creationBundleId,
   });
 
-  const { claimErrors } = nphiesExtractedData;
+  const {
+    claimErrors,
+    bundleId: nphiesBundleId,
+    claimResponseId,
+    claimRequestId,
+    claimOutcome,
+    claimStatus,
+    claimExtensionCode,
+    claimDisposition,
+    claimPreauthRef,
+    claimPeriodStart,
+    claimPeriodEnd,
+    claimMessageEventType,
+    productsData: extractedProductsData,
+  } = nphiesExtractedData;
 
   const {
     productErrors,
@@ -67,6 +79,15 @@ const extractPreauthOrClaimDataSentToNphies = ({
   } = extractNphiesSentDataErrors({
     claimErrors,
   });
+
+  const groupedExtractedProductsDataBySequence = isArrayHasData(
+    extractedProductsData
+  )
+    ? reduce.map((acc, { sequence, ...otherValues }) => {
+        acc[sequence] = otherValues;
+        return acc;
+      }, {})
+    : {};
 
   if (isArrayHasData(productsSentToNphies)) {
     productsData = productsSentToNphies.map(
@@ -91,6 +112,8 @@ const extractPreauthOrClaimDataSentToNphies = ({
         factor,
         tooth: extractNphiesCodeAndDisplayFromCodingType(bodySite).code,
         error: productErrors[sequence],
+        ...(groupedExtractedProductsDataBySequence[sequence] || null),
+        extendable: "y",
       })
     );
   }
@@ -195,14 +218,28 @@ const extractPreauthOrClaimDataSentToNphies = ({
 
   return {
     creationBundleId,
-    messageEventType,
+    messageEvent: messageHeaderRequestType,
+    messageEventType: claimMessageEventType,
     requestSentToNphiesAt,
-    preAuthRef,
+    sentPreAuthRef: isArrayHasData(preAuthRef)
+      ? preAuthRef.join(" - ")
+      : preAuthRef,
     productsData,
     productsTotalNet,
     supportInfoData,
     diagnosisData,
     claimErrors: otherClaimErrors,
+    bundleId: nphiesBundleId,
+    claimResponseId,
+    claimRequestId,
+    claimOutcome,
+    claimStatus,
+    claimExtensionCode,
+    claimDisposition,
+    claimPreauthRef,
+    claimPeriodStart,
+    claimPeriodEnd,
+    ...issueValues,
   };
 };
 

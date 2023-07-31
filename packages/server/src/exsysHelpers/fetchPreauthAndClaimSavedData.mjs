@@ -43,12 +43,9 @@ const fetchPreauthAndClaimSavedData = async (requestParams) => {
     };
   }
 
-  const { nphiesExtractedData, nodeServerDataSentToNaphies } = result;
+  const { nphiesExtractedData } = result;
 
-  const extractedData = extractPreauthOrClaimDataSentToNphies({
-    nphiesExtractedData,
-    nodeServerDataSentToNaphies,
-  });
+  const extractedData = extractPreauthOrClaimDataSentToNphies(result);
 
   const { claimErrors } = nphiesExtractedData;
   const hasError = !!claimErrors.length;
@@ -60,7 +57,6 @@ const fetchPreauthAndClaimSavedData = async (requestParams) => {
       hasNphiesApiError: hasError,
     },
     resultData: {
-      hasError,
       extractedData,
     },
   };

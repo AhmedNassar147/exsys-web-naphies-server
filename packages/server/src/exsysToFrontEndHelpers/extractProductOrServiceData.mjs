@@ -28,7 +28,6 @@ const extractProductOrServiceData = (productOrService) => {
       nphiesProductCodeType: codeType,
       customerProductCode,
       customerProductName,
-      customerProductCodeType: codeType,
     };
   }
 

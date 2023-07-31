@@ -78,9 +78,9 @@ export const EXSYS_API_IDS = {
   // http://149.102.140.8:9090/ords/exsys_api/nphies_pkg/bulk_claim_to_cancel?poffset=0&poffset_step=100
   [EXSYS_API_IDS_NAMES.queryUnwantedClaimsDataToCancellation]:
     "nphies_pkg/bulk_claim_to_cancel",
-
+  // http://149.102.140.8:9090/ords/exsys_api/nphies_pkg/display_nphies_response?authorization=11796985&primary_key=6&request_type=priorauth
   [EXSYS_API_IDS_NAMES.querySavedClaimsAndPreauthData]:
-    "nphies_pkg/bulk_claim_to_cancel",
+    "nphies_pkg/display_nphies_response",
 };
 
 export const HTTP_STATUS_CODE = {
