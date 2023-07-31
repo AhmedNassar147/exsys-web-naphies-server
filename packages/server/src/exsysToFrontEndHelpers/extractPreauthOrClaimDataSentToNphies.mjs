@@ -13,13 +13,15 @@ import extractNphiesSentDataErrors from "./extractNphiesSentDataErrors.mjs";
 
 const extractionFunctionsMap = {
   Claim: ({
-    supportingInfo,
-    diagnosis,
-    item,
-    total,
-    type,
-    insurance,
-    created,
+    resource: {
+      supportingInfo,
+      diagnosis,
+      item,
+      total,
+      type,
+      insurance,
+      created,
+    },
   }) => ({
     supportingInfo,
     diagnosis,
@@ -39,8 +41,9 @@ const extractPreauthOrClaimDataSentToNphies = ({
   let supportInfoData = undefined;
   let diagnosisData = undefined;
 
+  const { id: creationBundleId } = nodeServerDataSentToNaphies;
+
   const {
-    bundleId,
     supportingInfo,
     diagnosis,
     productsSentToNphies,
@@ -48,10 +51,11 @@ const extractPreauthOrClaimDataSentToNphies = ({
     messageEventType,
     insurance,
     requestSentToNphiesAt,
-  } = mapEntriesAndExtractNeededData(
-    nodeServerDataSentToNaphies,
-    extractionFunctionsMap
-  );
+  } = mapEntriesAndExtractNeededData({
+    nphiesResponse: nodeServerDataSentToNaphies,
+    extractionFunctionsMap,
+    creationBundleId,
+  });
 
   const { claimErrors } = nphiesExtractedData;
 
@@ -190,7 +194,7 @@ const extractPreauthOrClaimDataSentToNphies = ({
   const [{ preAuthRef }] = insurance || [{}];
 
   return {
-    bundleId,
+    creationBundleId,
     messageEventType,
     requestSentToNphiesAt,
     preAuthRef,

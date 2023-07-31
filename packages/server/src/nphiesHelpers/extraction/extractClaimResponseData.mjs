@@ -42,20 +42,22 @@ const formatProductItem = (adjudicationItem) => {
 };
 
 const extractClaimResponseData = ({
-  resourceType,
-  id,
-  status,
-  outcome,
-  disposition,
-  preAuthRef,
-  preAuthPeriod,
-  extension,
-  identifier,
-  item,
-  processNote,
-  error,
-  request,
-  type,
+  resource: {
+    resourceType,
+    id,
+    status,
+    outcome,
+    disposition,
+    preAuthRef,
+    preAuthPeriod,
+    extension,
+    identifier,
+    item,
+    processNote,
+    error,
+    request,
+    type,
+  },
 }) => {
   const {
     identifier: { value: claimRequestId },

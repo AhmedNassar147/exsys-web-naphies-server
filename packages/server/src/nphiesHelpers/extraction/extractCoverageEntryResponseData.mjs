@@ -24,15 +24,17 @@ const extractCostToBeneficiaryItemValues = (item, keyOfValue) => {
 };
 
 const extractCoverageEntryResponseData = ({
-  resourceType,
-  id,
-  identifier,
-  status,
-  costToBeneficiary,
-  network,
-  dependent,
-  class: classes,
-  error,
+  resource: {
+    resourceType,
+    id,
+    identifier,
+    status,
+    costToBeneficiary,
+    network,
+    dependent,
+    class: classes,
+    error,
+  },
 }) => {
   const [{ value: memberid }] = identifier || [{}];
   const [{ value: firstPayorName, code: firstPayorCode }] = classes || [{}];

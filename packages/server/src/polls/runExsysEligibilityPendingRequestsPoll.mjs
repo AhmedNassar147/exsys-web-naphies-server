@@ -16,11 +16,11 @@ import {
 import fetchExsysEligibilityDataAndCallNphies from "../exsysHelpers/fetchExsysEligibilityDataAndCallNphies.mjs";
 
 const { authorization } = SERVER_CONFIG;
-const { checkExsysPollPendingRequests } = EXSYS_API_IDS_NAMES;
+const { queryEligibilityPendingRequests } = EXSYS_API_IDS_NAMES;
 
 const requestOptions = {
   requestMethod: "GET",
-  exsysApiId: checkExsysPollPendingRequests,
+  exsysApiId: queryEligibilityPendingRequests,
   noPatientDataLogger: true,
   printFolderName: "eligibilityPoll",
   requestParams: {

@@ -8,15 +8,17 @@ import extractNphiesCodeAndDisplayFromCodingType from "./extractNphiesCodeAndDis
 import extractErrorsArray from "./extractErrorsArray.mjs";
 
 const extractCoverageEligibilityEntryResponseData = ({
-  resourceType,
-  id,
-  outcome,
-  disposition,
-  servicedPeriod,
-  identifier,
-  status,
-  error,
-  extension,
+  resource: {
+    resourceType,
+    id,
+    outcome,
+    disposition,
+    servicedPeriod,
+    identifier,
+    status,
+    error,
+    extension,
+  },
 }) => {
   const { start, end } = servicedPeriod || {};
   const [{ system, value }] = identifier || [{}];

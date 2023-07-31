@@ -37,14 +37,16 @@ const callNphiesAPIAndCollectResults = ({
     let hasError = !isSuccess;
 
     const { id: mainBundleId } = nphiesResponse || {};
+    const { id: creationBundleId } = nphiesRequestPayload;
 
     const isNphiesServerConnected = !!mainBundleId;
 
     if (isNphiesServerConnected) {
-      const extractedData = mapEntriesAndExtractNeededData(
+      const extractedData = mapEntriesAndExtractNeededData({
         nphiesResponse,
-        extractionFunctionsMap
-      );
+        extractionFunctionsMap,
+        creationBundleId,
+      });
 
       nphiesResultData.nphiesExtractedData =
         isAuthorizationPoll && mainBundleId

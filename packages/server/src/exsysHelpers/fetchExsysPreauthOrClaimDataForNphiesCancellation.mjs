@@ -25,11 +25,12 @@ const setErrorIfExtractedDataFoundFn = ({ cancellationErrors }) =>
 const createExsysSaveApiParams = ({
   primaryKey,
   exsysDataApiPrimaryKeyName,
-  nphiesExtractedData: { bundleId, cancellationStatus },
+  nphiesExtractedData: { bundleId, cancellationStatus, creationBundleId },
 }) => ({
   [exsysDataApiPrimaryKeyName]: primaryKey,
   bundle_id: bundleId,
   outcome: cancellationStatus,
+  creation_bundle_id: creationBundleId,
   request_type: "cancel",
 });
 

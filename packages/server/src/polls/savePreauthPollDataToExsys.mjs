@@ -8,10 +8,10 @@ import { createCmdMessage } from "@exsys-web-server/helpers";
 import createExsysRequest from "../helpers/createExsysRequest.mjs";
 import { EXSYS_API_IDS_NAMES, NPHIES_REQUEST_TYPES } from "../constants.mjs";
 
-const { saveClaimData, savePreauthPollData } = EXSYS_API_IDS_NAMES;
+const { saveClaimPollData, savePreauthPollData } = EXSYS_API_IDS_NAMES;
 
 const SAVE_API_BASED_REQUEST_TYPE = {
-  [NPHIES_REQUEST_TYPES.CLAIM]: saveClaimData,
+  [NPHIES_REQUEST_TYPES.CLAIM]: saveClaimPollData,
   [NPHIES_REQUEST_TYPES.PREAUTH]: savePreauthPollData,
 };
 
@@ -31,6 +31,7 @@ const savePreauthPollDataToExsys = async ({
     claimPeriodEnd,
     claimExtensionCode,
     claimMessageEventType,
+    creationBundleId,
   } = nphiesExtractedData;
 
   const saveApiName = SAVE_API_BASED_REQUEST_TYPE[requestType];
@@ -57,6 +58,7 @@ const savePreauthPollDataToExsys = async ({
       claimperiodend: claimPeriodEnd,
       claimextensioncode: claimExtensionCode,
       claimmessageeventtype: claimMessageEventType,
+      claimcreationbundleid: creationBundleId,
     },
     body: {
       nodeServerDataSentToNaphies,

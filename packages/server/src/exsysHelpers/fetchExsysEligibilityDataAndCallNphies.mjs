@@ -11,7 +11,7 @@ import { EXSYS_API_IDS_NAMES, NPHIES_RESOURCE_TYPES } from "../constants.mjs";
 
 const { COVERAGE } = NPHIES_RESOURCE_TYPES;
 
-const { getExsysDataBasedPatient, saveNphiesResponseToExsys } =
+const { queryExsysEligibilityData, saveNphiesResponseToExsys } =
   EXSYS_API_IDS_NAMES;
 
 const extractionFunctionsMap = {
@@ -37,6 +37,15 @@ const createExsysErrorSaveApiBody = (errorMessage) => ({
   },
 });
 
+const createExsysSaveApiParams = ({
+  primaryKey,
+  exsysDataApiPrimaryKeyName,
+  nphiesExtractedData: { creationBundleId },
+}) => ({
+  [exsysDataApiPrimaryKeyName]: primaryKey,
+  creation_bundle_id: creationBundleId,
+});
+
 const fetchExsysEligibilityDataAndCallNphies = async ({
   requestParams,
   exsysApiId,
@@ -46,7 +55,7 @@ const fetchExsysEligibilityDataAndCallNphies = async ({
   printFolderName,
 }) =>
   await createBaseFetchExsysDataAndCallNphiesApi({
-    exsysQueryApiId: exsysApiId || getExsysDataBasedPatient,
+    exsysQueryApiId: exsysApiId || queryExsysEligibilityData,
     exsysSaveApiId: saveNphiesResponseToExsys,
     requestParams,
     requestBody: exsysAPiBodyData,
@@ -55,6 +64,7 @@ const fetchExsysEligibilityDataAndCallNphies = async ({
     exsysDataApiPrimaryKeyName: "primaryKey",
     createResultsDataFromExsysResponse,
     createNphiesRequestPayloadFn,
+    createExsysSaveApiParams,
     extractionFunctionsMap,
     setErrorIfExtractedDataFoundFn,
     createExsysErrorSaveApiBody,

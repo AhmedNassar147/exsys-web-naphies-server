@@ -3,7 +3,7 @@
  * Helper: `extractMessageHeaderData`.
  *
  */
-const extractMessageHeaderData = ({ eventCoding }) => {
+const extractMessageHeaderData = ({ resource: { eventCoding } }) => {
   const { code } = eventCoding || {};
 
   return {

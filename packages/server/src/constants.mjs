@@ -33,9 +33,9 @@ const API_URL_PORT = dataBaseServerPort || 9090;
 export const EXSYS_BASE_URL = `${BASE_API_IP_ADDRESS}:${API_URL_PORT}/ords/exsys_api`;
 
 export const EXSYS_API_IDS_NAMES = {
-  getExsysDataBasedPatient: "getExsysDataBasedPatient",
+  queryExsysEligibilityData: "queryExsysEligibilityData", // this is a post method
+  queryEligibilityPendingRequests: "queryEligibilityPendingRequests",
   saveNphiesResponseToExsys: "saveNphiesResponseToExsys",
-  checkExsysPollPendingRequests: "checkExsysPollPendingRequests",
   collectExsysPreauthData: "collectExsysPreauthData",
   savePreauthData: "savePreauthData",
   collectExsysClaimData: "collectExsysClaimData",
@@ -48,13 +48,21 @@ export const EXSYS_API_IDS_NAMES = {
   querySavedClaimsAndPreauthData: "querySavedClaimsAndPreauthData",
 };
 
+// nphies_pkg/update_nphies_request_status
+// hs_nphies_preauth_pkg/update_preauth_send_status
+// nphies_pkg/update_claim_send_status
+
+// hs_nphies_preauth_pkg/update_preauth_pool_status
+// nphies_pkg/update_claim_pool_status
+// claimcreationbundleid
+
 export const EXSYS_API_IDS = {
-  [EXSYS_API_IDS_NAMES.getExsysDataBasedPatient]:
+  [EXSYS_API_IDS_NAMES.queryExsysEligibilityData]:
     "nphies_pkg/create_nphies_request",
+  [EXSYS_API_IDS_NAMES.queryEligibilityPendingRequests]:
+    "nphies_pkg/check_poll_pending_request",
   [EXSYS_API_IDS_NAMES.saveNphiesResponseToExsys]:
     "nphies_pkg/update_nphies_request_status",
-  [EXSYS_API_IDS_NAMES.checkExsysPollPendingRequests]:
-    "nphies_pkg/check_poll_pending_request",
   // http://149.102.140.8:9090/ords/exsysexsysdba/hs_nphies_preauth_pkg/collect_preauth_data_to_send?authorization=11796985&preauth_pk=1
   [EXSYS_API_IDS_NAMES.collectExsysPreauthData]:
     "hs_nphies_preauth_pkg/collect_preauth_data_to_send",

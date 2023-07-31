@@ -6,11 +6,7 @@
 import extractErrorsArray from "./extractErrorsArray.mjs";
 
 const extractPreauthOrClaimCancellationResponseData = ({
-  status,
-  identifier,
-  id,
-  focus,
-  error,
+  resource: { status, identifier, id, focus, error },
 }) => {
   const [{ value: responseId }] = identifier || [{}];
 

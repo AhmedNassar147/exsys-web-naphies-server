@@ -6,10 +6,11 @@
 import { isArrayHasData } from "@exsys-web-server/helpers";
 import formatNphiesResponseIssue from "../base/formatNphiesResponseIssue.mjs";
 
-const mapEntriesAndExtractNeededData = (
+const mapEntriesAndExtractNeededData = ({
   nphiesResponse,
-  extractionFunctionsMap
-) => {
+  extractionFunctionsMap,
+  creationBundleId,
+}) => {
   const { entry, id, issue } = nphiesResponse || {};
   const issueValues = formatNphiesResponseIssue(issue);
 
@@ -25,7 +26,7 @@ const mapEntriesAndExtractNeededData = (
       if (extractionFn) {
         acc = {
           ...acc,
-          ...extractionFn(resource),
+          ...extractionFn({ resource, creationBundleId }),
         };
       }
 
@@ -36,6 +37,7 @@ const mapEntriesAndExtractNeededData = (
   return shouldResultsToObjectOfData
     ? {
         bundleId: id,
+        creationBundleId,
         ...issueValues,
         ...(entryResults || null),
       }

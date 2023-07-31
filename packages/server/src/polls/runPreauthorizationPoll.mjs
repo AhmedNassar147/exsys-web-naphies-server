@@ -28,13 +28,18 @@ const setErrorIfExtractedDataFoundFn = ({ coverageErrors, claimErrors }) => [
   ...(coverageErrors || []),
   ...(claimErrors || []),
 ];
+
 const extractionFunctionsMap = {
   [COVERAGE]: extractCoverageEntryResponseData,
-  Bundle: (nphiesResponse) =>
-    mapEntriesAndExtractNeededData(nphiesResponse, {
-      [COVERAGE]: extractCoverageEntryResponseData,
-      MessageHeader: extractMessageHeaderData,
-      ClaimResponse: extractClaimResponseData,
+  Bundle: ({ resource, creationBundleId }) =>
+    mapEntriesAndExtractNeededData({
+      nphiesResponse: resource,
+      creationBundleId,
+      extractionFunctionsMap: {
+        [COVERAGE]: extractCoverageEntryResponseData,
+        MessageHeader: extractMessageHeaderData,
+        ClaimResponse: extractClaimResponseData,
+      },
     }),
 };
 
@@ -66,6 +71,7 @@ const runPreauthorizationPoll = async () => {
     const {
       mainBundleId,
       bundleId,
+      creationBundleId,
       messageHeaderRequestType,
       ...otherExtractedData
     } = nphiesExtractedData || {};
