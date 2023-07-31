@@ -10,8 +10,6 @@ import extractPreauthOrClaimDataSentToNphies from "../exsysToFrontEndHelpers/ext
 const { querySavedClaimsAndPreauthData } = EXSYS_API_IDS_NAMES;
 const baseApiUrl = EXSYS_API_IDS[querySavedClaimsAndPreauthData];
 
-const printFolderName = "exsysToFrontEndSavedData";
-
 const fetchPreauthAndClaimSavedData = async (requestParams) => {
   const { isSuccess, error, result } = await createExsysRequest({
     resourceName: querySavedClaimsAndPreauthData,
@@ -23,6 +21,10 @@ const fetchPreauthAndClaimSavedData = async (requestParams) => {
     requestParams,
     exsysResultsData: result,
   };
+
+  const { request_type } = requestParams;
+
+  const printFolderName = `exsysToFrontEndSavedData/${request_type}`;
 
   if (!isSuccess || error) {
     const errorMessage = error || `error when calling exsys ${baseApiUrl} API`;
