@@ -273,7 +273,10 @@ const createNphiesClaimData = ({
 
               const hasCodeSection = !!(systemUrl && code);
               let _title = title || "";
-              _title += ` ${contentType.replace("/", ".")}`;
+
+              if (contentType) {
+                _title += ` ${contentType.replace("/", ".")}`;
+              }
 
               return {
                 sequence: index + 1,
@@ -433,12 +436,12 @@ const createNphiesClaimData = ({
                     code: nphiesProductCode,
                     display: nphiesProductName,
                   },
-                  {
+                  isClaimRequest && {
                     system: `${siteUrl}/${nphiesProductCodeType}`,
                     code: customerProductCode,
                     display: customerProductName || nphiesProductName,
                   },
-                ],
+                ].filter(Boolean),
               },
               servicedDate: reverseDate(servicedDate),
               // factor: (discount / unitprice) - 1
