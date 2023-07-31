@@ -83,7 +83,7 @@ const extractPreauthOrClaimDataSentToNphies = ({
   const groupedExtractedProductsDataBySequence = isArrayHasData(
     extractedProductsData
   )
-    ? extractedProductsData.reduce.map((acc, { sequence, ...otherValues }) => {
+    ? extractedProductsData.reduce((acc, { sequence, ...otherValues }) => {
         acc[sequence] = otherValues;
         return acc;
       }, {})
