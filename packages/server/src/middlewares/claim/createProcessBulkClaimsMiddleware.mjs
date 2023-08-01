@@ -100,7 +100,7 @@ export default createProcessBulkClaimsMiddleware(
     let results = [];
 
     while (claimsLength) {
-      const data = claims.slice(0, claimsToBeSentToNphiesPerRequestsMap);
+      const data = claims.splice(0, claimsToBeSentToNphiesPerRequestsMap);
       console.log("claimsLength", claimsLength);
       console.log("exsysResultsDataLength", exsysResultsDataLength);
 
