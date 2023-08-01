@@ -39,6 +39,8 @@ import stopTheProcessIfCertificateNotFound from "./helpers/stopTheProcessIfCerti
     crateFetchSavedClaimDataToFrontendMiddleware(app)
   );
 
+  // app.post("/processMedicalReviewedClaims", () => {});
+
   const res = app.listen(SERVER_PORT, () =>
     createCmdMessage({
       type: "success",

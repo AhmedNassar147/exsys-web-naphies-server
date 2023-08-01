@@ -59,11 +59,12 @@ const extractClaimResponseData = ({
     type,
   },
 }) => {
-  const {
-    identifier: { value: claimRequestId },
-  } = request || {
-    identifier: {},
-  };
+  const { identifier: requestIdentifier } = request || {};
+  const { value: requestIdentifierValue } = requestIdentifier || {};
+
+  const claimRequestId = requestIdentifierValue
+    ? requestIdentifierValue.replace("req_", "")
+    : id;
 
   const [{ value: claimResponseId }] = identifier || [{}];
 
@@ -98,7 +99,7 @@ const extractClaimResponseData = ({
   return {
     claimResourceType: resourceType,
     claimResponseId: claimResponseId.replace("req_", "") || id,
-    claimRequestId: claimRequestId.replace("req_", ""),
+    claimRequestId,
     claimStatus: status,
     claimOutcome: outcome,
     claimDisposition: disposition,
