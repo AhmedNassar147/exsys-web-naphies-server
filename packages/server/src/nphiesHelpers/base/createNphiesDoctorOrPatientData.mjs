@@ -28,8 +28,10 @@ const createNphiesDoctorOrPatientData = ({
   patientOrDoctorId,
   identifierId,
   identifierIdType,
-  staffFirstName,
-  staffFamilyName,
+  firstName,
+  secondName,
+  thirdName,
+  familyName,
   staffPhone,
   gender,
   patientBirthdate,
@@ -37,7 +39,9 @@ const createNphiesDoctorOrPatientData = ({
   providerDoctorOrPatientUrl,
   isPatient = true,
 }) => {
-  const staffNames = [staffFirstName || " ", staffFamilyName || " "];
+  const staffNames = [firstName, secondName, thirdName, familyName].filter(
+    Boolean
+  );
 
   return {
     fullUrl: `${providerDoctorOrPatientUrl}/${patientOrDoctorId}`,
@@ -67,7 +71,7 @@ const createNphiesDoctorOrPatientData = ({
         {
           given: staffNames,
           text: staffNames.join(" "),
-          family: staffFamilyName || undefined,
+          family: familyName || undefined,
           use: "official",
         },
       ],
