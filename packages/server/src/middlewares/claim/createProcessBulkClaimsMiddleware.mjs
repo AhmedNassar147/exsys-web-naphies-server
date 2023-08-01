@@ -10,8 +10,9 @@ import { EXSYS_API_IDS_NAMES, EXSYS_API_IDS } from "../../constants.mjs";
 import createMappedClaimRequestsToCancellation from "../../exsysHelpers/createMappedClaimRequestsToCancellation.mjs";
 import createMappedClaimRequests from "../../exsysHelpers/createMappedClaimRequests.mjs";
 
-const { queryUnwantedClaimsDataToCancellation } = EXSYS_API_IDS_NAMES;
-const exsysApiBaseUrl = EXSYS_API_IDS[queryUnwantedClaimsDataToCancellation];
+const { queryBulkClaimsDataToCancellationOrCreation } = EXSYS_API_IDS_NAMES;
+const exsysApiBaseUrl =
+  EXSYS_API_IDS[queryBulkClaimsDataToCancellationOrCreation];
 
 const claimsToBeSentToNphiesPerRequestsMap = 30;
 
