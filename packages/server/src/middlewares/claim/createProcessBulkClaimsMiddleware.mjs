@@ -31,16 +31,14 @@ export default createProcessBulkClaimsMiddleware(
 
     const { request_type } = baseRequestParams;
 
-    const {
-      isSuccess,
-      error,
-      result: exsysResultsData,
-    } = await createExsysRequest({
+    const { isSuccess, error, result } = await createExsysRequest({
       resourceName: queryBulkClaimsDataToCancellationOrCreation,
       requestMethod: "GET",
       retryTimes: 0,
       requestParams,
     });
+
+    const { data: exsysResultsData } = result || { data: [] };
 
     const printedErrorData = {
       requestParams,
@@ -111,7 +109,7 @@ export default createProcessBulkClaimsMiddleware(
       });
 
       results = results.concat(...newResults);
-      await delayProcess(300);
+      await delayProcess(200);
     }
 
     return results;
