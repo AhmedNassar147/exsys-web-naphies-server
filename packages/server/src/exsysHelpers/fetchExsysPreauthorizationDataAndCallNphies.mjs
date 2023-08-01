@@ -89,7 +89,7 @@ const createResultsDataFromExsysResponse = async ({
     supportInformationData
   ),
   productsData: isArrayHasData(productsData)
-    ? productsData.filter(Boolean).filter(({ net_price }) => !net_price)
+    ? productsData.filter(Boolean).filter(({ net_price }) => !!net_price)
     : [],
 });
 
