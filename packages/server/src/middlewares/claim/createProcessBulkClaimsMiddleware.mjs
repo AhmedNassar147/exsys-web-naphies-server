@@ -3,7 +3,10 @@
  * `createProcessBulkClaimsMiddleware`: `middleware`
  *
  */
-import { isArrayHasData } from "@exsys-web-server/helpers";
+import {
+  createPrintResultsOrLog,
+  isArrayHasData,
+} from "@exsys-web-server/helpers";
 import createProcessBulkClaimsMiddleware from "../../helpers/createBaseExpressMiddleware.mjs";
 import createExsysRequest from "../../helpers/createExsysRequest.mjs";
 import { EXSYS_API_IDS_NAMES, EXSYS_API_IDS } from "../../constants.mjs";
@@ -52,14 +55,16 @@ export default createProcessBulkClaimsMiddleware(
     if (!isSuccess || error) {
       const errorMessage = error || `Error when calling ${exsysApiBaseUrl}`;
 
+      await createPrintResultsOrLog({
+        printValues,
+        printData: printData,
+        loggerValues: [errorMessage],
+      });
+
       return [
         {
-          printData,
-          loggerValue: errorMessage,
-          resultData: {
-            errorMessage,
-            hasError: true,
-          },
+          errorMessage,
+          hasError: true,
         },
       ];
     }
@@ -67,17 +72,19 @@ export default createProcessBulkClaimsMiddleware(
     if (!isArrayHasData(exsysResultsData)) {
       const errorMessage = `No claims found to be ${request_type}`;
 
+      await createPrintResultsOrLog({
+        printValues,
+        printData: {
+          ...printData,
+          hasExsysApiError: false,
+        },
+        loggerValues: [errorMessage],
+      });
+
       return [
         {
-          printData: {
-            ...printData,
-            hasExsysApiError: false,
-          },
-          loggerValue: errorMessage,
-          resultData: {
-            errorMessage,
-            hasError: false,
-          },
+          errorMessage,
+          hasError: false,
         },
       ];
     }
