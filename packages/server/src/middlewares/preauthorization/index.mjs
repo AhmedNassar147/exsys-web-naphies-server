@@ -15,7 +15,6 @@ export default createPreauthorizationMiddleware(
       printValues,
       asyncFn: async ({ preauth_pk }) =>
         await fetchExsysPreauthorizationDataAndCallNphies({
-          requestMethod: "GET",
           nphiesRequestType: NPHIES_REQUEST_TYPES.PREAUTH,
           requestParams: {
             authorization,

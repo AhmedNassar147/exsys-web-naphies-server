@@ -23,7 +23,6 @@ const createMappedClaimRequestsToCancellation = async ({
       authorizationNo,
     }) =>
       await fetchExsysPreauthOrClaimDataForNphiesCancellation({
-        requestMethod: "GET",
         nphiesRequestType: NPHIES_REQUEST_TYPES.CLAIM,
         requestParams: {
           authorization: authorization || authorizationNo,

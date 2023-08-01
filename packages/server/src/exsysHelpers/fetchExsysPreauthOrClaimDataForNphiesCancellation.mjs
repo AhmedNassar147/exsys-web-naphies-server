@@ -59,7 +59,6 @@ const CONFIG_MAP = {
 
 const fetchExsysPreauthOrClaimDataForNphiesCancellation = async ({
   requestParams,
-  requestMethod,
   nphiesRequestType,
 }) => {
   const {
@@ -73,7 +72,7 @@ const fetchExsysPreauthOrClaimDataForNphiesCancellation = async ({
     exsysQueryApiId,
     exsysSaveApiId,
     requestParams,
-    requestMethod,
+    requestMethod: "GET",
     printFolderName,
     exsysDataApiPrimaryKeyName,
     createNphiesRequestPayloadFn: createNphiesPreauthOrClaimCancellationData,

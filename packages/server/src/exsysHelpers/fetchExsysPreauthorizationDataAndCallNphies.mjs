@@ -95,7 +95,6 @@ const createResultsDataFromExsysResponse = async ({
 
 const fetchExsysPreauthorizationDataAndCallNphies = async ({
   requestParams,
-  requestMethod,
   nphiesRequestType,
 }) => {
   const { exsysQueryApiId, exsysDataApiPrimaryKeyName, exsysSaveApiId } =
@@ -172,7 +171,7 @@ const fetchExsysPreauthorizationDataAndCallNphies = async ({
     exsysQueryApiId,
     exsysSaveApiId,
     requestParams,
-    requestMethod,
+    requestMethod: "GET",
     printFolderName: nphiesRequestType,
     exsysDataApiPrimaryKeyName,
     createResultsDataFromExsysResponse,

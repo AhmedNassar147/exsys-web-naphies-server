@@ -23,7 +23,6 @@ const createMappedClaimRequests = async ({
       messageEventType,
     }) =>
       await fetchExsysClaimDataAndCallNphies({
-        requestMethod: "GET",
         nphiesRequestType: NPHIES_REQUEST_TYPES.CLAIM,
         requestParams: {
           authorization,
