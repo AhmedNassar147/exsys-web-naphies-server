@@ -88,10 +88,10 @@ export default createProcessBulkClaimsMiddleware(
       ];
     }
 
-    const claims = structuredClone(exsysResultsData);
+    const claims = [...exsysResultsData];
     const isClaimCancellation = request_type === "cancel";
+    const exsysResultsDataLength = exsysResultsData.length;
     const claimsLength = claims.length;
-    console.log("claimsLength", claimsLength);
 
     const mappedRequestsFn = isClaimCancellation
       ? createMappedClaimRequestsToCancellation
@@ -101,6 +101,8 @@ export default createProcessBulkClaimsMiddleware(
 
     while (claimsLength) {
       const data = claims.slice(0, claimsToBeSentToNphiesPerRequestsMap);
+      console.log("claimsLength", claimsLength);
+      console.log("exsysResultsDataLength", exsysResultsDataLength);
 
       const newResults = await mappedRequestsFn({
         data,
