@@ -89,7 +89,7 @@ const createResultsDataFromExsysResponse = async ({
     supportInformationData
   ),
   productsData: isArrayHasData(productsData)
-    ? productsData.filter(Boolean).filter(({ net_price }) => !!net_price)
+    ? productsData.filter(Boolean)
     : [],
 });
 
@@ -128,18 +128,18 @@ const fetchExsysPreauthorizationDataAndCallNphies = async ({
     supportInformationData,
     productsData,
   }) => {
-    if (!isArrayHasData(productsData)) {
-      const validationError =
-        "no products data found or products may sent by database but without `net_price`";
+    // if (!isArrayHasData(productsData)) {
+    //   const validationError =
+    //     "no products data found or products may sent by database but without `net_price`";
 
-      if (validationError) {
-        createCmdMessage({ type: "error", message: validationError });
-      }
-      return {
-        shouldSaveDataToExsys: false,
-        validationError,
-      };
-    }
+    //   if (validationError) {
+    //     createCmdMessage({ type: "error", message: validationError });
+    //   }
+    //   return {
+    //     shouldSaveDataToExsys: false,
+    //     validationError,
+    //   };
+    // }
 
     if (isClaimRequestType && isArrayHasData(supportInformationData)) {
       const indexOfSomeAttachmentNotFound = supportInformationData.findIndex(
