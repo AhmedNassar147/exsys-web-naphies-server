@@ -56,12 +56,13 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
     exsysResultsData,
   };
 
-  const validationErrorMessage = checkExsysDataValidationBeforeCallingNphies
-    ? checkExsysDataValidationBeforeCallingNphies(exsysResultsData)
-    : undefined;
+  const { shouldSaveDataToExsys, validationError } =
+    checkExsysDataValidationBeforeCallingNphies
+      ? checkExsysDataValidationBeforeCallingNphies(exsysResultsData)
+      : {};
 
   const hasErrorMessageOrFailed =
-    !!error_message || !isSuccess || !!validationErrorMessage;
+    !!error_message || !isSuccess || !!validationError;
 
   if (
     !noPatientDataLogger &&
@@ -76,10 +77,10 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
   if (hasErrorMessageOrFailed) {
     const errorMessage =
       error_message ||
-      validationErrorMessage ||
+      validationError ||
       `error when calling exsys \`${EXSYS_API_IDS[exsysQueryApiId]}\` API`;
 
-    if (exsysSaveApiId) {
+    if (exsysSaveApiId && (!!validationError ? shouldSaveDataToExsys : true)) {
       const errorSaveParams = createExsysSaveApiParams
         ? createExsysSaveApiParams({
             primaryKey,

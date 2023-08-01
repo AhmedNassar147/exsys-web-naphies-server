@@ -89,33 +89,9 @@ const createResultsDataFromExsysResponse = async ({
     supportInformationData
   ),
   productsData: isArrayHasData(productsData)
-    ? productsData.filter(Boolean)
+    ? productsData.filter(Boolean).filter(({ net_price }) => !net_price)
     : [],
 });
-
-const checkExsysDataValidationBeforeCallingNphies = ({
-  supportInformationData,
-}) => {
-  if (isArrayHasData(supportInformationData)) {
-    const indexOfSomeAttachmentNotFound = supportInformationData.findIndex(
-      ({ categoryCode, value }) => categoryCode === attachment && !value
-    );
-
-    const someAttachmentNotFound = indexOfSomeAttachmentNotFound !== -1;
-
-    const error = someAttachmentNotFound
-      ? `Skipping request because some attachments not found \`Index is\` => ${indexOfSomeAttachmentNotFound}`
-      : undefined;
-
-    if (error) {
-      createCmdMessage({ type: "error", message: error });
-    }
-
-    return error;
-  }
-
-  return undefined;
-};
 
 const fetchExsysPreauthorizationDataAndCallNphies = async ({
   requestParams,
@@ -149,6 +125,47 @@ const fetchExsysPreauthorizationDataAndCallNphies = async ({
     }
   };
 
+  const checkExsysDataValidationBeforeCallingNphies = ({
+    supportInformationData,
+    productsData,
+  }) => {
+    if (!isArrayHasData(productsData)) {
+      const validationError =
+        "no products data found or products may sent by database but without `net_price`";
+
+      if (validationError) {
+        createCmdMessage({ type: "error", message: validationError });
+      }
+      return {
+        shouldSaveDataToExsys: false,
+        validationError,
+      };
+    }
+
+    if (isClaimRequestType && isArrayHasData(supportInformationData)) {
+      const indexOfSomeAttachmentNotFound = supportInformationData.findIndex(
+        ({ categoryCode, value }) => categoryCode === attachment && !value
+      );
+
+      const someAttachmentNotFound = indexOfSomeAttachmentNotFound !== -1;
+
+      const validationError = someAttachmentNotFound
+        ? `Skipping request because some attachments not found \`Index is\` => ${indexOfSomeAttachmentNotFound}`
+        : undefined;
+
+      if (validationError) {
+        createCmdMessage({ type: "error", message: validationError });
+      }
+
+      return {
+        shouldSaveDataToExsys: true,
+        validationError,
+      };
+    }
+
+    return {};
+  };
+
   const isClaimRequestType = nphiesRequestType === NPHIES_REQUEST_TYPES.CLAIM;
 
   return await createBaseFetchExsysDataAndCallNphiesApi({
@@ -165,9 +182,7 @@ const fetchExsysPreauthorizationDataAndCallNphies = async ({
     createExsysSaveApiParams,
     createExsysErrorSaveApiBody,
     onNphiesResponseWithSuccessFn,
-    checkExsysDataValidationBeforeCallingNphies: isClaimRequestType
-      ? checkExsysDataValidationBeforeCallingNphies
-      : undefined,
+    checkExsysDataValidationBeforeCallingNphies,
   });
 };
 
