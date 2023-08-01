@@ -5,6 +5,7 @@
  */
 import {
   createPrintResultsOrLog,
+  delayProcess,
   isArrayHasData,
 } from "@exsys-web-server/helpers";
 import createProcessBulkClaimsMiddleware from "../../helpers/createBaseExpressMiddleware.mjs";
@@ -110,6 +111,7 @@ export default createProcessBulkClaimsMiddleware(
       });
 
       results = results.concat(...newResults);
+      await delayProcess(300);
     }
 
     return results;
