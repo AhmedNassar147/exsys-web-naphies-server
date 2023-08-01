@@ -90,8 +90,6 @@ export default createProcessBulkClaimsMiddleware(
 
     const claims = [...exsysResultsData];
     const isClaimCancellation = request_type === "cancel";
-    const exsysResultsDataLength = exsysResultsData.length;
-    const claimsLength = claims.length;
 
     const mappedRequestsFn = isClaimCancellation
       ? createMappedClaimRequestsToCancellation
@@ -99,10 +97,8 @@ export default createProcessBulkClaimsMiddleware(
 
     let results = [];
 
-    while (claimsLength) {
+    while (claims.length) {
       const data = claims.splice(0, claimsToBeSentToNphiesPerRequestsMap);
-      console.log("claimsLength", claimsLength);
-      console.log("exsysResultsDataLength", exsysResultsDataLength);
 
       const newResults = await mappedRequestsFn({
         data,
@@ -111,7 +107,10 @@ export default createProcessBulkClaimsMiddleware(
       });
 
       results = results.concat(...newResults);
-      await delayProcess(200);
+
+      if (!!claims.length) {
+        await delayProcess(200);
+      }
     }
 
     return results;
