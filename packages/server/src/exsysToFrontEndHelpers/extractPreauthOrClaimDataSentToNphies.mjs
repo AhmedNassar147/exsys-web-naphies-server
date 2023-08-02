@@ -240,6 +240,8 @@ const extractPreauthOrClaimDataSentToNphies = ({
     claimPeriodStart,
     claimPeriodEnd,
     ...issueValues,
+    nodeServerDataSentToNphies: nodeServerDataSentToNaphies,
+    nphiesResponse,
   };
 };
 
