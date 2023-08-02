@@ -119,7 +119,7 @@ export default createProcessBulkClaimsMiddleware(
         results = results.concat(...resultsData);
       }
 
-      if (printInfo && printInfo.data) {
+      if (printInfo && isArrayHasData(printInfo.data)) {
         printInfoData = printInfoData.concat(...printInfo.data);
       }
 
