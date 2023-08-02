@@ -36,7 +36,7 @@ const extractPreauthOrClaimDataSentToNphies = ({
   let supportInfoData = undefined;
   let diagnosisData = undefined;
 
-  const { id: creationBundleId } = nodeServerDataSentToNaphies;
+  const { id: creationBundleId } = nodeServerDataSentToNaphies || {};
   const { issue } = nphiesResponse || {};
 
   const issueValues = formatNphiesResponseIssue(issue);
