@@ -11,10 +11,12 @@ const createMappedClaimRequests = async ({
   data,
   authorization,
   printValues,
+  formatReturnedResults,
 }) =>
   await createMappedRequestsArray({
     dataArray: data,
     printValues,
+    formatReturnedResults,
     asyncFn: async ({
       patientFileNo,
       episodeNo,

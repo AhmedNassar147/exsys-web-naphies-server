@@ -194,6 +194,8 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
         patientFileNo: patient_file_no,
         patientName: patient_name,
         patientCardNo: memberid,
+        // nodeServerDataSentToNphies: nodeServerDataSentToNaphies,
+        // nphiesResponse,
       },
       errorMessage,
       errorMessageCode,

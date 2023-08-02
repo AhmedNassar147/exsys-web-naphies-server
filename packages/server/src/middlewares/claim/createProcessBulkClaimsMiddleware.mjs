@@ -7,6 +7,7 @@ import {
   createPrintResultsOrLog,
   delayProcess,
   isArrayHasData,
+  writeResultFile,
 } from "@exsys-web-server/helpers";
 import createProcessBulkClaimsMiddleware from "../../helpers/createBaseExpressMiddleware.mjs";
 import createExsysRequest from "../../helpers/createExsysRequest.mjs";
@@ -45,8 +46,10 @@ export default createProcessBulkClaimsMiddleware(
       exsysResultsData,
     };
 
+    const folderName = `bulkClaim/${request_type}`;
+
     const printData = {
-      folderName: `bulkClaim/${request_type}`,
+      folderName,
       data: printedErrorData,
       hasExsysApiError: true,
     };
@@ -90,28 +93,50 @@ export default createProcessBulkClaimsMiddleware(
 
     const claims = [...exsysResultsData];
     const isClaimCancellation = request_type === "cancel";
+    const exsysResultsDataLength = exsysResultsData.length;
 
     const mappedRequestsFn = isClaimCancellation
       ? createMappedClaimRequestsToCancellation
       : createMappedClaimRequests;
 
     let results = [];
+    let printInfoData = [];
 
     while (claims.length) {
       const data = claims.splice(0, claimsToBeSentToNphiesPerRequestsMap);
 
-      const newResults = await mappedRequestsFn({
+      const { resultsData, printInfo } = await mappedRequestsFn({
         data,
         authorization,
-        printValues,
+        printValues: false,
+        formatReturnedResults: ({ printInfo, resultsData }) => ({
+          printInfo,
+          resultsData,
+        }),
       });
 
-      results = results.concat(...newResults);
+      if (isArrayHasData(resultsData)) {
+        results = results.concat(...resultsData);
+      }
+
+      if (printInfo && printInfo.data) {
+        printInfoData = printInfoData.concat(...printInfo.data);
+      }
 
       if (!!claims.length) {
         await delayProcess(200);
       }
     }
+
+    console.log({
+      printInfoData: printInfoData.length,
+      exsysResultsDataLength,
+    });
+
+    await writeResultFile({
+      folderName,
+      data: printInfoData,
+    });
 
     return results;
   }

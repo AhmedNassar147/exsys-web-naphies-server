@@ -11,6 +11,7 @@ const createMappedRequestsArray = async ({
   dataArray,
   asyncFn,
   printValues = true,
+  formatReturnedResults,
 }) => {
   if (isArrayHasData(dataArray)) {
     const configPromises = dataArray.map(asyncFn).filter(Boolean).flat();
@@ -26,10 +27,22 @@ const createMappedRequestsArray = async ({
       loggerValues,
     });
 
-    return Promise.resolve(resultsData);
+    const finalResults = formatReturnedResults
+      ? await formatReturnedResults({
+          printInfo,
+          loggerValues,
+          resultsData,
+        })
+      : resultsData;
+
+    return Promise.resolve(finalResults);
   }
 
-  return Promise.resolve([]);
+  const finalResults = formatReturnedResults
+    ? await formatReturnedResults({})
+    : [];
+
+  return Promise.resolve(finalResults);
 };
 
 export default createMappedRequestsArray;
