@@ -133,7 +133,7 @@ export default createProcessBulkClaimsMiddleware(
       exsysResultsDataLength,
     });
 
-    if (printInfoData.length === exsysResultsDataLength) {
+    if (printInfoData.length === exsysResultsDataLength && printValues) {
       await writeResultFile({
         folderName,
         data: printInfoData,
