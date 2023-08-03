@@ -88,13 +88,6 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
       validationError ||
       `error when calling exsys \`${EXSYS_API_IDS[exsysQueryApiId]}\` API`;
 
-    if (!isSuccess) {
-      console.log("exsys not successeded", {
-        _result,
-        errorMessage,
-      });
-    }
-
     if (exsysSaveApiId && (!!validationError ? shouldSaveDataToExsys : true)) {
       const errorSaveParams = createExsysSaveApiParams
         ? createExsysSaveApiParams({
