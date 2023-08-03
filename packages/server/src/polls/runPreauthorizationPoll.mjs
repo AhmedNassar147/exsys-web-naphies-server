@@ -76,6 +76,12 @@ const runPreauthorizationPoll = async () => {
       ...otherExtractedData
     } = nphiesExtractedData || {};
 
+    await writeResultFile({
+      folderName: "authorizationPoll",
+      data: nphiesResultData,
+      isError: hasError,
+    });
+
     if (!isObjectHasData(otherExtractedData)) {
       createCmdMessage({
         type: "info",
@@ -90,12 +96,6 @@ const runPreauthorizationPoll = async () => {
       nphiesResponse,
       nphiesExtractedData,
       requestType: messageHeaderRequestType,
-    });
-
-    await writeResultFile({
-      folderName: "authorizationPoll",
-      data: nphiesResultData,
-      isError: hasError,
     });
   } catch (error) {
     createCmdMessage({
