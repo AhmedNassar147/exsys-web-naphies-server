@@ -57,6 +57,7 @@ const extractClaimResponseData = ({
     error,
     request,
     type,
+    fundsReserve,
   },
 }) => {
   const { identifier: requestIdentifier } = request || {};
@@ -71,6 +72,9 @@ const extractClaimResponseData = ({
   const { code: claimMessageEventType } =
     extractNphiesCodeAndDisplayFromCodingType(type);
   const claimExtensionCode = getExtensionCode(extension);
+
+  const { code: fundsReserveCode } =
+    extractNphiesCodeAndDisplayFromCodingType(fundsReserve);
 
   const { start, end } = preAuthPeriod || {};
   const errors = extractErrorsArray(error);
@@ -110,6 +114,7 @@ const extractClaimResponseData = ({
     claimMessageEventType,
     processNotes: processNotes,
     productsData,
+    fundsReserveCode,
     claimErrors: errors,
   };
 };
