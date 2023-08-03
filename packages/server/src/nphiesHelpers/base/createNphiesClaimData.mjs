@@ -436,9 +436,9 @@ const createNphiesClaimData = ({
                     code: nphiesProductCode,
                     display: nphiesProductName,
                   },
-                  isClaimRequest && {
+                  {
                     system: `${siteUrl}/${nphiesProductCodeType}`,
-                    code: customerProductCode,
+                    code: customerProductCode || nphiesProductCode,
                     display: customerProductName || nphiesProductName,
                   },
                 ].filter(Boolean),
