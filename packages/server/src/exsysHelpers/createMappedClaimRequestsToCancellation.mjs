@@ -17,15 +17,20 @@ const createMappedClaimRequestsToCancellation = async ({
     dataArray: data,
     printValues,
     formatReturnedResults,
-    asyncFn: async ({
-      patientFileNo,
-      episodeInvoiceNo,
-      organizationNo,
-      claimPk,
-      authorizationNo,
-    }) =>
+    asyncFn: async (
+      {
+        patientFileNo,
+        episodeInvoiceNo,
+        organizationNo,
+        claimPk,
+        authorizationNo,
+      },
+      requestTimeout
+    ) =>
       await fetchExsysPreauthOrClaimDataForNphiesCancellation({
         nphiesRequestType: NPHIES_REQUEST_TYPES.CLAIM,
+        exsysQueryApiDelayTimeout: requestTimeout,
+        nphiesApiDelayTimeout: requestTimeout,
         requestParams: {
           authorization: authorization || authorizationNo,
           patient_file_no: patientFileNo,

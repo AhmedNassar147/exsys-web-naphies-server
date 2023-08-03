@@ -13,12 +13,14 @@ const callNphiesAPIAndCollectResults = ({
   otherPrintValues,
   setErrorIfExtractedDataFoundFn,
   isAuthorizationPoll,
+  nphiesApiDelayTimeout,
 }) =>
   new Promise(async (resolve) => {
     const nphiesRequestPayload = createNphiesRequestPayloadFn(exsysResultsData);
 
     const nphiesResults = await createNphiesRequest({
       bodyData: nphiesRequestPayload,
+      startingDelayTimeout: nphiesApiDelayTimeout,
     });
 
     const { isSuccess, result: nphiesResponse, ...restResult } = nphiesResults;

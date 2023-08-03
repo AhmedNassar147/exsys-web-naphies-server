@@ -17,15 +17,20 @@ const createMappedClaimRequests = async ({
     dataArray: data,
     printValues,
     formatReturnedResults,
-    asyncFn: async ({
-      patientFileNo,
-      episodeNo,
-      episodeInvoiceNo,
-      organizationNo,
-      messageEventType,
-    }) =>
+    asyncFn: async (
+      {
+        patientFileNo,
+        episodeNo,
+        episodeInvoiceNo,
+        organizationNo,
+        messageEventType,
+      },
+      requestTimeout
+    ) =>
       await fetchExsysClaimDataAndCallNphies({
         nphiesRequestType: NPHIES_REQUEST_TYPES.CLAIM,
+        exsysQueryApiDelayTimeout: requestTimeout,
+        nphiesApiDelayTimeout: requestTimeout,
         requestParams: {
           authorization,
           patient_file_no: patientFileNo,

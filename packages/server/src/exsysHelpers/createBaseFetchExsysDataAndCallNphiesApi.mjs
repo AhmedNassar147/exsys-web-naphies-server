@@ -25,12 +25,19 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
   onNphiesResponseWithSuccessFn,
   noPatientDataLogger,
   checkExsysDataValidationBeforeCallingNphies,
+  exsysQueryApiDelayTimeout,
+  nphiesApiDelayTimeout,
 }) => {
-  const { isSuccess, result } = await createExsysRequest({
+  const {
+    isSuccess,
+    result,
+    error: exsysError,
+  } = await createExsysRequest({
     resourceName: exsysQueryApiId,
     requestMethod,
     requestParams,
     body: requestBody,
+    startingDelayTimeout: exsysQueryApiDelayTimeout,
   });
 
   const _result = result || {};
@@ -62,7 +69,7 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
       : {};
 
   const hasErrorMessageOrFailed =
-    !!error_message || !isSuccess || !!validationError;
+    !!error_message || !isSuccess || !!exsysError || !!validationError;
 
   if (
     !noPatientDataLogger &&
@@ -77,8 +84,16 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
   if (hasErrorMessageOrFailed) {
     const errorMessage =
       error_message ||
+      exsysError ||
       validationError ||
       `error when calling exsys \`${EXSYS_API_IDS[exsysQueryApiId]}\` API`;
+
+    if (!isSuccess) {
+      console.log("exsys not successeded", {
+        _result,
+        errorMessage,
+      });
+    }
 
     if (exsysSaveApiId && (!!validationError ? shouldSaveDataToExsys : true)) {
       const errorSaveParams = createExsysSaveApiParams
@@ -140,6 +155,7 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
     createNphiesRequestPayloadFn,
     extractionFunctionsMap,
     setErrorIfExtractedDataFoundFn,
+    nphiesApiDelayTimeout,
   });
 
   const { nphiesExtractedData, nodeServerDataSentToNaphies, nphiesResponse } =

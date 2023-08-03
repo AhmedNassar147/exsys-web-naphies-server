@@ -60,6 +60,8 @@ const CONFIG_MAP = {
 const fetchExsysPreauthOrClaimDataForNphiesCancellation = async ({
   requestParams,
   nphiesRequestType,
+  exsysQueryApiDelayTimeout,
+  nphiesApiDelayTimeout,
 }) => {
   const {
     exsysQueryApiId,
@@ -80,6 +82,8 @@ const fetchExsysPreauthOrClaimDataForNphiesCancellation = async ({
     setErrorIfExtractedDataFoundFn,
     createExsysSaveApiParams,
     createExsysErrorSaveApiBody,
+    exsysQueryApiDelayTimeout,
+    nphiesApiDelayTimeout,
   });
 };
 

@@ -20,8 +20,7 @@ export const SERVER_CONFIG = await readJsonFile(configFilePath, true);
 export const FILES_ENCODING_LIMIT = "60mb";
 
 export const SERVER_PORT = 5000;
-export const RETRY_TIMES = 3;
-export const NPHIES_RETRY_TIMES = 2;
+export const RETRY_TIMES = 1;
 export const RETRY_DELAY = 10000;
 export const EXSYS_POLLS_TIMEOUT = 10000;
 const { dev, certificatePath } = CLI_CONFIG;

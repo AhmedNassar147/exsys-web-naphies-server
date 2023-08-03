@@ -19,7 +19,7 @@ const { queryBulkClaimsDataToCancellationOrCreation } = EXSYS_API_IDS_NAMES;
 const exsysApiBaseUrl =
   EXSYS_API_IDS[queryBulkClaimsDataToCancellationOrCreation];
 
-const claimsToBeSentToNphiesPerRequestsMap = 30;
+const claimsToBeSentToNphiesPerRequestsMap = 25;
 
 export default createProcessBulkClaimsMiddleware(
   async ({ authorization, data, printValues = false }) => {
@@ -124,14 +124,9 @@ export default createProcessBulkClaimsMiddleware(
       }
 
       if (!!claims.length) {
-        await delayProcess(200);
+        await delayProcess(100);
       }
     }
-
-    console.log({
-      printInfoData: printInfoData.length,
-      exsysResultsDataLength,
-    });
 
     if (printInfoData.length === exsysResultsDataLength && printValues) {
       await writeResultFile({

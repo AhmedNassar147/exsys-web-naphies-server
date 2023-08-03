@@ -14,7 +14,10 @@ const createMappedRequestsArray = async ({
   formatReturnedResults,
 }) => {
   if (isArrayHasData(dataArray)) {
-    const configPromises = dataArray.map(asyncFn).filter(Boolean).flat();
+    const configPromises = dataArray
+      .map((item, index) => asyncFn(item, !index ? 0 : index + 6, index))
+      .filter(Boolean)
+      .flat();
 
     const results = await Promise.all(configPromises);
 
