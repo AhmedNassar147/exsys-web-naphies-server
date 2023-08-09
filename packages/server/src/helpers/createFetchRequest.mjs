@@ -24,7 +24,7 @@ const createFetchRequest = (options) => {
     errorMessage = "something went wrong",
   } = options;
 
-  let currentResourceName = resourceName;
+  let currentResourceName = resourceName || "";
 
   if (requestParams) {
     const searchParams = new URLSearchParams(requestParams);
@@ -32,7 +32,11 @@ const createFetchRequest = (options) => {
   }
 
   const API_URL = currentResourceName
-    ? `${baseAPiUrl}/${currentResourceName}`
+    ? `${baseAPiUrl}${
+        currentResourceName.startsWith("?")
+          ? currentResourceName
+          : `/${currentResourceName}`
+      }`
     : baseAPiUrl;
 
   const fetchOptions = {
