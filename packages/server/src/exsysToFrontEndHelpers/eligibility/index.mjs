@@ -1,6 +1,6 @@
 /*
  *
- * Helper: `extractPreauthOrClaimDataSentToNphies`.
+ * Helper: `extractNphiesEligibilityData`.
  *
  */
 import { isArrayHasData } from "@exsys-web-server/helpers";
@@ -27,7 +27,7 @@ const extractionFunctionsMap = {
   }),
 };
 
-const extractPreauthOrClaimDataSentToNphies = ({
+const extractNphiesEligibilityData = ({
   nodeServerDataSentToNaphies,
   nphiesResponse,
   nphiesExtractedData,
@@ -245,4 +245,4 @@ const extractPreauthOrClaimDataSentToNphies = ({
   };
 };
 
-export default extractPreauthOrClaimDataSentToNphies;
+export default extractNphiesEligibilityData;

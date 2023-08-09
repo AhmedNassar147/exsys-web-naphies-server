@@ -5,7 +5,7 @@
  */
 import { EXSYS_API_IDS_NAMES, EXSYS_API_IDS } from "../constants.mjs";
 import createExsysRequest from "../helpers/createExsysRequest.mjs";
-import extractPreauthOrClaimDataSentToNphies from "../exsysToFrontEndHelpers/extractPreauthOrClaimDataSentToNphies.mjs";
+import extractPreauthOrClaimDataSentToNphies from "../exsysToFrontEndHelpers/claimOrPreauth/index.mjs";
 
 const { querySavedClaimsAndPreauthData } = EXSYS_API_IDS_NAMES;
 const baseApiUrl = EXSYS_API_IDS[querySavedClaimsAndPreauthData];
@@ -43,7 +43,25 @@ const fetchPreauthAndClaimSavedData = async (requestParams) => {
     };
   }
 
-  const { nphiesExtractedData } = result;
+  const { nphiesExtractedData, nodeServerDataSentToNaphies, nphiesResponse } =
+    result;
+
+  if (!nodeServerDataSentToNaphies || !nphiesResponse || !nphiesExtractedData) {
+    const errorMessage =
+      "exsys response should has [nphiesExtractedData, nodeServerDataSentToNaphies, nphiesResponse]";
+    return {
+      printData: {
+        folderName: printFolderName,
+        data: printedErrorData,
+        hasExsysApiError: true,
+      },
+      loggerValue: errorMessage,
+      resultData: {
+        errorMessage,
+        hasError: true,
+      },
+    };
+  }
 
   const extractedData = extractPreauthOrClaimDataSentToNphies(result);
 

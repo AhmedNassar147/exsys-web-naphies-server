@@ -4,8 +4,8 @@
  *
  */
 import { isArrayHasData } from "@exsys-web-server/helpers";
-import extractValueFromUrl from "../nphiesHelpers/extraction/extractValueFromUrl.mjs";
-import { NPHIES_API_URLS } from "../constants.mjs";
+import extractValueFromUrl from "../../nphiesHelpers/extraction/extractValueFromUrl.mjs";
+import { NPHIES_API_URLS } from "../../constants.mjs";
 
 const { BASE_CODE_SYS_URL } = NPHIES_API_URLS;
 
