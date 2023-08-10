@@ -5,6 +5,7 @@
  */
 import { createDateFromNativeDate } from "@exsys-web-server/helpers";
 import extractNphiesCodeAndDisplayFromCodingType from "./extractNphiesCodeAndDisplayFromCodingType.mjs";
+import extractInsurancesData from "./extractInsurancesData.mjs";
 import extractErrorsArray from "./extractErrorsArray.mjs";
 
 const extractCoverageEligibilityEntryResponseData = ({
@@ -18,6 +19,7 @@ const extractCoverageEligibilityEntryResponseData = ({
     status,
     error,
     extension,
+    insurance,
   },
 }) => {
   const { start, end } = servicedPeriod || {};
@@ -46,6 +48,7 @@ const extractCoverageEligibilityEntryResponseData = ({
     eligibilityPeriodEnd: createDateFromNativeDate(end).dateString,
     eligibilityPayerClaimResponseUrl: system,
     eligibilityClaimResponse: value,
+    eligibilityInsuranceBenefits: extractInsurancesData(insurance),
     isPatientEligible: isPatientEligible ? "Y" : "N",
     eligibilityErrors: errors,
   };

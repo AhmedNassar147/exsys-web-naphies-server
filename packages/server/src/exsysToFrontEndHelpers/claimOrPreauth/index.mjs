@@ -11,10 +11,10 @@ import formatNphiesResponseIssue from "../../nphiesHelpers/base/formatNphiesResp
 import getValueFromObject from "../../nphiesHelpers/extraction/getValueFromObject.mjs";
 import extraProductExtensionsSentToNphies from "./extraProductExtensionsSentToNphies.mjs";
 import extractPatientData from "../base/extractPatientData.mjs";
-import extractCoverageData from "../base/extractCoverageData.mjs";
 import extractOrganizationData from "../base/extractOrganizationData.mjs";
 import extractProductOrServiceData from "./extractProductOrServiceData.mjs";
 import extractNphiesSentDataErrors from "./extractNphiesSentDataErrors.mjs";
+import extractCoverageRelationship from "../../nphiesHelpers/extraction/extractCoverageRelationship.mjs";
 
 const extractionFunctionsMap = {
   MessageHeader: extractMessageHeaderData,
@@ -38,13 +38,15 @@ const extractionFunctionsMap = {
     subType: extractNphiesCodeAndDisplayFromCodingType(subType).code,
   }),
   Patient: extractPatientData,
-  Coverage: extractCoverageData,
-  Organization: extractOrganizationData,
+  Coverage: ({ resource: { relationship } }) => ({
+    relationship: extractCoverageRelationship(relationship),
+  }),
+  Organization: extractOrganizationData("prov"),
+  Organization: extractOrganizationData("ins"),
 };
 
-const extractionFunctionsMapForInsuranceOrg = {
-  Organization: extractOrganizationData,
-};
+// const extractionFunctionsMapForInsuranceOrg = {
+// };
 
 const extractPreauthOrClaimDataSentToNphies = ({
   nodeServerDataSentToNaphies,
@@ -76,17 +78,19 @@ const extractPreauthOrClaimDataSentToNphies = ({
     subType,
     relationship,
     provider,
+    insurer,
+    receiver,
   } = mapEntriesAndExtractNeededData({
     nphiesResponse: nodeServerDataSentToNaphies,
     extractionFunctionsMap,
     creationBundleId,
   });
 
-  const { insurer, receiver } = mapEntriesAndExtractNeededData({
-    nphiesResponse: nodeServerDataSentToNaphies,
-    extractionFunctionsMap: extractionFunctionsMapForInsuranceOrg,
-    creationBundleId,
-  });
+  // const { insurer, receiver } = mapEntriesAndExtractNeededData({
+  //   nphiesResponse: nodeServerDataSentToNaphies,
+  //   extractionFunctionsMap: extractionFunctionsMapForInsuranceOrg,
+  //   creationBundleId,
+  // });
 
   const {
     claimErrors,
