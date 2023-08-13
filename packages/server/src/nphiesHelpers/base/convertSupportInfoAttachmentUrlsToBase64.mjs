@@ -44,7 +44,7 @@ const convertSupportInfoAttachmentUrlsToBase64 = async (supportInfo) => {
             return false;
           }
 
-          _value = data || !notFound;
+          _value = data || notFound;
         }
 
         return {
