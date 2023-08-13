@@ -44,9 +44,3 @@ const convertFileUrlToBase64 = async (fileUrl) =>
   });
 
 export default convertFileUrlToBase64;
-
-console.log(
-  await convertFileUrlToBase64(
-    "https://images.unsplash.com/photo-1605559424843-9e4c228bf1c2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OXx8Y2Fyc3xlbnwwfHwwfHx8MA%3D%3D&w=1000&q=80"
-  )
-);
