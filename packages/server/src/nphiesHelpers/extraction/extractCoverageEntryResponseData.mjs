@@ -5,6 +5,7 @@
  */
 import { isArrayHasData } from "@exsys-web-server/helpers";
 import extractNphiesCodeAndDisplayFromCodingType from "./extractNphiesCodeAndDisplayFromCodingType.mjs";
+import extractCoverageRelationship from "./extractCoverageRelationship.mjs";
 import extractErrorsArray from "./extractErrorsArray.mjs";
 
 const extractCostToBeneficiaryItemValues = (item, keyOfValue) => {
@@ -34,6 +35,8 @@ const extractCoverageEntryResponseData = ({
     dependent,
     class: classes,
     error,
+    period,
+    relationship,
   },
 }) => {
   const [{ value: memberid }] = identifier || [{}];
@@ -74,6 +77,8 @@ const extractCoverageEntryResponseData = ({
       }))
     : undefined;
 
+  const { start, end } = period || {};
+
   return {
     coverageResourceType: resourceType,
     coverageResponseId: id,
@@ -83,6 +88,9 @@ const extractCoverageEntryResponseData = ({
     coverageFirstPayorCode: firstPayorCode,
     coverageNetwork: network,
     coverageDependent: dependent,
+    coverageStartDate: start,
+    coverageEndDate: end,
+    coverageRelationShip: extractCoverageRelationship(relationship),
     ...copayValues,
     coverageClasses: classesValues,
     coverageErrors: errors,
