@@ -41,6 +41,8 @@ const createNaphiesPreauthRequestFullData = ({
   patient_phone,
   gender,
   birthDate,
+  batch_period_start,
+  batch_period_end,
   // provider_location,
   // location_license,
   patient_martial_status,
@@ -163,6 +165,8 @@ const createNaphiesPreauthRequestFullData = ({
         diagnosisData,
         episodeInvoiceNo: episode_invoice_no,
         preauthRefs,
+        batchPeriodStart: batch_period_start,
+        batchPeriodEnd: batch_period_end,
       }),
       createNphiesDoctorOrPatientData({
         patientOrDoctorId: patient_file_no,

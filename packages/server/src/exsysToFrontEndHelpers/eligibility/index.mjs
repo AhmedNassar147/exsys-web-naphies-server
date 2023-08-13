@@ -1,6 +1,6 @@
 /*
  *
- * Helper: `extractNphiesEligibilityData`.
+ * Helper: `extractEligibilityDataSentToNphies`.
  *
  */
 import { isArrayHasData } from "@exsys-web-server/helpers";
@@ -41,7 +41,7 @@ const nphiesResponseExtractionFunctionsMap = {
   }),
 };
 
-const extractNphiesEligibilityData = ({
+const extractEligibilityDataSentToNphies = ({
   nodeServerDataSentToNaphies,
   nphiesResponse,
   nphiesExtractedData,
@@ -138,4 +138,4 @@ const extractNphiesEligibilityData = ({
   };
 };
 
-export default extractNphiesEligibilityData;
+export default extractEligibilityDataSentToNphies;

@@ -11,10 +11,19 @@ const convertFileUrlToBase64 = async (fileUrl) =>
     const wrapper = (n) => {
       axios
         .get(fileUrl, {
-          responseType: "text",
+          responseType: "arrayBuffer",
           responseEncoding: "base64",
         })
-        .then(({ data }) => resolve(data))
+        .then(({ data, headers }) => {
+          const fileSize = headers["content-length"];
+          const sizeMb = fileSize / (1024 * 1024);
+
+          resolve({
+            skip: sizeMb > 10,
+            data,
+            notFound: false,
+          });
+        })
         .catch(async (error) => {
           const { response } = error || {};
           const { status } = response || {};
@@ -24,7 +33,9 @@ const convertFileUrlToBase64 = async (fileUrl) =>
             await delayProcess(1000);
             wrapper(--n);
           } else {
-            resolve(!isNotFoundUrl);
+            resolve({
+              notFound: isNotFoundUrl,
+            });
           }
         });
     };
@@ -33,3 +44,9 @@ const convertFileUrlToBase64 = async (fileUrl) =>
   });
 
 export default convertFileUrlToBase64;
+
+console.log(
+  await convertFileUrlToBase64(
+    "https://images.unsplash.com/photo-1605559424843-9e4c228bf1c2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OXx8Y2Fyc3xlbnwwfHwwfHx8MA%3D%3D&w=1000&q=80"
+  )
+);

@@ -210,6 +210,8 @@ export const NPHIES_BASE_CODE_TYPES = {
   TASK_REASON_CODE: "task-reason-code",
   EXTENSION_EPISODE: "extension-episode",
   EXTENSION_AUTH_OFFLINE_DATE: "extension-authorization-offline-date",
+  EXT_PERIOD_START: "extension-batch-period",
+  EXT_ACCOUNT_PERIOD: "extension-accountingPeriod",
 };
 
 export const SUPPORT_INFO_KEY_NAMES = {

@@ -6,6 +6,7 @@
 import { EXSYS_API_IDS_NAMES, EXSYS_API_IDS } from "../constants.mjs";
 import createExsysRequest from "../helpers/createExsysRequest.mjs";
 import extractPreauthOrClaimDataSentToNphies from "../exsysToFrontEndHelpers/claimOrPreauth/index.mjs";
+import extractEligibilityDataSentToNphies from "../exsysToFrontEndHelpers/eligibility/index.mjs";
 
 const { querySavedClaimsAndPreauthData } = EXSYS_API_IDS_NAMES;
 const baseApiUrl = EXSYS_API_IDS[querySavedClaimsAndPreauthData];
@@ -63,7 +64,12 @@ const fetchPreauthAndClaimSavedData = async (requestParams) => {
     };
   }
 
-  const extractedData = extractPreauthOrClaimDataSentToNphies(result);
+  const extractionFunction =
+    request_type === "eligibility"
+      ? extractEligibilityDataSentToNphies
+      : extractPreauthOrClaimDataSentToNphies;
+
+  const extractedData = extractionFunction(result);
 
   const { claimErrors } = nphiesExtractedData;
   const hasError = !!claimErrors.length;

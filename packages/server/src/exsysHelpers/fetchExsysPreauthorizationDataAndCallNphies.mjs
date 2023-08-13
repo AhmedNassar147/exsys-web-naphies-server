@@ -145,7 +145,8 @@ const fetchExsysPreauthorizationDataAndCallNphies = async ({
 
     if (isClaimRequestType && isArrayHasData(supportInformationData)) {
       const indexOfSomeAttachmentNotFound = supportInformationData.findIndex(
-        ({ categoryCode, value }) => categoryCode === attachment && !value
+        ({ categoryCode, value }) =>
+          categoryCode === attachment && (typeof value === "boolean" || !value)
       );
 
       const someAttachmentNotFound = indexOfSomeAttachmentNotFound !== -1;

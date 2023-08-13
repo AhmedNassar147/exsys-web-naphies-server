@@ -32,18 +32,31 @@ const fixContentType = (contentType) => {
 
 const convertSupportInfoAttachmentUrlsToBase64 = async (supportInfo) => {
   if (isArrayHasData(supportInfo)) {
-    return await Promise.all(
+    const results = await Promise.all(
       supportInfo.map(async ({ categoryCode, value, contentType, ...item }) => {
         const isAttachment = categoryCode === attachment;
+        let _value = value;
+
+        if (isAttachment) {
+          const { skip, notFound, data } = await convertFileUrlToBase64(value);
+
+          if (skip) {
+            return false;
+          }
+
+          _value = data || !notFound;
+        }
 
         return {
           categoryCode,
           ...item,
           contentType: fixContentType(contentType),
-          value: isAttachment ? await convertFileUrlToBase64(value) : value,
+          value: _value,
         };
       })
     );
+
+    return results.filter(Boolean);
   }
 
   return supportInfo;

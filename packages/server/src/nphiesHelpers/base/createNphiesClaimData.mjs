@@ -49,6 +49,8 @@ const {
   EXTENSION_PATIENT_INVOICE,
   EXTENSION_AUTH_OFFLINE_DATE,
   EXTENSION_EPISODE,
+  EXT_PERIOD_START,
+  EXT_ACCOUNT_PERIOD,
 } = NPHIES_BASE_CODE_TYPES;
 
 const PREAUTH_PROFILE_TYPES = {
@@ -76,6 +78,8 @@ const createAuthorizationExtensions = ({
   siteUrl,
   episodeInvoiceNo,
   preauthRefs,
+  batchPeriodStart,
+  batchPeriodEnd,
 }) =>
   [
     isArrayHasData(preauthRefs) && {
@@ -88,6 +92,17 @@ const createAuthorizationExtensions = ({
         system: `${siteUrl}/episode`,
         value: `EpisodeID-${episodeInvoiceNo}`,
       },
+    },
+    !!(batchPeriodStart && batchPeriodEnd) && {
+      url: `${BASE_PROFILE_URL}/${EXT_PERIOD_START}`,
+      valuePeriod: {
+        start: batchPeriodStart,
+        end: batchPeriodEnd,
+      },
+    },
+    !!batchPeriodStart && {
+      url: `${BASE_PROFILE_URL}/${EXT_ACCOUNT_PERIOD}`,
+      valueDate: batchPeriodStart,
     },
   ].filter(Boolean);
 
@@ -131,6 +146,8 @@ const createNphiesClaimData = ({
   primaryDoctorFocal,
   episodeInvoiceNo,
   preauthRefs,
+  batchPeriodStart,
+  batchPeriodEnd,
 }) => {
   const profileType = PREAUTH_PROFILE_TYPES[message_event_type];
 
@@ -175,6 +192,8 @@ const createNphiesClaimData = ({
             siteUrl,
             episodeInvoiceNo,
             preauthRefs,
+            batchPeriodStart,
+            batchPeriodEnd,
           })
         : undefined,
       type: {
