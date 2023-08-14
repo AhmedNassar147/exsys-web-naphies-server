@@ -4,9 +4,10 @@
  *
  */
 import extractErrorsArray from "./extractErrorsArray.mjs";
+import extractNphiesOutputErrors from "./extractNphiesOutputErrors.mjs";
 
 const extractPreauthOrClaimCancellationResponseData = ({
-  resource: { status, identifier, id, focus, error },
+  resource: { status, identifier, id, focus, error, output },
 }) => {
   const [{ value: responseId }] = identifier || [{}];
 
@@ -17,7 +18,10 @@ const extractPreauthOrClaimCancellationResponseData = ({
     identifier: {},
   };
 
-  const errors = extractErrorsArray(error);
+  const errors = [
+    ...extractErrorsArray(error),
+    ...extractNphiesOutputErrors(output),
+  ];
 
   const requestOrResponseId = responseId.replace("Cancel_", "") || id;
   const isClaimCancellation = type === "Claim";

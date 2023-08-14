@@ -74,10 +74,18 @@ const fetchPreauthAndClaimSavedData = async (requestParams) => {
   const { claimErrors } = nphiesExtractedData;
   const hasError = !!claimErrors.length;
 
+  const {
+    nodeServerDataSentToNphies,
+    nphiesResponse: _nphiesResponse,
+    cancellationNphiesResponse,
+    cancellationExsysRequestData,
+    ..._extractedData
+  } = extractedData;
+
   return {
     printData: {
       folderName: printFolderName,
-      data: { ...basePrintedData, extractedData },
+      data: { ...basePrintedData, extractedData: _extractedData },
       hasNphiesApiError: hasError,
     },
     resultData: {

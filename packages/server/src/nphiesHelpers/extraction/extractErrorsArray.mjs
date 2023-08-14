@@ -6,15 +6,15 @@
 import { isArrayHasData } from "@exsys-web-server/helpers";
 import extractNphiesCodeAndDisplayFromCodingType from "./extractNphiesCodeAndDisplayFromCodingType.mjs";
 
-const extractErrorsArray = (nphiesError) =>
+const extractErrorsArray = (nphiesError, errorsFieldName = "code") =>
   isArrayHasData(nphiesError)
     ? nphiesError
-        .map(({ code }) => {
+        .map(({ [errorsFieldName]: codeType }) => {
           const {
             code: errorCode,
             display,
             extensionValue,
-          } = extractNphiesCodeAndDisplayFromCodingType(code);
+          } = extractNphiesCodeAndDisplayFromCodingType(codeType);
 
           if (!errorCode) {
             return false;

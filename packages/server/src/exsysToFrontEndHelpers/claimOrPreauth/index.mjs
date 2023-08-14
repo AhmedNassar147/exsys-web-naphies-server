@@ -52,6 +52,9 @@ const extractPreauthOrClaimDataSentToNphies = ({
   nodeServerDataSentToNaphies,
   nphiesResponse,
   nphiesExtractedData,
+  cancellationExsysRequestData,
+  cancellationNphiesResponse,
+  cancellationExtractedData,
 }) => {
   let productsData = undefined;
   let supportInfoData = undefined;
@@ -248,6 +251,15 @@ const extractPreauthOrClaimDataSentToNphies = ({
     );
   }
 
+  const {
+    cancellationResponseId,
+    cancellationRequestId,
+    cancellationQueuedRequestId,
+    cancellationStatus,
+    cancellationOutcome,
+    cancellationErrors,
+  } = cancellationExtractedData || {};
+
   return {
     bundleId: nphiesBundleId,
     claimResponseId,
@@ -281,6 +293,14 @@ const extractPreauthOrClaimDataSentToNphies = ({
     receiver,
     nodeServerDataSentToNphies: nodeServerDataSentToNaphies,
     nphiesResponse,
+    cancellationExsysRequestData,
+    cancellationNphiesResponse,
+    cancellationResponseId,
+    cancellationRequestId,
+    cancellationQueuedRequestId,
+    cancellationStatus,
+    cancellationOutcome,
+    cancellationErrors,
     ...issueValues,
   };
 };
