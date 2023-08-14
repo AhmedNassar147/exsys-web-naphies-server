@@ -42,11 +42,11 @@ const extractionFunctionsMap = {
     relationship: extractCoverageRelationship(relationship),
   }),
   Organization: extractOrganizationData("prov"),
-  Organization: extractOrganizationData("ins"),
 };
 
-// const extractionFunctionsMapForInsuranceOrg = {
-// };
+const extractionFunctionsMapForInsuranceOrg = {
+  Organization: extractOrganizationData("ins"),
+};
 
 const extractPreauthOrClaimDataSentToNphies = ({
   nodeServerDataSentToNaphies,
@@ -78,19 +78,17 @@ const extractPreauthOrClaimDataSentToNphies = ({
     subType,
     relationship,
     provider,
-    insurer,
-    receiver,
   } = mapEntriesAndExtractNeededData({
     nphiesResponse: nodeServerDataSentToNaphies,
     extractionFunctionsMap,
     creationBundleId,
   });
 
-  // const { insurer, receiver } = mapEntriesAndExtractNeededData({
-  //   nphiesResponse: nodeServerDataSentToNaphies,
-  //   extractionFunctionsMap: extractionFunctionsMapForInsuranceOrg,
-  //   creationBundleId,
-  // });
+  const { insurer, receiver } = mapEntriesAndExtractNeededData({
+    nphiesResponse: nodeServerDataSentToNaphies,
+    extractionFunctionsMap: extractionFunctionsMapForInsuranceOrg,
+    creationBundleId,
+  });
 
   const {
     claimErrors,

@@ -18,7 +18,7 @@ const fetchPreauthAndClaimSavedData = async (requestParams) => {
     requestParams,
   });
 
-  const printedErrorData = {
+  const basePrintedData = {
     requestParams,
     exsysResultsData: result,
   };
@@ -33,7 +33,7 @@ const fetchPreauthAndClaimSavedData = async (requestParams) => {
     return {
       printData: {
         folderName: printFolderName,
-        data: printedErrorData,
+        data: basePrintedData,
         hasExsysApiError: true,
       },
       loggerValue: errorMessage,
@@ -53,7 +53,7 @@ const fetchPreauthAndClaimSavedData = async (requestParams) => {
     return {
       printData: {
         folderName: printFolderName,
-        data: printedErrorData,
+        data: basePrintedData,
         hasExsysApiError: true,
       },
       loggerValue: errorMessage,
@@ -77,7 +77,7 @@ const fetchPreauthAndClaimSavedData = async (requestParams) => {
   return {
     printData: {
       folderName: printFolderName,
-      data: { requestParams, extractedData },
+      data: { ...basePrintedData, extractedData },
       hasNphiesApiError: hasError,
     },
     resultData: {

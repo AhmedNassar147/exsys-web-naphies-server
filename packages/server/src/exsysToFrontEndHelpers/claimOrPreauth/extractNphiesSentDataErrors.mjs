@@ -9,13 +9,13 @@ const createAssignErrorToObjectError =
   ({ error, errorCode }) =>
   (matchWith, errorObject) => {
     if (error) {
-      const regexp = new RegExp(`${matchWith}\\[\\d\\]`, "gm");
+      const regexp = new RegExp(`${matchWith}\\[\\d{0,}\\]`, "gm");
 
       const [valueWithIndex] = error.match(regexp) || [];
-      const [index] = (valueWithIndex || "").match(/\d/g) || [];
+      const index = (valueWithIndex || "").replace(/\D/g, "");
 
       const mainErrorRegexp = new RegExp(
-        `bundle.+${matchWith}\\[\\d\\].`,
+        `bundle.+${matchWith}\\[\\d{0,}\\].`,
         "gmi"
       );
       const mainError = error.replace(mainErrorRegexp, "");
@@ -88,3 +88,15 @@ const extractNphiesSentDataErrors = ({ claimErrors }) => {
 };
 
 export default extractNphiesSentDataErrors;
+
+console.log(
+  extractNphiesSentDataErrors({
+    claimErrors: [
+      {
+        error:
+          "Bundle.entry[1].resource.supportingInfo[11].valueAttachment.data / Resource SHALL have a valid structure",
+        errorCode: "GE-00013",
+      },
+    ],
+  })
+);

@@ -28,7 +28,6 @@ const extractionFunctionsMap = {
     ).code,
   }),
   Organization: extractOrganizationData("prov"),
-  Organization: extractOrganizationData("ins"),
   Patient: extractPatientData,
 };
 
@@ -39,6 +38,10 @@ const nphiesResponseExtractionFunctionsMap = {
   Coverage: ({ resource: { relationship } }) => ({
     relationship: extractCoverageRelationship(relationship),
   }),
+};
+
+const extractionFunctionsMapForInsuranceOrg = {
+  Organization: extractOrganizationData("ins"),
 };
 
 const extractEligibilityDataSentToNphies = ({
@@ -58,7 +61,6 @@ const extractEligibilityDataSentToNphies = ({
     patientGender,
     patientPhone,
     patientIdentifierIdType,
-    insurer,
     requestId,
     provider,
     priority,
@@ -75,6 +77,12 @@ const extractEligibilityDataSentToNphies = ({
   const { insuranceBenefits, relationship } = mapEntriesAndExtractNeededData({
     nphiesResponse: nphiesResponse,
     extractionFunctionsMap: nphiesResponseExtractionFunctionsMap,
+    creationBundleId,
+  });
+
+  const { insurer, receiver } = mapEntriesAndExtractNeededData({
+    nphiesResponse: nodeServerDataSentToNaphies,
+    extractionFunctionsMap: extractionFunctionsMapForInsuranceOrg,
     creationBundleId,
   });
 
@@ -101,6 +109,7 @@ const extractEligibilityDataSentToNphies = ({
     bundleId: nphiesBundleId,
     creationBundleId,
     insurer,
+    receiver,
     provider,
     servicePeriod: [eligibilityPeriodStart, eligibilityPeriodEnd]
       .filter(Boolean)
