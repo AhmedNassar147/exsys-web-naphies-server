@@ -89,14 +89,14 @@ const extractNphiesSentDataErrors = ({ claimErrors }) => {
 
 export default extractNphiesSentDataErrors;
 
-console.log(
-  extractNphiesSentDataErrors({
-    claimErrors: [
-      {
-        error:
-          "Bundle.entry[1].resource.supportingInfo[11].valueAttachment.data / Resource SHALL have a valid structure",
-        errorCode: "GE-00013",
-      },
-    ],
-  })
-);
+// console.log(
+//   extractNphiesSentDataErrors({
+//     claimErrors: [
+//       {
+//         error:
+//           "Bundle.entry[1].resource.supportingInfo[11].valueAttachment.data / Resource SHALL have a valid structure",
+//         errorCode: "GE-00013",
+//       },
+//     ],
+//   })
+// );
