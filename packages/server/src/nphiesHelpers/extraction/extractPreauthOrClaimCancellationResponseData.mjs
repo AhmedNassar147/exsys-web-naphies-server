@@ -5,11 +5,12 @@
  */
 import extractErrorsArray from "./extractErrorsArray.mjs";
 import extractNphiesOutputErrors from "./extractNphiesOutputErrors.mjs";
+import extractIdentifierData from "./extractIdentifierData.mjs";
 
 const extractPreauthOrClaimCancellationResponseData = ({
   resource: { status, identifier, id, focus, error, output },
 }) => {
-  const [{ value: responseId }] = identifier || [{}];
+  const [responseId] = extractIdentifierData(identifier);
 
   const {
     identifier: { value: queuedRequestId },

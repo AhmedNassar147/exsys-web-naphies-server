@@ -7,6 +7,7 @@ import { isArrayHasData } from "@exsys-web-server/helpers";
 import extractNphiesCodeAndDisplayFromCodingType from "./extractNphiesCodeAndDisplayFromCodingType.mjs";
 import extractCoverageRelationship from "./extractCoverageRelationship.mjs";
 import extractErrorsArray from "./extractErrorsArray.mjs";
+import extractIdentifierData from "./extractIdentifierData.mjs";
 
 const extractCostToBeneficiaryItemValues = (item, keyOfValue) => {
   const { [keyOfValue]: value, type } = item;
@@ -39,7 +40,7 @@ const extractCoverageEntryResponseData = ({
     relationship,
   },
 }) => {
-  const [{ value: memberid }] = identifier || [{}];
+  const [memberid] = extractIdentifierData(identifier);
   const [{ value: firstPayorName, code: firstPayorCode }] = classes || [{}];
   const errors = extractErrorsArray(error);
 

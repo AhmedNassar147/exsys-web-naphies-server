@@ -4,12 +4,13 @@
  *
  */
 import { isArrayHasData } from "@exsys-web-server/helpers";
+import extractIdentifierData from "../../nphiesHelpers/extraction/extractIdentifierData.mjs";
 import extractNphiesCodeAndDisplayFromCodingType from "../../nphiesHelpers/extraction/extractNphiesCodeAndDisplayFromCodingType.mjs";
 
 const extractOrganizationData =
   (codeValue) =>
   ({ resource: { name, identifier, type } }) => {
-    const [{ value }] = identifier || [{}];
+    const [value] = extractIdentifierData(identifier);
     const { code } = extractNphiesCodeAndDisplayFromCodingType(
       isArrayHasData(type) ? type[0] : type
     );

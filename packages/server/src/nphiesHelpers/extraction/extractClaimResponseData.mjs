@@ -8,7 +8,9 @@ import {
   createDateFromNativeDate,
 } from "@exsys-web-server/helpers";
 import extractErrorsArray from "./extractErrorsArray.mjs";
+import extractIdentifierData from "./extractIdentifierData.mjs";
 import extractNphiesCodeAndDisplayFromCodingType from "./extractNphiesCodeAndDisplayFromCodingType.mjs";
+import extractNphiesOutputErrors from "./extractNphiesOutputErrors.mjs";
 
 const getExtensionCode = (extension) => {
   const [{ valueCodeableConcept }] = extension || [{}];
@@ -58,6 +60,8 @@ const extractClaimResponseData = ({
     request,
     type,
     fundsReserve,
+    output,
+    priority,
   },
 }) => {
   const { identifier: requestIdentifier } = request || {};
@@ -67,7 +71,7 @@ const extractClaimResponseData = ({
     ? requestIdentifierValue.replace("req_", "")
     : id;
 
-  const [{ value: claimResponseId }] = identifier || [{}];
+  const [claimResponseId] = extractIdentifierData(identifier);
 
   const { code: claimMessageEventType } =
     extractNphiesCodeAndDisplayFromCodingType(type);
@@ -77,7 +81,6 @@ const extractClaimResponseData = ({
     extractNphiesCodeAndDisplayFromCodingType(fundsReserve);
 
   const { start, end } = preAuthPeriod || {};
-  const errors = extractErrorsArray(error);
 
   const processNotes = isArrayHasData(processNote)
     ? processNote.map(({ text, number }) => `${number}-${text}`).join(` , `)
@@ -100,6 +103,11 @@ const extractClaimResponseData = ({
       }))
     : undefined;
 
+  const errors = [
+    ...extractErrorsArray(error),
+    ...extractNphiesOutputErrors(output),
+  ];
+
   return {
     claimResourceType: resourceType,
     claimResponseId: claimResponseId.replace("req_", "") || id,
@@ -110,6 +118,7 @@ const extractClaimResponseData = ({
     claimPreauthRef: preAuthRef,
     claimPeriodStart: createDateFromNativeDate(start).dateString,
     claimPeriodEnd: createDateFromNativeDate(end).dateString,
+    claimPriority: priority,
     claimExtensionCode,
     claimMessageEventType,
     processNotes: processNotes,

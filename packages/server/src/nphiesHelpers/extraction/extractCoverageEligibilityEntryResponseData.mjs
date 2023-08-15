@@ -6,6 +6,7 @@
 import { createDateFromNativeDate } from "@exsys-web-server/helpers";
 import extractNphiesCodeAndDisplayFromCodingType from "./extractNphiesCodeAndDisplayFromCodingType.mjs";
 import extractInsurancesData from "./extractInsurancesData.mjs";
+import extractIdentifierData from "./extractIdentifierData.mjs";
 import extractErrorsArray from "./extractErrorsArray.mjs";
 
 const extractCoverageEligibilityEntryResponseData = ({
@@ -23,7 +24,7 @@ const extractCoverageEligibilityEntryResponseData = ({
   },
 }) => {
   const { start, end } = servicedPeriod || {};
-  const [{ system, value }] = identifier || [{}];
+  const [value, system] = extractIdentifierData(identifier);
   const [{ valueCodeableConcept }] = extension || [{}];
   const { code: valueCodeableConceptCode } =
     extractNphiesCodeAndDisplayFromCodingType(valueCodeableConcept);

@@ -94,9 +94,7 @@ const createNphiesTaskData = ({
           ? {
               reference: `${requesterBaseUrl}/${payerOrganization}`,
             }
-          : {
-              identifier: pollOwnerData,
-            }),
+          : pollOwnerData),
       },
       ...(isCancellingPreauthOrClaimRequest
         ? {
