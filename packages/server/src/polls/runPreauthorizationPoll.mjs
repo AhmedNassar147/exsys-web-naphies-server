@@ -17,7 +17,7 @@ import extractCoverageEntryResponseData from "../nphiesHelpers/extraction/extrac
 import extractClaimResponseData from "../nphiesHelpers/extraction/extractClaimResponseData.mjs";
 import extractMessageHeaderData from "../nphiesHelpers/extraction/extractMessageHeaderData.mjs";
 import extractPreauthAndClaimPollTaskData from "../nphiesHelpers/extraction/extractPreauthAndClaimPollTaskData.mjs";
-// import extractCommunicationData from "../nphiesHelpers/extraction/extractCommunicationData.mjs";
+import extractCommunicationData from "../nphiesHelpers/extraction/extractCommunicationData.mjs";
 import callNphiesApiAndCollectResults from "../nphiesHelpers/base/callNphiesApiAndCollectResults.mjs";
 
 const { preauthPollData, authorization } = SERVER_CONFIG;
@@ -34,14 +34,14 @@ const setErrorIfExtractedDataFoundFn = ({ coverageErrors, claimErrors }) => [
 const extractionFunctionsMap = {
   [COVERAGE]: extractCoverageEntryResponseData,
   Task: extractPreauthAndClaimPollTaskData,
-  // Communication: extractCommunicationData,
   Bundle: ({ resource, creationBundleId }) =>
     mapEntriesAndExtractNeededData({
       nphiesResponse: resource,
       creationBundleId,
       extractionFunctionsMap: {
         [COVERAGE]: extractCoverageEntryResponseData,
-        MessageHeader: extractMessageHeaderData,
+        MessageHeader: extractMessageHeaderData(/-response|-request/),
+        CommunicationRequest: extractCommunicationData,
         ClaimResponse: extractClaimResponseData,
       },
     }),

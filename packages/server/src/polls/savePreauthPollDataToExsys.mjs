@@ -32,9 +32,19 @@ const savePreauthPollDataToExsys = async ({
     claimExtensionCode,
     claimMessageEventType,
     creationBundleId,
+    communicationExtractedData,
   } = nphiesExtractedData;
 
-  const saveApiName = SAVE_API_BASED_REQUEST_TYPE[requestType];
+  const { communicationAboutSystemType, communicationAboutId } =
+    communicationExtractedData || {};
+
+  let _requestType = requestType;
+
+  if (communicationAboutSystemType === "authorization") {
+    _requestType = NPHIES_REQUEST_TYPES.PREAUTH;
+  }
+
+  const saveApiName = SAVE_API_BASED_REQUEST_TYPE[_requestType];
 
   if (!saveApiName) {
     createCmdMessage({
@@ -50,15 +60,15 @@ const savePreauthPollDataToExsys = async ({
     resourceName: saveApiName,
     requestParams: {
       authorization,
-      claimrequestid: claimRequestId,
-      claimresponseid: claimResponseId,
-      claimoutcome: claimOutcome,
-      claimpreauthref: claimPreauthRef,
-      claimperiodstart: claimPeriodStart,
-      claimperiodend: claimPeriodEnd,
-      claimextensioncode: claimExtensionCode,
+      claimresponseid: claimResponseId || "",
+      claimpreauthref: claimPreauthRef || "",
+      claimperiodstart: claimPeriodStart || "",
+      claimperiodend: claimPeriodEnd || "",
+      claimextensioncode: claimExtensionCode || "",
+      claimrequestid: communicationAboutId || claimRequestId || "",
+      claimoutcome: claimOutcome || "",
       claimmessageeventtype: claimMessageEventType,
-      claimcreationbundleid: creationBundleId,
+      claimcreationbundleid: creationBundleId || "",
     },
     body: {
       nodeServerDataSentToNaphies,

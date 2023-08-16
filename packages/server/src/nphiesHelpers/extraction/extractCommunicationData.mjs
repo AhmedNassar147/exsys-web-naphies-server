@@ -27,8 +27,10 @@ const extractCommunicationData = ({
   const { code } = extractNphiesCodeAndDisplayFromCodingType(
     isArrayHasData(category) ? category[0] : category
   );
-  const [{ type, identifier: aboutType }] = about || [{}];
-  const [typeId] = extractIdentifierData(aboutType);
+  const [{ type: communicationAboutType, identifier: aboutType }] = about || [
+    {},
+  ];
+  const [typeId, typeSystem] = extractIdentifierData(aboutType);
 
   const { code: _reasonCode } =
     extractNphiesCodeAndDisplayFromCodingType(reasonCode);
@@ -41,24 +43,29 @@ const extractCommunicationData = ({
 
   const communicationErrors = extractErrorsArray(error);
 
+  const typeSystemParts = (typeSystem || "").split("/");
+
   return {
-    communicationId: id,
-    communicationIdentifier: (communicationIdentifier || "").replace(
-      "req_",
-      ""
-    ),
-    communicationCategory: code,
-    communicationPriority: priority,
-    communicationStatus: status,
-    communicationResponseBasedOnType: basedOnType,
-    communicationResponseBasedOnId: (
-      communicationResponseBasedOnId || ""
-    ).replace("req_", ""),
-    communicationType: (type || "").toLowerCase(),
-    communicationTypeId: (typeId || "").replace("req_", ""),
-    communicationReasonCode: _reasonCode,
-    communicationPayload: payload,
-    communicationErrors,
+    communicationExtractedData: {
+      communicationId: id,
+      communicationIdentifier: (communicationIdentifier || "").replace(
+        /req_|CommReq_/,
+        ""
+      ),
+      communicationCategory: code,
+      communicationPriority: priority,
+      communicationStatus: status,
+      communicationResponseBasedOnType: basedOnType,
+      communicationResponseBasedOnId: communicationResponseBasedOnId
+        ? communicationResponseBasedOnId.replace("req_", "")
+        : undefined,
+      communicationAboutType,
+      communicationAboutId: typeId ? typeId.replace("req_", "") : undefined,
+      communicationAboutSystemType: typeSystemParts[typeSystemParts.length - 1],
+      communicationReasonCode: _reasonCode,
+      communicationPayload: payload,
+      communicationErrors,
+    },
   };
 };
 

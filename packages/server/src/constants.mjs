@@ -45,6 +45,8 @@ export const EXSYS_API_IDS_NAMES = {
   queryBulkClaimsDataToCancellationOrCreation:
     "queryBulkClaimsDataToCancellationOrCreation",
   querySavedClaimsAndPreauthData: "querySavedClaimsAndPreauthData",
+  collectExsysClaimOrPreauthCommunicationData:
+    "collectExsysClaimOrPreauthCommunicationData",
 };
 
 export const EXSYS_API_IDS = {
@@ -81,6 +83,9 @@ export const EXSYS_API_IDS = {
   // http://149.102.140.8:9090/ords/exsys_api/nphies_pkg/display_nphies_response?authorization=11796985&primary_key=6&request_type=priorauth
   [EXSYS_API_IDS_NAMES.querySavedClaimsAndPreauthData]:
     "nphies_pkg/display_nphies_response",
+  // http://149.102.140.8:9090/ords/exsys_api/nphies_pkg/collect_communication?authorization=12985704&patient_file_no=187285&organization_no=001&record_pk=604&request_type=priorauth
+  [EXSYS_API_IDS_NAMES.collectExsysClaimOrPreauthCommunicationData]:
+    "nphies_pkg/collect_communication",
 };
 
 export const HTTP_STATUS_CODE = {
@@ -108,6 +113,7 @@ export const NPHIES_REQUEST_TYPES = {
   PREAUTH: "priorauth",
   CLAIM: "claim",
   POLL: "poll",
+  COMMUNICATION: "communication",
   CANCEL: "cancel",
 };
 
@@ -123,6 +129,7 @@ export const NPHIES_RESOURCE_TYPES = {
   CLAIM: "Claim",
   VISION_PRESCRIPTION: "Visionprescription",
   TASK: "Task",
+  COMMUNICATION: "Communication",
 };
 
 export const NPHIES_RESOURCE_MAP_TO_REQUEST_TYPE = {
@@ -132,6 +139,7 @@ export const NPHIES_RESOURCE_MAP_TO_REQUEST_TYPE = {
   [NPHIES_REQUEST_TYPES.CLAIM]: NPHIES_RESOURCE_TYPES.CLAIM,
   [NPHIES_REQUEST_TYPES.POLL]: NPHIES_RESOURCE_TYPES.TASK,
   [NPHIES_REQUEST_TYPES.CANCEL]: NPHIES_RESOURCE_TYPES.TASK,
+  [NPHIES_REQUEST_TYPES.COMMUNICATION]: NPHIES_RESOURCE_TYPES.COMMUNICATION,
 };
 
 export const BASE_NPHIES_URL = "http://nphies.sa";
@@ -178,6 +186,7 @@ export const NPHIES_BASE_PROFILE_TYPES = {
   PROFILE_PHARMACY_PREAUTH: "pharmacy-priorauth|1.0.0",
   PROFILE_PROFESSIONAL_PREAUTH: "professional-priorauth|1.0.0",
   PROFILE_TASK: "task|1.0.0",
+  PROFILE_COMMUNICATION: "communication|1.0.0",
 };
 
 export const NPHIES_BASE_CODE_TYPES = {
@@ -212,6 +221,7 @@ export const NPHIES_BASE_CODE_TYPES = {
   EXTENSION_AUTH_OFFLINE_DATE: "extension-authorization-offline-date",
   EXT_PERIOD_START: "extension-batch-period",
   EXT_ACCOUNT_PERIOD: "extension-accountingPeriod",
+  COMMUNICATION_CAT: "communication-category",
 };
 
 export const SUPPORT_INFO_KEY_NAMES = {

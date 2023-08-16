@@ -18,6 +18,7 @@ import createClaimMiddleware from "./middlewares/claim/index.mjs";
 import crateCancelClaimRequestMiddleware from "./middlewares/claim/crateCancelClaimRequestMiddleware.mjs";
 import crateFetchSavedClaimDataToFrontendMiddleware from "./middlewares/claim/crateFetchSavedClaimDataToFrontendMiddleware.mjs";
 import createProcessBulkClaimsMiddleware from "./middlewares/claim/createProcessBulkClaimsMiddleware.mjs";
+import createCommunicationMiddleware from "./middlewares/communication/index.mjs";
 import stopTheProcessIfCertificateNotFound from "./helpers/stopTheProcessIfCertificateNotFound.mjs";
 
 (async () => await import("./polls/index.mjs"))();
@@ -40,6 +41,7 @@ import stopTheProcessIfCertificateNotFound from "./helpers/stopTheProcessIfCerti
     "/querySavedClaimOrPreauthData",
     crateFetchSavedClaimDataToFrontendMiddleware(app)
   );
+  app.use("/fetchCommunicationResponse", createCommunicationMiddleware(app));
 
   const res = app.listen(SERVER_PORT, () =>
     createCmdMessage({

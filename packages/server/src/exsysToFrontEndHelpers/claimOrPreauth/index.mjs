@@ -17,7 +17,7 @@ import extractNphiesSentDataErrors from "./extractNphiesSentDataErrors.mjs";
 import extractCoverageRelationship from "../../nphiesHelpers/extraction/extractCoverageRelationship.mjs";
 
 const extractionFunctionsMap = {
-  MessageHeader: extractMessageHeaderData,
+  MessageHeader: extractMessageHeaderData(),
   Claim: ({
     resource: {
       supportingInfo,

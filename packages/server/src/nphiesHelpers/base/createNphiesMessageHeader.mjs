@@ -30,6 +30,7 @@ const createNphiesMessageHeader = ({
   providerFocusUrl,
   requestType,
 }) => {
+  const isCommunication = requestType === NPHIES_REQUEST_TYPES.COMMUNICATION;
   const isAuthorizationPollData = requestType === NPHIES_REQUEST_TYPES.POLL;
   const isCancellingPreauthOrClaimRequest =
     requestType === NPHIES_REQUEST_TYPES.CANCEL;
@@ -59,7 +60,7 @@ const createNphiesMessageHeader = ({
       ...baseResourceData,
       eventCoding: {
         system: `${BASE_CODE_SYS_URL}/${KSA_MSG_EVENTS}`,
-        code: `${requestType}-request`,
+        code: isCommunication ? requestType : `${requestType}-request`,
       },
       destination: [
         {

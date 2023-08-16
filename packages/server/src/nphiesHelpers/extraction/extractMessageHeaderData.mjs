@@ -3,12 +3,17 @@
  * Helper: `extractMessageHeaderData`.
  *
  */
-const extractMessageHeaderData = ({ resource: { eventCoding } }) => {
-  const { code } = eventCoding || {};
+const extractMessageHeaderData =
+  (messageHeaderReplacedRegexp = /-response/) =>
+  ({ resource: { eventCoding } }) => {
+    const { code } = eventCoding || {};
 
-  return {
-    messageHeaderRequestType: (code || "").replace(/-response/, ""),
+    return {
+      messageHeaderRequestType: (code || "").replace(
+        messageHeaderReplacedRegexp,
+        ""
+      ),
+    };
   };
-};
 
 export default extractMessageHeaderData;
