@@ -93,6 +93,12 @@ const fetchPreauthAndClaimCommunicationResponse = async ({
     }
   };
 
+  const checkExsysDataValidationBeforeCallingNphies =
+    validateSupportInfoDataBeforeCallingNphies(
+      request_type,
+      "communication_payload"
+    );
+
   return await createBaseFetchExsysDataAndCallNphiesApi({
     exsysQueryApiId: collectExsysClaimOrPreauthCommunicationData,
     // exsysSaveApiId,
@@ -107,8 +113,7 @@ const fetchPreauthAndClaimCommunicationResponse = async ({
     // createExsysSaveApiParams,
     createExsysErrorSaveApiBody,
     // onNphiesResponseWithSuccessFn,
-    checkExsysDataValidationBeforeCallingNphies:
-      validateSupportInfoDataBeforeCallingNphies("communication_payload"),
+    checkExsysDataValidationBeforeCallingNphies,
     exsysQueryApiDelayTimeout,
     nphiesApiDelayTimeout,
   });

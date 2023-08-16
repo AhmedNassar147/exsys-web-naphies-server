@@ -125,6 +125,12 @@ const fetchExsysPreauthorizationDataAndCallNphies = async ({
     }
   };
 
+  const checkExsysDataValidationBeforeCallingNphies =
+    validateSupportInfoDataBeforeCallingNphies(
+      nphiesRequestType,
+      "supportInformationData"
+    );
+
   return await createBaseFetchExsysDataAndCallNphiesApi({
     exsysQueryApiId,
     exsysSaveApiId,
@@ -139,8 +145,7 @@ const fetchExsysPreauthorizationDataAndCallNphies = async ({
     createExsysSaveApiParams,
     createExsysErrorSaveApiBody,
     onNphiesResponseWithSuccessFn,
-    checkExsysDataValidationBeforeCallingNphies:
-      validateSupportInfoDataBeforeCallingNphies("supportInformationData"),
+    checkExsysDataValidationBeforeCallingNphies,
     exsysQueryApiDelayTimeout,
     nphiesApiDelayTimeout,
   });
