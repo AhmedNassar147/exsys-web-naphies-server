@@ -83,7 +83,7 @@ const fetchPreauthAndClaimCommunicationResponse = async ({
 
   return await createBaseFetchExsysDataAndCallNphiesApi({
     exsysQueryApiId: collectExsysClaimOrPreauthCommunicationData,
-    exsysSaveApiId: saveExsysClaimOrPreauthCommunicationData,
+    // exsysSaveApiId: saveExsysClaimOrPreauthCommunicationData,
     requestParams,
     requestMethod: "GET",
     printFolderName: `communication/${request_type}`,
