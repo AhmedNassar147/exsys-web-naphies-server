@@ -59,10 +59,8 @@ const createResultsDataFromExsysResponse = async ({
   ...result
 }) => ({
   ...result,
-  communication_about_type:
-    communication_about_type === "priorauth"
-      ? "authorization"
-      : communication_about_type,
+  communication_about_type: "Claim",
+  communication_about_system_type: "authorization",
   communication_payload: await convertSupportInfoAttachmentUrlsToBase64(
     communication_payload
   ),

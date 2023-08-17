@@ -99,9 +99,9 @@ const createCommunicationEntry = ({
       },
       payload: isArrayHasData(communicationPayload)
         ? communicationPayload.map(
-            ({ contentString, contentType, title, data, creation }) => {
-              if (contentString) {
-                return { contentString };
+            ({ value, contentType, title, creation }) => {
+              if (!contentType) {
+                return { contentString: value || "" };
               }
 
               let _title = title || "";
@@ -115,7 +115,7 @@ const createCommunicationEntry = ({
                   title: _title,
                   creation: reverseDate(creation),
                   contentType,
-                  data,
+                  data: value,
                 },
               };
             }
