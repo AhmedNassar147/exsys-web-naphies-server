@@ -56,20 +56,24 @@ const savePreauthPollDataToExsys = async ({
     return;
   }
 
+  const requestParams = {
+    authorization,
+    claimresponseid: claimResponseId || "",
+    claimpreauthref: claimPreauthRef || "",
+    claimperiodstart: claimPeriodStart || "",
+    claimperiodend: claimPeriodEnd || "",
+    claimextensioncode: claimExtensionCode || "",
+    claimrequestid: communicationAboutId || claimRequestId || "",
+    claimoutcome: claimOutcome || "",
+    claimmessageeventtype: claimMessageEventType,
+    claimcreationbundleid: creationBundleId || "",
+  };
+
+  console.log("POLL requestParams", requestParams);
+
   return await createExsysRequest({
     resourceName: saveApiName,
-    requestParams: {
-      authorization,
-      claimresponseid: claimResponseId || "",
-      claimpreauthref: claimPreauthRef || "",
-      claimperiodstart: claimPeriodStart || "",
-      claimperiodend: claimPeriodEnd || "",
-      claimextensioncode: claimExtensionCode || "",
-      claimrequestid: communicationAboutId || claimRequestId || "",
-      claimoutcome: claimOutcome || "",
-      claimmessageeventtype: claimMessageEventType,
-      claimcreationbundleid: creationBundleId || "",
-    },
+    requestParams,
     body: {
       nodeServerDataSentToNaphies,
       nphiesResponse,
