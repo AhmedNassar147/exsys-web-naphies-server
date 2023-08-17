@@ -21,7 +21,6 @@
     "test-elig-dev": "node ./packages/server/src/hardcodedTests/checkEligibility.mjs --ignore-cert --dev",
     "test-elig-prod": "node ./packages/server/src/hardcodedTests/checkEligibility.mjs --production",
     "test-claim-dev": "node ./packages/server/src/hardcodedTests/checkClaim.mjs --ignore-cert --dev",
-    "test-preauth-com": "node ./packages/server/src/exsysHelpers/fetchPreauthAndClaimCommunicationResponse.mjs --ignore-cert --dev",
     "test-claim-prod": "node ./packages/server/src/hardcodedTests/checkClaim.mjs --production",
     "test-cchi-prod": "node ./packages/server/src/exsysHelpers/testNphiesCCHI.js --production",
     "remove-claims-prod": "node ./packages/server/src/exsysHelpers/removeUnwantedClaimsToCancellation.mjs --production",

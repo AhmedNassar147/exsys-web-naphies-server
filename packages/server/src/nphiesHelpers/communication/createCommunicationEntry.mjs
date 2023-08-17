@@ -98,8 +98,8 @@ const createCommunicationEntry = ({
         reference: `${providerOrganizationUrl}/${providerOrganization}`,
       },
       payload: isArrayHasData(communicationPayload)
-        ? communicationPayload
-            .map(({ value, contentType, title, creation }) => {
+        ? communicationPayload.map(
+            ({ value, contentType, title, creation }) => {
               if (!contentType) {
                 return { contentString: value || "" };
               }
@@ -110,8 +110,6 @@ const createCommunicationEntry = ({
                 _title += ` ${contentType.replace("/", ".")}`;
               }
 
-              return false;
-
               return {
                 contentAttachment: {
                   title: _title,
@@ -120,8 +118,8 @@ const createCommunicationEntry = ({
                   data: value,
                 },
               };
-            })
-            .filter(Boolean)
+            }
+          )
         : undefined,
     },
   };

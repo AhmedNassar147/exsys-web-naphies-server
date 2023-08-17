@@ -125,10 +125,12 @@ const fetchExsysPreauthorizationDataAndCallNphies = async ({
     }
   };
 
+  const isClaimRequestType = nphiesRequestType === NPHIES_REQUEST_TYPES.CLAIM;
+
   const checkExsysDataValidationBeforeCallingNphies =
     validateSupportInfoDataBeforeCallingNphies(
-      nphiesRequestType,
-      "supportInformationData"
+      "supportInformationData",
+      isClaimRequestType
     );
 
   return await createBaseFetchExsysDataAndCallNphiesApi({

@@ -59,8 +59,6 @@ const createResultsDataFromExsysResponse = async ({
   ...result
 }) => ({
   ...result,
-  communication_about_type: "Claim",
-  communication_about_system_type: "authorization",
   communication_payload: await convertSupportInfoAttachmentUrlsToBase64(
     communication_payload
   ),
@@ -74,10 +72,7 @@ const fetchPreauthAndClaimCommunicationResponse = async ({
   const { request_type } = requestParams;
 
   const checkExsysDataValidationBeforeCallingNphies =
-    validateSupportInfoDataBeforeCallingNphies(
-      request_type,
-      "communication_payload"
-    );
+    validateSupportInfoDataBeforeCallingNphies("communication_payload", true);
 
   return await createBaseFetchExsysDataAndCallNphiesApi({
     exsysQueryApiId: collectExsysClaimOrPreauthCommunicationData,
@@ -99,14 +94,3 @@ const fetchPreauthAndClaimCommunicationResponse = async ({
 };
 
 export default fetchPreauthAndClaimCommunicationResponse;
-
-await createMappedCommunicationRequests({
-  authorization: 111111,
-  printValues: true,
-  data: [
-    {
-      communicationPk: 1,
-      requestType: "priorauth",
-    },
-  ],
-});
