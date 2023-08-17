@@ -62,6 +62,7 @@ const extractClaimResponseData = ({
     fundsReserve,
     output,
     priority,
+    use,
   },
 }) => {
   const { identifier: requestIdentifier } = request || {};
@@ -124,6 +125,7 @@ const extractClaimResponseData = ({
     processNotes: processNotes,
     productsData,
     fundsReserveCode,
+    claimUse: use,
     claimErrors: errors,
   };
 };
