@@ -112,7 +112,7 @@ const createNaphiesPreauthRequestFullData = ({
     ? doctorsData[primaryDoctorIndex]
     : {};
 
-  const requestId = referalIdentifier || createUUID();
+  const requestId = createUUID();
 
   let supportingInfo = [...(supportInformationData || [])];
 

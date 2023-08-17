@@ -21,6 +21,7 @@ const createBaseEntryRequestData = ({
   providerCoverageUrl,
   providerFocusUrl,
   identifierUrl,
+  identifierId,
   insuranceSequence,
   insuranceFocal,
   insurancePreauthRefs,
@@ -40,7 +41,7 @@ const createBaseEntryRequestData = ({
       identifier: [
         {
           system: identifierUrl || providerFocusUrl,
-          value: `req_${requestId}`,
+          value: `req_${identifierId || requestId}`,
         },
       ],
       status: "active",
