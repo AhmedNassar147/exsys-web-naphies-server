@@ -53,7 +53,7 @@ const createExsysSaveApiParams = ({
   claim_request_id: claimRequestId,
   claim_response_id: claimResponseId,
   outcome: claimOutcome,
-  adjudication_outcome: claimExtensionCode,
+  adjudication_outcome: claimExtensionCode || claimOutcome,
   creation_bundle_id: creationBundleId,
   request_type: "request",
 });
