@@ -103,7 +103,7 @@ await createMappedCommunicationRequests({
   data: [
     {
       communication_pk: 1,
-      requestType: "claim",
+      requestType: "priorauth",
     },
   ],
 });
