@@ -103,7 +103,7 @@ const extractEligibilityDataSentToNphies = ({
     coverageCurrency,
     coverageClasses,
     coverageErrors,
-  } = nphiesExtractedData;
+  } = nphiesExtractedData || {};
 
   return {
     bundleId: nphiesBundleId,

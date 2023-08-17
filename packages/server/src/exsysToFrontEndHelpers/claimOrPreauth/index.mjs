@@ -106,7 +106,7 @@ const extractPreauthOrClaimDataSentToNphies = ({
     claimPeriodEnd,
     claimMessageEventType,
     productsData: extractedProductsData,
-  } = nphiesExtractedData;
+  } = nphiesExtractedData || {};
 
   const {
     productErrors,

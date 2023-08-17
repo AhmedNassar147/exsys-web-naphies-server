@@ -44,25 +44,7 @@ const fetchPreauthAndClaimSavedData = async (requestParams) => {
     };
   }
 
-  const { nphiesExtractedData, nodeServerDataSentToNaphies, nphiesResponse } =
-    result;
-
-  if (!nodeServerDataSentToNaphies || !nphiesResponse || !nphiesExtractedData) {
-    const errorMessage =
-      "exsys response should has [nphiesExtractedData, nodeServerDataSentToNaphies, nphiesResponse]";
-    return {
-      printData: {
-        folderName: printFolderName,
-        data: basePrintedData,
-        hasExsysApiError: true,
-      },
-      loggerValue: errorMessage,
-      resultData: {
-        errorMessage,
-        hasError: true,
-      },
-    };
-  }
+  const { nphiesExtractedData } = result;
 
   const extractionFunction =
     request_type === "eligibility"
