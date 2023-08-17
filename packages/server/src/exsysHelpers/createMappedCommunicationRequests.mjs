@@ -14,18 +14,13 @@ const createMappedCommunicationRequests = async ({
   await createMappedRequestsArray({
     dataArray: data,
     printValues,
-    asyncFn: async (
-      { patientFileNo, organizationNo, recordPk, requestType },
-      requestTimeout
-    ) =>
+    asyncFn: async ({ communicationPk, requestType }, requestTimeout) =>
       await fetchPreauthAndClaimCommunicationResponse({
         exsysQueryApiDelayTimeout: requestTimeout,
         nphiesApiDelayTimeout: requestTimeout,
         requestParams: {
           authorization,
-          patient_file_no: patientFileNo,
-          organization_no: organizationNo,
-          record_pk: recordPk,
+          communication_pk: communicationPk,
           request_type: requestType,
         },
       }),

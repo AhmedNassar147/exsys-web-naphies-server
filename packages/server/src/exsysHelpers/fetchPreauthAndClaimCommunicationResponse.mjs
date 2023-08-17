@@ -3,7 +3,6 @@
  * Helper: `fetchPreauthAndClaimCommunicationResponse`.
  *
  */
-import { isArrayHasData } from "@exsys-web-server/helpers";
 import convertSupportInfoAttachmentUrlsToBase64 from "../nphiesHelpers/base/convertSupportInfoAttachmentUrlsToBase64.mjs";
 import createBaseFetchExsysDataAndCallNphiesApi from "./createBaseFetchExsysDataAndCallNphiesApi.mjs";
 import extractClaimResponseData from "../nphiesHelpers/extraction/extractClaimResponseData.mjs";
@@ -11,12 +10,15 @@ import extractCommunicationData from "../nphiesHelpers/extraction/extractCommuni
 import extractCoverageEntryResponseData from "../nphiesHelpers/extraction/extractCoverageEntryResponseData.mjs";
 import validateSupportInfoDataBeforeCallingNphies from "../nphiesHelpers/base/validateSupportInfoDataBeforeCallingNphies.mjs";
 import createNphiesRequestPayloadFn from "../nphiesHelpers/communication/index.mjs";
-import savePreauthPollDataToExsys from "../polls/savePreauthPollDataToExsys.mjs";
 import { EXSYS_API_IDS_NAMES, NPHIES_RESOURCE_TYPES } from "../constants.mjs";
+import createMappedCommunicationRequests from "./createMappedCommunicationRequests.mjs";
 
 const { COVERAGE } = NPHIES_RESOURCE_TYPES;
 
-const { collectExsysClaimOrPreauthCommunicationData } = EXSYS_API_IDS_NAMES;
+const {
+  collectExsysClaimOrPreauthCommunicationData,
+  saveExsysClaimOrPreauthCommunicationData,
+} = EXSYS_API_IDS_NAMES;
 
 const extractionFunctionsMap = {
   [COVERAGE]: extractCoverageEntryResponseData,
@@ -25,31 +27,28 @@ const extractionFunctionsMap = {
   CommunicationRequest: extractCommunicationData,
 };
 
-// const createExsysSaveApiParams = ({
-//   primaryKey,
-//   exsysDataApiPrimaryKeyName,
-//   nphiesExtractedData: {
-//     bundleId,
-//     claimRequestId,
-//     claimResponseId,
-//     claimOutcome,
-//     claimExtensionCode,
-//     creationBundleId,
-//   },
-// }) => ({
-//   [exsysDataApiPrimaryKeyName]: primaryKey,
-//   bundle_id: bundleId,
-//   claim_request_id: claimRequestId,
-//   claim_response_id: claimResponseId,
-//   outcome: claimOutcome,
-//   adjudication_outcome: claimExtensionCode,
-//   creation_bundle_id: creationBundleId,
-//   request_type: "request",
-// });
+const createExsysSaveApiParams = ({
+  primaryKey,
+  exsysDataApiPrimaryKeyName,
+  nphiesExtractedData: {
+    bundleId,
+    communicationId,
+    communicationStatus,
+    creationBundleId,
+    communicationIdentifier,
+  },
+}) => ({
+  [exsysDataApiPrimaryKeyName]: primaryKey,
+  creation_bundle_id: creationBundleId,
+  bundle_id: bundleId,
+  communication_id: communicationId,
+  communication_identifier: communicationIdentifier,
+  communication_status: communicationStatus,
+});
 
 const createExsysErrorSaveApiBody = (errorMessage) => ({
   nphiesExtractedData: {
-    claimOutcome: "error",
+    communicationStatus: "error",
     issueError: errorMessage,
   },
 });
@@ -69,29 +68,7 @@ const fetchPreauthAndClaimCommunicationResponse = async ({
   exsysQueryApiDelayTimeout,
   nphiesApiDelayTimeout,
 }) => {
-  const { authorization, request_type } = requestParams;
-
-  const onNphiesResponseWithSuccessFn = async ({
-    nphiesExtractedData,
-    ...options
-  }) => {
-    const { claimRequestId, claimPreauthRef, claimResponseId, productsData } =
-      nphiesExtractedData || {};
-
-    if (
-      claimRequestId &&
-      claimResponseId &&
-      claimPreauthRef &&
-      isArrayHasData(productsData)
-    ) {
-      await savePreauthPollDataToExsys({
-        authorization,
-        nphiesExtractedData,
-        requestType: request_type,
-        ...options,
-      });
-    }
-  };
+  const { request_type } = requestParams;
 
   const checkExsysDataValidationBeforeCallingNphies =
     validateSupportInfoDataBeforeCallingNphies(
@@ -101,18 +78,17 @@ const fetchPreauthAndClaimCommunicationResponse = async ({
 
   return await createBaseFetchExsysDataAndCallNphiesApi({
     exsysQueryApiId: collectExsysClaimOrPreauthCommunicationData,
-    // exsysSaveApiId,
+    exsysSaveApiId: saveExsysClaimOrPreauthCommunicationData,
     requestParams,
     requestMethod: "GET",
     printFolderName: `communication/${request_type}`,
-    exsysDataApiPrimaryKeyName: "record_pk",
+    exsysDataApiPrimaryKeyName: "communication_pk",
     createResultsDataFromExsysResponse,
     createNphiesRequestPayloadFn,
     extractionFunctionsMap,
     // setErrorIfExtractedDataFoundFn,
-    // createExsysSaveApiParams,
+    createExsysSaveApiParams,
     createExsysErrorSaveApiBody,
-    // onNphiesResponseWithSuccessFn,
     checkExsysDataValidationBeforeCallingNphies,
     exsysQueryApiDelayTimeout,
     nphiesApiDelayTimeout,
@@ -120,3 +96,14 @@ const fetchPreauthAndClaimCommunicationResponse = async ({
 };
 
 export default fetchPreauthAndClaimCommunicationResponse;
+
+await createMappedCommunicationRequests({
+  authorization: 111111,
+  printValues: true,
+  data: [
+    {
+      communication_pk: 1,
+      requestType: "claim",
+    },
+  ],
+});
