@@ -102,7 +102,7 @@ await createMappedCommunicationRequests({
   printValues: true,
   data: [
     {
-      communication_pk: 1,
+      communicationPk: 1,
       requestType: "priorauth",
     },
   ],
