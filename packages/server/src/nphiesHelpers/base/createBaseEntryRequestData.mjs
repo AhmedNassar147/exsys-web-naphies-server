@@ -41,7 +41,7 @@ const createBaseEntryRequestData = ({
       identifier: [
         {
           system: identifierUrl || providerFocusUrl,
-          value: `req_${identifierId || requestId}`,
+          value: identifierId || `req_${requestId}`,
         },
       ],
       status: "active",
