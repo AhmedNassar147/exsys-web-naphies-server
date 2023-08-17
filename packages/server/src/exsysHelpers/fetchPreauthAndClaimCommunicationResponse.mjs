@@ -55,9 +55,14 @@ const createExsysErrorSaveApiBody = (errorMessage) => ({
 
 const createResultsDataFromExsysResponse = async ({
   communication_payload,
+  communication_about_type,
   ...result
 }) => ({
   ...result,
+  communication_about_type:
+    communication_about_type === "priorauth"
+      ? "authorization"
+      : communication_about_type,
   communication_payload: await convertSupportInfoAttachmentUrlsToBase64(
     communication_payload
   ),
