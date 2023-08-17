@@ -75,6 +75,10 @@ const createNaphiesPreauthRequestFullData = ({
   episode_invoice_no,
   preauthRefs,
   daysSupply,
+  offlineRequestDate,
+  referalName,
+  referalIdentifier,
+  extensionPriorauthId,
 }) => {
   const isClaimRequest = message_event.includes("claim-request");
   const requestType = isClaimRequest ? CLAIM : PREAUTH;
@@ -108,7 +112,7 @@ const createNaphiesPreauthRequestFullData = ({
     ? doctorsData[primaryDoctorIndex]
     : {};
 
-  const requestId = createUUID();
+  const requestId = referalIdentifier || createUUID();
 
   let supportingInfo = [...(supportInformationData || [])];
 
@@ -167,6 +171,10 @@ const createNaphiesPreauthRequestFullData = ({
         preauthRefs,
         batchPeriodStart: batch_period_start,
         batchPeriodEnd: batch_period_end,
+        offlineRequestDate,
+        referalName,
+        referalIdentifier,
+        extensionPriorauthId,
       }),
       createNphiesDoctorOrPatientData({
         patientOrDoctorId: patient_file_no,

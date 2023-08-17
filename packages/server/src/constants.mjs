@@ -224,6 +224,7 @@ export const NPHIES_BASE_CODE_TYPES = {
   TASK_REASON_CODE: "task-reason-code",
   EXTENSION_EPISODE: "extension-episode",
   EXTENSION_AUTH_OFFLINE_DATE: "extension-authorization-offline-date",
+  EXTENSION_AUTH_ONLINE_RESPONSE: "extension-priorauth-response",
   EXT_PERIOD_START: "extension-batch-period",
   EXT_ACCOUNT_PERIOD: "extension-accountingPeriod",
   COMMUNICATION_CAT: "communication-category",

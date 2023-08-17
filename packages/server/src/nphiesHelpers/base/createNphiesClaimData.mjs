@@ -51,6 +51,7 @@ const {
   EXTENSION_EPISODE,
   EXT_PERIOD_START,
   EXT_ACCOUNT_PERIOD,
+  EXTENSION_AUTH_ONLINE_RESPONSE,
 } = NPHIES_BASE_CODE_TYPES;
 
 const PREAUTH_PROFILE_TYPES = {
@@ -76,15 +77,25 @@ const getSequences = (arrayData, ids, idPropName) => {
 
 const createAuthorizationExtensions = ({
   siteUrl,
+  offlineRequestDate,
   episodeInvoiceNo,
-  preauthRefs,
   batchPeriodStart,
   batchPeriodEnd,
+  extensionPriorauthId,
 }) =>
   [
-    isArrayHasData(preauthRefs) && {
+    !!offlineRequestDate && {
       url: `${BASE_PROFILE_URL}/${EXTENSION_AUTH_OFFLINE_DATE}`,
-      valueDateTime: createTimestamp(),
+      valueDateTime: offlineRequestDate,
+    },
+    !!extensionPriorauthId && {
+      url: `${BASE_PROFILE_URL}/${EXTENSION_AUTH_ONLINE_RESPONSE}`,
+      valueReference: {
+        identifier: {
+          system: `${siteUrl}/authorizationresponse`,
+          value: `resp_${extensionPriorauthId}`,
+        },
+      },
     },
     {
       url: `${BASE_PROFILE_URL}/${EXTENSION_EPISODE}`,
@@ -148,6 +159,10 @@ const createNphiesClaimData = ({
   preauthRefs,
   batchPeriodStart,
   batchPeriodEnd,
+  offlineRequestDate,
+  referalName,
+  referalIdentifier,
+  extensionPriorauthId,
 }) => {
   const profileType = PREAUTH_PROFILE_TYPES[message_event_type];
 
@@ -155,8 +170,14 @@ const createNphiesClaimData = ({
     ? profileType.replace("priorauth", "claim")
     : profileType;
 
+  const isOfflineReferal = !!(
+    offlineRequestDate &&
+    referalName &&
+    referalIdentifier
+  );
+
   const identifierUrl = `${siteUrl}/${
-    isClaimRequest ? "claim" : "authorization"
+    isClaimRequest && !isOfflineReferal ? "claim" : "authorization"
   }`;
 
   const { fullUrl, resource } = createBaseEntryRequestData({
@@ -173,6 +194,7 @@ const createNphiesClaimData = ({
     insuranceSequence: primaryDoctorSequence,
     insurancePreauthRefs: preauthRefs,
     identifierUrl,
+    identifierId: referalIdentifier,
     resourceType: CLAIM,
     profileType: _profileType,
   });
@@ -190,8 +212,9 @@ const createNphiesClaimData = ({
       extension: isClaimRequest
         ? createAuthorizationExtensions({
             siteUrl,
+            extensionPriorauthId,
+            offlineRequestDate,
             episodeInvoiceNo,
-            preauthRefs,
             batchPeriodStart,
             batchPeriodEnd,
           })
@@ -234,6 +257,13 @@ const createNphiesClaimData = ({
           ],
         },
       },
+      ...(referalName
+        ? {
+            referral: {
+              display: referalName,
+            },
+          }
+        : null),
       careTeam: hasDoctorsData
         ? doctorsData.map(({ id, roleCode, practiceCode }, index) => ({
             sequence: index + 1,
