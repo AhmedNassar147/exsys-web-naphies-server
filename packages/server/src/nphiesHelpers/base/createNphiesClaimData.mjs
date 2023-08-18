@@ -170,14 +170,12 @@ const createNphiesClaimData = ({
     ? profileType.replace("priorauth", "claim")
     : profileType;
 
-  const isOfflineReferal = !!(
-    offlineRequestDate &&
-    referalName &&
-    referalIdentifier
-  );
-
   const identifierUrl = `${siteUrl}/${
-    isClaimRequest && !isOfflineReferal ? "claim" : "authorization"
+    !isClaimRequest
+      ? "authorization"
+      : !referalIdentifier
+      ? "claim"
+      : "authorization"
   }`;
 
   const { fullUrl, resource } = createBaseEntryRequestData({
@@ -209,16 +207,14 @@ const createNphiesClaimData = ({
     fullUrl,
     resource: {
       ...resource,
-      extension: isClaimRequest
-        ? createAuthorizationExtensions({
-            siteUrl,
-            extensionPriorauthId,
-            offlineRequestDate,
-            episodeInvoiceNo,
-            batchPeriodStart,
-            batchPeriodEnd,
-          })
-        : undefined,
+      extension: createAuthorizationExtensions({
+        siteUrl,
+        extensionPriorauthId,
+        offlineRequestDate,
+        episodeInvoiceNo,
+        batchPeriodStart,
+        batchPeriodEnd,
+      }),
       type: {
         coding: [
           {
