@@ -213,7 +213,7 @@ const createNphiesClaimData = ({
         ? createAuthorizationExtensions({
             siteUrl,
             extensionPriorauthId,
-            // offlineRequestDate,
+            offlineRequestDate,
             episodeInvoiceNo,
             batchPeriodStart,
             batchPeriodEnd,
