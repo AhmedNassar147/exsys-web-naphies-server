@@ -40,6 +40,8 @@ const createExsysSaveApiParams = ({
   primaryKey,
   exsysDataApiPrimaryKeyName,
   nphiesExtractedData: {
+    issueError,
+    issueErrorCode,
     bundleId,
     claimRequestId,
     claimResponseId,
@@ -47,16 +49,21 @@ const createExsysSaveApiParams = ({
     claimExtensionCode,
     creationBundleId,
   },
-}) => ({
-  [exsysDataApiPrimaryKeyName]: primaryKey,
-  bundle_id: bundleId,
-  claim_request_id: claimRequestId,
-  claim_response_id: claimResponseId,
-  outcome: claimOutcome,
-  adjudication_outcome: claimExtensionCode,
-  creation_bundle_id: creationBundleId,
-  request_type: "request",
-});
+}) => {
+  const _outcome =
+    !claimOutcome || !!issueError || !!issueErrorCode ? "error" : claimOutcome;
+
+  return {
+    [exsysDataApiPrimaryKeyName]: primaryKey,
+    bundle_id: bundleId,
+    claim_request_id: claimRequestId,
+    claim_response_id: claimResponseId,
+    outcome: _outcome,
+    adjudication_outcome: claimExtensionCode || _outcome,
+    creation_bundle_id: creationBundleId,
+    request_type: "request",
+  };
+};
 
 const createExsysErrorSaveApiBody = (errorMessage) => ({
   nphiesExtractedData: {

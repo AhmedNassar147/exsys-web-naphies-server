@@ -36,15 +36,24 @@ const createExsysSaveApiParams = ({
     communicationStatus,
     creationBundleId,
     communicationIdentifier,
+    issueError,
+    issueErrorCode,
   },
-}) => ({
-  [exsysDataApiPrimaryKeyName]: primaryKey,
-  creation_bundle_id: creationBundleId,
-  bundle_id: bundleId,
-  communication_id: communicationId,
-  communication_identifier: communicationIdentifier,
-  communication_status: communicationStatus,
-});
+}) => {
+  const status =
+    !communicationStatus || !!issueError || !!issueErrorCode
+      ? "error"
+      : communicationStatus;
+
+  return {
+    [exsysDataApiPrimaryKeyName]: primaryKey,
+    creation_bundle_id: creationBundleId,
+    bundle_id: bundleId,
+    communication_id: communicationId,
+    communication_identifier: communicationIdentifier,
+    communication_status: status,
+  };
+};
 
 const createExsysErrorSaveApiBody = (errorMessage) => ({
   nphiesExtractedData: {

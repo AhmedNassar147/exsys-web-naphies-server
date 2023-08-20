@@ -120,7 +120,11 @@ const extractClaimResponseData = ({
     claimPeriodStart: createDateFromNativeDate(start).dateString,
     claimPeriodEnd: createDateFromNativeDate(end).dateString,
     claimPriority: priority,
-    claimExtensionCode,
+    claimExtensionCode: !claimExtensionCode
+      ? outcome === "queued"
+        ? "pended"
+        : outcome
+      : claimExtensionCode,
     claimMessageEventType,
     processNotes: processNotes,
     productsData,

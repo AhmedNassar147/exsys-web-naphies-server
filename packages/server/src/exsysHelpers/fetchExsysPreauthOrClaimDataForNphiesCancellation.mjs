@@ -25,14 +25,27 @@ const setErrorIfExtractedDataFoundFn = ({ cancellationErrors }) =>
 const createExsysSaveApiParams = ({
   primaryKey,
   exsysDataApiPrimaryKeyName,
-  nphiesExtractedData: { bundleId, cancellationStatus, creationBundleId },
-}) => ({
-  [exsysDataApiPrimaryKeyName]: primaryKey,
-  bundle_id: bundleId,
-  outcome: cancellationStatus,
-  creation_bundle_id: creationBundleId,
-  request_type: "cancel",
-});
+  nphiesExtractedData: {
+    bundleId,
+    cancellationStatus,
+    creationBundleId,
+    issueError,
+    issueErrorCode,
+  },
+}) => {
+  const _outcome =
+    !cancellationStatus || !!issueError || !!issueErrorCode
+      ? "error"
+      : cancellationStatus;
+
+  return {
+    [exsysDataApiPrimaryKeyName]: primaryKey,
+    bundle_id: bundleId,
+    outcome: _outcome,
+    creation_bundle_id: creationBundleId,
+    request_type: "cancel",
+  };
+};
 
 const createExsysErrorSaveApiBody = (errorMessage) => ({
   nphiesExtractedData: {
