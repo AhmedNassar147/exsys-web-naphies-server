@@ -74,7 +74,7 @@ const fetchPreauthAndClaimCommunicationResponse = async ({
   exsysQueryApiDelayTimeout,
   nphiesApiDelayTimeout,
 }) => {
-  const { request_type, communicationPk } = requestParams;
+  const { request_type, communication_pk } = requestParams;
 
   const checkExsysDataValidationBeforeCallingNphies =
     validateSupportInfoDataBeforeCallingNphies("communication_payload", true);
@@ -84,7 +84,7 @@ const fetchPreauthAndClaimCommunicationResponse = async ({
     exsysSaveApiId: saveExsysClaimOrPreauthCommunicationData,
     requestParams,
     requestMethod: "GET",
-    printFolderName: `communication/${request_type}/${communicationPk}`,
+    printFolderName: `communication/${request_type}/${communication_pk}`,
     exsysDataApiPrimaryKeyName: "communication_pk",
     createResultsDataFromExsysResponse,
     createNphiesRequestPayloadFn,
