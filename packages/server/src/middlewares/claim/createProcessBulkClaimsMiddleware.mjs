@@ -30,7 +30,7 @@ export default createProcessBulkClaimsMiddleware(
       authorization,
     };
 
-    const { request_type } = baseRequestParams;
+    const { request_type, soa_no } = baseRequestParams;
 
     const { isSuccess, error, result } = await createExsysRequest({
       resourceName: queryBulkClaimsDataToCancellationOrCreation,
@@ -46,7 +46,7 @@ export default createProcessBulkClaimsMiddleware(
       exsysResultsData,
     };
 
-    const folderName = `bulkClaim/${request_type}`;
+    const folderName = `bulkClaim/${request_type}/${soa_no}`;
 
     const printData = {
       folderName,

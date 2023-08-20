@@ -24,9 +24,9 @@ const fetchPreauthAndClaimSavedData = async (requestParams) => {
     exsysResultsData: result,
   };
 
-  const { request_type } = requestParams;
+  const { request_type, primary_key } = requestParams;
 
-  const printFolderName = `exsysToFrontEndSavedData/${request_type}`;
+  const printFolderName = `exsysToFrontEndSavedData/${request_type}/${primary_key}`;
 
   if (!isSuccess || error) {
     const errorMessage = error || `error when calling exsys ${baseApiUrl} API`;

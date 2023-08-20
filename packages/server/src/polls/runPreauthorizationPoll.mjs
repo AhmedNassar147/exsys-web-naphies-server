@@ -81,8 +81,12 @@ const runPreauthorizationPoll = async () => {
       ...otherExtractedData
     } = nphiesExtractedData || {};
 
+    const folderName = `authorizationPoll/${messageHeaderRequestType}/${
+      mainBundleId || bundleId || creationBundleId
+    }`;
+
     await writeResultFile({
-      folderName: "authorizationPoll",
+      folderName: folderName,
       data: nphiesResultData,
       isError: hasError,
     });

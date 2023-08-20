@@ -183,9 +183,16 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
     });
   }
 
+  const { mainBundleId, bundleId, creationBundleId } =
+    nphiesExtractedData || {};
+
+  const folderName = `${printFolderName}${
+    message_event ? `/${message_event}` : ""
+  }/${mainBundleId || bundleId || creationBundleId}`;
+
   return {
     printData: {
-      folderName: printFolderName,
+      folderName,
       data: {
         exsysRequstParams: requestParams,
         exsysRequstBody: requestBody,
