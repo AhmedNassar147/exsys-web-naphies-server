@@ -85,12 +85,14 @@ const extractPreauthOrClaimDataSentToNphies = ({
     nphiesResponse: nodeServerDataSentToNaphies,
     extractionFunctionsMap,
     creationBundleId,
+    defaultValue: {},
   });
 
   const { insurer, receiver } = mapEntriesAndExtractNeededData({
     nphiesResponse: nodeServerDataSentToNaphies,
     extractionFunctionsMap: extractionFunctionsMapForInsuranceOrg,
     creationBundleId,
+    defaultValue: {},
   });
 
   const {

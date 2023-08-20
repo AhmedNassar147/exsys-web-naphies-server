@@ -6,7 +6,7 @@
 import {
   isArrayHasData,
   reverseDate,
-  createTimestamp,
+  // createTimestamp,
 } from "@exsys-web-server/helpers";
 import createBaseEntryRequestData from "./createBaseEntryRequestData.mjs";
 import {
@@ -86,7 +86,7 @@ const createAuthorizationExtensions = ({
   [
     !!offlineRequestDate && {
       url: `${BASE_PROFILE_URL}/${EXTENSION_AUTH_OFFLINE_DATE}`,
-      valueDateTime: offlineRequestDate,
+      valueDateTime: reverseDate(offlineRequestDate),
     },
     !!extensionPriorauthId && {
       url: `${BASE_PROFILE_URL}/${EXTENSION_AUTH_ONLINE_RESPONSE}`,

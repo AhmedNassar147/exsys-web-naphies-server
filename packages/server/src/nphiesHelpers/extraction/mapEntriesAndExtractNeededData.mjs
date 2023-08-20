@@ -10,6 +10,7 @@ const mapEntriesAndExtractNeededData = ({
   nphiesResponse,
   extractionFunctionsMap,
   creationBundleId,
+  defaultValue,
 }) => {
   const { entry, id, issue } = nphiesResponse || {};
   const issueValues = formatNphiesResponseIssue(issue);
@@ -34,7 +35,7 @@ const mapEntriesAndExtractNeededData = ({
     }, {});
   }
 
-  return shouldResultsToObjectOfData
+  const result = shouldResultsToObjectOfData
     ? {
         bundleId: id,
         creationBundleId,
@@ -42,6 +43,8 @@ const mapEntriesAndExtractNeededData = ({
         ...(entryResults || null),
       }
     : undefined;
+
+  return result || defaultValue;
 };
 
 export default mapEntriesAndExtractNeededData;

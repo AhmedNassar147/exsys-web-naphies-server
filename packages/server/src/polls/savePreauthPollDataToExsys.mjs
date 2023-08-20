@@ -69,8 +69,6 @@ const savePreauthPollDataToExsys = async ({
     claimcreationbundleid: creationBundleId || "",
   };
 
-  console.log("POLL requestParams", requestParams);
-
   return await createExsysRequest({
     resourceName: saveApiName,
     requestParams,

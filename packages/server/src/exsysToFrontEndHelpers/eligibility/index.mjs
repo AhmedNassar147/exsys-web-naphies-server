@@ -72,18 +72,21 @@ const extractEligibilityDataSentToNphies = ({
     nphiesResponse: nodeServerDataSentToNaphies,
     extractionFunctionsMap,
     creationBundleId,
+    defaultValue: {},
   });
 
   const { insuranceBenefits, relationship } = mapEntriesAndExtractNeededData({
     nphiesResponse: nphiesResponse,
     extractionFunctionsMap: nphiesResponseExtractionFunctionsMap,
     creationBundleId,
+    defaultValue: {},
   });
 
   const { insurer, receiver } = mapEntriesAndExtractNeededData({
     nphiesResponse: nodeServerDataSentToNaphies,
     extractionFunctionsMap: extractionFunctionsMapForInsuranceOrg,
     creationBundleId,
+    defaultValue: {},
   });
 
   const {
