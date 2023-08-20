@@ -5,13 +5,9 @@
  */
 import convertSupportInfoAttachmentUrlsToBase64 from "../nphiesHelpers/base/convertSupportInfoAttachmentUrlsToBase64.mjs";
 import createBaseFetchExsysDataAndCallNphiesApi from "./createBaseFetchExsysDataAndCallNphiesApi.mjs";
-import extractCommunicationData from "../nphiesHelpers/extraction/extractCommunicationData.mjs";
-import extractCoverageEntryResponseData from "../nphiesHelpers/extraction/extractCoverageEntryResponseData.mjs";
 import validateSupportInfoDataBeforeCallingNphies from "../nphiesHelpers/base/validateSupportInfoDataBeforeCallingNphies.mjs";
 import createNphiesRequestPayloadFn from "../nphiesHelpers/communication/index.mjs";
-import { EXSYS_API_IDS_NAMES, NPHIES_RESOURCE_TYPES } from "../constants.mjs";
-
-const { COVERAGE } = NPHIES_RESOURCE_TYPES;
+import { EXSYS_API_IDS_NAMES } from "../constants.mjs";
 
 const {
   collectExsysClaimOrPreauthCommunicationData,
@@ -19,9 +15,15 @@ const {
 } = EXSYS_API_IDS_NAMES;
 
 const extractionFunctionsMap = {
-  [COVERAGE]: extractCoverageEntryResponseData,
-  Communication: extractCommunicationData,
-  CommunicationRequest: extractCommunicationData,
+  MessageHeader: ({ resource: { id, response } }) => {
+    const { identifier, code } = response || {};
+
+    return {
+      bundleId: id,
+      communicationStatus: code,
+      communicationId: identifier,
+    };
+  },
 };
 
 const createExsysSaveApiParams = ({
@@ -29,10 +31,9 @@ const createExsysSaveApiParams = ({
   exsysDataApiPrimaryKeyName,
   nphiesExtractedData: {
     bundleId,
-    communicationId,
-    communicationStatus,
     creationBundleId,
-    communicationIdentifier,
+    communicationStatus,
+    communicationId,
     issueError,
     issueErrorCode,
   },
@@ -44,11 +45,10 @@ const createExsysSaveApiParams = ({
 
   return {
     [exsysDataApiPrimaryKeyName]: primaryKey,
-    outcome: status,
     creation_bundle_id: creationBundleId,
+    outcome: status,
     bundle_id: bundleId,
     communication_id: communicationId,
-    communication_identifier: communicationIdentifier,
   };
 };
 
