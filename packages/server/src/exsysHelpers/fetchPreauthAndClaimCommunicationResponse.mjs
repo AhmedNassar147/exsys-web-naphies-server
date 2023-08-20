@@ -61,7 +61,6 @@ const createExsysErrorSaveApiBody = (errorMessage) => ({
 
 const createResultsDataFromExsysResponse = async ({
   communication_payload,
-  communication_about_type,
   ...result
 }) => ({
   ...result,
