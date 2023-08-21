@@ -36,7 +36,7 @@ const createExsysErrorSaveApiBody = (errorMessage) => ({
 
 const createExsysSaveApiParams = ({
   primaryKey,
-  exsysSaveApiPrimaryKeyName,
+  exsysDataApiPrimaryKeyName,
   nphiesExtractedData: {
     bundleId,
     cancellationStatus,
@@ -51,7 +51,7 @@ const createExsysSaveApiParams = ({
       : cancellationStatus;
 
   return {
-    [exsysSaveApiPrimaryKeyName]: primaryKey,
+    [exsysDataApiPrimaryKeyName]: primaryKey,
     bundle_id: bundleId,
     outcome: _outcome,
     creation_bundle_id: creationBundleId,

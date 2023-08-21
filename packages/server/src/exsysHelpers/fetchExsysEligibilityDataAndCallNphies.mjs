@@ -39,10 +39,10 @@ const createExsysErrorSaveApiBody = (errorMessage) => ({
 
 const createExsysSaveApiParams = ({
   primaryKey,
-  exsysSaveApiPrimaryKeyName,
+  exsysDataApiPrimaryKeyName,
   nphiesExtractedData: { creationBundleId },
 }) => ({
-  [exsysSaveApiPrimaryKeyName]: primaryKey,
+  [exsysDataApiPrimaryKeyName]: primaryKey,
   creation_bundle_id: creationBundleId,
 });
 

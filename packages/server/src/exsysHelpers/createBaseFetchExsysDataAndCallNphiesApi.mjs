@@ -17,7 +17,6 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
   createResultsDataFromExsysResponse,
   printFolderName,
   exsysDataApiPrimaryKeyName,
-  exsysSaveApiPrimaryKeyName,
   createNphiesRequestPayloadFn,
   extractionFunctionsMap,
   setErrorIfExtractedDataFoundFn,
@@ -82,9 +81,6 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
     );
   }
 
-  const _exsysSaveApiPrimaryKeyName =
-    exsysSaveApiPrimaryKeyName || exsysDataApiPrimaryKeyName;
-
   if (hasErrorMessageOrFailed) {
     const errorMessage =
       error_message ||
@@ -96,7 +92,7 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
       const errorSaveParams = createExsysSaveApiParams
         ? createExsysSaveApiParams({
             primaryKey,
-            exsysSaveApiPrimaryKeyName: _exsysSaveApiPrimaryKeyName,
+            exsysDataApiPrimaryKeyName,
             nphiesExtractedData: {},
           })
         : undefined;
@@ -105,7 +101,7 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
         resourceName: exsysSaveApiId,
         requestParams: errorSaveParams,
         body: {
-          [_exsysSaveApiPrimaryKeyName]: primaryKey,
+          [exsysDataApiPrimaryKeyName]: primaryKey,
           ...(createExsysErrorSaveApiBody(errorMessage) || null),
         },
       });
@@ -162,7 +158,7 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
     const successSaveParams = createExsysSaveApiParams
       ? createExsysSaveApiParams({
           primaryKey,
-          exsysSaveApiPrimaryKeyName: _exsysSaveApiPrimaryKeyName,
+          exsysDataApiPrimaryKeyName,
           nphiesExtractedData,
         })
       : undefined;
@@ -171,7 +167,7 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
       resourceName: exsysSaveApiId,
       requestParams: successSaveParams,
       body: {
-        [_exsysSaveApiPrimaryKeyName]: primaryKey,
+        [exsysDataApiPrimaryKeyName]: primaryKey,
         nodeServerDataSentToNaphies,
         nphiesResponse,
         nphiesExtractedData,
