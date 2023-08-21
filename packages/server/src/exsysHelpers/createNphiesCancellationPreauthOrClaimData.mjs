@@ -74,7 +74,7 @@ const createNphiesCancellationPreauthOrClaimData = async ({
     ? saveClaimData
     : savePreauthData;
 
-  const saveApiPrimaryKey = isClaimCancellationRequest
+  const exsysDataApiPrimaryKeyName = isClaimCancellationRequest
     ? "claim_pk"
     : "preauth_pk";
 
@@ -84,8 +84,7 @@ const createNphiesCancellationPreauthOrClaimData = async ({
     requestParams,
     requestMethod: "GET",
     printFolderName,
-    exsysDataApiPrimaryKeyName: "record_pk",
-    exsysSaveApiPrimaryKeyName: saveApiPrimaryKey,
+    exsysDataApiPrimaryKeyName,
     createNphiesRequestPayloadFn,
     extractionFunctionsMap,
     setErrorIfExtractedDataFoundFn,
