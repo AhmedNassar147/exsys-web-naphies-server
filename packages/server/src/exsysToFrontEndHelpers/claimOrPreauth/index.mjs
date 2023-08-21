@@ -55,6 +55,8 @@ const extractPreauthOrClaimDataSentToNphies = ({
   nphiesExtractedData,
   cancellationData,
   pollData,
+  preauth_pk,
+  claim_pk,
 }) => {
   let productsData = undefined;
   let supportInfoData = undefined;
@@ -254,6 +256,7 @@ const extractPreauthOrClaimDataSentToNphies = ({
   }
 
   return {
+    exsysRecordPk: preauth_pk || claim_pk,
     bundleId: nphiesBundleId,
     claimResponseId,
     claimRequestId,
