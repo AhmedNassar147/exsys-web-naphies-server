@@ -38,7 +38,7 @@ const setErrorIfExtractedDataFoundFn = ({ coverageErrors, claimErrors }) => [
 
 const createExsysSaveApiParams = ({
   primaryKey,
-  exsysDataApiPrimaryKeyName,
+  exsysSaveApiPrimaryKeyName,
   nphiesExtractedData: {
     issueError,
     issueErrorCode,
@@ -54,7 +54,7 @@ const createExsysSaveApiParams = ({
     !claimOutcome || !!issueError || !!issueErrorCode ? "error" : claimOutcome;
 
   return {
-    [exsysDataApiPrimaryKeyName]: primaryKey,
+    [exsysSaveApiPrimaryKeyName]: primaryKey,
     bundle_id: bundleId,
     claim_request_id: claimRequestId,
     claim_response_id: claimResponseId,

@@ -32,8 +32,7 @@ const extractPreauthOrClaimCancellationResponseData = ({
       ? "ClaimCancellation"
       : "PreauthCancellation",
     cancellationResponseId: requestOrResponseId,
-    cancellationRequestId: requestOrResponseId,
-    cancellationQueuedRequestId: queuedRequestId.replace("req_", ""),
+    cancellationRequestId: queuedRequestId.replace("req_", ""),
     cancellationStatus: status,
     cancellationOutcome: status,
     cancellationErrors: errors,

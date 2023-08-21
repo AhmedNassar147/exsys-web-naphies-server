@@ -15,8 +15,8 @@ import { SERVER_PORT, FILES_ENCODING_LIMIT } from "./constants.mjs";
 import createEligibilityMiddleware from "./middlewares/eligibility/index.mjs";
 import createPreauthorizationMiddleware from "./middlewares/preauthorization/index.mjs";
 import createClaimMiddleware from "./middlewares/claim/index.mjs";
-import crateCancelClaimRequestMiddleware from "./middlewares/claim/crateCancelClaimRequestMiddleware.mjs";
-import crateFetchSavedClaimDataToFrontendMiddleware from "./middlewares/claim/crateFetchSavedClaimDataToFrontendMiddleware.mjs";
+import createCancelClaimRequestMiddleware from "./middlewares/claim/createCancelClaimRequestMiddleware.mjs";
+import createFetchSavedClaimDataToFrontendMiddleware from "./middlewares/claim/createFetchSavedClaimDataToFrontendMiddleware.mjs";
 import createProcessBulkClaimsMiddleware from "./middlewares/claim/createProcessBulkClaimsMiddleware.mjs";
 import createCommunicationMiddleware from "./middlewares/communication/index.mjs";
 import stopTheProcessIfCertificateNotFound from "./helpers/stopTheProcessIfCertificateNotFound.mjs";
@@ -35,11 +35,11 @@ import stopTheProcessIfCertificateNotFound from "./helpers/stopTheProcessIfCerti
   app.use("/eligibility", createEligibilityMiddleware(app));
   app.use("/preauth", createPreauthorizationMiddleware(app));
   app.use("/claim", createClaimMiddleware(app));
-  app.use("/cancelClaimRequest", crateCancelClaimRequestMiddleware(app));
+  app.use("/cancelClaimRequest", createCancelClaimRequestMiddleware(app));
   app.use("/processSoaClaims", createProcessBulkClaimsMiddleware(app));
   app.use(
     "/querySavedClaimOrPreauthData",
-    crateFetchSavedClaimDataToFrontendMiddleware(app)
+    createFetchSavedClaimDataToFrontendMiddleware(app)
   );
   app.use("/fetchCommunicationResponse", createCommunicationMiddleware(app));
 

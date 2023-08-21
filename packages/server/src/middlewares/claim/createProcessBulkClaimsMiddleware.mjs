@@ -12,7 +12,7 @@ import {
 import createProcessBulkClaimsMiddleware from "../../helpers/createBaseExpressMiddleware.mjs";
 import createExsysRequest from "../../helpers/createExsysRequest.mjs";
 import { EXSYS_API_IDS_NAMES, EXSYS_API_IDS } from "../../constants.mjs";
-import createMappedClaimRequestsToCancellation from "../../exsysHelpers/createMappedClaimRequestsToCancellation.mjs";
+import createMappedClaimOrPreauthCancellation from "../../exsysHelpers/createMappedClaimOrPreauthCancellation.mjs";
 import createMappedClaimRequests from "../../exsysHelpers/createMappedClaimRequests.mjs";
 
 const { queryBulkClaimsDataToCancellationOrCreation } = EXSYS_API_IDS_NAMES;
@@ -30,7 +30,14 @@ export default createProcessBulkClaimsMiddleware(
       authorization,
     };
 
-    const { request_type, soa_no } = baseRequestParams;
+    const { request_type, soa_no, nphies_request_type } = baseRequestParams;
+
+    const cancellationFolderRegexp = new RegExp(
+      `cancellation/${nphies_request_type}\/`
+    );
+    const nphiesRequestTypeFolderRegexp = new RegExp(
+      `${nphies_request_type}\/`
+    );
 
     const { isSuccess, error, result } = await createExsysRequest({
       resourceName: queryBulkClaimsDataToCancellationOrCreation,
@@ -46,10 +53,10 @@ export default createProcessBulkClaimsMiddleware(
       exsysResultsData,
     };
 
-    const folderName = `bulkClaim/${request_type}/${soa_no}`;
+    const basePrintFolderName = `bulkClaim/${request_type}/${nphies_request_type}/${soa_no}`;
 
     const printData = {
-      folderName,
+      folderName: basePrintFolderName,
       data: printedErrorData,
       hasExsysApiError: true,
     };
@@ -96,11 +103,12 @@ export default createProcessBulkClaimsMiddleware(
     const exsysResultsDataLength = exsysResultsData.length;
 
     const mappedRequestsFn = isClaimCancellation
-      ? createMappedClaimRequestsToCancellation
+      ? createMappedClaimOrPreauthCancellation
       : createMappedClaimRequests;
 
     let results = [];
-    let printInfoData = [];
+    let printInfoData = {};
+    let printInfoDataLength = 0;
 
     while (claims.length) {
       const data = claims.splice(0, claimsToBeSentToNphiesPerRequestsMap);
@@ -120,7 +128,10 @@ export default createProcessBulkClaimsMiddleware(
       }
 
       if (printInfo && isArrayHasData(printInfo.data)) {
-        printInfoData = printInfoData.concat(...printInfo.data);
+        const { folderName, data } = printInfo;
+        const folderData = printInfoData[folderName] || [];
+        printInfoData[folderName] = folderData.concat(...data);
+        printInfoDataLength += data.length;
       }
 
       if (!!claims.length) {
@@ -128,11 +139,23 @@ export default createProcessBulkClaimsMiddleware(
       }
     }
 
-    if (printInfoData.length === exsysResultsDataLength && printValues) {
-      await writeResultFile({
-        folderName,
-        data: printInfoData,
-      });
+    if (printInfoDataLength === exsysResultsDataLength && printValues) {
+      const keys = Object.keys(printInfoData);
+
+      await Promise.all(
+        keys.map((folderName) => {
+          const regexp = isClaimCancellation
+            ? cancellationFolderRegexp
+            : nphiesRequestTypeFolderRegexp;
+
+          const _folderName = folderName.replace(regexp, "");
+
+          return writeResultFile({
+            folderName: `${basePrintFolderName}/${_folderName}`,
+            data: printInfoData[folderName],
+          });
+        })
+      );
     }
 
     return results;

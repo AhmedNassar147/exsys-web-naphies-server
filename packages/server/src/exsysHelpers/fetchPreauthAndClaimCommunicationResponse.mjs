@@ -28,7 +28,7 @@ const extractionFunctionsMap = {
 
 const createExsysSaveApiParams = ({
   primaryKey,
-  exsysDataApiPrimaryKeyName,
+  exsysSaveApiPrimaryKeyName,
   nphiesExtractedData: {
     bundleId,
     creationBundleId,
@@ -44,7 +44,7 @@ const createExsysSaveApiParams = ({
       : communicationStatus;
 
   return {
-    [exsysDataApiPrimaryKeyName]: primaryKey,
+    [exsysSaveApiPrimaryKeyName]: primaryKey,
     creation_bundle_id: creationBundleId,
     outcome: status,
     bundle_id: bundleId,

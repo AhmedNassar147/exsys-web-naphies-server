@@ -21,6 +21,7 @@ const savePreauthPollDataToExsys = async ({
   nphiesResponse,
   nphiesExtractedData,
   requestType,
+  logParams,
 }) => {
   const {
     claimRequestId,
@@ -68,6 +69,10 @@ const savePreauthPollDataToExsys = async ({
     claimmessageeventtype: requestType || claimMessageEventType,
     claimcreationbundleid: creationBundleId || "",
   };
+
+  if (logParams) {
+    console.log("requestParams", requestParams);
+  }
 
   return await createExsysRequest({
     resourceName: saveApiName,

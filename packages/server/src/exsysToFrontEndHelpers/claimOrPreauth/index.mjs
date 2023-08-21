@@ -15,6 +15,7 @@ import extractOrganizationData from "../base/extractOrganizationData.mjs";
 import extractProductOrServiceData from "./extractProductOrServiceData.mjs";
 import extractNphiesSentDataErrors from "./extractNphiesSentDataErrors.mjs";
 import extractCoverageRelationship from "../../nphiesHelpers/extraction/extractCoverageRelationship.mjs";
+import extractCancellationData from "./extractCancellationData.mjs";
 
 const extractionFunctionsMap = {
   MessageHeader: extractMessageHeaderData(),
@@ -52,9 +53,8 @@ const extractPreauthOrClaimDataSentToNphies = ({
   nodeServerDataSentToNaphies,
   nphiesResponse,
   nphiesExtractedData,
-  cancellationExsysRequestData,
-  cancellationNphiesResponse,
-  cancellationExtractedData,
+  cancellationData,
+  pollData,
 }) => {
   let productsData = undefined;
   let supportInfoData = undefined;
@@ -253,15 +253,6 @@ const extractPreauthOrClaimDataSentToNphies = ({
     );
   }
 
-  const {
-    cancellationResponseId,
-    cancellationRequestId,
-    cancellationQueuedRequestId,
-    cancellationStatus,
-    cancellationOutcome,
-    cancellationErrors,
-  } = cancellationExtractedData || {};
-
   return {
     bundleId: nphiesBundleId,
     claimResponseId,
@@ -295,15 +286,8 @@ const extractPreauthOrClaimDataSentToNphies = ({
     receiver,
     nodeServerDataSentToNphies: nodeServerDataSentToNaphies,
     nphiesResponse,
-    cancellationExsysRequestData,
-    cancellationNphiesResponse,
-    cancellationResponseId,
-    cancellationRequestId,
-    cancellationQueuedRequestId,
-    cancellationStatus,
-    cancellationOutcome,
-    cancellationErrors,
     ...issueValues,
+    cancellationData: extractCancellationData(cancellationData),
   };
 };
 

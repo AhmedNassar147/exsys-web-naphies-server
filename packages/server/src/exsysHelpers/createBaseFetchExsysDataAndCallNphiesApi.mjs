@@ -17,6 +17,7 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
   createResultsDataFromExsysResponse,
   printFolderName,
   exsysDataApiPrimaryKeyName,
+  exsysSaveApiPrimaryKeyName,
   createNphiesRequestPayloadFn,
   extractionFunctionsMap,
   setErrorIfExtractedDataFoundFn,
@@ -81,6 +82,9 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
     );
   }
 
+  const _exsysSaveApiPrimaryKeyName =
+    exsysSaveApiPrimaryKeyName || exsysDataApiPrimaryKeyName;
+
   if (hasErrorMessageOrFailed) {
     const errorMessage =
       error_message ||
@@ -92,7 +96,7 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
       const errorSaveParams = createExsysSaveApiParams
         ? createExsysSaveApiParams({
             primaryKey,
-            exsysDataApiPrimaryKeyName,
+            exsysSaveApiPrimaryKeyName: _exsysSaveApiPrimaryKeyName,
             nphiesExtractedData: {},
           })
         : undefined;
@@ -101,7 +105,7 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
         resourceName: exsysSaveApiId,
         requestParams: errorSaveParams,
         body: {
-          [exsysDataApiPrimaryKeyName]: primaryKey,
+          [_exsysSaveApiPrimaryKeyName]: primaryKey,
           ...(createExsysErrorSaveApiBody(errorMessage) || null),
         },
       });
@@ -158,7 +162,7 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
     const successSaveParams = createExsysSaveApiParams
       ? createExsysSaveApiParams({
           primaryKey,
-          exsysDataApiPrimaryKeyName,
+          exsysSaveApiPrimaryKeyName: _exsysSaveApiPrimaryKeyName,
           nphiesExtractedData,
         })
       : undefined;
@@ -167,7 +171,7 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
       resourceName: exsysSaveApiId,
       requestParams: successSaveParams,
       body: {
-        [exsysDataApiPrimaryKeyName]: primaryKey,
+        [_exsysSaveApiPrimaryKeyName]: primaryKey,
         nodeServerDataSentToNaphies,
         nphiesResponse,
         nphiesExtractedData,
@@ -188,7 +192,7 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
 
   const folderName = `${printFolderName}${
     message_event ? `/${message_event}` : ""
-  }/${mainBundleId || bundleId || creationBundleId}`;
+  }/${bundleId || mainBundleId || creationBundleId}`;
 
   return {
     printData: {

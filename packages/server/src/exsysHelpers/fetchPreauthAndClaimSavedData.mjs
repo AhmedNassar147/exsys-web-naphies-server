@@ -45,23 +45,22 @@ const fetchPreauthAndClaimSavedData = async (requestParams) => {
     };
   }
 
-  const { nphiesExtractedData } = result;
+  const { data, ...others } = result || {};
 
   const extractionFunction =
     request_type === "eligibility"
       ? extractEligibilityDataSentToNphies
       : extractPreauthOrClaimDataSentToNphies;
 
-  const extractedData = extractionFunction(result);
-
-  const { claimErrors } = nphiesExtractedData || {};
-  const hasError = !!isArrayHasData(claimErrors);
+  const extractedData = extractionFunction({
+    ...(data || null),
+    ...others,
+  });
 
   const {
     nodeServerDataSentToNphies,
     nphiesResponse: _nphiesResponse,
-    cancellationNphiesResponse,
-    cancellationExsysRequestData,
+    cancellationData,
     ..._extractedData
   } = extractedData;
 
@@ -69,7 +68,6 @@ const fetchPreauthAndClaimSavedData = async (requestParams) => {
     printData: {
       folderName: printFolderName,
       data: { ...basePrintedData, extractedData: _extractedData },
-      hasNphiesApiError: hasError,
     },
     resultData: {
       extractedData,
