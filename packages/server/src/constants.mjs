@@ -76,7 +76,7 @@ export const EXSYS_API_IDS = {
   // http://149.102.140.8:9090/ords/exsys_api/nphies_pkg/update_claim_pool_status?authorization=11796985&&claimrequestid=&claimresponseid&claimoutcome=&claimpreauthref&claimperiodstart&claimperiodend&claimextensioncode&claimmessageeventtype
   [EXSYS_API_IDS_NAMES.saveClaimPollData]:
     "nphies_pkg/update_claim_pool_status",
-  // http://149.102.140.8:9090/ords/exsys_api/nphies_pkg/collect_claim_to_cancel?authorization=12985704&patient_file_no=187285&invoice_no=I00122/23664&organization_no=001&record_pk=604&request_type=claim
+  // http://149.102.140.8:9090/ords/exsys_api/nphies_pkg/collect_claim_to_cancel?authorization=13309012&patient_file_no=210997&organization_no=001&record_pk=6&request_type=priorauth
   [EXSYS_API_IDS_NAMES.queryClaimOrPreauthDataToCancellation]:
     "nphies_pkg/collect_claim_to_cancel",
   // http://149.102.140.8:9090/ords/exsys_api/nphies_pkg/get_bulk_claim?authorization=4492758&&organization_no=001&soa_no=S00122/00690&request_type=send&nphies_request_type=claim

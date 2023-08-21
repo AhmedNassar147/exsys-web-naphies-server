@@ -24,7 +24,7 @@ const extractPreauthOrClaimCancellationResponseData = ({
     ...extractNphiesOutputErrors(output),
   ];
 
-  const requestOrResponseId = responseId.replace("Cancel_", "") || id;
+  const requestOrResponseId = responseId.replace(/Cancel_|resp_/g, "") || id;
   const isClaimCancellation = type === "Claim";
 
   return {
