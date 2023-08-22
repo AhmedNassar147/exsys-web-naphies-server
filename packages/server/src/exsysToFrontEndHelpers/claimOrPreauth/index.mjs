@@ -77,7 +77,7 @@ const extractionFunctionsMap = {
     created,
     priority: extractNphiesCodeAndDisplayFromCodingType(priority).code,
     subType: extractNphiesCodeAndDisplayFromCodingType(subType).code,
-    referalName: getValueFromObject(referral, "display").code,
+    referalName: getValueFromObject(referral, "display"),
     claimIdentifierType: getIdentifierUrlType(identifier),
     ...getExtensionData(extension),
   }),
