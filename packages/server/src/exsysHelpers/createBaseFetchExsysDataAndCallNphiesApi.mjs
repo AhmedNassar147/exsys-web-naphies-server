@@ -115,6 +115,7 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
       },
       loggerValue: errorMessage,
       resultData: {
+        primaryKey,
         errorMessage,
         hasError: true,
       },
@@ -131,6 +132,7 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
       },
       loggerValue: errorMessage,
       resultData: {
+        primaryKey,
         errorMessage,
         hasError: true,
       },
