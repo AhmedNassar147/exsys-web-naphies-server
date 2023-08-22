@@ -4,8 +4,16 @@
  *
  */
 import { isArrayHasData } from "@exsys-web-server/helpers";
+import {
+  NPHIES_BASE_PROFILE_TYPES,
+  NPHIES_RESOURCE_TYPES,
+  NPHIES_BASE_CODE_TYPES,
+  NPHIES_API_URLS,
+  SUPPORT_INFO_KEY_NAMES,
+} from "../../constants.mjs";
 import mapEntriesAndExtractNeededData from "../../nphiesHelpers/extraction/mapEntriesAndExtractNeededData.mjs";
 import extractNphiesCodeAndDisplayFromCodingType from "../../nphiesHelpers/extraction/extractNphiesCodeAndDisplayFromCodingType.mjs";
+import extractIdentifierData from "../../nphiesHelpers/extraction/extractIdentifierData.mjs";
 import extractMessageHeaderData from "../../nphiesHelpers/extraction/extractMessageHeaderData.mjs";
 import formatNphiesResponseIssue from "../../nphiesHelpers/base/formatNphiesResponseIssue.mjs";
 import getValueFromObject from "../../nphiesHelpers/extraction/getValueFromObject.mjs";
@@ -16,6 +24,35 @@ import extractProductOrServiceData from "./extractProductOrServiceData.mjs";
 import extractNphiesSentDataErrors from "./extractNphiesSentDataErrors.mjs";
 import extractCoverageRelationship from "../../nphiesHelpers/extraction/extractCoverageRelationship.mjs";
 import extractCancellationData from "./extractCancellationData.mjs";
+
+const { EXTENSION_AUTH_OFFLINE_DATE, EXTENSION_AUTH_ONLINE_RESPONSE } =
+  NPHIES_BASE_CODE_TYPES;
+
+const getExtensionData = (extension) => {
+  if (isArrayHasData(extension)) {
+    return extension.reduce((acc, { url, valueDateTime, valueReference }) => {
+      if (url.includes(EXTENSION_AUTH_OFFLINE_DATE)) {
+        acc.offlineRequestDate = valueDateTime;
+      }
+
+      if (url.includes(EXTENSION_AUTH_ONLINE_RESPONSE)) {
+        const { identifier } = valueReference;
+        acc.extensionPriorauthId = getValueFromObject(identifier);
+      }
+
+      return acc;
+    }, {});
+  }
+
+  return null;
+};
+
+const getIdentifierUrlType = (identifier) => {
+  const [, system] = extractIdentifierData(identifier);
+  const parts = (system || "").split("/");
+  const type = parts[parts.length - 1];
+  return type ? type : undefined;
+};
 
 const extractionFunctionsMap = {
   MessageHeader: extractMessageHeaderData(),
@@ -28,6 +65,9 @@ const extractionFunctionsMap = {
       created,
       priority,
       subType,
+      extension,
+      referral,
+      identifier,
     },
   }) => ({
     supportingInfo,
@@ -37,6 +77,9 @@ const extractionFunctionsMap = {
     created,
     priority: extractNphiesCodeAndDisplayFromCodingType(priority).code,
     subType: extractNphiesCodeAndDisplayFromCodingType(subType).code,
+    referalName: getValueFromObject(referral, "display").code,
+    claimIdentifierType: getIdentifierUrlType(identifier),
+    ...getExtensionData(extension),
   }),
   Patient: extractPatientData,
   Coverage: ({ resource: { relationship } }) => ({
@@ -83,6 +126,10 @@ const extractPreauthOrClaimDataSentToNphies = ({
     subType,
     relationship,
     provider,
+    referalName,
+    offlineRequestDate,
+    extensionPriorauthId,
+    claimIdentifierType,
   } = mapEntriesAndExtractNeededData({
     nphiesResponse: nodeServerDataSentToNaphies,
     extractionFunctionsMap,
@@ -287,6 +334,10 @@ const extractPreauthOrClaimDataSentToNphies = ({
     provider,
     insurer,
     receiver,
+    referalName,
+    offlineRequestDate,
+    extensionPriorauthId,
+    claimIdentifierType,
     nodeServerDataSentToNphies: nodeServerDataSentToNaphies,
     nphiesResponse,
     ...issueValues,
