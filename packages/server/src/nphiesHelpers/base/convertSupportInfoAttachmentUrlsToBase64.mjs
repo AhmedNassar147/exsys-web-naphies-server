@@ -36,15 +36,18 @@ const convertSupportInfoAttachmentUrlsToBase64 = async (supportInfo) => {
       supportInfo.map(async ({ categoryCode, value, contentType, ...item }) => {
         const isAttachment = categoryCode === attachment;
         let _value = value;
+        let fileUrl = undefined;
 
         if (isAttachment) {
           const { skip, notFound, data } = await convertFileUrlToBase64(value);
+          console.log("value", value);
 
           if (skip) {
             return false;
           }
 
           _value = data || notFound;
+          fileUrl = value;
         }
 
         return {
@@ -52,6 +55,7 @@ const convertSupportInfoAttachmentUrlsToBase64 = async (supportInfo) => {
           ...item,
           contentType: fixContentType(contentType),
           value: _value,
+          fileUrl,
         };
       })
     );
