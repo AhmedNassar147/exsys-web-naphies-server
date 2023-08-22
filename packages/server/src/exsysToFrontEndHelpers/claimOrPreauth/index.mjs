@@ -4,26 +4,20 @@
  *
  */
 import { isArrayHasData } from "@exsys-web-server/helpers";
-import {
-  NPHIES_BASE_PROFILE_TYPES,
-  NPHIES_RESOURCE_TYPES,
-  NPHIES_BASE_CODE_TYPES,
-  NPHIES_API_URLS,
-  SUPPORT_INFO_KEY_NAMES,
-} from "../../constants.mjs";
+import { NPHIES_BASE_CODE_TYPES } from "../../constants.mjs";
 import mapEntriesAndExtractNeededData from "../../nphiesHelpers/extraction/mapEntriesAndExtractNeededData.mjs";
 import extractNphiesCodeAndDisplayFromCodingType from "../../nphiesHelpers/extraction/extractNphiesCodeAndDisplayFromCodingType.mjs";
 import extractIdentifierData from "../../nphiesHelpers/extraction/extractIdentifierData.mjs";
 import extractMessageHeaderData from "../../nphiesHelpers/extraction/extractMessageHeaderData.mjs";
 import formatNphiesResponseIssue from "../../nphiesHelpers/base/formatNphiesResponseIssue.mjs";
 import getValueFromObject from "../../nphiesHelpers/extraction/getValueFromObject.mjs";
-import extraProductExtensionsSentToNphies from "./extraProductExtensionsSentToNphies.mjs";
 import extractPatientData from "../base/extractPatientData.mjs";
 import extractOrganizationData from "../base/extractOrganizationData.mjs";
-import extractProductOrServiceData from "./extractProductOrServiceData.mjs";
 import extractNphiesSentDataErrors from "./extractNphiesSentDataErrors.mjs";
 import extractCoverageRelationship from "../../nphiesHelpers/extraction/extractCoverageRelationship.mjs";
 import extractCancellationData from "./extractCancellationData.mjs";
+import extractPollData from "./extractPollData.mjs";
+import createProductsData from "./createProductsData.mjs";
 
 const { EXTENSION_AUTH_OFFLINE_DATE, EXTENSION_AUTH_ONLINE_RESPONSE } =
   NPHIES_BASE_CODE_TYPES;
@@ -101,7 +95,6 @@ const extractPreauthOrClaimDataSentToNphies = ({
   preauth_pk,
   claim_pk,
 }) => {
-  let productsData = undefined;
   let supportInfoData = undefined;
   let diagnosisData = undefined;
 
@@ -168,43 +161,11 @@ const extractPreauthOrClaimDataSentToNphies = ({
     claimErrors,
   });
 
-  const groupedExtractedProductsDataBySequence = isArrayHasData(
-    extractedProductsData
-  )
-    ? extractedProductsData.reduce((acc, { sequence, ...otherValues }) => {
-        acc[sequence] = otherValues;
-        return acc;
-      }, {})
-    : {};
-
-  if (isArrayHasData(productsSentToNphies)) {
-    productsData = productsSentToNphies.map(
-      ({
-        sequence,
-        extension,
-        productOrService,
-        quantity,
-        unitPrice,
-        factor,
-        net,
-        servicedDate,
-        bodySite,
-      }) => ({
-        sequence,
-        ...extractProductOrServiceData(productOrService),
-        servicedDate,
-        quantity: getValueFromObject(quantity),
-        unitPrice: getValueFromObject(unitPrice),
-        ...extraProductExtensionsSentToNphies(extension),
-        net_price: getValueFromObject(net),
-        factor,
-        tooth: extractNphiesCodeAndDisplayFromCodingType(bodySite).code,
-        error: productErrors[sequence],
-        ...(groupedExtractedProductsDataBySequence[sequence] || null),
-        extendable: "y",
-      })
-    );
-  }
+  const productsData = createProductsData({
+    extractedProductsData,
+    productsSentToNphies,
+    productErrors,
+  });
 
   if (isArrayHasData(supportingInfo)) {
     supportInfoData = supportingInfo.map(
@@ -342,6 +303,7 @@ const extractPreauthOrClaimDataSentToNphies = ({
     nphiesResponse,
     ...issueValues,
     cancellationData: extractCancellationData(cancellationData),
+    pollData: extractPollData(pollData, productsSentToNphies),
   };
 };
 
