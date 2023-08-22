@@ -176,9 +176,9 @@ const createNphiesClaimData = ({
   const identifierUrl = `${siteUrl}/${
     !isClaimRequest
       ? "authorization"
-      : !referalIdentifier
-      ? "claim"
-      : "authorization"
+      : referalIdentifier
+      ? "authorization"
+      : "claim"
   }`;
 
   const extension = createAuthorizationExtensions({
@@ -204,7 +204,6 @@ const createNphiesClaimData = ({
     insuranceSequence: primaryDoctorSequence,
     insurancePreauthRefs: preauthRefs,
     identifierUrl,
-    identifierId: referalIdentifier,
     resourceType: CLAIM,
     profileType: _profileType,
     extension,
