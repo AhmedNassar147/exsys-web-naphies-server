@@ -27,6 +27,7 @@ const createBaseEntryRequestData = ({
   insurancePreauthRefs,
   resourceType,
   profileType,
+  extension,
 }) => {
   const { dateString } = getCurrentDate(true);
 
@@ -38,6 +39,7 @@ const createBaseEntryRequestData = ({
         profileType,
         uuid: requestId,
       }),
+      extension,
       identifier: [
         {
           system: identifierUrl || providerFocusUrl,

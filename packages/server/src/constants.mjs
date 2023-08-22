@@ -229,6 +229,7 @@ export const NPHIES_BASE_CODE_TYPES = {
   EXT_PERIOD_START: "extension-batch-period",
   EXT_ACCOUNT_PERIOD: "extension-accountingPeriod",
   COMMUNICATION_CAT: "communication-category",
+  EXTENSION_TRANSFER: "extension-transfer",
 };
 
 export const SUPPORT_INFO_KEY_NAMES = {

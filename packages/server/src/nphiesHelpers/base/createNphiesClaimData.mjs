@@ -82,8 +82,8 @@ const createAuthorizationExtensions = ({
   batchPeriodStart,
   batchPeriodEnd,
   extensionPriorauthId,
-}) =>
-  [
+}) => {
+  const extension = [
     !!offlineRequestDate && {
       url: `${BASE_PROFILE_URL}/${EXTENSION_AUTH_OFFLINE_DATE}`,
       valueDateTime: reverseDate(offlineRequestDate),
@@ -97,7 +97,7 @@ const createAuthorizationExtensions = ({
         },
       },
     },
-    {
+    !!episodeInvoiceNo && {
       url: `${BASE_PROFILE_URL}/${EXTENSION_EPISODE}`,
       valueIdentifier: {
         system: `${siteUrl}/episode`,
@@ -116,6 +116,9 @@ const createAuthorizationExtensions = ({
       valueDate: batchPeriodStart,
     },
   ].filter(Boolean);
+
+  return extension.length ? extension : undefined;
+};
 
 const getSupportingInfoSequences = (supportingInfo, daysSupplyId) =>
   supportingInfo.reduce((acc, { categoryCode, value }, currentIndex) => {
@@ -178,6 +181,15 @@ const createNphiesClaimData = ({
       : "authorization"
   }`;
 
+  const extension = createAuthorizationExtensions({
+    siteUrl,
+    extensionPriorauthId,
+    offlineRequestDate,
+    episodeInvoiceNo,
+    batchPeriodStart,
+    batchPeriodEnd,
+  });
+
   const { fullUrl, resource } = createBaseEntryRequestData({
     requestId,
     providerOrganization,
@@ -195,6 +207,7 @@ const createNphiesClaimData = ({
     identifierId: referalIdentifier,
     resourceType: CLAIM,
     profileType: _profileType,
+    extension,
   });
 
   const hasDiagnosisData = isArrayHasData(diagnosisData);
@@ -207,14 +220,6 @@ const createNphiesClaimData = ({
     fullUrl,
     resource: {
       ...resource,
-      extension: createAuthorizationExtensions({
-        siteUrl,
-        extensionPriorauthId,
-        offlineRequestDate,
-        episodeInvoiceNo,
-        batchPeriodStart,
-        batchPeriodEnd,
-      }),
       type: {
         coding: [
           {

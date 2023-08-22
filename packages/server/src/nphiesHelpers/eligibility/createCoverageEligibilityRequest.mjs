@@ -7,10 +7,14 @@ import createBaseEntryRequestData from "../base/createBaseEntryRequestData.mjs";
 import {
   NPHIES_BASE_PROFILE_TYPES,
   NPHIES_RESOURCE_TYPES,
+  NPHIES_API_URLS,
+  NPHIES_BASE_CODE_TYPES,
 } from "../../constants.mjs";
 
 const { ELIGIBILITY_REQUEST } = NPHIES_BASE_PROFILE_TYPES;
 const { COVERAGE_ELIGIBILITY_REQUEST } = NPHIES_RESOURCE_TYPES;
+const { EXTENSION_TRANSFER } = NPHIES_BASE_CODE_TYPES;
+const { BASE_PROFILE_URL } = NPHIES_API_URLS;
 
 const createCoverageEligibilityRequest = ({
   requestId,
@@ -27,7 +31,17 @@ const createCoverageEligibilityRequest = ({
   providerFocusUrl,
   providerLocationUrl,
   providerLocation,
+  isReferral,
 }) => {
+  const extension = isReferral
+    ? [
+        {
+          url: `${BASE_PROFILE_URL}/${EXTENSION_TRANSFER}`,
+          valueBoolean: true,
+        },
+      ]
+    : undefined;
+
   const { fullUrl, resource } = createBaseEntryRequestData({
     requestId,
     providerOrganization,
@@ -40,6 +54,7 @@ const createCoverageEligibilityRequest = ({
     providerFocusUrl,
     resourceType: COVERAGE_ELIGIBILITY_REQUEST,
     profileType: ELIGIBILITY_REQUEST,
+    extension,
   });
 
   return {

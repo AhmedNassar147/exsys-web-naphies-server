@@ -40,7 +40,6 @@ const convertSupportInfoAttachmentUrlsToBase64 = async (supportInfo) => {
 
         if (isAttachment) {
           const { skip, notFound, data } = await convertFileUrlToBase64(value);
-          console.log("value", value);
 
           if (skip) {
             return false;
