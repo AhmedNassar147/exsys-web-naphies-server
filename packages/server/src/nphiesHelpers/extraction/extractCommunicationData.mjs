@@ -3,7 +3,7 @@
  * Helper: `extractCommunicationData`.
  *
  */
-import { isArrayHasData } from "@exsys-web-server/helpers";
+import { isArrayHasData, getLastPartOfUrl } from "@exsys-web-server/helpers";
 import extractIdentifierData from "./extractIdentifierData.mjs";
 import extractNphiesCodeAndDisplayFromCodingType from "./extractNphiesCodeAndDisplayFromCodingType.mjs";
 import extractErrorsArray from "./extractErrorsArray.mjs";
@@ -43,8 +43,6 @@ const extractCommunicationData = ({
 
   const communicationErrors = extractErrorsArray(error);
 
-  const typeSystemParts = (typeSystem || "").split("/");
-
   return {
     communicationExtractedData: {
       communicationId: id,
@@ -61,7 +59,7 @@ const extractCommunicationData = ({
         : undefined,
       communicationAboutType,
       communicationAboutId: typeId ? typeId.replace("req_", "") : undefined,
-      communicationAboutSystemType: typeSystemParts[typeSystemParts.length - 1],
+      communicationAboutSystemType: getLastPartOfUrl(typeSystem),
       communicationReasonCode: _reasonCode,
       communicationPayload: payload,
       communicationErrors,

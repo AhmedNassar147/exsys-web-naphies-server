@@ -6,6 +6,8 @@
 import {
   isArrayHasData,
   createDateFromNativeDate,
+  toCamelCase,
+  getLastPartOfUrl,
 } from "@exsys-web-server/helpers";
 import extractErrorsArray from "./extractErrorsArray.mjs";
 import extractIdentifierData from "./extractIdentifierData.mjs";
@@ -43,6 +45,39 @@ const formatProductItem = (adjudicationItem) => {
   };
 };
 
+const getExtensionData = (extension) => {
+  if (isArrayHasData(extension)) {
+    return extension.reduce(
+      (acc, { url, valueCodeableConcept }) => {
+        const { code } =
+          extractNphiesCodeAndDisplayFromCodingType(valueCodeableConcept);
+
+        if (url.includes("extension-adjudication-outcome")) {
+          acc.claimExtensionCode = code;
+          return acc;
+        }
+
+        const lastPartValue = getLastPartOfUrl(url, toCamelCase);
+
+        if (lastPartValue) {
+          acc.extensionOthersValues[lastPartValue] = code;
+        }
+
+        return acc;
+      },
+      {
+        claimExtensionCode: "",
+        extensionOthersValues: {},
+      }
+    );
+  }
+
+  return {
+    claimExtensionCode: "",
+    extensionOthersValues: null,
+  };
+};
+
 const extractClaimResponseData = ({
   resource: {
     resourceType,
@@ -76,7 +111,9 @@ const extractClaimResponseData = ({
 
   const { code: claimMessageEventType } =
     extractNphiesCodeAndDisplayFromCodingType(type);
-  const claimExtensionCode = getExtensionCode(extension);
+
+  const { claimExtensionCode, extensionOthersValues } =
+    getExtensionData(extension);
 
   const { code: fundsReserveCode } =
     extractNphiesCodeAndDisplayFromCodingType(fundsReserve);
@@ -125,6 +162,7 @@ const extractClaimResponseData = ({
         ? "pended"
         : outcome
       : claimExtensionCode,
+    ...extensionOthersValues,
     claimMessageEventType,
     processNotes: processNotes,
     productsData,

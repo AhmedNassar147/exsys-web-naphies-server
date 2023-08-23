@@ -24,6 +24,7 @@ import createPrintResultsOrLog from "./createPrintResultsOrLog.mjs";
 import createMappedRequestsArray from "./createMappedRequestsArray.mjs";
 import roundNumber from "./roundNumber.mjs";
 import toCamelCase from "./toCamelCase.mjs";
+import getLastPartOfUrl from "./getLastPartOfUrl.mjs";
 
 export {
   capitalizeFirstLetter,
@@ -47,6 +48,7 @@ export {
   createMappedRequestsArray,
   roundNumber,
   toCamelCase,
+  getLastPartOfUrl,
 };
 
 export * from "./constants.mjs";

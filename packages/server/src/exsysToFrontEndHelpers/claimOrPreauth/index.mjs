@@ -3,7 +3,7 @@
  * Helper: `extractPreauthOrClaimDataSentToNphies`.
  *
  */
-import { isArrayHasData } from "@exsys-web-server/helpers";
+import { getLastPartOfUrl, isArrayHasData } from "@exsys-web-server/helpers";
 import { NPHIES_BASE_CODE_TYPES } from "../../constants.mjs";
 import mapEntriesAndExtractNeededData from "../../nphiesHelpers/extraction/mapEntriesAndExtractNeededData.mjs";
 import extractNphiesCodeAndDisplayFromCodingType from "../../nphiesHelpers/extraction/extractNphiesCodeAndDisplayFromCodingType.mjs";
@@ -43,8 +43,7 @@ const getExtensionData = (extension) => {
 
 const getIdentifierUrlType = (identifier) => {
   const [, system] = extractIdentifierData(identifier);
-  const parts = (system || "").split("/");
-  const type = parts[parts.length - 1];
+  const type = getLastPartOfUrl(system);
   return type ? type : undefined;
 };
 
