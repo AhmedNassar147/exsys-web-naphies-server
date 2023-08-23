@@ -8,6 +8,7 @@ import createBaseFetchExsysDataAndCallNphiesApi from "./createBaseFetchExsysData
 import validateSupportInfoDataBeforeCallingNphies from "../nphiesHelpers/base/validateSupportInfoDataBeforeCallingNphies.mjs";
 import createNphiesRequestPayloadFn from "../nphiesHelpers/communication/index.mjs";
 import { EXSYS_API_IDS_NAMES } from "../constants.mjs";
+import formatNphiesResponseIssue from "../nphiesHelpers/base/formatNphiesResponseIssue.mjs";
 
 const {
   collectExsysClaimOrPreauthCommunicationData,
@@ -18,12 +19,17 @@ const extractionFunctionsMap = {
   MessageHeader: ({ resource: { id, response } }) => {
     const { identifier, code } = response || {};
 
+    const outcome = code || "error";
+
     return {
-      bundleId: id,
+      communicationRequestId: identifier,
+      communicationResponseId: id,
       communicationStatus: code,
-      communicationId: identifier,
+      communicationOutcome: outcome.includes("error") ? "error" : outcome,
     };
   },
+  OperationOutcome: ({ resource: { issue } }) =>
+    formatNphiesResponseIssue(issue),
 };
 
 const createExsysSaveApiParams = ({
@@ -33,22 +39,26 @@ const createExsysSaveApiParams = ({
     bundleId,
     creationBundleId,
     communicationStatus,
-    communicationId,
+    communicationOutcome,
+    communicationRequestId,
+    communicationResponseId,
     issueError,
     issueErrorCode,
   },
 }) => {
   const status =
-    !communicationStatus || !!issueError || !!issueErrorCode
+    !communicationOutcome || !!issueError || !!issueErrorCode
       ? "error"
-      : communicationStatus;
+      : communicationOutcome;
 
   return {
     [exsysDataApiPrimaryKeyName]: primaryKey,
+    bundle_id: bundleId,
     creation_bundle_id: creationBundleId,
     outcome: status,
-    bundle_id: bundleId,
-    communication_id: communicationId,
+    communication_id: communicationRequestId,
+    communication_status: communicationStatus,
+    communication_response_id: communicationResponseId,
   };
 };
 

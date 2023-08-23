@@ -8,13 +8,20 @@ import extractNphiesCodeAndDisplayFromCodingType from "../extraction/extractNphi
 
 const formatNphiesResponseIssue = (issue) => {
   if (isArrayHasData(issue)) {
-    const [{ details }] = issue;
-    const { code, display } =
+    const [{ details, expression }] = issue;
+    const { code: issueErrorCode, display } =
       extractNphiesCodeAndDisplayFromCodingType(details);
 
+    let issueError = display;
+
+    if (isArrayHasData(expression)) {
+      const [error] = expression;
+      issueError = `${error || ""} ${display}`;
+    }
+
     return {
-      issueError: display,
-      issueErrorCode: code,
+      issueError,
+      issueErrorCode,
     };
   }
 
