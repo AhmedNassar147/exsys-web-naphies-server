@@ -52,6 +52,7 @@ const {
   EXT_PERIOD_START,
   EXT_ACCOUNT_PERIOD,
   EXTENSION_AUTH_ONLINE_RESPONSE,
+  RELATED_CLAIM_RELATION,
 } = NPHIES_BASE_CODE_TYPES;
 
 const PREAUTH_PROFILE_TYPES = {
@@ -166,6 +167,7 @@ const createNphiesClaimData = ({
   referalName,
   referalIdentifier,
   extensionPriorauthId,
+  relatedParentClaimIdentifier,
 }) => {
   const profileType = PREAUTH_PROFILE_TYPES[message_event_type];
 
@@ -219,6 +221,28 @@ const createNphiesClaimData = ({
     fullUrl,
     resource: {
       ...resource,
+      ...(relatedParentClaimIdentifier
+        ? {
+            related: [
+              {
+                claim: {
+                  identifier: {
+                    system: identifierUrl,
+                    value: `${relatedParentClaimIdentifier}`,
+                  },
+                },
+                relationship: {
+                  coding: [
+                    {
+                      system: `${BASE_CODE_SYS_URL}/${RELATED_CLAIM_RELATION}`,
+                      code: "prior",
+                    },
+                  ],
+                },
+              },
+            ],
+          }
+        : null),
       type: {
         coding: [
           {

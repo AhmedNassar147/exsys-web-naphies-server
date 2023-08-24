@@ -230,6 +230,7 @@ export const NPHIES_BASE_CODE_TYPES = {
   EXT_ACCOUNT_PERIOD: "extension-accountingPeriod",
   COMMUNICATION_CAT: "communication-category",
   EXTENSION_TRANSFER: "extension-transfer",
+  RELATED_CLAIM_RELATION: "related-claim-relationship",
 };
 
 export const SUPPORT_INFO_KEY_NAMES = {
