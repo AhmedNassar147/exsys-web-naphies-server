@@ -51,6 +51,7 @@ const {
   EXTENSION_EPISODE,
   EXT_PERIOD_START,
   EXT_ACCOUNT_PERIOD,
+  EXTENSION_TRANSFER,
   EXTENSION_AUTH_ONLINE_RESPONSE,
   RELATED_CLAIM_RELATION,
 } = NPHIES_BASE_CODE_TYPES;
@@ -83,6 +84,7 @@ const createAuthorizationExtensions = ({
   batchPeriodStart,
   batchPeriodEnd,
   extensionPriorauthId,
+  isTransfer,
 }) => {
   const extension = [
     !!offlineRequestDate && {
@@ -115,6 +117,10 @@ const createAuthorizationExtensions = ({
     !!batchPeriodStart && {
       url: `${BASE_PROFILE_URL}/${EXT_ACCOUNT_PERIOD}`,
       valueDate: batchPeriodStart,
+    },
+    !!isTransfer && {
+      url: `${BASE_PROFILE_URL}/${EXTENSION_TRANSFER}`,
+      valueBoolean: true,
     },
   ].filter(Boolean);
 
@@ -168,6 +174,7 @@ const createNphiesClaimData = ({
   referalIdentifier,
   extensionPriorauthId,
   relatedParentClaimIdentifier,
+  isTransfer,
 }) => {
   const profileType = PREAUTH_PROFILE_TYPES[message_event_type];
 
@@ -190,6 +197,7 @@ const createNphiesClaimData = ({
     episodeInvoiceNo,
     batchPeriodStart,
     batchPeriodEnd,
+    isTransfer,
   });
 
   const { fullUrl, resource } = createBaseEntryRequestData({

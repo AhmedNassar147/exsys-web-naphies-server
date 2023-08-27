@@ -80,6 +80,7 @@ const createNaphiesPreauthRequestFullData = ({
   referalIdentifier,
   extensionPriorauthId,
   relatedParentClaimIdentifier,
+  transfer_to_other_provider,
 }) => {
   const isClaimRequest = message_event.includes("claim-request");
   const requestType = isClaimRequest ? CLAIM : PREAUTH;
@@ -177,6 +178,7 @@ const createNaphiesPreauthRequestFullData = ({
         referalIdentifier,
         extensionPriorauthId,
         relatedParentClaimIdentifier,
+        isTransfer: transfer_to_other_provider === "Y",
       }),
       createNphiesDoctorOrPatientData({
         patientOrDoctorId: patient_file_no,
