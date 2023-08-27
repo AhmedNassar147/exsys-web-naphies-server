@@ -61,6 +61,7 @@ const fetchPreauthAndClaimSavedData = async (requestParams) => {
     nodeServerDataSentToNphies,
     nphiesResponse: _nphiesResponse,
     cancellationData,
+    pollData,
     ..._extractedData
   } = extractedData;
 
