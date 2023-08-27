@@ -72,12 +72,15 @@ const createExsysErrorSaveApiBody = (errorMessage) => ({
 const createResultsDataFromExsysResponse = async ({
   communication_payload,
   ...result
-}) => ({
-  ...result,
-  communication_payload: await convertSupportInfoAttachmentUrlsToBase64(
-    communication_payload
-  ),
-});
+}) => {
+  return {
+    ...result,
+
+    communication_payload: await convertSupportInfoAttachmentUrlsToBase64(
+      communication_payload
+    ),
+  };
+};
 
 const fetchPreauthAndClaimCommunicationResponse = async ({
   requestParams,

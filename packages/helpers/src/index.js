@@ -25,6 +25,7 @@ import createMappedRequestsArray from "./createMappedRequestsArray.mjs";
 import roundNumber from "./roundNumber.mjs";
 import toCamelCase from "./toCamelCase.mjs";
 import getLastPartOfUrl from "./getLastPartOfUrl.mjs";
+import fixContentType from "./fixContentType.mjs";
 
 export {
   capitalizeFirstLetter,
@@ -49,6 +50,7 @@ export {
   roundNumber,
   toCamelCase,
   getLastPartOfUrl,
+  fixContentType,
 };
 
 export * from "./constants.mjs";

@@ -28,14 +28,15 @@
     "prod": "yarn start --production"
   },
   "dependencies": {
-    "@exsys-web-server/start-exsys-nphies-web-server": "1.0.0",
     "@exsys-web-server/helpers": "1.0.0",
     "@exsys-web-server/server": "1.0.0",
+    "@exsys-web-server/start-exsys-nphies-web-server": "1.0.0",
     "axios": "^1.4.0",
     "body-parser": "^1.20.0",
+    "chalk": "^5.0.1",
     "cors": "^2.8.5",
     "express": "^4.18.1",
-    "chalk": "^5.0.1"
+    "pdf-lib": "^1.17.1"
   },
   "engines": {
     "node": ">= 16.5.0",

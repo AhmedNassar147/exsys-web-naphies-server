@@ -28,6 +28,9 @@ const extractPollData = (pollData, productsSentToNphies) => {
     claimPeriodStart,
     claimPeriodEnd,
     claimExtensionCode,
+    claimPriority,
+    processNotes,
+    fundsReserveCode,
     productsData: extractedProductsData,
     claimErrors,
   } = nphiesExtractedData || {};
@@ -61,6 +64,9 @@ const extractPollData = (pollData, productsSentToNphies) => {
     pollExtensionCode: claimExtensionCode,
     pollErrors: otherClaimErrors,
     pollProductsData: productsData,
+    pollPriority: claimPriority,
+    pollNotes: processNotes,
+    pollFundsReserveCode: fundsReserveCode,
     pollNodeServerDataSentToNphies: nodeServerDataSentToNaphies,
     pollNphiesResponse: nphiesResponse,
   };
