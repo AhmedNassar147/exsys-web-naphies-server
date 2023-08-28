@@ -9,7 +9,7 @@ import extractNphiesCodeAndDisplayFromCodingType from "./extractNphiesCodeAndDis
 const extractErrorsArray = (nphiesError, errorsFieldName = "code") =>
   isArrayHasData(nphiesError)
     ? nphiesError
-        .map(({ [errorsFieldName]: codeType }) => {
+        .map(({ [errorsFieldName]: codeType, valueString }) => {
           const {
             code: errorCode,
             display,
@@ -22,7 +22,7 @@ const extractErrorsArray = (nphiesError, errorsFieldName = "code") =>
 
           return {
             error: `${extensionValue ? `${extensionValue} / ` : ""}${
-              display || ""
+              display || valueString || ""
             }`,
             errorCode,
           };
