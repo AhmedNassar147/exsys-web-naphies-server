@@ -3,7 +3,7 @@
  * Helper: `reverseDate`.
  *
  */
-import isAlreadyReveredDate from "./isAlreadyReveredDate";
+import isAlreadyReveredDate from "./isAlreadyReveredDate.mjs";
 
 const reverseDate = (dateValue) => {
   if (!dateValue) {
