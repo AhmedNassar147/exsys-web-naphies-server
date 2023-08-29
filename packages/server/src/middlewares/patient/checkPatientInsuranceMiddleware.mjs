@@ -8,7 +8,7 @@ import {
   isObjectHasData,
   writeResultFile,
   createDateFromNativeDate,
-  isAlreadyReveredDate,
+  isAlreadyReversedDate,
 } from "@exsys-web-server/helpers";
 import checkPatientInsuranceMiddleware from "../../helpers/createBaseExpressMiddleware.mjs";
 import createNphiesRequest from "../../helpers/createNphiesRequest.mjs";
@@ -44,7 +44,7 @@ const transformResults = (result) => {
       }
 
       if (!isValueObject && !isValueArray) {
-        const _value = isAlreadyReveredDate(value)
+        const _value = isAlreadyReversedDate(value)
           ? createDateFromNativeDate(value, { returnReversedDate: false })
               .dateString
           : value;

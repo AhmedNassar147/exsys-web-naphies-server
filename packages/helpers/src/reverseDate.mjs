@@ -3,14 +3,14 @@
  * Helper: `reverseDate`.
  *
  */
-import isAlreadyReveredDate from "./isAlreadyReveredDate.mjs";
+import isAlreadyReversedDate from "./isAlreadyReversedDate.mjs";
 
 const reverseDate = (dateValue) => {
   if (!dateValue) {
     return undefined;
   }
 
-  if (isAlreadyReveredDate(dateValue)) {
+  if (isAlreadyReversedDate(dateValue)) {
     return dateValue;
   }
   return dateValue ? dateValue.split("-").reverse().join("-") : dateValue;
