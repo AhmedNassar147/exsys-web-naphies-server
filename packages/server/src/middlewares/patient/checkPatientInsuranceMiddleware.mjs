@@ -62,16 +62,21 @@ const transformResults = (result) => {
 };
 
 export default checkPatientInsuranceMiddleware(async (body) => {
-  const { authorization, printValues = false, nationalId, iqamaType } = body;
+  const {
+    authorization,
+    printValues = false,
+    beneficiaryKey,
+    beneficiaryType,
+  } = body;
 
-  const SystemType = iqamaType || "1";
+  const SystemType = beneficiaryType || "1";
 
   // https://hsb.nphies.sa/checkinsurance?PatientKey=2005274879&SystemType=1
   const results = await createNphiesRequest({
     baseAPiUrl: "https://hsb.nphies.sa/checkinsurance",
     requestMethod: "GET",
     requestParams: {
-      PatientKey: nationalId,
+      PatientKey: beneficiaryKey,
       SystemType: SystemType,
     },
   });
@@ -82,12 +87,12 @@ export default checkPatientInsuranceMiddleware(async (body) => {
     await writeResultFile({
       data: {
         params: {
-          nationalId,
-          iqamaType,
+          beneficiaryKey,
+          beneficiaryType,
         },
         data: results,
       },
-      folderName: `CCHI/${nationalId}/${SystemType}`,
+      folderName: `CCHI/${beneficiaryKey}/${SystemType}`,
     });
   }
 
