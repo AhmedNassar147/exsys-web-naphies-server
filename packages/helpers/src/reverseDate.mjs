@@ -3,14 +3,14 @@
  * Helper: `reverseDate`.
  *
  */
+import isAlreadyReveredDate from "./isAlreadyReveredDate";
 
 const reverseDate = (dateValue) => {
   if (!dateValue) {
     return undefined;
   }
 
-  const isAlreadyReversed = /\d{4,}-\d{2,}-\d{2,}/gim.test(dateValue || "");
-  if (isAlreadyReversed) {
+  if (isAlreadyReveredDate(dateValue)) {
     return dateValue;
   }
   return dateValue ? dateValue.split("-").reverse().join("-") : dateValue;

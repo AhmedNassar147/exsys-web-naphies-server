@@ -26,6 +26,7 @@ import roundNumber from "./roundNumber.mjs";
 import toCamelCase from "./toCamelCase.mjs";
 import getLastPartOfUrl from "./getLastPartOfUrl.mjs";
 import fixContentType from "./fixContentType.mjs";
+import isAlreadyReveredDate from "./isAlreadyReveredDate.mjs";
 
 export {
   capitalizeFirstLetter,
@@ -51,6 +52,7 @@ export {
   toCamelCase,
   getLastPartOfUrl,
   fixContentType,
+  isAlreadyReveredDate,
 };
 
 export * from "./constants.mjs";

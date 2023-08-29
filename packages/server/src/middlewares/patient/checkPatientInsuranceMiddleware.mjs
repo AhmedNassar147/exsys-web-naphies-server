@@ -7,6 +7,8 @@ import {
   isArrayHasData,
   isObjectHasData,
   writeResultFile,
+  createDateFromNativeDate,
+  isAlreadyReveredDate,
 } from "@exsys-web-server/helpers";
 import checkPatientInsuranceMiddleware from "../../helpers/createBaseExpressMiddleware.mjs";
 import createNphiesRequest from "../../helpers/createNphiesRequest.mjs";
@@ -16,7 +18,9 @@ const lowerFirstLetter = (value) => {
   return [firstLetter.toLowerCase(), ...otherLetters].join("");
 };
 
-const lowerCaseEveryResultKeyFirstKeyLetter = (result) => {
+createDateFromNativeDate(start).dateString;
+
+const transformResults = (result) => {
   if (isObjectHasData(result)) {
     let finalResults = {};
 
@@ -30,19 +34,24 @@ const lowerCaseEveryResultKeyFirstKeyLetter = (result) => {
       if (isValueObject) {
         finalResults = {
           ...finalResults,
-          [lowerKey]: lowerCaseEveryResultKeyFirstKeyLetter(value),
+          [lowerKey]: transformResults(value),
         };
       }
 
       if (isValueArray) {
         finalResults = {
           ...finalResults,
-          [lowerKey]: value.map(lowerCaseEveryResultKeyFirstKeyLetter),
+          [lowerKey]: value.map(transformResults),
         };
       }
 
       if (!isValueObject && !isValueArray) {
-        finalResults[lowerKey] = value;
+        const _value = isAlreadyReveredDate(value)
+          ? createDateFromNativeDate(value, { returnReversedDate: false })
+              .dateString
+          : value;
+
+        finalResults[lowerKey] = _value;
       }
     });
 
@@ -82,9 +91,7 @@ export default checkPatientInsuranceMiddleware(async (body) => {
     });
   }
 
-  const apiResults = isSuccess
-    ? lowerCaseEveryResultKeyFirstKeyLetter(result)
-    : result;
+  const apiResults = isSuccess ? transformResults(result) : result;
 
   return apiResults || {};
 });
