@@ -18,8 +18,6 @@ const lowerFirstLetter = (value) => {
   return [firstLetter.toLowerCase(), ...otherLetters].join("");
 };
 
-createDateFromNativeDate(start).dateString;
-
 const transformResults = (result) => {
   if (isObjectHasData(result)) {
     let finalResults = {};
@@ -98,5 +96,7 @@ export default checkPatientInsuranceMiddleware(async (body) => {
 
   const apiResults = isSuccess ? transformResults(result) : result;
 
-  return apiResults || {};
+  return {
+    data: apiResults || {},
+  };
 });
