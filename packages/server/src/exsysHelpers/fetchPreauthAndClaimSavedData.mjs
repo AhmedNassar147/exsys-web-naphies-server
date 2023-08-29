@@ -3,7 +3,6 @@
  * helper: `fetchPreauthAndClaimSavedData`.
  *
  */
-import { isArrayHasData } from "@exsys-web-server/helpers";
 import { EXSYS_API_IDS_NAMES, EXSYS_API_IDS } from "../constants.mjs";
 import createExsysRequest from "../helpers/createExsysRequest.mjs";
 import extractPreauthOrClaimDataSentToNphies from "../exsysToFrontEndHelpers/claimOrPreauth/index.mjs";

@@ -23,6 +23,7 @@ const { passphrase } = SERVER_CONFIG;
 const createNphiesRequest = async ({
   bodyData,
   requestParams,
+  requestMethod,
   transformApiResults,
   retryTimes = RETRY_TIMES,
   retryDelay = RETRY_DELAY,
@@ -57,6 +58,7 @@ const createNphiesRequest = async ({
     body: bodyData,
     retryTimes,
     retryDelay,
+    requestMethod,
     errorMessage: "Nphies server is not connected",
   });
 };
