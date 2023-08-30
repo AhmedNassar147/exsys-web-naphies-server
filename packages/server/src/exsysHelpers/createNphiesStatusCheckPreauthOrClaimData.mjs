@@ -4,7 +4,7 @@
  *
  */
 import createBaseFetchExsysDataAndCallNphiesApi from "./createBaseFetchExsysDataAndCallNphiesApi.mjs";
-import extractPreauthOrClaimCancellationResponseData from "../nphiesHelpers/extraction/extractPreauthOrClaimCancellationResponseData.mjs";
+import extractPreauthOrClaimStatusCheckResponseData from "../nphiesHelpers/extraction/extractPreauthOrClaimStatusCheckResponseData.mjs";
 import createNphiesRequestPayloadFn from "../nphiesHelpers/preauthorization/createNphiesPreauthOrClaimStatusCheckData.mjs";
 import {
   EXSYS_API_IDS_NAMES,
@@ -12,10 +12,13 @@ import {
   NPHIES_REQUEST_TYPES,
 } from "../constants.mjs";
 
-const { queryExsysClaimOrPreauthStatusCheckData } = EXSYS_API_IDS_NAMES;
+const {
+  queryExsysClaimOrPreauthStatusCheckData,
+  saveExsysClaimOrPreauthStatusCheckData,
+} = EXSYS_API_IDS_NAMES;
 
 const extractionFunctionsMap = {
-  [NPHIES_RESOURCE_TYPES.TASK]: extractPreauthOrClaimCancellationResponseData,
+  [NPHIES_RESOURCE_TYPES.TASK]: extractPreauthOrClaimStatusCheckResponseData,
 };
 
 const setErrorIfExtractedDataFoundFn = ({ statusCheckErrors }) =>
@@ -23,8 +26,8 @@ const setErrorIfExtractedDataFoundFn = ({ statusCheckErrors }) =>
 
 const createExsysErrorSaveApiBody = (errorMessage) => ({
   nphiesExtractedData: {
-    outcome: "error",
-    Status: "error",
+    statusCheckOutcome: "error",
+    statusCheckStatus: "error",
     issueError: errorMessage,
   },
 });
@@ -34,22 +37,26 @@ const createExsysSaveApiParams = ({
   exsysDataApiPrimaryKeyName,
   nphiesExtractedData: {
     bundleId,
-    cancellationStatus,
+    statusCheckOutcome,
     creationBundleId,
     issueError,
     issueErrorCode,
+    statusCheckResponseId,
+    statusCheckRequestId,
   },
 }) => {
   const _outcome =
-    !cancellationStatus || !!issueError || !!issueErrorCode
+    !statusCheckOutcome || !!issueError || !!issueErrorCode
       ? "error"
-      : cancellationStatus;
+      : statusCheckOutcome;
 
   return {
     [exsysDataApiPrimaryKeyName]: primaryKey,
     bundle_id: bundleId,
-    outcome: _outcome,
     creation_bundle_id: creationBundleId,
+    outcome: _outcome,
+    status_check_response_id: statusCheckResponseId,
+    status_check_request_id: statusCheckRequestId,
   };
 };
 
@@ -65,17 +72,13 @@ const createNphiesStatusCheckPreauthOrClaimData = async ({
 
   const printFolderName = `statusCheck/${request_type}/${record_pk}`;
 
-  // const exsysSaveApiId = isClaimCancellationRequest
-  //   ? saveClaimData
-  //   : savePreauthData;
-
   const exsysDataApiPrimaryKeyName = isClaimCancellationRequest
     ? "claim_pk"
     : "preauth_pk";
 
   return await createBaseFetchExsysDataAndCallNphiesApi({
     exsysQueryApiId: queryExsysClaimOrPreauthStatusCheckData,
-    // exsysSaveApiId,
+    // exsysSaveApiId: saveExsysClaimOrPreauthStatusCheckData,
     requestParams,
     requestMethod: "GET",
     printFolderName,
