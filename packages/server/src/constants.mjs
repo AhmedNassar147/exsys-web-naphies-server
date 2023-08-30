@@ -99,10 +99,9 @@ export const EXSYS_API_IDS = {
   // http://149.102.140.8:9090/ords/exsys_api/nphies_pkg/collect_claim_status_check?authorization=13309012&patient_file_no=210997&organization_no=001&record_pk=6&request_type=priorauth
   [EXSYS_API_IDS_NAMES.queryExsysClaimOrPreauthStatusCheckData]:
     "nphies_pkg/collect_claim_status_check",
-
-  // http://149.102.140.8:9090/ords/exsys_api/nphies_pkg/collect_claim_status_check?authorization=13309012&patient_file_no=210997&organization_no=001&record_pk=6&request_type=priorauth
+  // http://149.102.140.8:9090/ords/exsys_api/nphies_pkg/update_claim_status_check?claim_pk=&preauth_pk=&creation_bundle_id=&bundle_id=&outcome=
   [EXSYS_API_IDS_NAMES.saveExsysClaimOrPreauthStatusCheckData]:
-    "nphies_pkg/update_status_check_send_status",
+    "nphies_pkg/update_claim_status_check",
 };
 
 export const HTTP_STATUS_CODE = {

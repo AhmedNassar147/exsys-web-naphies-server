@@ -78,7 +78,7 @@ const createNphiesStatusCheckPreauthOrClaimData = async ({
 
   return await createBaseFetchExsysDataAndCallNphiesApi({
     exsysQueryApiId: queryExsysClaimOrPreauthStatusCheckData,
-    // exsysSaveApiId: saveExsysClaimOrPreauthStatusCheckData,
+    exsysSaveApiId: saveExsysClaimOrPreauthStatusCheckData,
     requestParams,
     requestMethod: "GET",
     printFolderName,
