@@ -12,6 +12,13 @@ import {
 } from "@exsys-web-server/helpers";
 import checkPatientInsuranceMiddleware from "../../helpers/createBaseExpressMiddleware.mjs";
 import createNphiesRequest from "../../helpers/createNphiesRequest.mjs";
+import { CLI_CONFIG, NPHIES_API_URLS } from "../../constants.mjs";
+
+const { production } = CLI_CONFIG;
+const {
+  NPHIES_CHECK_INSURANCE_PRODUCTION,
+  NPHIES_CHECK_INSURANCE_DEVELOPMENT,
+} = NPHIES_API_URLS;
 
 const lowerFirstLetter = (value) => {
   const [firstLetter, ...otherLetters] = [...(value || "")];
@@ -64,18 +71,21 @@ export default checkPatientInsuranceMiddleware(async (body) => {
     authorization,
     printValues = false,
     beneficiaryKey,
-    beneficiaryType,
+    systemType: _systemType,
   } = body;
 
-  const SystemType = beneficiaryType || "1";
+  const SystemType = _systemType || "1";
 
   // https://hsb.nphies.sa/checkinsurance?PatientKey=2005274879&SystemType=1
+  // http://hsb.oba.nphies.sa/checkinsurance?PatientKey=2005274879&SystemType=1
   const results = await createNphiesRequest({
-    baseAPiUrl: "https://hsb.nphies.sa/checkinsurance",
+    baseAPiUrl: production
+      ? NPHIES_CHECK_INSURANCE_PRODUCTION
+      : NPHIES_CHECK_INSURANCE_DEVELOPMENT,
     requestMethod: "GET",
     requestParams: {
       PatientKey: beneficiaryKey,
-      SystemType: SystemType,
+      SystemType,
     },
   });
 
@@ -86,7 +96,7 @@ export default checkPatientInsuranceMiddleware(async (body) => {
       data: {
         params: {
           beneficiaryKey,
-          beneficiaryType,
+          SystemType,
         },
         data: results,
       },

@@ -164,6 +164,9 @@ export const NPHIES_API_URLS = {
   LOCATION_LICENSE_URL: `${BASE_NPHIES_LICENSE_URL}/location-license`,
   PRACTITIONER_URL: `${BASE_NPHIES_LICENSE_URL}/practitioner-license`,
   NPHIES_LICENSE_OWNER_URL: `${BASE_NPHIES_LICENSE_URL}/nphies`,
+  NPHIES_CHECK_INSURANCE_PRODUCTION: "https://hsb.nphies.sa/checkinsurance",
+  NPHIES_CHECK_INSURANCE_DEVELOPMENT: "http://hsb.oba.nphies.sa/checkinsurance",
+  //
 };
 
 export const NPHIES_CERT_FILE_NAME = `${rootYarnWorkSpacePath}/certs/${
