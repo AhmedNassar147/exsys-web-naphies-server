@@ -32,7 +32,7 @@ const createNphiesTaskData = ({
   providerFocusUrl,
   requestType,
   siteUrl,
-  cancellationRequestId,
+  operationRequestId,
   cancellationReasonCode,
 }) => {
   const { dateString: currentDate } = getCurrentDate(true);
@@ -40,9 +40,14 @@ const createNphiesTaskData = ({
     requestType === NPHIES_REQUEST_TYPES.CANCEL;
 
   const isPreauthOrClaimPollRequest = requestType === NPHIES_REQUEST_TYPES.POLL;
+  const isPreauthOrClaimStatusCheck =
+    requestType === NPHIES_REQUEST_TYPES.STATUS_CHECK;
+
+  const isStatusCheckOrCanCancel =
+    isCancellingPreauthOrClaimRequest || isPreauthOrClaimStatusCheck;
 
   const requesterBaseUrl = `${
-    isCancellingPreauthOrClaimRequest ? `${siteUrl}/` : ""
+    isStatusCheckOrCanCancel ? `${siteUrl}/` : ""
   }Organization`;
 
   return {
@@ -62,35 +67,35 @@ const createNphiesTaskData = ({
             : `req_${requestId}`,
         },
       ],
+      authoredOn: currentDate,
+      lastModified: currentDate,
       status: "requested",
       intent: "order",
-      priority: isCancellingPreauthOrClaimRequest ? "routine" : "stat",
+      priority: isStatusCheckOrCanCancel ? "routine" : "stat",
       code: {
         coding: [
           {
             system: `${BASE_CODE_SYS_URL}/${TASK_CODE}`,
-            code: requestType,
+            code: isPreauthOrClaimStatusCheck ? "status" : requestType,
           },
         ],
       },
-      ...(isCancellingPreauthOrClaimRequest
+      ...(isStatusCheckOrCanCancel
         ? {
             focus: {
               type: "Claim",
               identifier: {
                 system: `${siteUrl}/claim`,
-                value: `req_${cancellationRequestId}`,
+                value: `req_${operationRequestId}`,
               },
             },
           }
         : null),
-      authoredOn: currentDate,
-      lastModified: currentDate,
       requester: {
         reference: `${requesterBaseUrl}/${providerOrganization}`,
       },
       owner: {
-        ...(isCancellingPreauthOrClaimRequest
+        ...(isStatusCheckOrCanCancel
           ? {
               reference: `${requesterBaseUrl}/${payerOrganization}`,
             }

@@ -34,6 +34,8 @@ const createNphiesMessageHeader = ({
   const isAuthorizationPollData = requestType === NPHIES_REQUEST_TYPES.POLL;
   const isCancellingPreauthOrClaimRequest =
     requestType === NPHIES_REQUEST_TYPES.CANCEL;
+  const isPreauthOrClaimStatusCheck =
+    requestType === NPHIES_REQUEST_TYPES.STATUS_CHECK;
 
   const baseResourceData = createNphiesBaseResource({
     resourceType: RESOURCE_MESSAGE_HEADER,
@@ -60,7 +62,10 @@ const createNphiesMessageHeader = ({
       ...baseResourceData,
       eventCoding: {
         system: `${BASE_CODE_SYS_URL}/${KSA_MSG_EVENTS}`,
-        code: isCommunication ? requestType : `${requestType}-request`,
+        code:
+          isCommunication || isPreauthOrClaimStatusCheck
+            ? requestType
+            : `${requestType}-request`,
       },
       destination: [
         {

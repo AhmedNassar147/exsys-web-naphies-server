@@ -20,6 +20,7 @@ import createFetchSavedClaimDataToFrontendMiddleware from "./middlewares/claim/c
 import createProcessBulkClaimsMiddleware from "./middlewares/claim/createProcessBulkClaimsMiddleware.mjs";
 import createCommunicationMiddleware from "./middlewares/communication/index.mjs";
 import checkPatientInsuranceMiddleware from "./middlewares/patient/checkPatientInsuranceMiddleware.mjs";
+import createStatusCheckRequestMiddleware from "./middlewares/claim/createStatusCheckRequestMiddleware.mjs";
 import stopTheProcessIfCertificateNotFound from "./helpers/stopTheProcessIfCertificateNotFound.mjs";
 
 (async () => await import("./polls/index.mjs"))();
@@ -44,6 +45,10 @@ import stopTheProcessIfCertificateNotFound from "./helpers/stopTheProcessIfCerti
   );
   app.use("/fetchCommunicationResponse", createCommunicationMiddleware(app));
   app.use("/checkPatientInsurance", checkPatientInsuranceMiddleware(app));
+  app.use(
+    "/checkClaimOrPreauthStatus",
+    createStatusCheckRequestMiddleware(app)
+  );
 
   const res = app.listen(SERVER_PORT, () =>
     createCmdMessage({

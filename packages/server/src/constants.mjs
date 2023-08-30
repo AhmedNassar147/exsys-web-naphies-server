@@ -50,6 +50,8 @@ export const EXSYS_API_IDS_NAMES = {
     "collectExsysClaimOrPreauthCommunicationData",
   saveExsysClaimOrPreauthCommunicationData:
     "saveExsysClaimOrPreauthCommunicationData",
+  queryExsysClaimOrPreauthStatusCheckData:
+    "queryExsysClaimOrPreauthStatusCheckData",
 };
 
 export const EXSYS_API_IDS = {
@@ -92,6 +94,9 @@ export const EXSYS_API_IDS = {
   // http://149.102.140.8:9090/ords/exsys_api/hs_nphies_preauth_pkg/update_communicat_send_status?communication_pk=&creation_bundle_id=&communication_id=&outcome=
   [EXSYS_API_IDS_NAMES.saveExsysClaimOrPreauthCommunicationData]:
     "hs_nphies_preauth_pkg/update_communicat_send_status",
+  // http://149.102.140.8:9090/ords/exsys_api/nphies_pkg/collect_claim_status_check?authorization=13309012&patient_file_no=210997&organization_no=001&record_pk=6&request_type=priorauth
+  [EXSYS_API_IDS_NAMES.queryExsysClaimOrPreauthStatusCheckData]:
+    "nphies_pkg/collect_claim_status_check",
 };
 
 export const HTTP_STATUS_CODE = {
@@ -121,6 +126,7 @@ export const NPHIES_REQUEST_TYPES = {
   POLL: "poll",
   COMMUNICATION: "communication",
   CANCEL: "cancel",
+  STATUS_CHECK: "status-check",
 };
 
 export const NPHIES_RESOURCE_TYPES = {
@@ -146,6 +152,7 @@ export const NPHIES_RESOURCE_MAP_TO_REQUEST_TYPE = {
   [NPHIES_REQUEST_TYPES.POLL]: NPHIES_RESOURCE_TYPES.TASK,
   [NPHIES_REQUEST_TYPES.CANCEL]: NPHIES_RESOURCE_TYPES.TASK,
   [NPHIES_REQUEST_TYPES.COMMUNICATION]: NPHIES_RESOURCE_TYPES.COMMUNICATION,
+  [NPHIES_REQUEST_TYPES.STATUS_CHECK]: NPHIES_RESOURCE_TYPES.TASK,
 };
 
 export const BASE_NPHIES_URL = "http://nphies.sa";

@@ -12,7 +12,7 @@ import {
 import createProcessBulkClaimsMiddleware from "../../helpers/createBaseExpressMiddleware.mjs";
 import createExsysRequest from "../../helpers/createExsysRequest.mjs";
 import { EXSYS_API_IDS_NAMES, EXSYS_API_IDS } from "../../constants.mjs";
-import createMappedClaimOrPreauthCancellation from "../../exsysHelpers/createMappedClaimOrPreauthCancellation.mjs";
+import createMappedClaimOrPreauthCancellation from "../../exsysHelpers/createMappedClaimOrPreauthCancellationOrStatusCheck.mjs";
 import createMappedClaimRequests from "../../exsysHelpers/createMappedClaimRequests.mjs";
 
 const { queryBulkClaimsDataToCancellationOrCreation } = EXSYS_API_IDS_NAMES;

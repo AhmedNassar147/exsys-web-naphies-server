@@ -1,16 +1,18 @@
 /*
  *
- * Helper: `createMappedClaimOrPreauthCancellation`.
+ * Helper: `createMappedClaimOrPreauthCancellationOrStatusCheck`.
  *
  */
 import { createMappedRequestsArray } from "@exsys-web-server/helpers";
 import createNphiesCancellationPreauthOrClaimData from "./createNphiesCancellationPreauthOrClaimData.mjs";
+import createNphiesStatusCheckPreauthOrClaimData from "./createNphiesStatusCheckPreauthOrClaimData.mjs";
 
-const createMappedClaimOrPreauthCancellation = async ({
+const createMappedClaimOrPreauthCancellationOrStatusCheck = async ({
   data,
   authorization,
   printValues,
   formatReturnedResults,
+  isStatusCheck,
 }) =>
   await createMappedRequestsArray({
     dataArray: data,
@@ -19,8 +21,8 @@ const createMappedClaimOrPreauthCancellation = async ({
     asyncFn: async (
       { patientFileNo, organizationNo, authorizationNo, recordPk, requestType },
       requestTimeout
-    ) =>
-      await createNphiesCancellationPreauthOrClaimData({
+    ) => {
+      const options = {
         exsysQueryApiDelayTimeout: requestTimeout,
         nphiesApiDelayTimeout: requestTimeout,
         requestParams: {
@@ -30,7 +32,14 @@ const createMappedClaimOrPreauthCancellation = async ({
           request_type: requestType,
           record_pk: recordPk,
         },
-      }),
+      };
+
+      const fn = isStatusCheck
+        ? createNphiesStatusCheckPreauthOrClaimData
+        : createNphiesCancellationPreauthOrClaimData;
+
+      return await fn(options);
+    },
   });
 
-export default createMappedClaimOrPreauthCancellation;
+export default createMappedClaimOrPreauthCancellationOrStatusCheck;
