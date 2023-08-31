@@ -5,12 +5,16 @@
  */
 import createBaseFetchExsysDataAndCallNphiesApi from "./createBaseFetchExsysDataAndCallNphiesApi.mjs";
 import extractPreauthOrClaimCancellationResponseData from "../nphiesHelpers/extraction/extractPreauthOrClaimCancellationResponseData.mjs";
-import createNphiesRequestPayloadFn from "../nphiesHelpers/preauthorization/createNphiesPreauthOrClaimCancellationData.mjs";
+import createNphiesRequestPayloadFnFactory from "../nphiesHelpers/preauthorization/createNphiesPreauthOrClaimCancellationData.mjs";
 import {
   EXSYS_API_IDS_NAMES,
   NPHIES_RESOURCE_TYPES,
   NPHIES_REQUEST_TYPES,
 } from "../constants.mjs";
+
+import { NPHIES_REQUEST_TYPES } from "../../constants.mjs";
+
+const { CANCEL, NULLIFY, CLAIM } = NPHIES_REQUEST_TYPES;
 
 const {
   queryClaimOrPreauthDataToCancellation,
@@ -63,10 +67,9 @@ const createNphiesCancellationPreauthOrClaimData = async ({
   exsysQueryApiDelayTimeout,
   nphiesApiDelayTimeout,
 }) => {
-  const { record_pk, request_type } = requestParams;
+  const { record_pk, request_type, nullify_request } = requestParams;
 
-  const isClaimCancellationRequest =
-    request_type === NPHIES_REQUEST_TYPES.CLAIM;
+  const isClaimCancellationRequest = request_type === CLAIM;
 
   const printFolderName = `cancellation/${request_type}/${record_pk}`;
 
@@ -85,7 +88,9 @@ const createNphiesCancellationPreauthOrClaimData = async ({
     requestMethod: "GET",
     printFolderName,
     exsysDataApiPrimaryKeyName,
-    createNphiesRequestPayloadFn,
+    createNphiesRequestPayloadFn: createNphiesRequestPayloadFnFactory(
+      nullify_request === "Y" ? NULLIFY : CANCEL
+    ),
     extractionFunctionsMap,
     setErrorIfExtractedDataFoundFn,
     createExsysSaveApiParams,

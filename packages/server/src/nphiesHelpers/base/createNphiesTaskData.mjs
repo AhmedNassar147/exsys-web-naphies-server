@@ -18,12 +18,17 @@ const { TASK_CODE, TASK_INPUT_TYPE, TASK_REASON_CODE } = NPHIES_BASE_CODE_TYPES;
 const { TASK } = NPHIES_RESOURCE_TYPES;
 const { BASE_CODE_SYS_URL, NPHIES_LICENSE_OWNER_URL } = NPHIES_API_URLS;
 
+// If nullify is specified, then the original message may be retained for audit purposes but shall not be given out or displayed.
+// Task.focus.identifier = a business identifier (e.g. Claim.identifier) of the main resource of the message to be cancelled.
+// Optional task.input.type = ‘nullify’ and task.input.valueBoolean = ‘true’.
 const pollOwnerData = {
   identifier: {
     system: NPHIES_LICENSE_OWNER_URL,
     value: "NPHIES",
   },
 };
+
+const { POLL, CANCEL, NULLIFY, STATUS_CHECK } = NPHIES_REQUEST_TYPES;
 
 const createNphiesTaskData = ({
   providerOrganization,
@@ -35,21 +40,20 @@ const createNphiesTaskData = ({
   operationRequestId,
   cancellationReasonCode,
   focusType,
-  usePollMessageInput,
 }) => {
   const { dateString: currentDate } = getCurrentDate(true);
-  const isCancellingPreauthOrClaimRequest =
-    requestType === NPHIES_REQUEST_TYPES.CANCEL;
+  const isPreauthOrClaimPollRequest = requestType === POLL;
+  const isCancellingPreauthOrClaimRequest = [CANCEL, NULLIFY].includes(
+    requestType
+  );
+  const isNullifyPreauthOrClaimRequest = requestType === NULLIFY;
+  const isPreauthOrClaimStatusCheck = requestType === STATUS_CHECK;
 
-  const isPreauthOrClaimPollRequest = requestType === NPHIES_REQUEST_TYPES.POLL;
-  const isPreauthOrClaimStatusCheck =
-    requestType === NPHIES_REQUEST_TYPES.STATUS_CHECK;
-
-  const isStatusCheckOrCanCancel =
+  const isStatusCheckOrCancel =
     isCancellingPreauthOrClaimRequest || isPreauthOrClaimStatusCheck;
 
   const requesterBaseUrl = `${
-    isStatusCheckOrCanCancel ? `${siteUrl}/` : ""
+    isStatusCheckOrCancel ? `${siteUrl}/` : ""
   }Organization`;
 
   return {
@@ -73,7 +77,7 @@ const createNphiesTaskData = ({
       lastModified: currentDate,
       status: "requested",
       intent: "order",
-      priority: isStatusCheckOrCanCancel ? "routine" : "stat",
+      priority: isStatusCheckOrCancel ? "routine" : "stat",
       code: {
         coding: [
           {
@@ -82,7 +86,7 @@ const createNphiesTaskData = ({
           },
         ],
       },
-      ...(isStatusCheckOrCanCancel
+      ...(isStatusCheckOrCancel
         ? {
             focus: {
               type: "Claim",
@@ -97,7 +101,7 @@ const createNphiesTaskData = ({
         reference: `${requesterBaseUrl}/${providerOrganization}`,
       },
       owner: {
-        ...(isStatusCheckOrCanCancel
+        ...(isStatusCheckOrCancel
           ? {
               reference: `${requesterBaseUrl}/${payerOrganization}`,
             }
@@ -123,19 +127,28 @@ const createNphiesTaskData = ({
                   coding: [
                     {
                       system: `${BASE_CODE_SYS_URL}/${TASK_INPUT_TYPE}`,
-                      code: usePollMessageInput
-                        ? "include-message-type"
-                        : "count",
+                      code: "count",
                     },
                   ],
                 },
-                ...(usePollMessageInput
-                  ? {
-                      valueCode: "priorauth-response",
-                    }
-                  : {
-                      valuePositiveInt: 1,
-                    }),
+                valuePositiveInt: 1,
+              },
+            ],
+          }
+        : null),
+      ...(isNullifyPreauthOrClaimRequest
+        ? {
+            input: [
+              {
+                type: {
+                  coding: [
+                    {
+                      system: `${BASE_CODE_SYS_URL}/${TASK_INPUT_TYPE}`,
+                      code: "nullify",
+                    },
+                  ],
+                },
+                valueBoolean: true,
               },
             ],
           }

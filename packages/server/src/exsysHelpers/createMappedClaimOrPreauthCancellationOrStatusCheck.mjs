@@ -19,7 +19,14 @@ const createMappedClaimOrPreauthCancellationOrStatusCheck = async ({
     printValues,
     formatReturnedResults,
     asyncFn: async (
-      { patientFileNo, organizationNo, authorizationNo, recordPk, requestType },
+      {
+        patientFileNo,
+        organizationNo,
+        authorizationNo,
+        recordPk,
+        requestType,
+        nullifyRequest,
+      },
       requestTimeout
     ) => {
       const options = {
@@ -31,6 +38,11 @@ const createMappedClaimOrPreauthCancellationOrStatusCheck = async ({
           organization_no: organizationNo,
           request_type: requestType,
           record_pk: recordPk,
+          ...(isStatusCheck
+            ? null
+            : {
+                nullify_request: nullifyRequest,
+              }),
         },
       };
 
