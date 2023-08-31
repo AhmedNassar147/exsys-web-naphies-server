@@ -12,8 +12,6 @@ import {
   NPHIES_REQUEST_TYPES,
 } from "../constants.mjs";
 
-import { NPHIES_REQUEST_TYPES } from "../../constants.mjs";
-
 const { CANCEL, NULLIFY, CLAIM } = NPHIES_REQUEST_TYPES;
 
 const {
