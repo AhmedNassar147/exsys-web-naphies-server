@@ -54,6 +54,8 @@ const createNphiesTaskData = ({
     isStatusCheckOrCancel ? `${siteUrl}/` : ""
   }Organization`;
 
+  const cancelCodeType = nullifyRequest ? "nullify" : requestType;
+
   return {
     fullUrl: `${providerFocusUrl}/${requestId}`,
     resource: {
@@ -80,7 +82,7 @@ const createNphiesTaskData = ({
         coding: [
           {
             system: `${BASE_CODE_SYS_URL}/${TASK_CODE}`,
-            code: isPreauthOrClaimStatusCheck ? "status" : requestType,
+            code: isPreauthOrClaimStatusCheck ? "status" : cancelCodeType,
           },
         ],
       },
