@@ -136,23 +136,6 @@ const createNphiesTaskData = ({
             ],
           }
         : null),
-      ...(nullifyRequest
-        ? {
-            input: [
-              {
-                type: {
-                  coding: [
-                    {
-                      system: `${BASE_CODE_SYS_URL}/${TASK_INPUT_TYPE}`,
-                      code: "nullify",
-                    },
-                  ],
-                },
-                valueBoolean: true,
-              },
-            ],
-          }
-        : null),
     },
   };
 };
