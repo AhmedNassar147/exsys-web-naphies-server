@@ -28,7 +28,7 @@ const pollOwnerData = {
   },
 };
 
-const { POLL, CANCEL, NULLIFY, STATUS_CHECK } = NPHIES_REQUEST_TYPES;
+const { POLL, CANCEL, STATUS_CHECK } = NPHIES_REQUEST_TYPES;
 
 const createNphiesTaskData = ({
   providerOrganization,
@@ -40,13 +40,11 @@ const createNphiesTaskData = ({
   operationRequestId,
   cancellationReasonCode,
   focusType,
+  nullifyRequest,
 }) => {
   const { dateString: currentDate } = getCurrentDate(true);
   const isPreauthOrClaimPollRequest = requestType === POLL;
-  const isCancellingPreauthOrClaimRequest = [CANCEL, NULLIFY].includes(
-    requestType
-  );
-  const isNullifyPreauthOrClaimRequest = requestType === NULLIFY;
+  const isCancellingPreauthOrClaimRequest = requestType === CANCEL;
   const isPreauthOrClaimStatusCheck = requestType === STATUS_CHECK;
 
   const isStatusCheckOrCancel =
@@ -136,7 +134,7 @@ const createNphiesTaskData = ({
             ],
           }
         : null),
-      ...(isNullifyPreauthOrClaimRequest
+      ...(nullifyRequest
         ? {
             input: [
               {

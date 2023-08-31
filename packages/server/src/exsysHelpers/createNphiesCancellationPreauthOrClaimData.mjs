@@ -12,7 +12,7 @@ import {
   NPHIES_REQUEST_TYPES,
 } from "../constants.mjs";
 
-const { CANCEL, NULLIFY, CLAIM } = NPHIES_REQUEST_TYPES;
+const { CLAIM } = NPHIES_REQUEST_TYPES;
 
 const {
   queryClaimOrPreauthDataToCancellation,
@@ -86,9 +86,8 @@ const createNphiesCancellationPreauthOrClaimData = async ({
     requestMethod: "GET",
     printFolderName,
     exsysDataApiPrimaryKeyName,
-    createNphiesRequestPayloadFn: createNphiesRequestPayloadFnFactory(
-      nullify_request === "Y" ? NULLIFY : CANCEL
-    ),
+    createNphiesRequestPayloadFn:
+      createNphiesRequestPayloadFnFactory(nullify_request),
     extractionFunctionsMap,
     setErrorIfExtractedDataFoundFn,
     createExsysSaveApiParams,
