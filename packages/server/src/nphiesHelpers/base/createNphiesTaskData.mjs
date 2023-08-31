@@ -34,6 +34,7 @@ const createNphiesTaskData = ({
   siteUrl,
   operationRequestId,
   cancellationReasonCode,
+  focusType,
 }) => {
   const { dateString: currentDate } = getCurrentDate(true);
   const isCancellingPreauthOrClaimRequest =
@@ -83,9 +84,9 @@ const createNphiesTaskData = ({
       ...(isStatusCheckOrCanCancel
         ? {
             focus: {
-              type: "priorauth",
+              type: "Claim",
               identifier: {
-                system: `${siteUrl}/priorauth`,
+                system: `${siteUrl}/${focusType}`,
                 value: `req_${operationRequestId}`,
               },
             },

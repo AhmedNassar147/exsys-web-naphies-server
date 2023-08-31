@@ -22,6 +22,7 @@ const createNphiesPreauthOrClaimStatusCheckData = ({
   operationRequestId,
   requestType,
   cancellationReasonCode,
+  focus_type,
 }) => {
   const requestId = createUUID();
 
@@ -49,6 +50,7 @@ const createNphiesPreauthOrClaimStatusCheckData = ({
         siteUrl: site_url,
         operationRequestId,
         cancellationReasonCode,
+        focusType: focus_type,
       }),
       createOrganizationData({
         organizationLicense: provider_license,
