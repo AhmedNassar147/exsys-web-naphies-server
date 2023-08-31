@@ -83,9 +83,9 @@ const createNphiesTaskData = ({
       ...(isStatusCheckOrCanCancel
         ? {
             focus: {
-              type: "Claim",
+              type: "priorauth",
               identifier: {
-                system: `${siteUrl}/claim`,
+                system: `${siteUrl}/priorauth`,
                 value: `req_${operationRequestId}`,
               },
             },
