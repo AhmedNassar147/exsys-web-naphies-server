@@ -11,6 +11,7 @@ import {
   NPHIES_RESOURCE_TYPES,
   NPHIES_REQUEST_TYPES,
 } from "../constants.mjs";
+import tryPollRequest from "../polls/tryPollRequest.mjs";
 
 const {
   queryExsysClaimOrPreauthStatusCheckData,
@@ -90,6 +91,17 @@ const createNphiesStatusCheckPreauthOrClaimData = async ({
     createExsysErrorSaveApiBody,
     exsysQueryApiDelayTimeout,
     nphiesApiDelayTimeout,
+    onNphiesResponseWithSuccessFn: async ({ exsysResultsData }) => {
+      const { site_url, site_name, provider_license, provider_organization } =
+        exsysResultsData;
+
+      await tryPollRequest({
+        siteUrl: site_url,
+        siteName: site_name,
+        providerLicense: provider_license,
+        providerOrganization: provider_organization,
+      });
+    },
   });
 };
 

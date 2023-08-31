@@ -35,6 +35,7 @@ const createNphiesTaskData = ({
   operationRequestId,
   cancellationReasonCode,
   focusType,
+  usePollMessageInput,
 }) => {
   const { dateString: currentDate } = getCurrentDate(true);
   const isCancellingPreauthOrClaimRequest =
@@ -122,11 +123,19 @@ const createNphiesTaskData = ({
                   coding: [
                     {
                       system: `${BASE_CODE_SYS_URL}/${TASK_INPUT_TYPE}`,
-                      code: "count",
+                      code: usePollMessageInput
+                        ? "include-message-type"
+                        : "count",
                     },
                   ],
                 },
-                valuePositiveInt: 1,
+                ...(usePollMessageInput
+                  ? {
+                      valueCode: "priorauth-response",
+                    }
+                  : {
+                      valuePositiveInt: 1,
+                    }),
               },
             ],
           }

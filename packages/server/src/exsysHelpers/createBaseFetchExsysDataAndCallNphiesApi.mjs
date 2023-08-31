@@ -182,6 +182,7 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
       nodeServerDataSentToNaphies,
       nphiesResponse,
       nphiesExtractedData,
+      exsysResultsData,
     });
   }
 
