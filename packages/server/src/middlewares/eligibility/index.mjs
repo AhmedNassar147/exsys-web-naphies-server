@@ -3,7 +3,6 @@
  * `createEligibilityMiddleware`: `middleware`
  *
  */
-import { ELIGIBILITY_TYPES } from "../../constants.mjs";
 import createEligibilityMiddleware from "../../helpers/createBaseExpressMiddleware.mjs";
 import createMappedEligibilityRequests from "../../exsysHelpers/createMappedEligibilityRequests.mjs";
 
@@ -27,14 +26,11 @@ export default createEligibilityMiddleware(async (body, originalUrl) => {
   const { authorization, printValues = false, data } = body;
 
   const message_event = originalUrl.replace("/", "");
-  const message_event_type =
-    ELIGIBILITY_TYPES[type] || ELIGIBILITY_TYPES.validation;
 
   return await createMappedEligibilityRequests({
     data,
     authorization,
     printValues,
     message_event,
-    message_event_type,
   });
 });

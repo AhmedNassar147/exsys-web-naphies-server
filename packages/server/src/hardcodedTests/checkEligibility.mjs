@@ -28,6 +28,5 @@ const { patients, authorization } = SERVER_CONFIG;
     data: patients,
     authorization,
     message_event: "eligibility",
-    message_event_type: "validation",
   });
 })();
