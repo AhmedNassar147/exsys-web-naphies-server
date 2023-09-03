@@ -6,15 +6,10 @@
 import { isArrayHasData } from "@exsys-web-server/helpers";
 import extractNphiesCodeAndDisplayFromCodingType from "./extractNphiesCodeAndDisplayFromCodingType.mjs";
 
-const getInsuranceItem = ({
-  category,
-  name,
-  description,
-  network,
-  unit,
-  term,
-  benefit,
-}) => {
+const getInsuranceItem = (
+  { category, name, description, network, unit, term, benefit },
+  index
+) => {
   const { code: benefitCategoryCode } =
     extractNphiesCodeAndDisplayFromCodingType(category);
 
@@ -59,6 +54,8 @@ const getInsuranceItem = ({
     name,
     description,
     benefits,
+    extendable: "y",
+    rowKey: index.toString(),
   };
 };
 
