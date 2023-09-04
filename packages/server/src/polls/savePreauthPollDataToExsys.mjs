@@ -8,7 +8,8 @@ import { createCmdMessage } from "@exsys-web-server/helpers";
 import createExsysRequest from "../helpers/createExsysRequest.mjs";
 import { EXSYS_API_IDS_NAMES, NPHIES_REQUEST_TYPES } from "../constants.mjs";
 
-const { saveClaimPollData, savePreauthPollData } = EXSYS_API_IDS_NAMES;
+const { saveClaimPollData, savePreauthPollData, savePreauthOrClaimPollData } =
+  EXSYS_API_IDS_NAMES;
 
 const SAVE_API_BASED_REQUEST_TYPE = {
   [NPHIES_REQUEST_TYPES.CLAIM]: saveClaimPollData,
@@ -44,6 +45,15 @@ const savePreauthPollDataToExsys = async ({
   if (communicationAboutSystemType === "authorization") {
     _requestType = NPHIES_REQUEST_TYPES.PREAUTH;
   }
+
+  await createExsysRequest({
+    resourceName: savePreauthOrClaimPollData,
+    body: {
+      nodeServerDataSentToNaphies,
+      nphiesResponse,
+      nphiesExtractedData,
+    },
+  });
 
   const saveApiName = SAVE_API_BASED_REQUEST_TYPE[_requestType];
 
