@@ -236,7 +236,7 @@ const createNphiesClaimData = ({
                 claim: {
                   identifier: {
                     system: identifierUrl,
-                    value: `${relatedParentClaimIdentifier}`,
+                    value: `req_${relatedParentClaimIdentifier}`,
                   },
                 },
                 relationship: {
