@@ -47,6 +47,19 @@ const getIdentifierUrlType = (identifier) => {
   return type ? type : undefined;
 };
 
+const createRequestRelatedData = (related) => {
+  if (isArrayHasData(related)) {
+    const [{ claim }] = related;
+    const { identifier } = claim;
+    const [value] = extractIdentifierData(identifier);
+    return {
+      claimRelatedIdentifier: (value || "").replace("req_", ""),
+    };
+  }
+
+  return null;
+};
+
 const extractionFunctionsMap = {
   MessageHeader: extractMessageHeaderData(),
   Claim: ({
@@ -61,6 +74,7 @@ const extractionFunctionsMap = {
       extension,
       referral,
       identifier,
+      related,
     },
   }) => ({
     supportingInfo,
@@ -73,6 +87,7 @@ const extractionFunctionsMap = {
     referalName: getValueFromObject(referral, "display"),
     claimIdentifierType: getIdentifierUrlType(identifier),
     ...getExtensionData(extension),
+    ...createRequestRelatedData(related),
   }),
   Patient: extractPatientData,
   Coverage: ({ resource: { relationship } }) => ({
@@ -122,6 +137,7 @@ const extractPreauthOrClaimDataSentToNphies = ({
     offlineRequestDate,
     extensionPriorauthId,
     claimIdentifierType,
+    claimRelatedIdentifier,
   } = mapEntriesAndExtractNeededData({
     nphiesResponse: nodeServerDataSentToNaphies,
     extractionFunctionsMap,
@@ -298,6 +314,7 @@ const extractPreauthOrClaimDataSentToNphies = ({
     offlineRequestDate,
     extensionPriorauthId,
     claimIdentifierType,
+    claimRelatedIdentifier,
     nodeServerDataSentToNphies: nodeServerDataSentToNaphies,
     nphiesResponse,
     ...issueValues,

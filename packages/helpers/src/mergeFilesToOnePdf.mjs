@@ -13,10 +13,10 @@ import isArrayHasData from "./isArrayHasData.mjs";
 
 const { jpeg } = NPHIES_SUPPORTED_IMAGE_EXTENSIONS;
 
-const formatFiles = async (localFilePath) => {
+const formatFiles = async (localFilesPath) => {
   let parentPdfFileBytes;
 
-  const promises = localFilePath.map(async ({ data, contentType }) => {
+  const promises = localFilesPath.map(async ({ data, contentType }) => {
     if (!contentType || !data) {
       return false;
     }
@@ -53,12 +53,12 @@ const formatFiles = async (localFilePath) => {
   };
 };
 
-const mergeFilesToOnePdf = async (localFilePath) => {
-  if (!isArrayHasData(localFilePath)) {
+const mergeFilesToOnePdf = async (localFilesPath) => {
+  if (!isArrayHasData(localFilesPath)) {
     return undefined;
   }
 
-  const { parentPdfFileBytes, data } = await formatFiles(localFilePath);
+  const { parentPdfFileBytes, data } = await formatFiles(localFilesPath);
 
   const pdfDoc = parentPdfFileBytes
     ? await PDFDocument.load(parentPdfFileBytes)
