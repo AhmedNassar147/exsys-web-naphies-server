@@ -47,7 +47,7 @@ const extractionFunctionsMap = {
     }),
 };
 
-const PREAUTH_TIMEOUT = 3 * 60 * 1000;
+const PREAUTH_TIMEOUT = 1 * 60 * 1000;
 
 const runPreauthorizationPoll = async () => {
   try {
