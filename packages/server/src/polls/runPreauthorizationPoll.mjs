@@ -86,7 +86,7 @@ const runPreauthorizationPoll = async ({
       ...otherExtractedData
     } = nphiesExtractedData || {};
 
-    const folderName = `authorizationPoll/${messageHeaderRequestType}/${
+    const folderName = `authorizationPollNEW/${messageHeaderRequestType}/${
       mainBundleId || bundleId || creationBundleId
     }`;
 
