@@ -47,11 +47,10 @@ const extractionFunctionsMap = {
     }),
 };
 
-const PREAUTH_TIMEOUT = 1000;
-
 const runPreauthorizationPoll = async ({
   includeMessageType,
   excludeMessageType,
+  delayTimeout = 1 * 60 * 1000,
 }) => {
   try {
     const options = {
@@ -117,8 +116,12 @@ const runPreauthorizationPoll = async ({
       message: `Error from polling runPreauthorizationPoll\n ${error}`,
     });
   } finally {
-    await delayProcess(PREAUTH_TIMEOUT);
-    await runPreauthorizationPoll({ includeMessageType, excludeMessageType });
+    await delayProcess(delayTimeout);
+    await runPreauthorizationPoll({
+      includeMessageType,
+      excludeMessageType,
+      delayTimeout,
+    });
   }
 };
 

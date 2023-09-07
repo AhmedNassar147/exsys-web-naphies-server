@@ -14,9 +14,11 @@ import stopTheProcessIfCertificateNotFound from "../helpers/stopTheProcessIfCert
     runExsysEligibilityPendingRequestsPoll(),
     runPreauthorizationPoll({
       includeMessageType: "claim-response",
+      delayTimeout: 250,
     }),
     runPreauthorizationPoll({
       excludeMessageType: "claim-response",
+      delayTimeout: 6 * 1000,
     }),
   ]);
 })();
