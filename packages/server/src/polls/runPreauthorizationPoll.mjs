@@ -47,9 +47,12 @@ const extractionFunctionsMap = {
     }),
 };
 
-const PREAUTH_TIMEOUT = 30 * 1000;
+const PREAUTH_TIMEOUT = 1000;
 
-const runPreauthorizationPoll = async () => {
+const runPreauthorizationPoll = async ({
+  includeMessageType,
+  excludeMessageType,
+}) => {
   try {
     const options = {
       createNphiesRequestPayloadFn: () =>
@@ -58,6 +61,8 @@ const runPreauthorizationPoll = async () => {
           providerOrganization,
           siteUrl,
           siteName,
+          includeMessageType,
+          excludeMessageType,
         }),
       exsysResultsData: preauthPollData,
       setErrorIfExtractedDataFoundFn,
@@ -113,7 +118,7 @@ const runPreauthorizationPoll = async () => {
     });
   } finally {
     await delayProcess(PREAUTH_TIMEOUT);
-    await runPreauthorizationPoll();
+    await runPreauthorizationPoll({ includeMessageType, excludeMessageType });
   }
 };
 

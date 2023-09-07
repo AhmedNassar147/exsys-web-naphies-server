@@ -12,6 +12,11 @@ import stopTheProcessIfCertificateNotFound from "../helpers/stopTheProcessIfCert
 
   await Promise.all([
     runExsysEligibilityPendingRequestsPoll(),
-    runPreauthorizationPoll(),
+    runPreauthorizationPoll({
+      includeMessageType: "claim-response",
+    }),
+    runPreauthorizationPoll({
+      excludeMessageType: "claim-response",
+    }),
   ]);
 })();

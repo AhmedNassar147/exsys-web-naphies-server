@@ -18,6 +18,8 @@ const createNphiesPreauthOrClaimPollData = ({
   providerOrganization,
   siteUrl,
   siteName,
+  includeMessageType,
+  excludeMessageType,
 }) => {
   const requestId = createUUID();
 
@@ -40,6 +42,8 @@ const createNphiesPreauthOrClaimPollData = ({
         requestId,
         providerFocusUrl,
         requestType: POLL,
+        includeMessageType,
+        excludeMessageType,
       }),
       createOrganizationData({
         organizationLicense: providerLicense,

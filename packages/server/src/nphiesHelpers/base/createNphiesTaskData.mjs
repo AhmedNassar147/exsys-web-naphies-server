@@ -41,6 +41,8 @@ const createNphiesTaskData = ({
   cancellationReasonCode,
   focusType,
   nullifyRequest,
+  includeMessageType,
+  excludeMessageType,
 }) => {
   const { dateString: currentDate } = getCurrentDate(true);
   const isPreauthOrClaimPollRequest = requestType === POLL;
@@ -133,7 +135,21 @@ const createNphiesTaskData = ({
                 },
                 valuePositiveInt: 1,
               },
-            ],
+              !!(includeMessageType || excludeMessageType) && {
+                type: {
+                  coding: [
+                    {
+                      system:
+                        "http://nphies.sa/terminology/CodeSystem/task-input-type",
+                      code: `${
+                        includeMessageType ? "include" : "exclude"
+                      }-message-type`,
+                    },
+                  ],
+                },
+                valueCode: includeMessageType || excludeMessageType,
+              },
+            ].filter(Boolean),
           }
         : null),
     },
