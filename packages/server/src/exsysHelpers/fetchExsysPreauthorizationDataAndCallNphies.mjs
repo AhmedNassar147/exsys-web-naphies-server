@@ -4,6 +4,7 @@
  *
  */
 import { isArrayHasData } from "@exsys-web-server/helpers";
+import createExsysRequest from "../helpers/createExsysRequest.mjs";
 import convertSupportInfoAttachmentUrlsToBase64 from "../nphiesHelpers/base/convertSupportInfoAttachmentUrlsToBase64.mjs";
 import createBaseFetchExsysDataAndCallNphiesApi from "./createBaseFetchExsysDataAndCallNphiesApi.mjs";
 import extractClaimResponseData from "../nphiesHelpers/extraction/extractClaimResponseData.mjs";
@@ -24,6 +25,7 @@ const {
   collectExsysClaimData,
   savePreauthData,
   saveClaimData,
+  saveClaimHistory,
 } = EXSYS_API_IDS_NAMES;
 
 const extractionFunctionsMap = {
@@ -109,11 +111,31 @@ const fetchExsysPreauthorizationDataAndCallNphies = async ({
     CONFIG_MAP[nphiesRequestType];
 
   const { authorization } = requestParams;
+  const isClaimRequestType = nphiesRequestType === NPHIES_REQUEST_TYPES.CLAIM;
 
   const onNphiesResponseWithSuccessFn = async ({
     nphiesExtractedData,
     ...options
   }) => {
+    const { nodeServerDataSentToNaphies, nphiesResponse, exsysResultsData } =
+      options;
+
+    const { claim_pk } = exsysResultsData || {};
+
+    if (isClaimRequestType && claim_pk) {
+      await createExsysRequest({
+        resourceName: saveClaimHistory,
+        requestMethod: "POST",
+        requestParams: { claim_pk },
+        body: {
+          claim_pk,
+          nodeServerDataSentToNaphies,
+          nphiesResponse,
+          nphiesExtractedData,
+        },
+      });
+    }
+
     const { claimRequestId, claimPreauthRef, claimResponseId, productsData } =
       nphiesExtractedData || {};
 
@@ -131,8 +153,6 @@ const fetchExsysPreauthorizationDataAndCallNphies = async ({
       });
     }
   };
-
-  const isClaimRequestType = nphiesRequestType === NPHIES_REQUEST_TYPES.CLAIM;
 
   const checkExsysDataValidationBeforeCallingNphies =
     validateSupportInfoDataBeforeCallingNphies(

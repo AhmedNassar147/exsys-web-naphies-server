@@ -55,6 +55,7 @@ export const EXSYS_API_IDS_NAMES = {
   saveExsysClaimOrPreauthStatusCheckData:
     "saveExsysClaimOrPreauthStatusCheckData",
   savePreauthOrClaimPollData: "savePreauthOrClaimPollData",
+  saveClaimHistory: "saveClaimHistory",
 };
 
 export const EXSYS_API_IDS = {
@@ -106,6 +107,8 @@ export const EXSYS_API_IDS = {
   // http://149.102.140.8:9090/ords/exsys_api/nphies_pkg/record_poll_data
   [EXSYS_API_IDS_NAMES.savePreauthOrClaimPollData]:
     "nphies_pkg/record_poll_data",
+  // http://149.102.140.8:9090/ords/exsys_api/nphies_pkg/record_claim_data?claim_pk=1
+  [EXSYS_API_IDS_NAMES.saveClaimHistory]: "nphies_pkg/record_claim_data",
 };
 
 export const HTTP_STATUS_CODE = {
