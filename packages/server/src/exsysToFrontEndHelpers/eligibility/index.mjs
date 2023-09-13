@@ -3,7 +3,7 @@
  * Helper: `extractEligibilityDataSentToNphies`.
  *
  */
-import { isArrayHasData, writeResultFile } from "@exsys-web-server/helpers";
+import { isArrayHasData } from "@exsys-web-server/helpers";
 import mapEntriesAndExtractNeededData from "../../nphiesHelpers/extraction/mapEntriesAndExtractNeededData.mjs";
 import extractNphiesCodeAndDisplayFromCodingType from "../../nphiesHelpers/extraction/extractNphiesCodeAndDisplayFromCodingType.mjs";
 import formatNphiesResponseIssue from "../../nphiesHelpers/base/formatNphiesResponseIssue.mjs";

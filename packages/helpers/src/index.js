@@ -20,6 +20,7 @@ import reverseDate from "./reverseDate.mjs";
 import writeResultFile from "./writeResultFile.mjs";
 import isArrayHasData from "./isArrayHasData.mjs";
 import isObjectHasData from "./isObjectHasData.mjs";
+import createApiResultsAndLoggerValues from "./createApiResultsAndLoggerValues.mjs";
 import createPrintResultsOrLog from "./createPrintResultsOrLog.mjs";
 import createMappedRequestsArray from "./createMappedRequestsArray.mjs";
 import roundNumber from "./roundNumber.mjs";
@@ -46,6 +47,7 @@ export {
   writeResultFile,
   isArrayHasData,
   isObjectHasData,
+  createApiResultsAndLoggerValues,
   createPrintResultsOrLog,
   createMappedRequestsArray,
   roundNumber,
