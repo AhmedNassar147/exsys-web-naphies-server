@@ -110,8 +110,9 @@ export const EXSYS_API_IDS = {
     "nphies_pkg/record_poll_data",
   // http://149.102.140.8:9090/ords/exsys_api/nphies_pkg/record_claim_data?claim_pk=1
   [EXSYS_API_IDS_NAMES.saveClaimHistory]: "nphies_pkg/record_claim_data",
-  // http://149.102.140.8:9090/ords/exsys_api/nphies_pkg/record_claim_data?claim_pk=1
-  [EXSYS_API_IDS_NAMES.queryEligibilityDataFromCchi]: "",
+  // http://149.102.140.8:9090/ords/exsys_api/hs_nphies_preauth_pkg/get_eligibility_data?authorization=111111&organization_no=001&customer_group_no=&customer_no=&insurance_company=
+  [EXSYS_API_IDS_NAMES.queryEligibilityDataFromCchi]:
+    "hs_nphies_preauth_pkg/get_eligibility_data",
 };
 
 export const HTTP_STATUS_CODE = {

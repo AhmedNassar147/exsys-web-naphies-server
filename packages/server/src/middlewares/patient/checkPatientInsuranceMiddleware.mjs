@@ -180,7 +180,7 @@ export default checkPatientInsuranceMiddleware(async (body) => {
           organization_no,
           customer_no,
           customer_group_no,
-          insuranceCompanyID,
+          insurance_company: insuranceCompanyID,
         },
         requestMethod: "GET",
         printFolderName: `${printFolderName}/eligibility`,
