@@ -3,80 +3,17 @@
  * Middleware: `checkPatientInsuranceMiddleware`.
  *
  */
-import {
-  isArrayHasData,
-  isObjectHasData,
-  writeResultFile,
-  createDateFromNativeDate,
-  isAlreadyReversedDate,
-  getCurrentDate,
-} from "@exsys-web-server/helpers";
+import { writeResultFile, getCurrentDate } from "@exsys-web-server/helpers";
 import extractCoverageEligibilityEntryResponseData from "../../nphiesHelpers/extraction/extractCoverageEligibilityEntryResponseData.mjs";
 import extractCoverageEntryResponseData from "../../nphiesHelpers/extraction/extractCoverageEntryResponseData.mjs";
 import checkPatientInsuranceMiddleware from "../../helpers/createBaseExpressMiddleware.mjs";
 import createNphiesRequestPayloadFn from "../../nphiesHelpers/eligibility/index.mjs";
-import createNphiesRequest from "../../helpers/createNphiesRequest.mjs";
+import checkNphiesPatientInsurance from "../../exsysHelpers/checkNphiesPatientInsurance.mjs";
 import createBaseFetchExsysDataAndCallNphiesApi from "../../exsysHelpers/createBaseFetchExsysDataAndCallNphiesApi.mjs";
 import extractEligibilityDataSentToNphies from "../../exsysToFrontEndHelpers/eligibility/index.mjs";
-import {
-  CLI_CONFIG,
-  NPHIES_API_URLS,
-  EXSYS_API_IDS_NAMES,
-} from "../../constants.mjs";
-
-const { production } = CLI_CONFIG;
-const {
-  NPHIES_CHECK_INSURANCE_PRODUCTION,
-  NPHIES_CHECK_INSURANCE_DEVELOPMENT,
-} = NPHIES_API_URLS;
+import { EXSYS_API_IDS_NAMES } from "../../constants.mjs";
 
 const { queryEligibilityDataFromCchi } = EXSYS_API_IDS_NAMES;
-
-const lowerFirstLetter = (value) => {
-  const [firstLetter, ...otherLetters] = [...(value || "")];
-  return [firstLetter.toLowerCase(), ...otherLetters].join("");
-};
-
-const transformResults = (result) => {
-  if (isObjectHasData(result)) {
-    let finalResults = {};
-
-    Object.keys(result).forEach((key) => {
-      const lowerKey = lowerFirstLetter(key);
-      const value = result[key];
-
-      const isValueObject = isObjectHasData(value);
-      const isValueArray = isArrayHasData(value);
-
-      if (isValueObject) {
-        finalResults = {
-          ...finalResults,
-          [lowerKey]: transformResults(value),
-        };
-      }
-
-      if (isValueArray) {
-        finalResults = {
-          ...finalResults,
-          [lowerKey]: value.map(transformResults),
-        };
-      }
-
-      if (!isValueObject && !isValueArray) {
-        const _value = isAlreadyReversedDate(value)
-          ? createDateFromNativeDate(value, { returnReversedDate: false })
-              .dateString
-          : value;
-
-        finalResults[lowerKey] = _value;
-      }
-    });
-
-    return finalResults;
-  }
-
-  return result;
-};
 
 const extractionFunctionsMap = {
   CoverageEligibilityResponse: extractCoverageEligibilityEntryResponseData,
@@ -99,38 +36,15 @@ export default checkPatientInsuranceMiddleware(async (body) => {
     customer_group_no,
   } = body;
 
-  const SystemType = _systemType || "1";
+  const systemType = _systemType || "1";
 
-  // https://hsb.nphies.sa/checkinsurance?PatientKey=2005274879&SystemType=1
-  // http://hsb.oba.nphies.sa/checkinsurance?PatientKey=2005274879&SystemType=1
-  const results = await createNphiesRequest({
-    baseAPiUrl: production
-      ? NPHIES_CHECK_INSURANCE_PRODUCTION
-      : NPHIES_CHECK_INSURANCE_DEVELOPMENT,
-    requestMethod: "GET",
-    requestParams: {
-      PatientKey: beneficiaryKey,
-      SystemType,
-    },
+  const printFolderName = `CCHI/${beneficiaryKey}/${systemType}`;
+
+  const apiResults = await checkNphiesPatientInsurance({
+    patientKey: beneficiaryKey,
+    systemType,
+    printValues,
   });
-
-  const printFolderName = `CCHI/${beneficiaryKey}/${SystemType}`;
-
-  const { result, isSuccess } = results;
-  const apiResults = isSuccess ? transformResults(result) : result;
-
-  if (printValues) {
-    await writeResultFile({
-      data: {
-        params: {
-          beneficiaryKey,
-          SystemType,
-        },
-        data: results,
-      },
-      folderName: printFolderName,
-    });
-  }
 
   const shouldCallEligibilityApi = !!(
     organization_no &&
@@ -148,6 +62,7 @@ export default checkPatientInsuranceMiddleware(async (body) => {
       mobileNumber,
       insuranceCompanyID,
     } = apiResults;
+
     const [
       patient_first_name,
       patient_second_name,
@@ -172,27 +87,29 @@ export default checkPatientInsuranceMiddleware(async (body) => {
       period_end_date: expiryDate,
     };
 
+    const exsysApiParams = {
+      authorization,
+      organization_no,
+      customer_no,
+      customer_group_no,
+      insurance_company: insuranceCompanyID,
+    };
+
     const { printData, loggerValue, resultData } =
       await createBaseFetchExsysDataAndCallNphiesApi({
         exsysQueryApiId: queryEligibilityDataFromCchi,
-        requestParams: {
-          authorization,
-          organization_no,
-          customer_no,
-          customer_group_no,
-          insurance_company: insuranceCompanyID,
-        },
+        requestParams: exsysApiParams,
         requestMethod: "GET",
         printFolderName: `${printFolderName}/eligibility`,
         exsysDataApiPrimaryKeyName: "primaryKey",
-        createResultsDataFromExsysResponse: (result) => ({
-          ...baseEligibilityData,
-          ...result,
-        }),
         createNphiesRequestPayloadFn,
         extractionFunctionsMap,
         setErrorIfExtractedDataFoundFn,
         noPatientDataLogger: true,
+        createResultsDataFromExsysResponse: (result) => ({
+          ...baseEligibilityData,
+          ...result,
+        }),
       });
 
     const {
