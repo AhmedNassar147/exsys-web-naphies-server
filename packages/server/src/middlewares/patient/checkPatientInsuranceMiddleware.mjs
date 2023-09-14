@@ -51,14 +51,18 @@ export default checkPatientInsuranceMiddleware(async (body) => {
     !!isSuccess && !!(organization_no && customer_no && customer_group_no);
 
   if (shouldCallEligibilityApi) {
-    const {
-      name,
-      identityNumber,
-      gender,
-      dateOfBirth,
-      mobileNumber,
-      insuranceCompanyID,
-    } = apiResults;
+    const { insurance } = apiResults;
+
+    const [
+      {
+        name,
+        identityNumber,
+        gender,
+        dateOfBirth,
+        mobileNumber,
+        insuranceCompanyID,
+      },
+    ] = insurance;
 
     const [
       patient_first_name,
