@@ -16,10 +16,20 @@ import { NPHIES_REQUEST_TYPES, ELIGIBILITY_TYPES } from "../../constants.mjs";
 
 const { ELIGIBILITY } = NPHIES_REQUEST_TYPES;
 
-const BENEFITS_AND_VALIDATION_TYPE = [
-  ELIGIBILITY_TYPES.benefits,
-  ELIGIBILITY_TYPES.validation,
-];
+const ELIGIBILITY_TYPES_MAP = {
+  [ELIGIBILITY_TYPES.benefits]: [
+    ELIGIBILITY_TYPES.benefits,
+    ELIGIBILITY_TYPES.discovery,
+  ],
+  [ELIGIBILITY_TYPES.discovery]: [
+    ELIGIBILITY_TYPES.benefits,
+    ELIGIBILITY_TYPES.discovery,
+  ],
+  [ELIGIBILITY_TYPES.validation]: [
+    ELIGIBILITY_TYPES.benefits,
+    ELIGIBILITY_TYPES.validation,
+  ],
+};
 
 const createNaphiesEligibilityRequestFullData = ({
   provider_license,
@@ -68,9 +78,9 @@ const createNaphiesEligibilityRequestFullData = ({
 
   const requestId = createUUID();
 
-  const purpose = BENEFITS_AND_VALIDATION_TYPE.includes(message_event_type)
-    ? BENEFITS_AND_VALIDATION_TYPE
-    : [message_event_type];
+  const purpose =
+    ELIGIBILITY_TYPES_MAP[message_event_type] ||
+    ELIGIBILITY_TYPES_MAP[ELIGIBILITY_TYPES.validation];
 
   const requestPayload = {
     ...createNphiesBaseRequestData(),
