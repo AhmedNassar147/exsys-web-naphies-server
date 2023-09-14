@@ -101,7 +101,7 @@ export default checkPatientInsuranceMiddleware(async (body) => {
         requestParams: exsysApiParams,
         requestMethod: "GET",
         printFolderName: `${printFolderName}/eligibility`,
-        exsysDataApiPrimaryKeyName: "primaryKey",
+        exsysDataApiPrimaryKeyName: "memberid",
         createNphiesRequestPayloadFn,
         extractionFunctionsMap,
         setErrorIfExtractedDataFoundFn,
