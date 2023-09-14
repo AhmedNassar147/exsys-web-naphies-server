@@ -40,17 +40,14 @@ export default checkPatientInsuranceMiddleware(async (body) => {
 
   const printFolderName = `CCHI/${beneficiaryKey}/${systemType}`;
 
-  const apiResults = await checkNphiesPatientInsurance({
+  const { apiResults, isSuccess } = await checkNphiesPatientInsurance({
     patientKey: beneficiaryKey,
     systemType,
     printValues,
   });
 
-  const shouldCallEligibilityApi = !!(
-    organization_no &&
-    customer_no &&
-    customer_group_no
-  );
+  const shouldCallEligibilityApi =
+    !!isSuccess && !!(organization_no && customer_no && customer_group_no);
 
   if (shouldCallEligibilityApi) {
     const {

@@ -89,7 +89,7 @@ const checkNphiesPatientInsurance = async ({
     await writeResultFile({
       data: {
         params: {
-          beneficiaryKey,
+          patientKey,
           systemType,
         },
         data: results,
@@ -100,7 +100,10 @@ const checkNphiesPatientInsurance = async ({
 
   const apiResults = isSuccess ? transformResults(result) : result;
 
-  return apiResults || {};
+  return {
+    apiResults: apiResults || {},
+    isSuccess,
+  };
 };
 
 export default checkNphiesPatientInsurance;
