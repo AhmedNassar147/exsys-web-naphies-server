@@ -78,7 +78,7 @@ export default checkPatientInsuranceMiddleware(async (body) => {
       patient_second_name: patient_second_name || "",
       patient_third_name: patient_third_name || "",
       patient_family_name: patient_family_name || "",
-      patient_file_no: identityNumber,
+      patient_file_no: beneficiaryNumber,
       memberid: beneficiaryNumber,
       iqama_no: beneficiaryNumber,
       patient_phone: mobileNumber,
