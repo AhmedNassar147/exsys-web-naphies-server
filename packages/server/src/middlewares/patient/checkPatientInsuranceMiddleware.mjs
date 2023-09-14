@@ -54,7 +54,6 @@ export default checkPatientInsuranceMiddleware(async (body) => {
     const {
       name,
       identityNumber,
-      expiryDate,
       gender,
       dateOfBirth,
       mobileNumber,
@@ -81,8 +80,6 @@ export default checkPatientInsuranceMiddleware(async (body) => {
       gender: gender === "1" ? "male" : "female",
       birthDate: dateOfBirth || dateString,
       relationship: "self",
-      period_start_date: dateString,
-      period_end_date: expiryDate,
     };
 
     const exsysApiParams = {
@@ -126,7 +123,7 @@ export default checkPatientInsuranceMiddleware(async (body) => {
           loggerValue,
           ...data,
         },
-        folderName: folderName,
+        folderName,
       });
     }
 
