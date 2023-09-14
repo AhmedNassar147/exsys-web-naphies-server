@@ -69,6 +69,7 @@ const checkNphiesPatientInsurance = async ({
   patientKey,
   systemType,
   printValues,
+  printFolderName,
 }) => {
   // https://hsb.nphies.sa/checkinsurance?PatientKey=2005274879&SystemType=1
   // http://hsb.oba.nphies.sa/checkinsurance?PatientKey=2005274879&SystemType=1

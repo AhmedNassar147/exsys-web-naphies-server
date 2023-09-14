@@ -44,6 +44,7 @@ export default checkPatientInsuranceMiddleware(async (body) => {
     patientKey: beneficiaryKey,
     systemType,
     printValues,
+    printFolderName,
   });
 
   const shouldCallEligibilityApi =
