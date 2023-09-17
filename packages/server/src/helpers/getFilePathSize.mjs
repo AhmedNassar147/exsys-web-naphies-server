@@ -8,7 +8,6 @@ import axios from "axios";
 
 const getFilePathSize = async (fileUrl, retryTimes = 0) =>
   await new Promise(async (resolve) => {
-    console.log("fileUrl", fileUrl);
     const wrapper = (n) => {
       axios
         .get(fileUrl, {
