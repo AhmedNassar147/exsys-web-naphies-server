@@ -41,6 +41,7 @@ const setErrorIfExtractedDataFoundFn = ({ coverageErrors, claimErrors }) => [
 const createExsysSaveApiParams = ({
   primaryKey,
   exsysDataApiPrimaryKeyName,
+  isSizeLimitExceeded,
   nphiesExtractedData: {
     issueError,
     issueErrorCode,
@@ -64,6 +65,7 @@ const createExsysSaveApiParams = ({
     adjudication_outcome: claimExtensionCode || _outcome,
     creation_bundle_id: creationBundleId,
     request_type: "request",
+    size_limit_exceeded: isSizeLimitExceeded ? "Y" : "N",
   };
 };
 
@@ -115,6 +117,7 @@ const fetchExsysPreauthorizationDataAndCallNphies = async ({
 
   const onNphiesResponseWithSuccessFn = async ({
     nphiesExtractedData,
+    isSizeLimitExceeded,
     ...options
   }) => {
     const { nodeServerDataSentToNaphies, nphiesResponse, exsysResultsData } =
@@ -126,7 +129,10 @@ const fetchExsysPreauthorizationDataAndCallNphies = async ({
       await createExsysRequest({
         resourceName: saveClaimHistory,
         requestMethod: "POST",
-        requestParams: { claim_pk },
+        requestParams: {
+          claim_pk,
+          size_limit_exceeded: isSizeLimitExceeded ? "Y" : "N",
+        },
         body: {
           claim_pk,
           nodeServerDataSentToNaphies,

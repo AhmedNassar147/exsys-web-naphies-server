@@ -156,12 +156,15 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
   const { nphiesExtractedData, nodeServerDataSentToNaphies, nphiesResponse } =
     nphiesResultData;
 
+  const isSizeLimitExceeded = errorMessageCode === "SIZE_LIMIT_EXCEEDED";
+
   if (exsysSaveApiId) {
     const successSaveParams = createExsysSaveApiParams
       ? createExsysSaveApiParams({
           primaryKey,
           exsysDataApiPrimaryKeyName,
           nphiesExtractedData: nphiesExtractedData || {},
+          isSizeLimitExceeded,
         })
       : undefined;
 
@@ -172,7 +175,7 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
         [exsysDataApiPrimaryKeyName]: primaryKey,
         nodeServerDataSentToNaphies,
         nphiesResponse,
-        ...(!isNphiesServerConnected
+        ...(!isNphiesServerConnected || isSizeLimitExceeded
           ? createExsysErrorSaveApiBody(errorMessage) || null
           : {
               nphiesExtractedData: nphiesExtractedData || {},
@@ -187,6 +190,7 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
       nphiesResponse,
       nphiesExtractedData,
       exsysResultsData,
+      isSizeLimitExceeded,
     });
   }
 
