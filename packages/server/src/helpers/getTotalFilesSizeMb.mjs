@@ -12,6 +12,8 @@ const getTotalFilesSizeMb = async (files) => {
     const promises = files.map((fileUrl) => getFilePathSize(fileUrl));
     const sizes = await Promise.all(promises);
 
+    console.log("sizes", sizes);
+
     return sizes.reduce((acc, size) => acc + size, 0);
   }
 
