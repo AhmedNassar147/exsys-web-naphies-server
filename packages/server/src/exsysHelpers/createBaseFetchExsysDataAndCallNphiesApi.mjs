@@ -27,6 +27,7 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
   checkExsysDataValidationBeforeCallingNphies,
   exsysQueryApiDelayTimeout,
   nphiesApiDelayTimeout,
+  checkPayloadNphiesSize,
 }) => {
   const {
     isSuccess,
@@ -151,6 +152,7 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
     extractionFunctionsMap,
     setErrorIfExtractedDataFoundFn,
     nphiesApiDelayTimeout,
+    checkPayloadNphiesSize,
   });
 
   const { nphiesExtractedData, nodeServerDataSentToNaphies, nphiesResponse } =

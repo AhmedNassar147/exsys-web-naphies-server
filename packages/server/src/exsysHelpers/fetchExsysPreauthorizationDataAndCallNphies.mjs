@@ -184,6 +184,7 @@ const fetchExsysPreauthorizationDataAndCallNphies = async ({
     checkExsysDataValidationBeforeCallingNphies,
     exsysQueryApiDelayTimeout,
     nphiesApiDelayTimeout,
+    checkPayloadNphiesSize: isClaimRequestType,
   });
 };
 

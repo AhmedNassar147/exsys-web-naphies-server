@@ -14,27 +14,33 @@ const callNphiesAPIAndCollectResults = ({
   setErrorIfExtractedDataFoundFn,
   isAuthorizationPoll,
   nphiesApiDelayTimeout,
+  checkPayloadNphiesSize,
 }) =>
   new Promise(async (resolve) => {
     const nphiesRequestPayload = createNphiesRequestPayloadFn(exsysResultsData);
-    const sizeInBytes = Buffer.byteLength(JSON.stringify(nphiesRequestPayload));
-    const megaBytes = sizeInBytes / 1e6;
 
-    if (megaBytes > 11) {
-      const nphiesResultData = {
-        isSuccess,
-        ...(otherPrintValues || null),
-        exsysResultsData,
-        nodeServerDataSentToNaphies: nphiesRequestPayload,
-      };
+    if (checkPayloadNphiesSize) {
+      const sizeInBytes = Buffer.byteLength(
+        JSON.stringify(nphiesRequestPayload)
+      );
+      const megaBytes = sizeInBytes / 1e6;
 
-      resolve({
-        nphiesResultData,
-        errorMessage: "Nphies payload exceeded the limit (11 MB)",
-        errorMessageCode: "SIZE_LIMIT_EXCEEDED",
-        hasError: true,
-        isNphiesServerConnected: true,
-      });
+      if (megaBytes > 11) {
+        const nphiesResultData = {
+          isSuccess,
+          ...(otherPrintValues || null),
+          exsysResultsData,
+          nodeServerDataSentToNaphies: nphiesRequestPayload,
+        };
+
+        resolve({
+          nphiesResultData,
+          errorMessage: "Nphies payload exceeded the limit (11 MB)",
+          errorMessageCode: "SIZE_LIMIT_EXCEEDED",
+          hasError: true,
+          isNphiesServerConnected: true,
+        });
+      }
     }
 
     const nphiesResults = await createNphiesRequest({
