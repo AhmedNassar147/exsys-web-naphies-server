@@ -46,7 +46,7 @@ const createNphiesRequest = async ({
   });
 
   if (startingDelayTimeout) {
-    delayProcess(startingDelayTimeout);
+    await delayProcess(startingDelayTimeout);
   }
 
   return await createFetchRequest({
