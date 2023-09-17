@@ -156,12 +156,12 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
   const { nphiesExtractedData, nodeServerDataSentToNaphies, nphiesResponse } =
     nphiesResultData;
 
-  if (exsysSaveApiId && isNphiesServerConnected) {
+  if (exsysSaveApiId) {
     const successSaveParams = createExsysSaveApiParams
       ? createExsysSaveApiParams({
           primaryKey,
           exsysDataApiPrimaryKeyName,
-          nphiesExtractedData,
+          nphiesExtractedData: nphiesExtractedData || {},
         })
       : undefined;
 
@@ -172,12 +172,16 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
         [exsysDataApiPrimaryKeyName]: primaryKey,
         nodeServerDataSentToNaphies,
         nphiesResponse,
-        nphiesExtractedData,
+        ...(!isNphiesServerConnected
+          ? createExsysErrorSaveApiBody(errorMessage) || null
+          : {
+              nphiesExtractedData: nphiesExtractedData || {},
+            }),
       },
     });
   }
 
-  if (onNphiesResponseWithSuccessFn && isNphiesServerConnected) {
+  if (onNphiesResponseWithSuccessFn) {
     await onNphiesResponseWithSuccessFn({
       nodeServerDataSentToNaphies,
       nphiesResponse,
@@ -207,7 +211,7 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
     resultData: {
       primaryKey,
       nphiesExtractedData: {
-        ...nphiesExtractedData,
+        ...(nphiesExtractedData || null),
         messageEvent: message_event,
         messageEventType: message_event_type,
         patientFileNo: patient_file_no,

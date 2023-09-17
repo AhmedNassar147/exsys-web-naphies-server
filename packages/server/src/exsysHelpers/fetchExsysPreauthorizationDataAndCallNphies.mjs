@@ -140,6 +140,7 @@ const fetchExsysPreauthorizationDataAndCallNphies = async ({
       nphiesExtractedData || {};
 
     if (
+      nphiesExtractedData &&
       claimRequestId &&
       claimResponseId &&
       claimPreauthRef &&

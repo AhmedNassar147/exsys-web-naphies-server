@@ -34,8 +34,12 @@ const callNphiesAPIAndCollectResults = ({
       nphiesResponse,
     };
 
-    let errorMessage = restResult.error;
-    let errorMessageCode = undefined;
+    const { servlet, message, status } = nphiesResponse || {};
+
+    let errorMessage = [restResult.error, servlet, message]
+      .filter(Boolean)
+      .join(" ");
+    let errorMessageCode = isSuccess ? undefined : status;
     let hasError = !isSuccess;
 
     const { id: mainBundleId } = nphiesResponse || {};
