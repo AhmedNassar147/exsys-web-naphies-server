@@ -80,7 +80,7 @@ export default checkPatientInsuranceMiddleware(async (body) => {
       patient_family_name: patient_family_name || "",
       patient_file_no: beneficiaryNumber,
       memberid: beneficiaryNumber,
-      iqama_no: beneficiaryNumber,
+      iqama_no: identityNumber,
       patient_phone: mobileNumber,
       gender: gender === "1" ? "male" : "female",
       birthDate: dateOfBirth || dateString,
