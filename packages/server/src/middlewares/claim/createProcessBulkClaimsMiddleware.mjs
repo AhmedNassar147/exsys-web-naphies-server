@@ -19,7 +19,7 @@ const { queryBulkClaimsDataToCancellationOrCreation } = EXSYS_API_IDS_NAMES;
 const exsysApiBaseUrl =
   EXSYS_API_IDS[queryBulkClaimsDataToCancellationOrCreation];
 
-const claimsToBeSentToNphiesPerRequestsMap = 25;
+const claimsToBeSentToNphiesPerRequestsMap = 5;
 
 export default createProcessBulkClaimsMiddleware(
   async ({ authorization, data, printValues = false }) => {
@@ -100,7 +100,6 @@ export default createProcessBulkClaimsMiddleware(
 
     const claims = [...exsysResultsData];
     const isClaimCancellation = request_type === "cancel";
-    const exsysResultsDataLength = exsysResultsData.length;
 
     const mappedRequestsFn = isClaimCancellation
       ? createMappedClaimOrPreauthCancellation
@@ -108,7 +107,6 @@ export default createProcessBulkClaimsMiddleware(
 
     let results = [];
     let printInfoData = {};
-    let printInfoDataLength = 0;
 
     while (claims.length) {
       const data = claims.splice(0, claimsToBeSentToNphiesPerRequestsMap);
@@ -131,15 +129,14 @@ export default createProcessBulkClaimsMiddleware(
         const { folderName, data } = printInfo;
         const folderData = printInfoData[folderName] || [];
         printInfoData[folderName] = folderData.concat(...data);
-        printInfoDataLength += data.length;
       }
 
       if (!!claims.length) {
-        await delayProcess(100);
+        await delayProcess(6000);
       }
     }
 
-    if (printInfoDataLength === exsysResultsDataLength && printValues) {
+    if (printValues) {
       const keys = Object.keys(printInfoData);
 
       await Promise.all(

@@ -14,12 +14,29 @@ const createMappedRequestsArray = async ({
   formatReturnedResults,
 }) => {
   if (isArrayHasData(dataArray)) {
-    const configPromises = dataArray
-      .map((item, index) => asyncFn(item, !index ? 0 : index * 2000, index))
+    const configFunctionPromises = dataArray
+      .map(
+        (item, index) => async () =>
+          await asyncFn(item, (!index ? 0 : index) * 4000, index)
+      )
       .filter(Boolean)
       .flat();
 
-    const results = await Promise.all(configPromises);
+    let results = [];
+    let shouldBreakLoop = false;
+
+    while (configFunctionPromises.length && !shouldBreakLoop) {
+      const [fnThatReturnsPromise] = configFunctionPromises.splice(0, 1);
+      const result = await fnThatReturnsPromise();
+      results = results.concat(result);
+
+      const { resultData } = result;
+      const { isNphiesServerNotConnected } = resultData;
+
+      if (isNphiesServerNotConnected) {
+        shouldBreakLoop = true;
+      }
+    }
 
     const { printInfo, loggerValues, resultsData } =
       await createApiResultsAndLoggerValues(results);

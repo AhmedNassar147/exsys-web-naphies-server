@@ -158,6 +158,8 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
   const { nphiesExtractedData, nodeServerDataSentToNaphies, nphiesResponse } =
     nphiesResultData;
 
+  const isNphiesServerNotConnected = !isNphiesServerConnected;
+
   const isSizeLimitExceeded = errorMessageCode === "SIZE_LIMIT_EXCEEDED";
 
   if (exsysSaveApiId) {
@@ -177,7 +179,7 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
         [exsysDataApiPrimaryKeyName]: primaryKey,
         nodeServerDataSentToNaphies,
         nphiesResponse,
-        ...(!isNphiesServerConnected || isSizeLimitExceeded
+        ...(isNphiesServerNotConnected || isSizeLimitExceeded
           ? createExsysErrorSaveApiBody(errorMessage) || null
           : {
               nphiesExtractedData: nphiesExtractedData || {},
@@ -216,6 +218,7 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
     loggerValue: [errorMessage, errorMessageCode].filter(Boolean).join(" - "),
     resultData: {
       primaryKey,
+      isNphiesServerNotConnected,
       nphiesExtractedData: {
         ...(nphiesExtractedData || null),
         messageEvent: message_event,
