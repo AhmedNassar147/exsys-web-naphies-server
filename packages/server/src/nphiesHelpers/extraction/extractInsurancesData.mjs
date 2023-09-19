@@ -53,8 +53,7 @@ const getInsuranceItem = (
     benefitTermCode,
     name,
     description,
-    benefits,
-    extendable: "y",
+    ...benefits,
     rowKey: index.toString(),
   };
 };
