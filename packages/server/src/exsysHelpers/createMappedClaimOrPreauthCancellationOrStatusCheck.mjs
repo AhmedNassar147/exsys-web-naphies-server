@@ -18,20 +18,15 @@ const createMappedClaimOrPreauthCancellationOrStatusCheck = async ({
     dataArray: data,
     printValues,
     formatReturnedResults,
-    asyncFn: async (
-      {
-        patientFileNo,
-        organizationNo,
-        authorizationNo,
-        recordPk,
-        requestType,
-        nullifyRequest,
-      },
-      requestTimeout
-    ) => {
+    asyncFn: async ({
+      patientFileNo,
+      organizationNo,
+      authorizationNo,
+      recordPk,
+      requestType,
+      nullifyRequest,
+    }) => {
       const options = {
-        exsysQueryApiDelayTimeout: requestTimeout,
-        nphiesApiDelayTimeout: requestTimeout,
         requestParams: {
           authorization: authorizationNo || authorization,
           patient_file_no: patientFileNo,

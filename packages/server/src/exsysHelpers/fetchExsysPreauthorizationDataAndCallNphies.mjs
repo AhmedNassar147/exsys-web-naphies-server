@@ -106,8 +106,6 @@ const createResultsDataFromExsysResponse = async ({
 const fetchExsysPreauthorizationDataAndCallNphies = async ({
   requestParams,
   nphiesRequestType,
-  exsysQueryApiDelayTimeout,
-  nphiesApiDelayTimeout,
 }) => {
   const { exsysQueryApiId, exsysDataApiPrimaryKeyName, exsysSaveApiId } =
     CONFIG_MAP[nphiesRequestType];
@@ -182,8 +180,6 @@ const fetchExsysPreauthorizationDataAndCallNphies = async ({
     createExsysErrorSaveApiBody,
     onNphiesResponseWithSuccessFn,
     checkExsysDataValidationBeforeCallingNphies,
-    exsysQueryApiDelayTimeout,
-    nphiesApiDelayTimeout,
     checkPayloadNphiesSize: isClaimRequestType,
   });
 };

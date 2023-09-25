@@ -16,16 +16,17 @@ const createMappedEligibilityRequests = async ({
   await createMappedRequestsArray({
     dataArray: data,
     printValues,
-    asyncFn: async (
-      { patientFileNo, contractNo, patientIdNo, organization_no, type },
-      requestTimeout
-    ) => {
+    asyncFn: async ({
+      patientFileNo,
+      contractNo,
+      patientIdNo,
+      organization_no,
+      type,
+    }) => {
       const message_event_type =
         ELIGIBILITY_TYPES[type] || ELIGIBILITY_TYPES.validation;
 
       return await fetchExsysEligibilityDataAndCallNphies({
-        exsysQueryApiDelayTimeout: requestTimeout,
-        nphiesApiDelayTimeout: requestTimeout,
         exsysAPiBodyData: {
           authorization,
           message_event,

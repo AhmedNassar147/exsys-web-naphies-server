@@ -82,11 +82,7 @@ const createResultsDataFromExsysResponse = async ({
   };
 };
 
-const fetchPreauthAndClaimCommunicationResponse = async ({
-  requestParams,
-  exsysQueryApiDelayTimeout,
-  nphiesApiDelayTimeout,
-}) => {
+const fetchPreauthAndClaimCommunicationResponse = async ({ requestParams }) => {
   const { request_type, communication_pk } = requestParams;
 
   const checkExsysDataValidationBeforeCallingNphies =
@@ -106,8 +102,6 @@ const fetchPreauthAndClaimCommunicationResponse = async ({
     createExsysSaveApiParams,
     createExsysErrorSaveApiBody,
     checkExsysDataValidationBeforeCallingNphies,
-    exsysQueryApiDelayTimeout,
-    nphiesApiDelayTimeout,
   });
 };
 
