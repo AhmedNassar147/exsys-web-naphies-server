@@ -3,7 +3,6 @@
  * Helper: `createExsysRequest`.
  *
  */
-import { delayProcess } from "@exsys-web-server/helpers";
 import createFetchRequest from "./createFetchRequest.mjs";
 import {
   EXSYS_BASE_URL,
@@ -22,16 +21,11 @@ const createExsysRequest = async ({
   body,
   retryTimes = RETRY_TIMES,
   retryDelay = RETRY_DELAY,
-  startingDelayTimeout,
 }) => {
   const resourceNameUrl = EXSYS_API_IDS[resourceName];
 
   if (!resourceNameUrl) {
     throw new Error("resourceName is not found in `EXSYS_API_IDS`");
-  }
-
-  if (startingDelayTimeout) {
-    await delayProcess(startingDelayTimeout);
   }
 
   return await createFetchRequest({

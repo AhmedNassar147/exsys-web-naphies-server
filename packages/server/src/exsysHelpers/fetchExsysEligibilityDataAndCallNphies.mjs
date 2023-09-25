@@ -53,8 +53,6 @@ const fetchExsysEligibilityDataAndCallNphies = async ({
   exsysAPiBodyData,
   noPatientDataLogger,
   printFolderName,
-  exsysQueryApiDelayTimeout,
-  nphiesApiDelayTimeout,
 }) =>
   await createBaseFetchExsysDataAndCallNphiesApi({
     exsysQueryApiId: exsysApiId || queryExsysEligibilityData,
@@ -71,8 +69,6 @@ const fetchExsysEligibilityDataAndCallNphies = async ({
     setErrorIfExtractedDataFoundFn,
     createExsysErrorSaveApiBody,
     noPatientDataLogger,
-    exsysQueryApiDelayTimeout,
-    nphiesApiDelayTimeout,
   });
 
 export default fetchExsysEligibilityDataAndCallNphies;

@@ -25,8 +25,6 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
   onNphiesResponseWithSuccessFn,
   noPatientDataLogger,
   checkExsysDataValidationBeforeCallingNphies,
-  exsysQueryApiDelayTimeout,
-  nphiesApiDelayTimeout,
   checkPayloadNphiesSize,
 }) => {
   const {
@@ -38,7 +36,6 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
     requestMethod,
     requestParams,
     body: requestBody,
-    startingDelayTimeout: exsysQueryApiDelayTimeout,
   });
 
   const _result = result || {};
@@ -151,7 +148,6 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
     createNphiesRequestPayloadFn,
     extractionFunctionsMap,
     setErrorIfExtractedDataFoundFn,
-    nphiesApiDelayTimeout,
     checkPayloadNphiesSize,
   });
 

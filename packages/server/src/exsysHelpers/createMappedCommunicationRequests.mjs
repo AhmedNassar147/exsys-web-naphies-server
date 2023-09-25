@@ -14,10 +14,8 @@ const createMappedCommunicationRequests = async ({
   await createMappedRequestsArray({
     dataArray: data,
     printValues,
-    asyncFn: async ({ communicationPk, requestType }, requestTimeout) =>
+    asyncFn: async ({ communicationPk, requestType }) =>
       await fetchPreauthAndClaimCommunicationResponse({
-        exsysQueryApiDelayTimeout: requestTimeout,
-        nphiesApiDelayTimeout: requestTimeout,
         requestParams: {
           authorization,
           communication_pk: communicationPk,

@@ -6,6 +6,7 @@
 import isArrayHasData from "./isArrayHasData.mjs";
 import createPrintResultsOrLog from "./createPrintResultsOrLog.mjs";
 import createApiResultsAndLoggerValues from "./createApiResultsAndLoggerValues.mjs";
+import delayProcess from "./delayProcess.mjs";
 
 const createMappedRequestsArray = async ({
   dataArray,
@@ -14,27 +15,20 @@ const createMappedRequestsArray = async ({
   formatReturnedResults,
 }) => {
   if (isArrayHasData(dataArray)) {
-    const configFunctionPromises = dataArray
-      .map(
-        (item, index) => async () =>
-          await asyncFn(item, (!index ? 0 : index) * 4000, index)
-      )
-      .filter(Boolean)
-      .flat();
-
     let results = [];
-    let shouldBreakLoop = false;
 
-    while (configFunctionPromises.length && !shouldBreakLoop) {
-      const [fnThatReturnsPromise] = configFunctionPromises.splice(0, 1);
-      const result = await fnThatReturnsPromise();
+    const clonedData = [...dataArray];
+
+    while (clonedData.length) {
+      const [itemData] = clonedData.splice(0, 1);
+      const result = await asyncFn(itemData);
       results = results.concat(result);
 
       const { resultData } = result;
       const { isNphiesServerNotConnected } = resultData;
 
       if (isNphiesServerNotConnected) {
-        shouldBreakLoop = true;
+        await delayProcess(4000);
       }
     }
 

@@ -62,8 +62,6 @@ const createExsysSaveApiParams = ({
 
 const createNphiesCancellationPreauthOrClaimData = async ({
   requestParams,
-  exsysQueryApiDelayTimeout,
-  nphiesApiDelayTimeout,
 }) => {
   const { record_pk, request_type, nullify_request } = requestParams;
 
@@ -92,8 +90,6 @@ const createNphiesCancellationPreauthOrClaimData = async ({
     setErrorIfExtractedDataFoundFn,
     createExsysSaveApiParams,
     createExsysErrorSaveApiBody,
-    exsysQueryApiDelayTimeout,
-    nphiesApiDelayTimeout,
   });
 };
 

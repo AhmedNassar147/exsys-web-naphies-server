@@ -13,10 +13,8 @@ export default createPreauthorizationMiddleware(
     await createMappedRequestsArray({
       dataArray: data,
       printValues,
-      asyncFn: async ({ preauth_pk }, requestTimeout) =>
+      asyncFn: async ({ preauth_pk }) =>
         await fetchExsysPreauthorizationDataAndCallNphies({
-          exsysQueryApiDelayTimeout: requestTimeout,
-          nphiesApiDelayTimeout: requestTimeout,
           nphiesRequestType: NPHIES_REQUEST_TYPES.PREAUTH,
           requestParams: {
             authorization,

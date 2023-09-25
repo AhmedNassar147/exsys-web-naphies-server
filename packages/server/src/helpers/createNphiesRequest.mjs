@@ -3,7 +3,6 @@
  * Helper: `createNphiesRequest`.
  *
  */
-import { delayProcess } from "@exsys-web-server/helpers";
 import { readFile } from "fs/promises";
 import https from "https";
 import createFetchRequest from "./createFetchRequest.mjs";
@@ -28,7 +27,6 @@ const createNphiesRequest = async ({
   retryTimes = RETRY_TIMES,
   retryDelay = RETRY_DELAY,
   baseAPiUrl: _baseAPiUrl,
-  startingDelayTimeout,
 }) => {
   const baseAPiUrl =
     _baseAPiUrl || (production ? NPHIES_PRODUCTION : NPHIES_DEVELOPMENT);
@@ -44,10 +42,6 @@ const createNphiesRequest = async ({
     pfx: certificate,
     passphrase,
   });
-
-  if (startingDelayTimeout) {
-    await delayProcess(startingDelayTimeout);
-  }
 
   return await createFetchRequest({
     baseAPiUrl,
