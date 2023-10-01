@@ -17,6 +17,30 @@ import { NPHIES_REQUEST_TYPES } from "../../constants.mjs";
 
 const { PREAUTH, CLAIM } = NPHIES_REQUEST_TYPES;
 
+// message_event_type: "vision"
+// visionPrescriptionId,
+// visionPrescriptionCreatedAt,
+// visionLensSpecification: [
+//   {
+//     "eye": "left",
+//     "sphere": 1.5,
+//     "cylinder": 0.75,
+//     "axis": 110,
+//     prism: [
+//       {
+//         amount: 10,
+//         base: 5
+//       }
+//     ]
+//   },
+//   {
+//     "eye": "right",
+//     "sphere": 2.25,
+//     "cylinder": 0.75,
+//     "axis": 80
+//   }
+// ]
+
 const createNaphiesPreauthRequestFullData = ({
   provider_license,
   payer_license,

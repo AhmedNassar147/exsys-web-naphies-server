@@ -46,13 +46,16 @@ export default checkPatientInsuranceMiddleware(async (body) => {
     printValues,
     printFolderName,
   });
+  const { insurance, errorCode, errorDescription } = apiResults;
+
+  const hasError = !!(errorCode || errorDescription);
 
   const shouldCallEligibilityApi =
-    !!isSuccess && !!(organization_no && customer_no && customer_group_no);
+    !!isSuccess &&
+    !hasError &&
+    !!(organization_no && customer_no && customer_group_no);
 
   if (shouldCallEligibilityApi) {
-    const { insurance } = apiResults;
-
     const [
       {
         name,
