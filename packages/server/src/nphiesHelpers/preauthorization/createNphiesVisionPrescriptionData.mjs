@@ -18,15 +18,6 @@ const { LENSE_TYPE } = NPHIES_BASE_CODE_TYPES;
 const { PROFILE_VISION_PRESCRIPTION } = NPHIES_BASE_PROFILE_TYPES;
 const { VISION_PRESCRIPTION } = NPHIES_RESOURCE_TYPES;
 
-const lenseProductItem = {
-  coding: [
-    {
-      system: `${BASE_CODE_SYS_URL}/${LENSE_TYPE}`,
-      code: "lens",
-    },
-  ],
-};
-
 const createNphiesVisionPrescriptionData = ({
   visionPrescriptionUrl,
   visionPrescriptionId,
@@ -66,18 +57,20 @@ const createNphiesVisionPrescriptionData = ({
     },
     lensSpecification: isArrayHasData(visionLensSpecification)
       ? visionLensSpecification.map(
-          ({ eye, sphere, cylinder, axis, prism }) => ({
-            product: lenseProductItem,
+          ({ eye, sphere, cylinder, axis, prism, lensType }) => ({
+            product: {
+              coding: [
+                {
+                  system: `${BASE_CODE_SYS_URL}/${LENSE_TYPE}`,
+                  code: lensType,
+                },
+              ],
+            },
             eye,
             sphere,
             cylinder,
             axis,
-            prism: isArrayHasData(prism)
-              ? prism.map(({ amount, base }) => ({
-                  amount: amount,
-                  base,
-                }))
-              : undefined,
+            prism: isArrayHasData(prism) ? prism : undefined,
           })
         )
       : undefined,
