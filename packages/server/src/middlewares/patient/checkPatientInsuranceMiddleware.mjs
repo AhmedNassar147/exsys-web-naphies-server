@@ -3,7 +3,11 @@
  * Middleware: `checkPatientInsuranceMiddleware`.
  *
  */
-import { writeResultFile, getCurrentDate } from "@exsys-web-server/helpers";
+import {
+  writeResultFile,
+  getCurrentDate,
+  isArrayHasData,
+} from "@exsys-web-server/helpers";
 import extractCoverageEligibilityEntryResponseData from "../../nphiesHelpers/extraction/extractCoverageEligibilityEntryResponseData.mjs";
 import extractCoverageEntryResponseData from "../../nphiesHelpers/extraction/extractCoverageEntryResponseData.mjs";
 import checkPatientInsuranceMiddleware from "../../helpers/createBaseExpressMiddleware.mjs";
@@ -48,7 +52,8 @@ export default checkPatientInsuranceMiddleware(async (body) => {
   });
   const { insurance, errorCode, errorDescription } = apiResults;
 
-  const hasError = !!(errorCode || errorDescription);
+  const hasError =
+    !!(errorCode || errorDescription) || !isArrayHasData(insurance);
 
   const shouldCallEligibilityApi =
     !!isSuccess &&
