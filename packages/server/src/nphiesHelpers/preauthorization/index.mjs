@@ -122,7 +122,6 @@ const createNaphiesPreauthRequestFullData = ({
     requestType,
   });
 
-  const baseData = createNphiesBaseRequestData();
   const hasDoctorsData = isArrayHasData(doctorsData);
   const buildVisionPrescription = !!(
     visionPrescriptionId && visionPrescriptionCreatedAt
@@ -157,7 +156,7 @@ const createNaphiesPreauthRequestFullData = ({
   }
 
   const requestPayload = {
-    ...baseData,
+    ...createNphiesBaseRequestData(),
     entry: [
       createNphiesMessageHeader({
         providerLicense: provider_license,
@@ -284,7 +283,6 @@ const createNaphiesPreauthRequestFullData = ({
           providerDoctorUrl,
           providerPatientUrl,
           doctorId: primaryDoctorId,
-          dateWritten: baseData.timestamp,
           patientId: patient_file_no,
         }),
       createOrganizationData({

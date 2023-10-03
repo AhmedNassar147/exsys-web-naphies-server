@@ -25,7 +25,6 @@ const createNphiesVisionPrescriptionData = ({
   requestId,
   providerDoctorUrl,
   doctorId,
-  dateWritten,
   providerPatientUrl,
   patientId,
   visionLensSpecification,
@@ -51,7 +50,7 @@ const createNphiesVisionPrescriptionData = ({
     patient: {
       reference: `${providerPatientUrl}/${patientId}`,
     },
-    dateWritten: dateWritten,
+    dateWritten: visionPrescriptionCreatedAt,
     prescriber: {
       reference: `${providerDoctorUrl}/${doctorId}`,
     },
