@@ -26,7 +26,7 @@ const callNphiesAPIAndCollectResults = ({
 
       if (megaBytes > 11) {
         const nphiesResultData = {
-          isSuccess,
+          isSuccess: false,
           ...(otherPrintValues || null),
           exsysResultsData,
           nodeServerDataSentToNaphies: nphiesRequestPayload,
