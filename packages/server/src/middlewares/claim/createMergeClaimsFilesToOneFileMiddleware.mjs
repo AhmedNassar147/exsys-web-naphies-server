@@ -3,7 +3,11 @@
  * middleware: `createMergeClaimsFilesToOneFileMiddleware`.
  *
  */
-import { isArrayHasData, mergeFilesToOnePdf } from "@exsys-web-server/helpers";
+import {
+  isArrayHasData,
+  mergeFilesToOnePdf,
+  writeResultFile,
+} from "@exsys-web-server/helpers";
 import createMergeClaimsFilesToOneFileMiddleware from "../../helpers/createBaseExpressMiddleware.mjs";
 import createExsysRequest from "../../helpers/createExsysRequest.mjs";
 import uploadFileToExsys from "../../exsysHelpers/uploadFileToExsys.mjs";
@@ -11,16 +15,17 @@ import { EXSYS_API_IDS_NAMES } from "../../constants.mjs";
 
 const { queryClaimsToCreatePdfFile } = EXSYS_API_IDS_NAMES;
 
-const saveFileThenSaveRecordStatus = async ({
-  // patentFileNo,
-  // episodeInvoiceNo,
-  // organizationNo,
-  // authorization,
-  soaNo,
-  pdfFileName,
-  directoryName,
-  pdfFileBytes,
-}) => {
+const saveFileThenSaveRecordStatus = async (record) => {
+  const {
+    // patentFileNo,
+    // episodeInvoiceNo,
+    // organizationNo,
+    // authorization,
+    soaNo,
+    pdfFileName,
+    directoryName,
+    pdfFileBytes,
+  } = record;
   const results = await uploadFileToExsys({
     fileBinaryData: pdfFileBytes,
     fileName: pdfFileName,
@@ -31,7 +36,12 @@ const saveFileThenSaveRecordStatus = async ({
     },
   });
 
-  console.log("results", results);
+  await writeResultFile({
+    data: {
+      record,
+      uploadResult: results,
+    },
+  });
 
   return results;
 };
@@ -47,7 +57,7 @@ export default createMergeClaimsFilesToOneFileMiddleware(async (body) => {
 
   const { data } = result || {};
 
-  console.log("result", result);
+  console.log("result.length", result.length);
 
   const hasData = isArrayHasData(data);
   const filteredData = data.filter(({ files }) => isArrayHasData(files));
@@ -85,6 +95,8 @@ export default createMergeClaimsFilesToOneFileMiddleware(async (body) => {
       if (!pdfFileBytes) {
         acc.failedMerge.push(current);
       }
+
+      return acc;
     },
     {
       failedMerge: [],
