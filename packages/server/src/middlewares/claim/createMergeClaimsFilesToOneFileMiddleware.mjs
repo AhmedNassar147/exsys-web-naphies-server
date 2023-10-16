@@ -21,18 +21,20 @@ const saveFileThenSaveRecordStatus = async (record) => {
     // patentFileNo,
     // episodeInvoiceNo,
     // organizationNo,
-    // authorization,
+    authorization,
     soaNo,
     pdfFileName,
     directoryName,
     pdfFileBytes,
   } = record;
+
   const results = await uploadFileToExsys({
     fileBinaryData: pdfFileBytes,
     fileName: pdfFileName,
     fileExtension: "pdf",
     directoryName,
     requestParams: {
+      authorization,
       sub_dir: soaNo,
     },
   });
@@ -61,8 +63,8 @@ export default createMergeClaimsFilesToOneFileMiddleware(async (body) => {
   }
 
   const clonedData = [...filteredData];
-  let failedMerge = [];
-  let successededMerge = [];
+  let failedMergeCount = 0;
+  let successededMergeCount = 0;
   let claimsMergedAndUploadedToExsys = [];
 
   while (clonedData.length) {
@@ -71,38 +73,35 @@ export default createMergeClaimsFilesToOneFileMiddleware(async (body) => {
     const { pdfFileBytes } = await mergeFilesToOnePdf(files);
 
     if (!pdfFileBytes) {
-      failedMerge.push(current);
+      failedMergeCount += 1;
     }
 
     if (pdfFileBytes) {
-      successededMerge.push(current);
-      // const result = await saveFileThenSaveRecordStatus({
-      //   authorization,
-      //   pdfFileBytes,
-      //   ...recordData,
-      // });
+      successededMergeCount += 1;
+      const result = await saveFileThenSaveRecordStatus({
+        authorization,
+        pdfFileBytes,
+        ...recordData,
+      });
 
-      // claimsMergedAndUploadedToExsys.push(result);
+      claimsMergedAndUploadedToExsys.push(result);
       await delayProcess(120);
     }
   }
 
-  const hasFailedMerge = failedMerge.length;
-  const successededMergeLength = successededMerge.length;
-
   await writeResultFile({
     data: {
-      failedMerge,
-      successededMerge,
+      failedMergeCount,
+      successededMergeCount,
       claimsMergedAndUploadedToExsys,
     },
     folderName: "NASSAR_PDF",
   });
 
   return {
-    error: hasFailedMerge
+    error: failedMergeCount
       ? "there was an error while merging some files"
       : undefined,
-    successededMergeCount: successededMergeLength,
+    successededMergeCount,
   };
 });
