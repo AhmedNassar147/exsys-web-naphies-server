@@ -57,6 +57,8 @@ export const EXSYS_API_IDS_NAMES = {
   savePreauthOrClaimPollData: "savePreauthOrClaimPollData",
   saveClaimHistory: "saveClaimHistory",
   queryEligibilityDataFromCchi: "queryEligibilityDataFromCchi",
+  uploadExsysClaimFile: "uploadExsysClaimFile",
+  queryClaimsToCreatePdfFile: "queryClaimsToCreatePdfFile",
 };
 
 export const EXSYS_API_IDS = {
@@ -113,6 +115,12 @@ export const EXSYS_API_IDS = {
   // http://149.102.140.8:9090/ords/exsys_api/hs_nphies_preauth_pkg/get_eligibility_data?authorization=111111&organization_no=001&customer_group_no=&customer_no=&insurance_company=
   [EXSYS_API_IDS_NAMES.queryEligibilityDataFromCchi]:
     "hs_nphies_preauth_pkg/get_eligibility_data",
+  // http://149.102.140.8:9090/ords/exsys_api/hs_patient_billing_report/claim_upload_file?authorization=111111&dir=NPHIESSUPPORTINGINFO&sub_dir=S00122_00921&imageFileName=2211237066_206289_I00122-24720.PDF
+  [EXSYS_API_IDS_NAMES.uploadExsysClaimFile]:
+    "hs_patient_billing_report/claim_upload_file",
+  // http://149.102.140.8:9090/ords/exsys_api/hs_patient_billing_report/collect_claim_to_create_pdf?authorization=111111&organization_no=001&attendance_type=O&soa_no=S00122/00921&patient_file_no=&date_from=&date_to&contract_no=
+  [EXSYS_API_IDS_NAMES.queryClaimsToCreatePdfFile]:
+    "hs_patient_billing_report/collect_claim_to_create_pdf",
 };
 
 export const HTTP_STATUS_CODE = {

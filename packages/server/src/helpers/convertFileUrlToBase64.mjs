@@ -4,11 +4,13 @@
  *
  */
 import chalk from "chalk";
-import { createCmdMessage } from "@exsys-web-server/helpers";
-import getFilePathSize from "./getFilePathSize.mjs";
+import {
+  createCmdMessage,
+  getRemoteFilePathData,
+} from "@exsys-web-server/helpers";
 
 const convertFileUrlToBase64 = async (fileUrl) => {
-  const result = await getFilePathSize(fileUrl, 5);
+  const result = await getRemoteFilePathData(fileUrl, 5);
 
   const { skip, sizeMb } = result;
 

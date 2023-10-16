@@ -3,45 +3,48 @@
  * Helper: `mergeFilesToOnePdf`.
  *
  */
-import { readFile } from "fs/promises";
 import { PDFDocument } from "pdf-lib";
 import fixContentType, {
   NPHIES_SUPPORTED_IMAGE_EXTENSIONS,
 } from "./fixContentType.mjs";
 import isArrayHasData from "./isArrayHasData.mjs";
-// import findRootYarnWorkSpaces from "./findRootYarnWorkSpaces.mjs";
+import getRemoteFilePathData from "./getRemoteFilePathData.mjs";
 
 const { jpeg } = NPHIES_SUPPORTED_IMAGE_EXTENSIONS;
 
-const formatFiles = async (localFilesPath) => {
+const formatFiles = async (filesData) => {
   let parentPdfFileBytes;
 
-  const promises = localFilesPath.map(async ({ data, contentType }) => {
-    if (!contentType || !data) {
+  const promises = filesData.map(async ({ url, contentType }) => {
+    if (!contentType || !url) {
+      return false;
+    }
+    const { data: fileDate } = await getRemoteFilePathData(url, 0);
+
+    if (!fileDate) {
       return false;
     }
 
     const fixedContentType = fixContentType(contentType) || "";
 
     const [firstType, fileType] = fixedContentType.split("/");
-    const fileBytes = await readFile(data);
 
     if (firstType === "image") {
       const ImageType = NPHIES_SUPPORTED_IMAGE_EXTENSIONS[fileType] || jpeg;
       return {
         ImageType,
-        fileBytes,
+        fileDate,
       };
     }
 
     if (!parentPdfFileBytes) {
-      parentPdfFileBytes = fileBytes;
+      parentPdfFileBytes = fileDate;
 
       return false;
     }
 
     return {
-      fileBytes,
+      fileDate,
     };
   });
 
@@ -53,69 +56,63 @@ const formatFiles = async (localFilesPath) => {
   };
 };
 
-const mergeFilesToOnePdf = async (localFilesPath) => {
-  if (!isArrayHasData(localFilesPath)) {
-    return undefined;
-  }
+const mergeFilesToOnePdf = (filesData) =>
+  new Promise(async (resolve) => {
+    if (!isArrayHasData(filesData)) {
+      return resolve({});
+    }
 
-  const { parentPdfFileBytes, data } = await formatFiles(localFilesPath);
+    try {
+      const { parentPdfFileBytes, data } = await formatFiles(filesData);
 
-  const pdfDoc = parentPdfFileBytes
-    ? await PDFDocument.load(parentPdfFileBytes)
-    : await PDFDocument.create();
+      const pdfDoc = parentPdfFileBytes
+        ? await PDFDocument.load(parentPdfFileBytes)
+        : await PDFDocument.create();
 
-  data.forEach(async ({ ImageType, fileBytes }) => {
-    if (!ImageType) {
-      const fileDocument = await PDFDocument.load(fileBytes);
-      const copedFileDocument = await pdfDoc.copyPages(
-        fileDocument,
-        fileDocument.getPageIndices()
-      );
+      data.forEach(async ({ ImageType, fileDate }) => {
+        if (!ImageType) {
+          const fileDocument = await PDFDocument.load(fileDate);
+          const copedFileDocument = await pdfDoc.copyPages(
+            fileDocument,
+            fileDocument.getPageIndices()
+          );
 
-      for (let index = 0; index < copedFileDocument.length; index++) {
-        const currentDocumentPage = copedFileDocument[index];
-        pdfDoc.addPage(currentDocumentPage);
-      }
-    } else {
-      const image = await pdfDoc.embedJpg(fileBytes);
-      const page = pdfDoc.addPage();
+          for (let index = 0; index < copedFileDocument.length; index++) {
+            const currentDocumentPage = copedFileDocument[index];
+            pdfDoc.addPage(currentDocumentPage);
+          }
+        } else {
+          const image = await pdfDoc.embedJpg(fileDate);
+          const page = pdfDoc.addPage();
+          page.drawImage(image, {
+            x: 0,
+            y: 0,
+            width: page.getWidth(),
+            height: page.getHeight(),
+          });
+        }
+      });
 
-      page.drawImage(image, {
-        x: 0,
-        y: 0,
-        width: page.getWidth(),
-        height: page.getHeight(),
+      const pdfBytes = await pdfDoc.save();
+
+      return resolve({ pdfFileBytes: pdfBytes });
+    } catch (error) {
+      resolve({
+        pdfFileError: error.message || "something wrong when merging the files",
       });
     }
   });
 
-  // const rootFilePath = await findRootYarnWorkSpaces();
-  const pdfBytes = await pdfDoc.save();
-  const base64Pdf = Buffer.from(pdfBytes).toString("base64");
-  // const newFilePath = `${rootFilePath}/resultData.pdf`;
-  // await writeFile(newFilePath, base64Pdf, "base64");
-
-  return base64Pdf;
-};
-
 export default mergeFilesToOnePdf;
 
 // const files = [
-//   // {
-//   //   data: "results/abc/Process_Link.pdf",
-//   //   contentType: "application/pdf",
-//   // },
-//   // {
-//   //   data: "results/abc/Process_Process.pdf",
-//   //   contentType: "application/pdf",
-//   // },
 //   {
-//     data: "results/abc/car.jpeg",
+//     url: "https://images.unsplash.com/photo-1472457897821-70d3819a0e24?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8c21hbGx8ZW58MHx8MHx8fDA%3D&w=1000&q=80",
 //     contentType: "image/jpeg",
 //   },
 //   {
-//     data: "results/abc/car.jpeg",
-//     contentType: "image/jpeg",
+//     url: "https://img.freepik.com/free-vector/opposite-adjectives-words-with-big-small_1308-56389.jpg",
+//     contentType: "image/jpg",
 //   },
 // ];
 

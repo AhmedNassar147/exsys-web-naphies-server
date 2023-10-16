@@ -28,6 +28,8 @@ import toCamelCase from "./toCamelCase.mjs";
 import getLastPartOfUrl from "./getLastPartOfUrl.mjs";
 import fixContentType from "./fixContentType.mjs";
 import isAlreadyReversedDate from "./isAlreadyReversedDate.mjs";
+import getRemoteFilePathData from "./getRemoteFilePathData.mjs";
+import mergeFilesToOnePdf from "./mergeFilesToOnePdf.mjs";
 
 export {
   capitalizeFirstLetter,
@@ -55,6 +57,8 @@ export {
   getLastPartOfUrl,
   fixContentType,
   isAlreadyReversedDate,
+  getRemoteFilePathData,
+  mergeFilesToOnePdf,
 };
 
 export * from "./constants.mjs";

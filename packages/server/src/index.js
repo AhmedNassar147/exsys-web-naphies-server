@@ -22,6 +22,7 @@ import createCommunicationMiddleware from "./middlewares/communication/index.mjs
 import checkPatientInsuranceMiddleware from "./middlewares/patient/checkPatientInsuranceMiddleware.mjs";
 import createStatusCheckRequestMiddleware from "./middlewares/claim/createStatusCheckRequestMiddleware.mjs";
 import createTotalFilesSizeMiddleware from "./middlewares/files/createTotalFilesSizeMiddleware.mjs";
+import createMergeClaimsFilesToOneFileMiddleware from "./middlewares/claim/createMergeClaimsFilesToOneFileMiddleware.mjs";
 import stopTheProcessIfCertificateNotFound from "./helpers/stopTheProcessIfCertificateNotFound.mjs";
 
 (async () => await import("./polls/index.mjs"))();
@@ -51,6 +52,10 @@ import stopTheProcessIfCertificateNotFound from "./helpers/stopTheProcessIfCerti
     createStatusCheckRequestMiddleware(app)
   );
   app.use("/getFilesTotalSize", createTotalFilesSizeMiddleware(app));
+  app.use(
+    "/mergeClaimsFilesToOne",
+    createMergeClaimsFilesToOneFileMiddleware(app)
+  );
 
   const res = app.listen(SERVER_PORT, () =>
     createCmdMessage({

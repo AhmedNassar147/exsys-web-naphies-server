@@ -1,12 +1,12 @@
 /*
  *
- * Helper: `getFilePathSize`.
+ * Helper: `getRemoteFilePathData`.
  *
  */
-import { delayProcess } from "@exsys-web-server/helpers";
+import delayProcess from "./delayProcess.mjs";
 import axios from "axios";
 
-const getFilePathSize = async (fileUrl, retryTimes = 0) =>
+const getRemoteFilePathData = async (fileUrl, retryTimes = 0) =>
   await new Promise(async (resolve) => {
     const wrapper = (n) => {
       axios
@@ -46,4 +46,4 @@ const getFilePathSize = async (fileUrl, retryTimes = 0) =>
     wrapper(retryTimes);
   });
 
-export default getFilePathSize;
+export default getRemoteFilePathData;
