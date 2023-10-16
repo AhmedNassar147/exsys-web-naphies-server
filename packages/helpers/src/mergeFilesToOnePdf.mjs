@@ -116,4 +116,27 @@ export default mergeFilesToOnePdf;
 //   },
 // ];
 
-// await mergeFilesToOnePdf(files).catch(console.error);
+const files = [
+  {
+    url: "http://149.102.140.8:7778/reports/rwservlet?server=rep_server_FRHome1+DESTYPE=cache+report=D:\\\\ExsysReports\\\\PBALLRPT.rep+userid=EXSYS_API/EXSYS_API@149.102.140.8:1521/EXSYS+DESTYPE=cache+desformat=pdf+ENVID=EN+LANGUAGE_ID=1+P_EPISODE_INVOICE_NO=I00123/00273+P_EPISODE_NO=1+P_ORG_NO=001+P_PATIENT_FILE_NO=003320",
+    contentType: "application/pdf",
+  },
+  {
+    url: "http://149.102.140.8:7778/reports/rwservlet?server=rep_server_FRHome1+DESTYPE=cache+report=D:\\\\ExsysReports\\\\PBALLRPT.rep+userid=EXSYS_API/EXSYS_API@149.102.140.8:1521/EXSYS+DESTYPE=cache+desformat=pdf+ENVID=EN+LANGUAGE_ID=1+P_EPISODE_INVOICE_NO=I00123/00274+P_EPISODE_NO=2+P_ORG_NO=001+P_PATIENT_FILE_NO=003320",
+    contentType: "application/pdf",
+  },
+  {
+    url: "http://149.102.140.8:7778/reports/rwservlet?server=rep_server_FRHome1+DESTYPE=cache+report=D:\\\\ExsysReports\\\\PBALLRPT.rep+userid=EXSYS_API/EXSYS_API@149.102.140.8:1521/EXSYS+DESTYPE=cache+desformat=pdf+ENVID=EN+LANGUAGE_ID=1+P_EPISODE_INVOICE_NO=I00123/00275+P_EPISODE_NO=1+P_ORG_NO=001+P_PATIENT_FILE_NO=032151",
+    contentType: "application/pdf",
+  },
+  {
+    url: "http://149.102.140.8:7778/reports/rwservlet?server=rep_server_FRHome1+DESTYPE=cache+report=D:\\\\ExsysReports\\\\PBALLRPT.rep+userid=EXSYS_API/EXSYS_API@149.102.140.8:1521/EXSYS+DESTYPE=cache+desformat=pdf+ENVID=EN+LANGUAGE_ID=1+P_EPISODE_INVOICE_NO=I00123/00276+P_EPISODE_NO=1+P_ORG_NO=001+P_PATIENT_FILE_NO=032452",
+    contentType: "application/pdf",
+  },
+  {
+    url: "http://149.102.140.8:7778/reports/rwservlet?server=rep_server_FRHome1+DESTYPE=cache+report=D:\\\\ExsysReports\\\\PBALLRPT.rep+userid=EXSYS_API/EXSYS_API@149.102.140.8:1521/EXSYS+DESTYPE=cache+desformat=pdf+ENVID=EN+LANGUAGE_ID=1+P_EPISODE_INVOICE_NO=I00123/00277+P_EPISODE_NO=1+P_ORG_NO=001+P_PATIENT_FILE_NO=043151",
+    contentType: "application/pdf",
+  },
+];
+
+await mergeFilesToOnePdf(files).then(console.log).catch(console.error);

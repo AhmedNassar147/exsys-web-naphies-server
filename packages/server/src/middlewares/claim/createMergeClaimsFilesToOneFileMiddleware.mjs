@@ -51,8 +51,6 @@ export default createMergeClaimsFilesToOneFileMiddleware(async (body) => {
 
   const { data } = result || {};
 
-  console.log("result.length", data.length);
-
   const hasData = isArrayHasData(data);
   const filteredData = data.filter(({ files }) => isArrayHasData(files));
 
@@ -63,9 +61,9 @@ export default createMergeClaimsFilesToOneFileMiddleware(async (body) => {
   }
 
   const clonedData = [...filteredData];
-  const failedMerge = [];
-  const successededMerge = [];
-  const claimsMergedAndUploadedToExsys = [];
+  let failedMerge = [];
+  let successededMerge = [];
+  let claimsMergedAndUploadedToExsys = [];
 
   while (clonedData.length) {
     const [current] = clonedData.splice(0, 1);
@@ -78,16 +76,15 @@ export default createMergeClaimsFilesToOneFileMiddleware(async (body) => {
 
     if (pdfFileBytes) {
       successededMerge.push(current);
-      const result = await saveFileThenSaveRecordStatus({
-        authorization,
-        pdfFileBytes,
-        ...recordData,
-      });
+      // const result = await saveFileThenSaveRecordStatus({
+      //   authorization,
+      //   pdfFileBytes,
+      //   ...recordData,
+      // });
 
-      claimsMergedAndUploadedToExsys.push(result);
+      // claimsMergedAndUploadedToExsys.push(result);
+      await delayProcess(120);
     }
-
-    await delayProcess(120);
   }
 
   const hasFailedMerge = failedMerge.length;
