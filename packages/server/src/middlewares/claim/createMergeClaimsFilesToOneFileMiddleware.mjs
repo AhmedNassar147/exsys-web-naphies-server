@@ -4,6 +4,7 @@
  *
  */
 import {
+  delayProcess,
   isArrayHasData,
   mergeFilesToOnePdf,
   writeResultFile,
@@ -85,6 +86,8 @@ export default createMergeClaimsFilesToOneFileMiddleware(async (body) => {
 
       claimsMergedAndUploadedToExsys.push(result);
     }
+
+    await delayProcess(120);
   }
 
   const hasFailedMerge = failedMerge.length;
