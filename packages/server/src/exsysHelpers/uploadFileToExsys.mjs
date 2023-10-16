@@ -25,7 +25,7 @@ const uploadFileToExsys = async ({
   return await createExsysRequest({
     resourceName,
     body: formData,
-    requestHeaders: formData.getHeaders(),
+    requestHeaders: { accept: "application/json", ...formData.getHeaders() },
     requestParams: {
       ...(requestParams || null),
       dir: directoryName,
