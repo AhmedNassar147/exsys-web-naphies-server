@@ -62,7 +62,7 @@ export default createMergeClaimsFilesToOneFileMiddleware(async (body) => {
     };
   }
 
-  const clonedData = [...data];
+  const clonedData = [...filteredData];
   const failedMerge = [];
   const successededMerge = [];
   const claimsMergedAndUploadedToExsys = [];
