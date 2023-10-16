@@ -36,14 +36,7 @@ const saveFileThenSaveRecordStatus = async (record) => {
     },
   });
 
-  await writeResultFile({
-    data: {
-      record,
-      uploadResult: results,
-    },
-  });
-
-  return results;
+  return { [`${directoryName}-${soaNo}-${pdfFileName}`]: results };
 };
 
 export default createMergeClaimsFilesToOneFileMiddleware(async (body) => {
@@ -57,7 +50,7 @@ export default createMergeClaimsFilesToOneFileMiddleware(async (body) => {
 
   const { data } = result || {};
 
-  console.log("result.length", result.length);
+  console.log("result.length", data.length);
 
   const hasData = isArrayHasData(data);
   const filteredData = data.filter(({ files }) => isArrayHasData(files));
@@ -68,53 +61,43 @@ export default createMergeClaimsFilesToOneFileMiddleware(async (body) => {
     };
   }
 
-  const filteredDataWithFileBytesPromises = data.map(
-    async ({ files, ...recordData }) => {
-      const { pdfFileBytes, pdfFileError } = await mergeFilesToOnePdf(files);
+  const clonedData = [...data];
+  const failedMerge = [];
+  const successededMerge = [];
+  const claimsMergedAndUploadedToExsys = [];
 
-      return {
-        ...recordData,
+  while (clonedData.length) {
+    const [current] = clonedData.splice(0, 1);
+    const { files, ...recordData } = current;
+    const { pdfFileBytes } = await mergeFilesToOnePdf(files);
+
+    if (!pdfFileBytes) {
+      failedMerge.push(current);
+    }
+
+    if (pdfFileBytes) {
+      successededMerge.push(current);
+      const result = await saveFileThenSaveRecordStatus({
+        authorization,
         pdfFileBytes,
-        pdfFileError,
-      };
+        ...recordData,
+      });
+
+      claimsMergedAndUploadedToExsys.push(result);
     }
-  );
-
-  const filteredDataWithFileBytes = await Promise.all(
-    filteredDataWithFileBytesPromises
-  );
-
-  const { failedMerge, successededMerge } = filteredDataWithFileBytes.reduce(
-    (acc, current) => {
-      const { pdfFileBytes } = current;
-
-      if (pdfFileBytes) {
-        acc.successededMerge.push(current);
-      }
-
-      if (!pdfFileBytes) {
-        acc.failedMerge.push(current);
-      }
-
-      return acc;
-    },
-    {
-      failedMerge: [],
-      successededMerge: [],
-    }
-  );
+  }
 
   const hasFailedMerge = failedMerge.length;
   const successededMergeLength = successededMerge.length;
 
-  if (successededMergeLength) {
-    const updatedRecordsWithExsysPromises = successededMerge.map(
-      async (record) =>
-        await saveFileThenSaveRecordStatus({ authorization, ...record })
-    );
-
-    await Promise.all(updatedRecordsWithExsysPromises);
-  }
+  await writeResultFile({
+    data: {
+      failedMerge,
+      successededMerge,
+      claimsMergedAndUploadedToExsys,
+    },
+    folderName: "NASSAR_PDF",
+  });
 
   return {
     error: hasFailedMerge
