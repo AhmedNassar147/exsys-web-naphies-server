@@ -3,35 +3,32 @@
  * Helper: `uploadFileToExsys`.
  *
  */
-import FormData from "form-data";
 import createExsysRequest from "../helpers/createExsysRequest.mjs";
 import { EXSYS_API_IDS_NAMES } from "../constants.mjs";
 
 const { uploadExsysClaimFile: resourceName } = EXSYS_API_IDS_NAMES;
 
-// sub_dir
 const uploadFileToExsys = async ({
   fileBinaryData,
   fileName,
   fileExtension,
   directoryName,
   requestParams,
-}) => {
-  const fileNameWithExtension = `${fileName}.${fileExtension}`;
-
-  const formData = new FormData();
-  formData.append(fileName || "file", fileBinaryData, fileNameWithExtension);
-
-  return await createExsysRequest({
+}) =>
+  await createExsysRequest({
+    // xBaseApiUrl: "http://149.102.140.8:9090/ords/exsys_api",
     resourceName,
-    body: formData,
-    requestHeaders: { accept: "application/json", ...formData.getHeaders() },
+    body: fileBinaryData,
+    retryTimes: 0,
+    retryDelay: 0,
+    requestHeaders: {
+      "Content-type": "application/json",
+    },
     requestParams: {
       ...(requestParams || null),
       dir: directoryName,
-      imageFileName: `\\${fileNameWithExtension}`,
+      imageFileName: `${fileName}.${fileExtension}`,
     },
   });
-};
 
 export default uploadFileToExsys;

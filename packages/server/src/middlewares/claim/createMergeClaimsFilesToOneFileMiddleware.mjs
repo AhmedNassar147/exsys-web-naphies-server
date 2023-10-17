@@ -7,20 +7,20 @@ import {
   delayProcess,
   isArrayHasData,
   mergeFilesToOnePdf,
-  writeResultFile,
 } from "@exsys-web-server/helpers";
 import createMergeClaimsFilesToOneFileMiddleware from "../../helpers/createBaseExpressMiddleware.mjs";
 import createExsysRequest from "../../helpers/createExsysRequest.mjs";
 import uploadFileToExsys from "../../exsysHelpers/uploadFileToExsys.mjs";
 import { EXSYS_API_IDS_NAMES } from "../../constants.mjs";
 
-const { queryClaimsToCreatePdfFile } = EXSYS_API_IDS_NAMES;
+const { queryClaimsToCreatePdfFile, saveCreatedClaimPdfStatus } =
+  EXSYS_API_IDS_NAMES;
 
 const saveFileThenSaveRecordStatus = async (record) => {
   const {
-    // patentFileNo,
-    // episodeInvoiceNo,
-    // organizationNo,
+    patentFileNo,
+    episodeInvoiceNo,
+    organizationNo,
     authorization,
     soaNo,
     pdfFileName,
@@ -28,7 +28,7 @@ const saveFileThenSaveRecordStatus = async (record) => {
     pdfFileBytes,
   } = record;
 
-  const results = await uploadFileToExsys({
+  const { isSuccess: isFileUploaded } = await uploadFileToExsys({
     fileBinaryData: pdfFileBytes,
     fileName: pdfFileName,
     fileExtension: "pdf",
@@ -39,7 +39,24 @@ const saveFileThenSaveRecordStatus = async (record) => {
     },
   });
 
-  return { [`${directoryName}-${soaNo}-${pdfFileName}`]: results };
+  if (isFileUploaded) {
+    const { isSuccess: isClaimCreatedPdfStatusUpdated } =
+      await createExsysRequest({
+        resourceName: saveCreatedClaimPdfStatus,
+        body: {
+          authorization,
+          patentFileNo,
+          episodeInvoiceNo,
+          organizationNo,
+        },
+        retryTimes: 0,
+        retryDelay: 0,
+      });
+
+    return { isFileUploaded, isClaimCreatedPdfStatusUpdated };
+  }
+
+  return { isFileUploaded };
 };
 
 export default createMergeClaimsFilesToOneFileMiddleware(async (body) => {
@@ -54,18 +71,24 @@ export default createMergeClaimsFilesToOneFileMiddleware(async (body) => {
   const { data } = result || {};
 
   const hasData = isArrayHasData(data);
-  const filteredData = data.filter(({ files }) => isArrayHasData(files));
+  const filteredData = data.filter((item) => isArrayHasData(item.files));
+  const totalClaims = filteredData.length;
 
-  if (error || !hasData || !filteredData.length) {
+  if (error || !hasData || !totalClaims) {
     return {
-      error: error || "files data empty",
+      error: error || "Files data is empty",
     };
   }
 
   const clonedData = [...filteredData];
-  let failedMergeCount = 0;
-  let successededMergeCount = 0;
-  let claimsMergedAndUploadedToExsys = [];
+  let totalFailedMergedClaimsPdfFiles = 0;
+  let totalSuccessededMergedClaimsPdfFiles = 0;
+
+  let totalFailedUploadedClaimsPdfFile = 0;
+  let totalSuccessededUploadedClaimsPdfFile = 0;
+
+  let totalFailedUpdatedClaimsPdfFileStatus = 0;
+  let totalSuccessededUpdatedClaimsPdfFileStatus = 0;
 
   while (clonedData.length) {
     const [current] = clonedData.splice(0, 1);
@@ -73,35 +96,42 @@ export default createMergeClaimsFilesToOneFileMiddleware(async (body) => {
     const { pdfFileBytes } = await mergeFilesToOnePdf(files);
 
     if (!pdfFileBytes) {
-      failedMergeCount += 1;
+      totalFailedMergedClaimsPdfFiles += 1;
     }
 
     if (pdfFileBytes) {
-      successededMergeCount += 1;
-      const result = await saveFileThenSaveRecordStatus({
-        authorization,
-        pdfFileBytes,
-        ...recordData,
-      });
+      totalSuccessededMergedClaimsPdfFiles += 1;
 
-      claimsMergedAndUploadedToExsys.push(result);
-      await delayProcess(120);
+      const { isFileUploaded, isClaimCreatedPdfStatusUpdated } =
+        await saveFileThenSaveRecordStatus({
+          authorization,
+          pdfFileBytes,
+          ...recordData,
+        });
+
+      if (isFileUploaded) {
+        totalSuccessededUploadedClaimsPdfFile += 1;
+      } else {
+        totalFailedUploadedClaimsPdfFile = +1;
+      }
+
+      if (isClaimCreatedPdfStatusUpdated) {
+        totalSuccessededUpdatedClaimsPdfFileStatus += 1;
+      } else {
+        totalFailedUpdatedClaimsPdfFileStatus += 1;
+      }
+
+      await delayProcess(50);
     }
   }
 
-  await writeResultFile({
-    data: {
-      failedMergeCount,
-      successededMergeCount,
-      claimsMergedAndUploadedToExsys,
-    },
-    folderName: "NASSAR_PDF",
-  });
-
   return {
-    error: failedMergeCount
-      ? "there was an error while merging some files"
-      : undefined,
-    successededMergeCount,
+    totalClaims,
+    totalFailedMergedClaimsPdfFiles,
+    totalSuccessededMergedClaimsPdfFiles,
+    totalFailedUploadedClaimsPdfFile,
+    totalSuccessededUploadedClaimsPdfFile,
+    totalFailedUpdatedClaimsPdfFileStatus,
+    totalSuccessededUpdatedClaimsPdfFileStatus,
   };
 });

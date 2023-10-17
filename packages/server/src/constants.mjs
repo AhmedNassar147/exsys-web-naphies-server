@@ -59,6 +59,7 @@ export const EXSYS_API_IDS_NAMES = {
   queryEligibilityDataFromCchi: "queryEligibilityDataFromCchi",
   uploadExsysClaimFile: "uploadExsysClaimFile",
   queryClaimsToCreatePdfFile: "queryClaimsToCreatePdfFile",
+  saveCreatedClaimPdfStatus: "saveCreatedClaimPdfStatus",
 };
 
 export const EXSYS_API_IDS = {
@@ -121,6 +122,9 @@ export const EXSYS_API_IDS = {
   // http://149.102.140.8:9090/ords/exsys_api/hs_patient_billing_report/collect_claim_to_create_pdf?authorization=111111&organization_no=001&attendance_type=O&soa_no=S00122/00921&patient_file_no=&date_from=&date_to&contract_no=
   [EXSYS_API_IDS_NAMES.queryClaimsToCreatePdfFile]:
     "hs_patient_billing_report/collect_claim_to_create_pdf",
+  // http://149.102.140.8:9090/ords/exsys_api/hs_patient_billing_report/update_claim_create_pdf_status
+  [EXSYS_API_IDS_NAMES.saveCreatedClaimPdfStatus]:
+    "hs_patient_billing_report/update_claim_create_pdf_status",
 };
 
 export const HTTP_STATUS_CODE = {
