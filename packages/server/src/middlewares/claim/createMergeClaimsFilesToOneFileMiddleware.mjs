@@ -72,6 +72,7 @@ export default createMergeClaimsFilesToOneFileMiddleware(async (body) => {
 
   const hasData = isArrayHasData(data);
   const filteredData = data.filter((item) => isArrayHasData(item.files));
+  const totalOriginalClaims = data.length;
   const totalProcessedClaims = filteredData.length;
 
   if (error || !hasData || !totalProcessedClaims) {
@@ -132,8 +133,12 @@ export default createMergeClaimsFilesToOneFileMiddleware(async (body) => {
     }
   }
 
+  const totalSkippedClaims = totalOriginalClaims - totalProcessedClaims;
+
   return {
+    totalOriginalClaims,
     totalProcessedClaims,
+    totalSkippedClaims,
     totalFailedMergedClaimsPdfFiles,
     totalSuccessededMergedClaimsPdfFiles,
     totalFailedUploadedClaimsPdfFile,
