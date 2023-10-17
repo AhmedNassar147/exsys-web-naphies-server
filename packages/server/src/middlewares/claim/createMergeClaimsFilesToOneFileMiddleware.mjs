@@ -77,6 +77,13 @@ export default createMergeClaimsFilesToOneFileMiddleware(async (body) => {
   if (error || !hasData || !totalProcessedClaims) {
     return {
       error: error || "Files data is empty",
+      totalProcessedClaims: 0,
+      totalFailedMergedClaimsPdfFiles: 0,
+      totalSuccessededMergedClaimsPdfFiles: 0,
+      totalFailedUploadedClaimsPdfFile: 0,
+      totalSuccessededUploadedClaimsPdfFile: 0,
+      totalFailedUpdatedClaimsPdfFileStatus: 0,
+      totalSuccessededUpdatedClaimsPdfFileStatus: 0,
     };
   }
 
