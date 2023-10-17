@@ -72,9 +72,9 @@ export default createMergeClaimsFilesToOneFileMiddleware(async (body) => {
 
   const hasData = isArrayHasData(data);
   const filteredData = data.filter((item) => isArrayHasData(item.files));
-  const totalClaims = filteredData.length;
+  const totalProcessedClaims = filteredData.length;
 
-  if (error || !hasData || !totalClaims) {
+  if (error || !hasData || !totalProcessedClaims) {
     return {
       error: error || "Files data is empty",
     };
@@ -126,7 +126,7 @@ export default createMergeClaimsFilesToOneFileMiddleware(async (body) => {
   }
 
   return {
-    totalClaims,
+    totalProcessedClaims,
     totalFailedMergedClaimsPdfFiles,
     totalSuccessededMergedClaimsPdfFiles,
     totalFailedUploadedClaimsPdfFile,
