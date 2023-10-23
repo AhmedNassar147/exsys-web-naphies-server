@@ -13,7 +13,7 @@ const rootYarnWorkSpacePath = await findRootYarnWorkSpaces();
 
 const configFilePath = `${rootYarnWorkSpacePath}/config.json`;
 
-// --dev, --certificate-path="" , ---ignore-cert, ---production
+// --dev, --certificate-path="" , ---ignore-cert, ---production, --exsys-base-url
 export const CLI_CONFIG = await collectProcessOptions();
 export const SERVER_CONFIG = await readJsonFile(configFilePath, true);
 
@@ -23,10 +23,10 @@ export const SERVER_PORT = 5000;
 export const RETRY_TIMES = 1;
 export const RETRY_DELAY = 10000;
 export const EXSYS_POLLS_TIMEOUT = 10000;
-const { dev, certificatePath } = CLI_CONFIG;
+const { certificatePath, exsysBaseUrl } = CLI_CONFIG;
 const { dataBaseServerPort } = SERVER_CONFIG;
 
-const BASE_API_IP_ADDRESS = dev ? "http://149.102.140.8" : "http://localhost";
+const BASE_API_IP_ADDRESS = exsysBaseUrl || "http://localhost";
 const API_URL_PORT = dataBaseServerPort || 9090;
 
 export const EXSYS_BASE_URL = `${BASE_API_IP_ADDRESS}:${API_URL_PORT}/ords/exsys_api`;

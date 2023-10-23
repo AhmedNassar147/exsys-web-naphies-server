@@ -38,6 +38,17 @@ export default checkPatientInsuranceMiddleware(async (body) => {
     organization_no,
     customer_no,
     customer_group_no,
+
+    // for check  Eligibility
+    firstName,
+    secondName,
+    thirdName,
+    lastName,
+    gender: __gender,
+    dateOfBirth: __dob,
+    mobileNumber: __phone,
+    insuranceCompanyId: __insuranceCompanyId,
+    beneficiaryNumber: __beneficiaryNo,
   } = body;
 
   const systemType = _systemType || "1";
@@ -55,23 +66,36 @@ export default checkPatientInsuranceMiddleware(async (body) => {
   const hasError =
     !!(errorCode || errorDescription) || !isArrayHasData(insurance);
 
+  const isCCHITotallySuccesseded = !!isSuccess && !hasError;
+
+  const hasEligibilityCheckingParams = [
+    firstName,
+    secondName,
+    thirdName,
+    lastName,
+    __gender,
+    __dob,
+    __phone,
+    __insuranceCompanyId,
+    __beneficiaryNo,
+  ].every(Boolean);
+
   const shouldCallEligibilityApi =
-    !!isSuccess &&
-    !hasError &&
+    (isCCHITotallySuccesseded || hasEligibilityCheckingParams) &&
     !!(organization_no && customer_no && customer_group_no);
 
   if (shouldCallEligibilityApi) {
-    const [
-      {
-        name,
-        identityNumber,
-        gender,
-        dateOfBirth,
-        mobileNumber,
-        insuranceCompanyID,
-        beneficiaryNumber,
-      },
-    ] = insurance;
+    const [firstItem] = insurance || [];
+
+    const {
+      name,
+      identityNumber,
+      gender,
+      dateOfBirth,
+      mobileNumber,
+      insuranceCompanyID,
+      beneficiaryNumber,
+    } = firstItem || {};
 
     const [
       patient_first_name,
@@ -81,17 +105,19 @@ export default checkPatientInsuranceMiddleware(async (body) => {
     ] = (name || "").split(" ");
     const { dateString } = getCurrentDate(true);
 
+    const curredGender = gender || __gender;
+
     const baseEligibilityData = {
-      patient_first_name: patient_first_name || "",
-      patient_second_name: patient_second_name || "",
-      patient_third_name: patient_third_name || "",
-      patient_family_name: patient_family_name || "",
-      patient_file_no: beneficiaryNumber,
-      memberid: beneficiaryNumber,
-      iqama_no: identityNumber,
-      patient_phone: mobileNumber,
-      gender: gender === "1" ? "male" : "female",
-      birthDate: dateOfBirth || dateString,
+      patient_first_name: patient_first_name || firstName || "",
+      patient_second_name: patient_second_name || secondName || "",
+      patient_third_name: patient_third_name || thirdName || "",
+      patient_family_name: patient_family_name || lastName || "",
+      patient_file_no: beneficiaryNumber || __beneficiaryNo,
+      memberid: beneficiaryNumber || __beneficiaryNo,
+      iqama_no: identityNumber || beneficiaryKey,
+      patient_phone: mobileNumber || __phone,
+      gender: curredGender === "1" ? "male" : "female",
+      birthDate: dateOfBirth || __dob || dateString,
       relationship: "self",
     };
 
@@ -100,7 +126,7 @@ export default checkPatientInsuranceMiddleware(async (body) => {
       organization_no,
       customer_no,
       customer_group_no,
-      insurance_company: insuranceCompanyID,
+      insurance_company: insuranceCompanyID || __insuranceCompanyId,
     };
 
     const { printData, loggerValue, resultData } =
@@ -132,6 +158,7 @@ export default checkPatientInsuranceMiddleware(async (body) => {
       const { data, hasNphiesApiError, folderName } = printData;
       await writeResultFile({
         data: {
+          originalApiParams: body,
           hasNphiesApiError,
           loggerValue,
           ...data,
