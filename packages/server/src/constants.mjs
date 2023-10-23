@@ -26,7 +26,10 @@ export const EXSYS_POLLS_TIMEOUT = 10000;
 const { certificatePath, exsysBaseUrl } = CLI_CONFIG;
 const { dataBaseServerPort } = SERVER_CONFIG;
 
-const BASE_API_IP_ADDRESS = exsysBaseUrl || "http://localhost";
+export const BASE_API_IP_ADDRESS = exsysBaseUrl || "http://localhost";
+export const BASE_RESULT_FOLDER_BATH = exsysBaseUrl
+  .replace("http://", "")
+  .replace(/\//g, "");
 const API_URL_PORT = dataBaseServerPort || 9090;
 
 export const EXSYS_BASE_URL = `${BASE_API_IP_ADDRESS}:${API_URL_PORT}/ords/exsys_api`;

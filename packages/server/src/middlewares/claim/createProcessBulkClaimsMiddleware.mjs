@@ -11,7 +11,11 @@ import {
 } from "@exsys-web-server/helpers";
 import createProcessBulkClaimsMiddleware from "../../helpers/createBaseExpressMiddleware.mjs";
 import createExsysRequest from "../../helpers/createExsysRequest.mjs";
-import { EXSYS_API_IDS_NAMES, EXSYS_API_IDS } from "../../constants.mjs";
+import {
+  EXSYS_API_IDS_NAMES,
+  EXSYS_API_IDS,
+  BASE_RESULT_FOLDER_BATH,
+} from "../../constants.mjs";
 import createMappedClaimOrPreauthCancellation from "../../exsysHelpers/createMappedClaimOrPreauthCancellationOrStatusCheck.mjs";
 import createMappedClaimRequests from "../../exsysHelpers/createMappedClaimRequests.mjs";
 
@@ -53,7 +57,7 @@ export default createProcessBulkClaimsMiddleware(
       exsysResultsData,
     };
 
-    const basePrintFolderName = `bulkClaim/${request_type}/${nphies_request_type}/${soa_no}`;
+    const basePrintFolderName = `${BASE_RESULT_FOLDER_BATH}/bulkClaim/${request_type}/${nphies_request_type}/${soa_no}`;
 
     const printData = {
       folderName: basePrintFolderName,

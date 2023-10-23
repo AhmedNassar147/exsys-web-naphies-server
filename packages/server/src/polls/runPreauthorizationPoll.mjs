@@ -10,7 +10,11 @@ import {
   createCmdMessage,
 } from "@exsys-web-server/helpers";
 import savePreauthPollDataToExsys from "./savePreauthPollDataToExsys.mjs";
-import { SERVER_CONFIG, NPHIES_RESOURCE_TYPES } from "../constants.mjs";
+import {
+  SERVER_CONFIG,
+  NPHIES_RESOURCE_TYPES,
+  BASE_RESULT_FOLDER_BATH,
+} from "../constants.mjs";
 import createNphiesPreauthOrClaimPollData from "../nphiesHelpers/preauthorization/createNphiesPreauthOrClaimPollData.mjs";
 import mapEntriesAndExtractNeededData from "../nphiesHelpers/extraction/mapEntriesAndExtractNeededData.mjs";
 import extractCoverageEntryResponseData from "../nphiesHelpers/extraction/extractCoverageEntryResponseData.mjs";
@@ -85,7 +89,7 @@ const runPreauthorizationPoll = async ({
       ...otherExtractedData
     } = nphiesExtractedData || {};
 
-    const folderName = `authorizationPollNEW/${messageHeaderRequestType}/${
+    const folderName = `${BASE_RESULT_FOLDER_BATH}/authorizationPollNEW/${messageHeaderRequestType}/${
       mainBundleId || bundleId || creationBundleId
     }`;
 

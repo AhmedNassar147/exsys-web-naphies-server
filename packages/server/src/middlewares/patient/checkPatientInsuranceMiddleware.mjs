@@ -15,7 +15,10 @@ import createNphiesRequestPayloadFn from "../../nphiesHelpers/eligibility/index.
 import checkNphiesPatientInsurance from "../../exsysHelpers/checkNphiesPatientInsurance.mjs";
 import createBaseFetchExsysDataAndCallNphiesApi from "../../exsysHelpers/createBaseFetchExsysDataAndCallNphiesApi.mjs";
 import extractEligibilityDataSentToNphies from "../../exsysToFrontEndHelpers/eligibility/index.mjs";
-import { EXSYS_API_IDS_NAMES } from "../../constants.mjs";
+import {
+  EXSYS_API_IDS_NAMES,
+  BASE_RESULT_FOLDER_BATH,
+} from "../../constants.mjs";
 
 const { queryEligibilityDataFromCchi } = EXSYS_API_IDS_NAMES;
 
@@ -163,7 +166,7 @@ export default checkPatientInsuranceMiddleware(async (body) => {
           loggerValue,
           ...data,
         },
-        folderName,
+        folderName: `${BASE_RESULT_FOLDER_BATH}/${folderName}`,
       });
     }
 

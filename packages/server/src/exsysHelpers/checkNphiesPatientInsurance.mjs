@@ -11,7 +11,11 @@ import {
   isAlreadyReversedDate,
 } from "@exsys-web-server/helpers";
 import createNphiesRequest from "../helpers/createNphiesRequest.mjs";
-import { CLI_CONFIG, NPHIES_API_URLS } from "../constants.mjs";
+import {
+  CLI_CONFIG,
+  NPHIES_API_URLS,
+  BASE_RESULT_FOLDER_BATH,
+} from "../constants.mjs";
 
 const { production } = CLI_CONFIG;
 const {
@@ -95,7 +99,7 @@ const checkNphiesPatientInsurance = async ({
         },
         data: results,
       },
-      folderName: printFolderName,
+      folderName: `${BASE_RESULT_FOLDER_BATH}/${printFolderName}`,
     });
   }
 
