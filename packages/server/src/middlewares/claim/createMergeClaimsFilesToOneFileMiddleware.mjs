@@ -69,10 +69,13 @@ export default createMergeClaimsFilesToOneFileMiddleware(async (body) => {
   });
 
   const { data } = result || {};
+  const _data = data || [];
 
-  const hasData = isArrayHasData(data);
-  const filteredData = data.filter((item) => isArrayHasData(item.files));
-  const totalOriginalClaims = data.length;
+  const hasData = isArrayHasData(_data);
+  const filteredData = _data.filter(
+    (item) => !!item && isArrayHasData(item.files)
+  );
+  const totalOriginalClaims = _data.length;
   const totalProcessedClaims = filteredData.length;
 
   if (error || !hasData || !totalProcessedClaims) {
