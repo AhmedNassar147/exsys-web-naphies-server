@@ -101,13 +101,16 @@ export default createMergeClaimsFilesToOneFileMiddleware(async (body) => {
   let totalFailedUpdatedClaimsPdfFileStatus = 0;
   let totalSuccessededUpdatedClaimsPdfFileStatus = 0;
 
+  let mergeFileError;
+
   while (clonedData.length) {
     const [current] = clonedData.splice(0, 1);
     const { files, ...recordData } = current;
-    const { pdfFileBytes } = await mergeFilesToOnePdf(files);
+    const { pdfFileBytes, pdfFileError } = await mergeFilesToOnePdf(files);
 
     if (!pdfFileBytes) {
       totalFailedMergedClaimsPdfFiles += 1;
+      mergeFileError = pdfFileError;
     }
 
     if (pdfFileBytes) {
@@ -139,6 +142,7 @@ export default createMergeClaimsFilesToOneFileMiddleware(async (body) => {
   const totalSkippedClaims = totalOriginalClaims - totalProcessedClaims;
 
   return {
+    error: mergeFileError,
     totalOriginalClaims,
     totalProcessedClaims,
     totalSkippedClaims,
