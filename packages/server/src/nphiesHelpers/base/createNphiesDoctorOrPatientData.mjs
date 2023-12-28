@@ -25,6 +25,29 @@ const {
 const { MARITAL_STATUS, KAS_EXT_ADMIN_GENDER, KSA_ADMIN_GENDER } =
   NPHIES_BASE_CODE_TYPES;
 
+const patientIdentifierData = {
+  1: {
+    code: "NI",
+    display: "nationalid",
+    system: NATIONAL_ID_URL,
+  },
+  2: {
+    code: "PRC",
+    display: "iqama",
+    system: IQAMA_URL,
+  },
+  3: {
+    code: "PPN",
+    display: "nationalid",
+    system: NATIONAL_ID_URL,
+  },
+  4: {
+    code: "VS",
+    display: "visano",
+    system: IQAMA_URL,
+  },
+};
+
 const createNphiesDoctorOrPatientData = ({
   patientOrDoctorId,
   identifierId,
@@ -44,10 +67,12 @@ const createNphiesDoctorOrPatientData = ({
     Boolean
   );
 
-  const isIqama = identifierId.startsWith("2");
-  const patientIdentifierIdType = isIqama ? "PRC" : "NI";
-  const patientIdentifierSystem = isIqama ? IQAMA_URL : NATIONAL_ID_URL;
-  const patientIdentifierDisplay = isIqama ? "iqama" : "nationalid";
+  const [first] = identifierId.split("");
+  const { code, display, system } = patientIdentifierData[first] || {};
+
+  if (!identifierId) {
+    console.error("identifierId not found in createNphiesDoctorOrPatientData");
+  }
 
   return {
     fullUrl: `${providerDoctorOrPatientUrl}/${patientOrDoctorId}`,
@@ -63,14 +88,12 @@ const createNphiesDoctorOrPatientData = ({
             coding: [
               {
                 system: `${BASE_TERMINOLOGY_CODE_SYS_URL}/v2-0203`,
-                code:
-                  identifierIdType ||
-                  (isPatient ? patientIdentifierIdType : "MD"),
-                display: isPatient ? patientIdentifierDisplay : undefined,
+                code: identifierIdType || (isPatient ? code : "MD"),
+                display: isPatient ? display : undefined,
               },
             ],
           },
-          system: isPatient ? patientIdentifierSystem : PRACTITIONER_URL,
+          system: isPatient ? system : PRACTITIONER_URL,
           value: identifierId,
         },
       ],
