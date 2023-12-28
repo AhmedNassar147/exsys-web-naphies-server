@@ -21,11 +21,18 @@ const {
   IQAMA_URL,
   NATIONAL_ID_URL,
   PASSPORT_NO_URL,
-  VISA_NO_URL,
+  // VISA_NO_URL,
+  BORDER_NO_URL,
   PRACTITIONER_URL,
 } = NPHIES_API_URLS;
 const { MARITAL_STATUS, KAS_EXT_ADMIN_GENDER, KSA_ADMIN_GENDER } =
   NPHIES_BASE_CODE_TYPES;
+
+const passportData = {
+  code: "PPN",
+  display: "passportnumber",
+  system: PASSPORT_NO_URL,
+};
 
 const patientIdentifierData = {
   1: {
@@ -38,15 +45,12 @@ const patientIdentifierData = {
     display: "iqama",
     system: IQAMA_URL,
   },
-  3: {
-    code: "PPN",
-    display: "passportnumber",
-    system: PASSPORT_NO_URL,
-  },
-  4: {
-    code: "DP",
-    display: "DP",
-    system: VISA_NO_URL,
+  3: passportData,
+  4: passportData,
+  5: {
+    code: "BN",
+    display: "bordernumber",
+    system: BORDER_NO_URL,
   },
 };
 
