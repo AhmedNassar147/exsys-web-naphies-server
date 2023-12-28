@@ -5,11 +5,21 @@
  */
 import chalk from "chalk";
 import { checkPathExists, createCmdMessage } from "@exsys-web-server/helpers";
-import { NPHIES_CERT_FILE_NAME, CLI_CONFIG } from "../constants.mjs";
+import { getOrganizationsData } from "./getConfigFileData.mjs";
+import { CLI_CONFIG } from "../constants.mjs";
 
 const { ignoreCert } = CLI_CONFIG;
 
 const stopTheProcessIfCertificateNotFound = async (showCheckingLog = true) => {
+  if (ignoreCert) {
+    createCmdMessage({
+      type: "info",
+      message: "skipping certificate checker ...",
+    });
+
+    return;
+  }
+
   if (showCheckingLog) {
     createCmdMessage({
       type: "info",
@@ -17,14 +27,28 @@ const stopTheProcessIfCertificateNotFound = async (showCheckingLog = true) => {
     });
   }
 
-  if (!ignoreCert && !(await checkPathExists(NPHIES_CERT_FILE_NAME))) {
-    createCmdMessage({
-      type: "error",
-      message: `can't find the certificate where the path is ${chalk.cyan.bold(
-        NPHIES_CERT_FILE_NAME
-      )}`,
-    });
+  const organizations = await getOrganizationsData();
 
+  const values = Object.values(organizations);
+
+  const configPromises = values.map(async ({ certificatePath }) => {
+    const doesFileExsist = await checkPathExists(
+      `${rootYarnWorkSpaces}/${certificatePath}`
+    );
+    return !doesFileExsist
+      ? `${chalk.bold.white(certificatePath)} doesn't exist`
+      : false;
+  });
+
+  const errors = (await Promise.all(configPromises)).filter(Boolean);
+
+  if (errors.length) {
+    errors.forEach((error) =>
+      createCmdMessage({
+        type: "error",
+        message: error,
+      })
+    );
     // console.log(`restarting server after ${RESTART_SERVER_MS / 1000} seconds`);
     // restartProcess();
     process.kill(process.pid);

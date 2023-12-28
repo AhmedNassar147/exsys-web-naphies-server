@@ -13,7 +13,7 @@ const rootYarnWorkSpacePath = await findRootYarnWorkSpaces();
 
 const configFilePath = `${rootYarnWorkSpacePath}/config.json`;
 
-// --dev, --certificate-path="" , ---ignore-cert, ---production, --exsys-base-url
+// --dev,  ---ignore-cert, ---production, --exsys-base-url
 export const CLI_CONFIG = await collectProcessOptions();
 export const SERVER_CONFIG = await readJsonFile(configFilePath, true);
 
@@ -23,7 +23,7 @@ export const SERVER_PORT = 5000;
 export const RETRY_TIMES = 1;
 export const RETRY_DELAY = 10000;
 export const EXSYS_POLLS_TIMEOUT = 10000;
-const { certificatePath, exsysBaseUrl } = CLI_CONFIG;
+const { exsysBaseUrl } = CLI_CONFIG;
 const { dataBaseServerPort } = SERVER_CONFIG;
 
 export const BASE_API_IP_ADDRESS = exsysBaseUrl || "http://localhost";
@@ -211,12 +211,7 @@ export const NPHIES_API_URLS = {
   NPHIES_LICENSE_OWNER_URL: `${BASE_NPHIES_LICENSE_URL}/nphies`,
   NPHIES_CHECK_INSURANCE_PRODUCTION: "https://hsb.nphies.sa/checkinsurance",
   NPHIES_CHECK_INSURANCE_DEVELOPMENT: "http://hsb.oba.nphies.sa/checkinsurance",
-  //
 };
-
-export const NPHIES_CERT_FILE_NAME = `${rootYarnWorkSpacePath}/certs/${
-  certificatePath || "Certificate_pkcs12.p12"
-}`;
 
 export const NPHIES_BUNDLE_TYPES = {
   MESSAGE: "message",

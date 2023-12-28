@@ -63,6 +63,7 @@ export default checkPatientInsuranceMiddleware(async (body) => {
     systemType,
     printValues,
     printFolderName,
+    organizationNo: organization_no,
   });
   const { insurance, errorCode, errorDescription } = apiResults;
 

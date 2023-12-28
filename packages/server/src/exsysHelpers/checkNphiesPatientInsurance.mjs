@@ -74,6 +74,7 @@ const checkNphiesPatientInsurance = async ({
   systemType,
   printValues,
   printFolderName,
+  organizationNo,
 }) => {
   // https://hsb.nphies.sa/checkinsurance?PatientKey=2005274879&SystemType=1
   // http://hsb.oba.nphies.sa/checkinsurance?PatientKey=2005274879&SystemType=1
@@ -82,6 +83,7 @@ const checkNphiesPatientInsurance = async ({
       ? NPHIES_CHECK_INSURANCE_PRODUCTION
       : NPHIES_CHECK_INSURANCE_DEVELOPMENT,
     requestMethod: "GET",
+    organizationNo,
     requestParams: {
       PatientKey: patientKey,
       SystemType: systemType,
