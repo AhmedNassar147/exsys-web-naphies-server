@@ -46,12 +46,6 @@ const patientIdentifierData = {
     system: IQAMA_URL,
   },
   3: passportData,
-  4: passportData,
-  5: {
-    code: "BN",
-    display: "bordernumber",
-    system: BORDER_NO_URL,
-  },
 };
 
 const createNphiesDoctorOrPatientData = ({
@@ -74,7 +68,8 @@ const createNphiesDoctorOrPatientData = ({
   );
 
   const [first] = identifierId.split("");
-  const { code, display, system } = patientIdentifierData[first] || {};
+  const { code, display, system } =
+    patientIdentifierData[first] || passportData;
 
   if (!identifierId) {
     console.error("identifierId not found in createNphiesDoctorOrPatientData");
