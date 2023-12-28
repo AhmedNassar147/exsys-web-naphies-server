@@ -201,6 +201,8 @@ export const NPHIES_API_URLS = {
   BASE_CODE_SYS_URL: `${BASE_NPHIES_URL}/terminology/CodeSystem`,
   IQAMA_URL: `${BASE_NPHIES_URL}/identifier/iqama`,
   NATIONAL_ID_URL: `${BASE_NPHIES_URL}/identifier/nationalid`,
+  PASSPORT_NO_URL: `${BASE_NPHIES_URL}/identifier/passportnumber`,
+  VISA_NO_URL: `${BASE_NPHIES_URL}/identifier/DP`,
   PROVIDER_LICENSE_URL: `${BASE_NPHIES_LICENSE_URL}/provider-license`,
   PAYER_LICENSE_URL: `${BASE_NPHIES_LICENSE_URL}/payer-license`,
   LOCATION_LICENSE_URL: `${BASE_NPHIES_LICENSE_URL}/location-license`,

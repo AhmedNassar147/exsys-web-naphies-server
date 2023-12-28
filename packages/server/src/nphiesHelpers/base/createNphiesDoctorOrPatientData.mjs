@@ -20,6 +20,8 @@ const {
   BASE_PROFILE_URL,
   IQAMA_URL,
   NATIONAL_ID_URL,
+  PASSPORT_NO_URL,
+  VISA_NO_URL,
   PRACTITIONER_URL,
 } = NPHIES_API_URLS;
 const { MARITAL_STATUS, KAS_EXT_ADMIN_GENDER, KSA_ADMIN_GENDER } =
@@ -38,13 +40,13 @@ const patientIdentifierData = {
   },
   3: {
     code: "PPN",
-    display: "nationalid",
-    system: NATIONAL_ID_URL,
+    display: "passportnumber",
+    system: PASSPORT_NO_URL,
   },
   4: {
-    code: "VS",
-    display: "visano",
-    system: IQAMA_URL,
+    code: "DP",
+    display: "DP",
+    system: VISA_NO_URL,
   },
 };
 
