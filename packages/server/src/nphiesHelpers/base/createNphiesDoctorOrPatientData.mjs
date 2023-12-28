@@ -19,6 +19,7 @@ const {
   BASE_TERMINOLOGY_CODE_SYS_URL,
   BASE_PROFILE_URL,
   IQAMA_URL,
+  NATIONAL_ID_URL,
   PRACTITIONER_URL,
 } = NPHIES_API_URLS;
 const { MARITAL_STATUS, KAS_EXT_ADMIN_GENDER, KSA_ADMIN_GENDER } =
@@ -45,6 +46,8 @@ const createNphiesDoctorOrPatientData = ({
 
   const isIqama = identifierId.startsWith("2");
   const patientIdentifierIdType = isIqama ? "PRC" : "NI";
+  const patientIdentifierSystem = isIqama ? IQAMA_URL : NATIONAL_ID_URL;
+  const patientIdentifierDisplay = isIqama ? "iqama" : "nationalid";
 
   return {
     fullUrl: `${providerDoctorOrPatientUrl}/${patientOrDoctorId}`,
@@ -63,11 +66,11 @@ const createNphiesDoctorOrPatientData = ({
                 code:
                   identifierIdType ||
                   (isPatient ? patientIdentifierIdType : "MD"),
-                display: isPatient ? "iqama" : undefined,
+                display: isPatient ? patientIdentifierDisplay : undefined,
               },
             ],
           },
-          system: isPatient ? IQAMA_URL : PRACTITIONER_URL,
+          system: isPatient ? patientIdentifierSystem : PRACTITIONER_URL,
           value: identifierId,
         },
       ],
