@@ -247,7 +247,6 @@ const createNaphiesPreauthRequestFullData = ({
               createNphiesDoctorOrPatientData({
                 patientOrDoctorId: id,
                 identifierId: license,
-                // identifierIdType: "MD",
                 firstName: first_name,
                 secondName: second_name,
                 thirdName: third_name,

@@ -43,6 +43,9 @@ const createNphiesDoctorOrPatientData = ({
     Boolean
   );
 
+  const isIqama = identifierId.startsWith("2");
+  const patientIdentifierIdType = isIqama ? "PRC" : "NI";
+
   return {
     fullUrl: `${providerDoctorOrPatientUrl}/${patientOrDoctorId}`,
     resource: {
@@ -57,7 +60,9 @@ const createNphiesDoctorOrPatientData = ({
             coding: [
               {
                 system: `${BASE_TERMINOLOGY_CODE_SYS_URL}/v2-0203`,
-                code: identifierIdType || (isPatient ? "PRC" : "MD"),
+                code:
+                  identifierIdType ||
+                  (isPatient ? patientIdentifierIdType : "MD"),
                 display: isPatient ? "iqama" : undefined,
               },
             ],
