@@ -11,7 +11,6 @@ import {
 } from "@exsys-web-server/helpers";
 import savePreauthPollDataToExsys from "./savePreauthPollDataToExsys.mjs";
 import {
-  SERVER_CONFIG,
   NPHIES_RESOURCE_TYPES,
   BASE_RESULT_FOLDER_BATH,
 } from "../constants.mjs";
@@ -23,12 +22,10 @@ import extractMessageHeaderData from "../nphiesHelpers/extraction/extractMessage
 import extractPreauthAndClaimPollTaskData from "../nphiesHelpers/extraction/extractPreauthAndClaimPollTaskData.mjs";
 import extractCommunicationData from "../nphiesHelpers/extraction/extractCommunicationData.mjs";
 import callNphiesApiAndCollectResults from "../nphiesHelpers/base/callNphiesApiAndCollectResults.mjs";
+import { getConfigFileData } from "../helpers/getConfigFileData.mjs";
 
-const { preauthPollData, authorization } = SERVER_CONFIG;
+const { authorization } = await getConfigFileData();
 const { COVERAGE } = NPHIES_RESOURCE_TYPES;
-
-const { siteUrl, siteName, providerLicense, providerOrganization } =
-  preauthPollData;
 
 const setErrorIfExtractedDataFoundFn = ({ coverageErrors, claimErrors }) => [
   ...(coverageErrors || []),
@@ -55,8 +52,12 @@ const runPreauthorizationPoll = async ({
   includeMessageType,
   excludeMessageType,
   delayTimeout = 1 * 60 * 1000,
+  exsysData,
 }) => {
   try {
+    const { siteUrl, siteName, providerLicense, providerOrganization } =
+      exsysData;
+
     const options = {
       createNphiesRequestPayloadFn: () =>
         createNphiesPreauthOrClaimPollData({
@@ -67,7 +68,7 @@ const runPreauthorizationPoll = async ({
           includeMessageType,
           excludeMessageType,
         }),
-      exsysResultsData: preauthPollData,
+      exsysResultsData: exsysData,
       setErrorIfExtractedDataFoundFn,
       extractionFunctionsMap,
       isAuthorizationPoll: true,
@@ -125,6 +126,7 @@ const runPreauthorizationPoll = async ({
       includeMessageType,
       excludeMessageType,
       delayTimeout,
+      exsysData,
     });
   }
 };

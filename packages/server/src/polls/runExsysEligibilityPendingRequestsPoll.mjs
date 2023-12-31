@@ -9,14 +9,14 @@ import {
   writeResultFile,
 } from "@exsys-web-server/helpers";
 import {
-  SERVER_CONFIG,
   EXSYS_API_IDS_NAMES,
   EXSYS_POLLS_TIMEOUT,
   BASE_RESULT_FOLDER_BATH,
 } from "../constants.mjs";
 import fetchExsysEligibilityDataAndCallNphies from "../exsysHelpers/fetchExsysEligibilityDataAndCallNphies.mjs";
+import { getConfigFileData } from "../helpers/getConfigFileData.mjs";
 
-const { authorization } = SERVER_CONFIG;
+const { authorization } = await getConfigFileData();
 const { queryEligibilityPendingRequests } = EXSYS_API_IDS_NAMES;
 
 const requestOptions = {

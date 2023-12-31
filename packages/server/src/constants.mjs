@@ -3,19 +3,10 @@
  * Constants: 'exsys-web-naphies-server'.
  *
  */
-import {
-  readJsonFile,
-  collectProcessOptions,
-  findRootYarnWorkSpaces,
-} from "@exsys-web-server/helpers";
+import { collectProcessOptions } from "@exsys-web-server/helpers";
 
-const rootYarnWorkSpacePath = await findRootYarnWorkSpaces();
-
-const configFilePath = `${rootYarnWorkSpacePath}/config.json`;
-
-// --dev,  ---ignore-cert, ---production, --exsys-base-url
+// --dev, --port,  ---ignore-cert, ---production, --exsys-base-url
 export const CLI_CONFIG = await collectProcessOptions();
-export const SERVER_CONFIG = await readJsonFile(configFilePath, true);
 
 export const FILES_ENCODING_LIMIT = "60mb";
 
@@ -23,12 +14,11 @@ export const SERVER_PORT = 5000;
 export const RETRY_TIMES = 1;
 export const RETRY_DELAY = 10000;
 export const EXSYS_POLLS_TIMEOUT = 10000;
-const { exsysBaseUrl } = CLI_CONFIG;
-const { dataBaseServerPort } = SERVER_CONFIG;
+const { exsysBaseUrl, port } = CLI_CONFIG;
 
 export const BASE_API_IP_ADDRESS = exsysBaseUrl || "http://localhost";
 
-const API_URL_PORT = dataBaseServerPort || 9090;
+const API_URL_PORT = port || 4200;
 
 export const EXSYS_BASE_URL = `${BASE_API_IP_ADDRESS}:${API_URL_PORT}/ords/exsys_api`;
 

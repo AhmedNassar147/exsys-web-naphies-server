@@ -14,9 +14,10 @@ const callNphiesAPIAndCollectResults = ({
   setErrorIfExtractedDataFoundFn,
   isAuthorizationPoll,
   checkPayloadNphiesSize,
-  organizationNo,
 }) =>
   new Promise(async (resolve) => {
+    const { organizationNo, organization_no } = exsysResultsData;
+
     const nphiesRequestPayload = createNphiesRequestPayloadFn(exsysResultsData);
 
     if (checkPayloadNphiesSize) {
@@ -45,7 +46,7 @@ const callNphiesAPIAndCollectResults = ({
 
     const nphiesResults = await createNphiesRequest({
       bodyData: nphiesRequestPayload,
-      organizationNo,
+      organizationNo: organizationNo || organization_no,
     });
 
     const { isSuccess, result: nphiesResponse, ...restResult } = nphiesResults;

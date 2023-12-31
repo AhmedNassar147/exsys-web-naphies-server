@@ -3,12 +3,7 @@
  * Helper: `createNphiesRequest`.
  *
  */
-import { readFile } from "fs/promises";
 import https from "https";
-import {
-  findRootYarnWorkSpaces,
-  readJsonFile,
-} from "@exsys-web-server/helpers";
 import createFetchRequest from "./createFetchRequest.mjs";
 import { getCertificateData } from "../helpers/getConfigFileData.mjs";
 import {
