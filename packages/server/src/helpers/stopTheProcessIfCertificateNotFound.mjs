@@ -4,7 +4,11 @@
  *
  */
 import chalk from "chalk";
-import { checkPathExists, createCmdMessage } from "@exsys-web-server/helpers";
+import {
+  checkPathExists,
+  createCmdMessage,
+  findRootYarnWorkSpaces,
+} from "@exsys-web-server/helpers";
 import { getOrganizationsData } from "./getConfigFileData.mjs";
 import { CLI_CONFIG } from "../constants.mjs";
 
@@ -30,6 +34,8 @@ const stopTheProcessIfCertificateNotFound = async (showCheckingLog = true) => {
   const organizations = await getOrganizationsData();
 
   const values = Object.values(organizations);
+
+  const rootYarnWorkSpaces = await findRootYarnWorkSpaces();
 
   const configPromises = values.map(async ({ certificatePath }) => {
     const doesFileExsist = await checkPathExists(
