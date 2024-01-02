@@ -17,7 +17,7 @@
     "build": "rollup --config",
     "start": "yarn workspace @exsys-web-server/server start",
     "dev": "yarn start --ignore-cert --port=9090 --exsys-base-url=http://149.102.140.8",
-    "dev-tadawy": "yarn start --ignore-cert",
+    "dev-tadawy": "yarn start --ignore-cert --port=9090",
     "prod": "yarn start --production"
   },
   "dependencies": {
