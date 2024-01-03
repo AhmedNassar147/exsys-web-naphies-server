@@ -18,7 +18,8 @@
     "start": "yarn workspace @exsys-web-server/server start",
     "dev": "yarn start --ignore-cert --port=9090 --exsys-base-url=http://149.102.140.8",
     "dev-tadawy": "yarn start --ignore-cert --port=9090",
-    "prod": "yarn start --production"
+    "prod": "yarn start --production",
+    "ah-dmam": "yarn prod --exsys-base-url=http://37.76.239.202"
   },
   "dependencies": {
     "@exsys-web-server/helpers": "1.0.0",
