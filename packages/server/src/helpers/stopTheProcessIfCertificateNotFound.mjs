@@ -14,22 +14,20 @@ import { CLI_CONFIG } from "../constants.mjs";
 
 const { ignoreCert } = CLI_CONFIG;
 
-const stopTheProcessIfCertificateNotFound = async (showCheckingLog = true) => {
+const stopTheProcessIfCertificateNotFound = async () => {
   if (ignoreCert) {
     createCmdMessage({
       type: "info",
       message: "skipping certificate checker ...",
     });
 
-    return;
+    return false;
   }
 
-  if (showCheckingLog) {
-    createCmdMessage({
-      type: "info",
-      message: "checking certificate ...",
-    });
-  }
+  createCmdMessage({
+    type: "info",
+    message: "checking certificate ...",
+  });
 
   const organizations = await getOrganizationsData();
 
@@ -57,8 +55,11 @@ const stopTheProcessIfCertificateNotFound = async (showCheckingLog = true) => {
     );
     // console.log(`restarting server after ${RESTART_SERVER_MS / 1000} seconds`);
     // restartProcess();
-    process.kill(process.pid);
+
+    return true;
   }
+
+  return false;
 };
 
 export default stopTheProcessIfCertificateNotFound;

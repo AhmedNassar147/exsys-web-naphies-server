@@ -11,13 +11,10 @@ import {
 } from "@exsys-web-server/helpers";
 import createProcessBulkClaimsMiddleware from "../../helpers/createBaseExpressMiddleware.mjs";
 import createExsysRequest from "../../helpers/createExsysRequest.mjs";
-import {
-  EXSYS_API_IDS_NAMES,
-  EXSYS_API_IDS,
-  BASE_RESULT_FOLDER_BATH,
-} from "../../constants.mjs";
+import { EXSYS_API_IDS_NAMES, EXSYS_API_IDS } from "../../constants.mjs";
 import createMappedClaimOrPreauthCancellation from "../../exsysHelpers/createMappedClaimOrPreauthCancellationOrStatusCheck.mjs";
 import createMappedClaimRequests from "../../exsysHelpers/createMappedClaimRequests.mjs";
+import buildPrintedResultPath from "../../helpers/buildPrintedResultPath.mjs";
 
 const { queryBulkClaimsDataToCancellationOrCreation } = EXSYS_API_IDS_NAMES;
 const exsysApiBaseUrl =
@@ -34,7 +31,13 @@ export default createProcessBulkClaimsMiddleware(
       authorization,
     };
 
-    const { request_type, soa_no, nphies_request_type } = baseRequestParams;
+    const {
+      request_type,
+      soa_no,
+      nphies_request_type,
+      organization_no,
+      clinicalEntityNo,
+    } = baseRequestParams;
 
     const cancellationFolderRegexp = new RegExp(
       `cancellation/${nphies_request_type}\/`
@@ -57,7 +60,12 @@ export default createProcessBulkClaimsMiddleware(
       exsysResultsData,
     };
 
-    const basePrintFolderName = `${BASE_RESULT_FOLDER_BATH}/bulkClaim/${request_type}/${nphies_request_type}/${soa_no}`;
+    const basePrintFolderName = buildPrintedResultPath({
+      organizationNo: organization_no,
+      clinicalEntityNo,
+      innerFolderName: "bulkClaim",
+      segments: [request_type, nphies_request_type, soa_no],
+    });
 
     const printData = {
       folderName: basePrintFolderName,
@@ -70,7 +78,7 @@ export default createProcessBulkClaimsMiddleware(
 
       await createPrintResultsOrLog({
         printValues,
-        printData: printData,
+        printData,
         loggerValues: [errorMessage],
       });
 
@@ -149,10 +157,10 @@ export default createProcessBulkClaimsMiddleware(
             ? cancellationFolderRegexp
             : nphiesRequestTypeFolderRegexp;
 
-          const _folderName = folderName.replace(regexp, "");
+          const _folderName = basePrintFolderName.replace(regexp, "");
 
           return writeResultFile({
-            folderName: `${basePrintFolderName}/${_folderName}`,
+            folderName: _folderName,
             data: printInfoData[folderName],
           });
         })

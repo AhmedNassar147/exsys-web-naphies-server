@@ -6,10 +6,9 @@
 import { isArrayHasData } from "@exsys-web-server/helpers";
 import runPreauthorizationPoll from "./runPreauthorizationPoll.mjs";
 import runExsysEligibilityPendingRequestsPoll from "./runExsysEligibilityPendingRequestsPoll.mjs";
-import stopTheProcessIfCertificateNotFound from "../helpers/stopTheProcessIfCertificateNotFound.mjs";
-import { getOrganizationsData } from "../helpers/getConfigFileData.mjs";
+import { getConfigFileData } from "../helpers/getConfigFileData.mjs";
 
-const handlePolls = (exsysData) => [
+const handlePreauthPolls = (exsysData) => [
   runPreauthorizationPoll({
     includeMessageType: "claim-response",
     delayTimeout: 2 * 1000,
@@ -23,20 +22,37 @@ const handlePolls = (exsysData) => [
 ];
 
 (async () => {
-  await stopTheProcessIfCertificateNotFound();
+  console.log("hello");
+  const { organizations, authorization } = await getConfigFileData();
 
-  await Promise.all([runExsysEligibilityPendingRequestsPoll()]);
-
-  const organizationsData = await getOrganizationsData();
-  const organizationsValues = Object.values(organizationsData);
+  const organizationsValues = Object.values(organizations);
 
   if (isArrayHasData(organizationsValues)) {
-    const preauthPollPromises = organizationsValues
-      .map(({ preauthPollData, organizationNo }) =>
-        handlePolls({ ...preauthPollData, organizationNo })
-      )
-      .flat();
+    const { eligibilityPromises, preauthPromises } = organizationsValues.reduce(
+      (acc, { organizationNo, clinicalEntityNo, preauthPollData }) => {
+        const baseOptions = {
+          authorization,
+          organizationNo,
+          clinicalEntityNo,
+        };
 
-    await Promise.all(preauthPollPromises);
+        acc.eligibilityPromises.push(
+          runExsysEligibilityPendingRequestsPoll(baseOptions)
+        );
+
+        acc.preauthPromises.push(
+          handlePreauthPolls({ ...baseOptions, preauthPollData })
+        );
+
+        return acc;
+      },
+      {
+        eligibilityPromises: [],
+        preauthPromises: [],
+      }
+    );
+
+    await Promise.all(eligibilityPromises);
+    await Promise.all(preauthPromises.flat());
   }
 })();

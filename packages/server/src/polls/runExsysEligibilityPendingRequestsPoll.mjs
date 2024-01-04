@@ -8,35 +8,33 @@ import {
   createCmdMessage,
   writeResultFile,
 } from "@exsys-web-server/helpers";
-import {
-  EXSYS_API_IDS_NAMES,
-  EXSYS_POLLS_TIMEOUT,
-  BASE_RESULT_FOLDER_BATH,
-} from "../constants.mjs";
+import { EXSYS_API_IDS_NAMES, EXSYS_POLLS_TIMEOUT } from "../constants.mjs";
 import fetchExsysEligibilityDataAndCallNphies from "../exsysHelpers/fetchExsysEligibilityDataAndCallNphies.mjs";
-import { getConfigFileData } from "../helpers/getConfigFileData.mjs";
 
-const { authorization } = await getConfigFileData();
 const { queryEligibilityPendingRequests } = EXSYS_API_IDS_NAMES;
 
-const requestOptions = {
-  requestMethod: "GET",
-  exsysApiId: queryEligibilityPendingRequests,
-  noPatientDataLogger: true,
-  printFolderName: "eligibilityPoll",
-  requestParams: {
+/**
+ * options = {
     authorization,
-  },
-};
-
-const runExsysEligibilityPendingRequestsPoll = async () => {
+    organizationNo,
+    clinicalEntityNo,
+  }
+ */
+const runExsysEligibilityPendingRequestsPoll = async (options) => {
+  const requestOptions = {
+    requestMethod: "GET",
+    exsysApiId: queryEligibilityPendingRequests,
+    noPatientDataLogger: true,
+    printFolderName: "eligibilityPoll",
+    requestParams: options,
+  };
   try {
     const {
       printData: { data, isError, folderName },
     } = await fetchExsysEligibilityDataAndCallNphies(requestOptions);
 
     await writeResultFile({
-      folderName: `${BASE_RESULT_FOLDER_BATH}/${folderName}`,
+      folderName,
       data: {
         isError,
         ...data,
@@ -49,7 +47,7 @@ const runExsysEligibilityPendingRequestsPoll = async () => {
     });
   } finally {
     await delayProcess(EXSYS_POLLS_TIMEOUT);
-    await runExsysEligibilityPendingRequestsPoll();
+    await runExsysEligibilityPendingRequestsPoll(options);
   }
 };
 

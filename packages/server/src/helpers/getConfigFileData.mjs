@@ -9,31 +9,39 @@ import {
   findRootYarnWorkSpaces,
   readJsonFile,
 } from "@exsys-web-server/helpers";
-
+import buildOrganizationPath from "./buildOrganizationPath.mjs";
 import { CLI_CONFIG } from "../constants.mjs";
 
 const { ignoreCert } = CLI_CONFIG || {};
 
-const getConfigFileData = async () => {
+export const getConfigFilePath = async () => {
   const rootYarnWorkSpaces = await findRootYarnWorkSpaces();
-  const config = await readJsonFile(`${rootYarnWorkSpaces}/config.json`, true);
 
-  return config;
+  return `${rootYarnWorkSpaces}/config.json`;
 };
 
-const getOrganizationsData = async (organizationNo) => {
+export const getConfigFileData = async () => {
+  const configFilePath = await getConfigFilePath();
+
+  return await readJsonFile(configFilePath, true);
+};
+
+const getOrganizationsData = async (organizationOrOrganizationUnitPath) => {
   const { organizations } = await getConfigFileData();
 
-  return organizationNo ? organizations[organizationNo] : organizations;
+  return organizationOrOrganizationUnitPath
+    ? organizations[organizationOrOrganizationUnitPath]
+    : organizations;
 };
 
-const getCertificateData = async (organizationNo) => {
-  if (!organizationNo) {
-    throw new Error("organizationNo wasn't provided to getCertificateData");
-  }
+const getCertificateData = async (organizationNo, clinicalEntityNo) => {
+  const organizationOrOrganizationUnitPath = buildOrganizationPath(
+    organizationNo,
+    clinicalEntityNo
+  );
 
   const { certificatePath, certificatePassphrase } = await getOrganizationsData(
-    organizationNo
+    organizationOrOrganizationUnitPath
   );
 
   if (ignoreCert) {
@@ -47,6 +55,10 @@ const getCertificateData = async (organizationNo) => {
   const certificate = await readFile(
     `${rootYarnWorkSpaces}/${certificatePath}`
   );
+
+  if (!certificate) {
+    throw new Error(`the certificate wasn't found in ${certificatePath}`);
+  }
 
   return {
     passphrase: certificatePassphrase,

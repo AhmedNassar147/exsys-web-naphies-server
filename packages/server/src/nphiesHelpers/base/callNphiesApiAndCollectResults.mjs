@@ -16,7 +16,8 @@ const callNphiesAPIAndCollectResults = ({
   checkPayloadNphiesSize,
 }) =>
   new Promise(async (resolve) => {
-    const { organizationNo, organization_no } = exsysResultsData;
+    const { organizationNo, organization_no, clinicalEntityNo } =
+      exsysResultsData;
 
     const nphiesRequestPayload = createNphiesRequestPayloadFn(exsysResultsData);
 
@@ -47,6 +48,7 @@ const callNphiesAPIAndCollectResults = ({
     const nphiesResults = await createNphiesRequest({
       bodyData: nphiesRequestPayload,
       organizationNo: organizationNo || organization_no,
+      clinicalEntityNo,
     });
 
     const { isSuccess, result: nphiesResponse, ...restResult } = nphiesResults;

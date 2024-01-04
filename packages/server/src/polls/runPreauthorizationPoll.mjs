@@ -10,10 +10,7 @@ import {
   createCmdMessage,
 } from "@exsys-web-server/helpers";
 import savePreauthPollDataToExsys from "./savePreauthPollDataToExsys.mjs";
-import {
-  NPHIES_RESOURCE_TYPES,
-  BASE_RESULT_FOLDER_BATH,
-} from "../constants.mjs";
+import { NPHIES_RESOURCE_TYPES } from "../constants.mjs";
 import createNphiesPreauthOrClaimPollData from "../nphiesHelpers/preauthorization/createNphiesPreauthOrClaimPollData.mjs";
 import mapEntriesAndExtractNeededData from "../nphiesHelpers/extraction/mapEntriesAndExtractNeededData.mjs";
 import extractCoverageEntryResponseData from "../nphiesHelpers/extraction/extractCoverageEntryResponseData.mjs";
@@ -22,9 +19,8 @@ import extractMessageHeaderData from "../nphiesHelpers/extraction/extractMessage
 import extractPreauthAndClaimPollTaskData from "../nphiesHelpers/extraction/extractPreauthAndClaimPollTaskData.mjs";
 import extractCommunicationData from "../nphiesHelpers/extraction/extractCommunicationData.mjs";
 import callNphiesApiAndCollectResults from "../nphiesHelpers/base/callNphiesApiAndCollectResults.mjs";
-import { getConfigFileData } from "../helpers/getConfigFileData.mjs";
+import buildPrintedResultPath from "../helpers/buildPrintedResultPath.mjs";
 
-const { authorization } = await getConfigFileData();
 const { COVERAGE } = NPHIES_RESOURCE_TYPES;
 
 const setErrorIfExtractedDataFoundFn = ({ coverageErrors, claimErrors }) => [
@@ -52,11 +48,14 @@ const runPreauthorizationPoll = async ({
   includeMessageType,
   excludeMessageType,
   delayTimeout = 1 * 60 * 1000,
-  exsysData,
+  preauthPollData,
+  authorization,
+  organizationNo,
+  clinicalEntityNo,
 }) => {
   try {
     const { siteUrl, siteName, providerLicense, providerOrganization } =
-      exsysData;
+      preauthPollData;
 
     const options = {
       createNphiesRequestPayloadFn: () =>
@@ -68,7 +67,11 @@ const runPreauthorizationPoll = async ({
           includeMessageType,
           excludeMessageType,
         }),
-      exsysResultsData: exsysData,
+      exsysResultsData: {
+        organizationNo,
+        clinicalEntityNo,
+        ...preauthPollData,
+      },
       setErrorIfExtractedDataFoundFn,
       extractionFunctionsMap,
       isAuthorizationPoll: true,
@@ -90,12 +93,18 @@ const runPreauthorizationPoll = async ({
       ...otherExtractedData
     } = nphiesExtractedData || {};
 
-    const folderName = `${BASE_RESULT_FOLDER_BATH}/authorizationPollNEW/${messageHeaderRequestType}/${
-      mainBundleId || bundleId || creationBundleId
-    }`;
+    const folderName = buildPrintedResultPath({
+      organizationNo,
+      clinicalEntityNo,
+      innerFolderName: "authorizationPoll",
+      segments: [
+        messageHeaderRequestType,
+        mainBundleId || bundleId || creationBundleId,
+      ],
+    });
 
     await writeResultFile({
-      folderName: folderName,
+      folderName,
       data: nphiesResultData,
       isError: hasError,
     });
@@ -126,7 +135,10 @@ const runPreauthorizationPoll = async ({
       includeMessageType,
       excludeMessageType,
       delayTimeout,
-      exsysData,
+      preauthPollData,
+      authorization,
+      organizationNo,
+      clinicalEntityNo,
     });
   }
 };

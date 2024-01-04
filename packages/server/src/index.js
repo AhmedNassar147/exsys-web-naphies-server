@@ -11,7 +11,13 @@ import {
   RESTART_SERVER_MS,
   createCmdMessage,
 } from "@exsys-web-server/helpers";
-import { SERVER_PORT, FILES_ENCODING_LIMIT } from "./constants.mjs";
+import {
+  SERVER_PORT,
+  FILES_ENCODING_LIMIT,
+  CLI_CONFIG,
+  CLIENT_NAMES_KEYS,
+} from "./constants.mjs";
+import createAppConfigFile from "./exsysHelpers/createAppConfigFile.mjs";
 import createEligibilityMiddleware from "./middlewares/eligibility/index.mjs";
 import createPreauthorizationMiddleware from "./middlewares/preauthorization/index.mjs";
 import createClaimMiddleware from "./middlewares/claim/index.mjs";
@@ -25,10 +31,29 @@ import createTotalFilesSizeMiddleware from "./middlewares/files/createTotalFiles
 import createMergeClaimsFilesToOneFileMiddleware from "./middlewares/claim/createMergeClaimsFilesToOneFileMiddleware.mjs";
 import stopTheProcessIfCertificateNotFound from "./helpers/stopTheProcessIfCertificateNotFound.mjs";
 
-(async () => await import("./polls/index.mjs"))();
+const { client } = CLI_CONFIG;
 
 (async () => {
-  await stopTheProcessIfCertificateNotFound(false);
+  const isAuthorizedClient = CLIENT_NAMES_KEYS.includes(client);
+
+  if (!isAuthorizedClient) {
+    createCmdMessage({
+      type: "error",
+      message: "client is not authorized",
+    });
+
+    process.kill(process.pid);
+  }
+
+  await createAppConfigFile(client);
+
+  const shouldStopApp = await stopTheProcessIfCertificateNotFound();
+
+  if (shouldStopApp) {
+    process.kill(process.pid);
+  }
+
+  (async () => await import("./polls/index.mjs"))();
 
   const app = express();
   app.use(cors());

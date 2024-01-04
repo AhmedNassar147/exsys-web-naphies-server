@@ -7,6 +7,7 @@ import { isObjectHasData } from "@exsys-web-server/helpers";
 import { EXSYS_API_IDS } from "../constants.mjs";
 import createExsysRequest from "../helpers/createExsysRequest.mjs";
 import callNphiesAPIAndCollectResults from "../nphiesHelpers/base/callNphiesApiAndCollectResults.mjs";
+import buildPrintedResultPath from "../helpers/buildPrintedResultPath.mjs";
 
 const createBaseFetchExsysDataAndCallNphiesApi = async ({
   exsysQueryApiId,
@@ -52,6 +53,9 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
     patient_file_no,
     patient_name,
     memberid,
+    organization_no,
+    organizationNo,
+    clinicalEntityNo,
     ...otherResults
   } = exsysResultsData;
 
@@ -60,6 +64,12 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
     requestBody,
     exsysResultsData,
   };
+
+  const printFolderPath = buildPrintedResultPath({
+    organizationNo: organizationNo || organization_no,
+    clinicalEntityNo,
+    innerFolderName: printFolderName,
+  });
 
   const { shouldSaveDataToExsys, validationError } =
     checkExsysDataValidationBeforeCallingNphies
@@ -107,7 +117,7 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
 
     return {
       printData: {
-        folderName: printFolderName,
+        folderName: printFolderPath,
         data: printedErrorData,
         hasExsysApiError: true,
       },
@@ -124,7 +134,7 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
     const errorMessage = `Exsys API failed sent empty ${exsysDataApiPrimaryKeyName} or result keys`;
     return {
       printData: {
-        folderName: printFolderName,
+        folderName: printFolderPath,
         data: printedErrorData,
         hasExsysApiError: true,
       },
@@ -197,9 +207,13 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
   const { mainBundleId, bundleId, creationBundleId } =
     nphiesExtractedData || {};
 
-  const folderName = `${printFolderName}${
-    message_event ? `/${message_event}` : ""
-  }/${bundleId || mainBundleId || creationBundleId}`;
+  const folderName = [
+    printFolderPath,
+    message_event,
+    bundleId || mainBundleId || creationBundleId,
+  ]
+    .filter(Boolean)
+    .join("/");
 
   return {
     printData: {

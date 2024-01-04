@@ -28,6 +28,7 @@ export const BASE_RESULT_FOLDER_BATH = BASE_API_IP_ADDRESS.replace(
 ).replace(/\//g, "");
 
 export const EXSYS_API_IDS_NAMES = {
+  queryProgramOrganizations: "queryProgramOrganizations",
   queryExsysEligibilityData: "queryExsysEligibilityData", // this is a post method
   queryEligibilityPendingRequests: "queryEligibilityPendingRequests",
   saveNphiesResponseToExsys: "saveNphiesResponseToExsys",
@@ -58,7 +59,20 @@ export const EXSYS_API_IDS_NAMES = {
   saveCreatedClaimPdfStatus: "saveCreatedClaimPdfStatus",
 };
 
+export const CLIENT_NAMES = {
+  exsys: "exsys",
+  ahd_dmam: "ahd_dmam",
+  sagaf: "sagaf",
+  tadawi: "tadawi",
+  blgoson: "blgoson",
+};
+
+export const CLIENT_NAMES_KEYS = Object.keys(CLIENT_NAMES);
+
 export const EXSYS_API_IDS = {
+  // http://149.102.140.8:9090/ords/exsys_api/nphies_pkg/initiate_program_organizations?client=exsys
+  [EXSYS_API_IDS_NAMES.queryProgramOrganizations]:
+    "nphies_pkg/initiate_program_organizations",
   [EXSYS_API_IDS_NAMES.queryExsysEligibilityData]:
     "nphies_pkg/create_nphies_request",
   [EXSYS_API_IDS_NAMES.queryEligibilityPendingRequests]:

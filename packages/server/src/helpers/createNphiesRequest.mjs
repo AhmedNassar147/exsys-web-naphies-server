@@ -25,11 +25,15 @@ const createNphiesRequest = async ({
   retryDelay = RETRY_DELAY,
   baseAPiUrl: _baseAPiUrl,
   organizationNo,
+  clinicalEntityNo,
 }) => {
   const baseAPiUrl =
     _baseAPiUrl || (production ? NPHIES_PRODUCTION : NPHIES_DEVELOPMENT);
 
-  const { passphrase, certificate } = await getCertificateData(organizationNo);
+  const { passphrase, certificate } = await getCertificateData(
+    organizationNo,
+    clinicalEntityNo
+  );
 
   const requestHeaders = {
     "Content-type": "application/fhir+json",

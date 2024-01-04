@@ -11,11 +11,8 @@ import {
   isAlreadyReversedDate,
 } from "@exsys-web-server/helpers";
 import createNphiesRequest from "../helpers/createNphiesRequest.mjs";
-import {
-  CLI_CONFIG,
-  NPHIES_API_URLS,
-  BASE_RESULT_FOLDER_BATH,
-} from "../constants.mjs";
+import { CLI_CONFIG, NPHIES_API_URLS } from "../constants.mjs";
+import buildPrintedResultPath from "../helpers/buildPrintedResultPath.mjs";
 
 const { production } = CLI_CONFIG;
 const {
@@ -75,6 +72,7 @@ const checkNphiesPatientInsurance = async ({
   printValues,
   printFolderName,
   organizationNo,
+  clinicalEntityNo,
 }) => {
   // https://hsb.nphies.sa/checkinsurance?PatientKey=2005274879&SystemType=1
   // http://hsb.oba.nphies.sa/checkinsurance?PatientKey=2005274879&SystemType=1
@@ -84,6 +82,7 @@ const checkNphiesPatientInsurance = async ({
       : NPHIES_CHECK_INSURANCE_DEVELOPMENT,
     requestMethod: "GET",
     organizationNo,
+    clinicalEntityNo,
     requestParams: {
       PatientKey: patientKey,
       SystemType: systemType,
@@ -93,6 +92,12 @@ const checkNphiesPatientInsurance = async ({
   const { result, isSuccess } = results;
 
   if (printValues) {
+    const folderName = buildPrintedResultPath({
+      organizationNo,
+      clinicalEntityNo,
+      innerFolderName: printFolderName,
+    });
+
     await writeResultFile({
       data: {
         params: {
@@ -101,7 +106,7 @@ const checkNphiesPatientInsurance = async ({
         },
         data: results,
       },
-      folderName: `${BASE_RESULT_FOLDER_BATH}/${printFolderName}`,
+      folderName: folderName,
     });
   }
 

@@ -15,10 +15,7 @@ import createNphiesRequestPayloadFn from "../../nphiesHelpers/eligibility/index.
 import checkNphiesPatientInsurance from "../../exsysHelpers/checkNphiesPatientInsurance.mjs";
 import createBaseFetchExsysDataAndCallNphiesApi from "../../exsysHelpers/createBaseFetchExsysDataAndCallNphiesApi.mjs";
 import extractEligibilityDataSentToNphies from "../../exsysToFrontEndHelpers/eligibility/index.mjs";
-import {
-  EXSYS_API_IDS_NAMES,
-  BASE_RESULT_FOLDER_BATH,
-} from "../../constants.mjs";
+import { EXSYS_API_IDS_NAMES } from "../../constants.mjs";
 
 const { queryEligibilityDataFromCchi } = EXSYS_API_IDS_NAMES;
 
@@ -52,6 +49,7 @@ export default checkPatientInsuranceMiddleware(async (body) => {
     mobileNumber: __phone,
     insuranceCompanyId: __insuranceCompanyId,
     beneficiaryNumber: __beneficiaryNo,
+    clinicalEntityNo,
   } = body;
 
   const systemType = _systemType || "1";
@@ -64,6 +62,7 @@ export default checkPatientInsuranceMiddleware(async (body) => {
     printValues,
     printFolderName,
     organizationNo: organization_no,
+    clinicalEntityNo,
   });
   const { insurance, errorCode, errorDescription } = apiResults;
 
@@ -131,6 +130,7 @@ export default checkPatientInsuranceMiddleware(async (body) => {
       customer_no,
       customer_group_no,
       insurance_company: insuranceCompanyID || __insuranceCompanyId,
+      clinicalEntityNo,
     };
 
     const { printData, loggerValue, resultData } =
@@ -167,7 +167,7 @@ export default checkPatientInsuranceMiddleware(async (body) => {
           loggerValue,
           ...data,
         },
-        folderName: `${BASE_RESULT_FOLDER_BATH}/${folderName}`,
+        folderName,
       });
     }
 

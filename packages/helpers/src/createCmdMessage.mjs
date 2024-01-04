@@ -11,11 +11,15 @@ const CHALK_COLOR = {
   info: "cyan",
 };
 
-const createCmdMessage = ({ type, message }) =>
-  console.log(
+const createCmdMessage = ({ type, message, data }) => {
+  const params = [
     `${chalk.bold.magenta("[exsys-nphies-web-server]:")} ${chalk[
       CHALK_COLOR[type]
-    ](message)}`
-  );
+    ](message)}`,
+    data ? JSON.stringify(data) : undefined,
+  ].filter(Boolean);
+
+  return console.log(...params);
+};
 
 export default createCmdMessage;
