@@ -25,12 +25,14 @@ const createMappedClaimOrPreauthCancellationOrStatusCheck = async ({
       recordPk,
       requestType,
       nullifyRequest,
+      clinicalEntityNo,
     }) => {
       const options = {
         requestParams: {
           authorization: authorizationNo || authorization,
           patient_file_no: patientFileNo,
           organization_no: organizationNo,
+          clinicalEntityNo,
           request_type: requestType,
           record_pk: recordPk,
           ...(isStatusCheck

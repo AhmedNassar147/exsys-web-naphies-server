@@ -23,6 +23,7 @@ const createMappedClaimRequests = async ({
       episodeInvoiceNo,
       organizationNo,
       messageEventType,
+      clinicalEntityNo,
     }) =>
       await fetchExsysClaimDataAndCallNphies({
         nphiesRequestType: NPHIES_REQUEST_TYPES.CLAIM,
@@ -32,6 +33,7 @@ const createMappedClaimRequests = async ({
           episode_no: episodeNo,
           episode_invoice_no: episodeInvoiceNo,
           organization_no: organizationNo,
+          clinicalEntityNo,
           message_event_type: messageEventType,
         },
       }),

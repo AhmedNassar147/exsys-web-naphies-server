@@ -62,25 +62,25 @@ const { client } = CLI_CONFIG;
   app.use(bodyParser.text());
   app.use(bodyParser.raw({ limit: FILES_ENCODING_LIMIT }));
   app.use("/eligibility", createEligibilityMiddleware(app));
-  app.use("/preauth", createPreauthorizationMiddleware(app));
-  app.use("/claim", createClaimMiddleware(app));
-  app.use("/cancelClaimRequest", createCancelClaimRequestMiddleware(app));
-  app.use("/processSoaClaims", createProcessBulkClaimsMiddleware(app));
+  app.use("/preauth", createPreauthorizationMiddleware(app)); //
+  app.use("/claim", createClaimMiddleware(app)); //;
+  app.use("/cancelClaimRequest", createCancelClaimRequestMiddleware(app)); //;
+  app.use("/processSoaClaims", createProcessBulkClaimsMiddleware(app)); //
   app.use(
     "/querySavedClaimOrPreauthData",
     createFetchSavedClaimDataToFrontendMiddleware(app)
   );
-  app.use("/fetchCommunicationResponse", createCommunicationMiddleware(app));
-  app.use("/checkPatientInsurance", checkPatientInsuranceMiddleware(app));
+  app.use("/fetchCommunicationResponse", createCommunicationMiddleware(app)); //
+  app.use("/checkPatientInsurance", checkPatientInsuranceMiddleware(app)); //
   app.use(
     "/checkClaimOrPreauthStatus",
     createStatusCheckRequestMiddleware(app)
-  );
-  app.use("/getFilesTotalSize", createTotalFilesSizeMiddleware(app));
+  ); //;
+  app.use("/getFilesTotalSize", createTotalFilesSizeMiddleware(app)); //;
   app.use(
     "/mergeClaimsFilesToOne",
     createMergeClaimsFilesToOneFileMiddleware(app)
-  );
+  ); //;
 
   const res = app.listen(SERVER_PORT, () =>
     createCmdMessage({

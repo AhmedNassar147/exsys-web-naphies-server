@@ -26,6 +26,7 @@ const saveFileThenSaveRecordStatus = async (record) => {
     pdfFileName,
     directoryName,
     pdfFileBytes,
+    clinicalEntityNo,
   } = record;
 
   const { isSuccess: isFileUploaded } = await uploadFileToExsys({
@@ -48,6 +49,7 @@ const saveFileThenSaveRecordStatus = async (record) => {
           patentFileNo,
           episodeInvoiceNo,
           organizationNo,
+          clinicalEntityNo,
         },
         retryTimes: 0,
         retryDelay: 0,

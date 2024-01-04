@@ -75,7 +75,6 @@ const createResultsDataFromExsysResponse = async ({
 }) => {
   return {
     ...result,
-
     communication_payload: await convertSupportInfoAttachmentUrlsToBase64(
       communication_payload
     ),
