@@ -14,13 +14,13 @@ import { CLI_CONFIG } from "../constants.mjs";
 
 const { ignoreCert } = CLI_CONFIG || {};
 
-export const getConfigFilePath = async () => {
+const getConfigFilePath = async () => {
   const rootYarnWorkSpaces = await findRootYarnWorkSpaces();
 
   return `${rootYarnWorkSpaces}/config.json`;
 };
 
-export const getConfigFileData = async () => {
+const getConfigFileData = async () => {
   const configFilePath = await getConfigFilePath();
 
   return await readJsonFile(configFilePath, true);
@@ -66,4 +66,9 @@ const getCertificateData = async (organizationNo, clinicalEntityNo) => {
   };
 };
 
-export { getConfigFileData, getOrganizationsData, getCertificateData };
+export {
+  getConfigFileData,
+  getOrganizationsData,
+  getCertificateData,
+  getConfigFilePath,
+};
