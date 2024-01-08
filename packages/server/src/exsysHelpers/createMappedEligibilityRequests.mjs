@@ -22,6 +22,7 @@ const createMappedEligibilityRequests = async ({
       patientIdNo,
       organization_no,
       type,
+      clinicalEntityNo,
     }) => {
       const message_event_type =
         ELIGIBILITY_TYPES[type] || ELIGIBILITY_TYPES.validation;
@@ -32,6 +33,7 @@ const createMappedEligibilityRequests = async ({
           message_event,
           message_event_type,
           organization_no,
+          clinicalEntityNo,
           patient_file_no: patientFileNo,
           memberid: patientIdNo,
           contract_no: contractNo,
