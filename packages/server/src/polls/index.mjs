@@ -12,17 +12,16 @@ const handlePreauthPolls = (exsysData) => [
   runPreauthorizationPoll({
     includeMessageType: "claim-response",
     delayTimeout: 2 * 1000,
-    exsysData,
+    ...exsysData,
   }),
   runPreauthorizationPoll({
     excludeMessageType: "claim-response",
     delayTimeout: 1 * 60 * 1000,
-    exsysData,
+    ...exsysData,
   }),
 ];
 
 (async () => {
-  console.log("hello");
   const { organizations, authorization } = await getConfigFileData();
 
   const organizationsValues = Object.values(organizations);

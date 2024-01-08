@@ -43,6 +43,7 @@ const { client } = CLI_CONFIG;
     });
 
     process.kill(process.pid);
+    process.exit();
   }
 
   await createAppConfigFile(client);
@@ -51,6 +52,7 @@ const { client } = CLI_CONFIG;
 
   if (shouldStopApp) {
     process.kill(process.pid);
+    process.exit();
   }
 
   (async () => await import("./polls/index.mjs"))();
