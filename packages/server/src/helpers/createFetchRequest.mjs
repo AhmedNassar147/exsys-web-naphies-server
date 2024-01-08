@@ -44,7 +44,7 @@ const createFetchRequest = (options) => {
     headers: requestHeaders,
     httpsAgent,
     data: body,
-    url: API_URL,
+    url: API_URL.replace(/undefined/g, ""),
   };
 
   return new Promise((resolve) => {
