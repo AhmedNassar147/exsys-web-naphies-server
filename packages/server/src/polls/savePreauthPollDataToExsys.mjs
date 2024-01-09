@@ -62,7 +62,7 @@ const savePreauthPollDataToExsys = async ({
       type: "error",
       message: `requestType should be one of ${chalk.white.bold(
         Object.keys(SAVE_API_BASED_REQUEST_TYPE)
-      )}`,
+      )} ${chalk.white.bold(`while the requestType=${requestType}`)}`,
     });
     return;
   }
