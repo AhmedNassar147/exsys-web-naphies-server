@@ -4,8 +4,10 @@
  *
  */
 import { isArrayHasData } from "@exsys-web-server/helpers";
-import { BASE_RESULT_FOLDER_BATH } from "../constants.mjs";
+import { CLI_CONFIG } from "../constants.mjs";
 import buildOrganizationPath from "./buildOrganizationPath.mjs";
+
+const { client } = CLI_CONFIG;
 
 const buildPrintedResultPath = ({
   organizationNo,
@@ -26,7 +28,7 @@ const buildPrintedResultPath = ({
   }
 
   const folderName = [
-    BASE_RESULT_FOLDER_BATH,
+    client,
     organizationOrOrganizationUnitPath,
     innerFolderName,
     ..._segments,

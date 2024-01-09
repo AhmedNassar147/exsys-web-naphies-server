@@ -22,11 +22,6 @@ const API_URL_PORT = port || 4200;
 
 export const EXSYS_BASE_URL = `${BASE_API_IP_ADDRESS}:${API_URL_PORT}/ords/exsys_api`;
 
-export const BASE_RESULT_FOLDER_BATH = BASE_API_IP_ADDRESS.replace(
-  "http://",
-  ""
-).replace(/\//g, "");
-
 export const EXSYS_API_IDS_NAMES = {
   queryProgramOrganizations: "queryProgramOrganizations",
   queryExsysEligibilityData: "queryExsysEligibilityData", // this is a post method
