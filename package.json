@@ -20,6 +20,7 @@
     "sagaf": "yarn start client=sagaf --production",
     "blgoson": "yarn start client=blgoson --production",
     "ahd_dmam": "yarn start client=ahd_dmam --production",
+    "wecare": "yarn start client=wecare --production",
     "tadawi": "yarn start client=tadawi",
     "dev-tadawy": "yarn start --ignore-cert --port=9090",
     "prod": "yarn start --production"

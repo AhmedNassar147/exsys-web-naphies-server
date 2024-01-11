@@ -8,21 +8,9 @@ import runPreauthorizationPoll from "./runPreauthorizationPoll.mjs";
 import runExsysEligibilityPendingRequestsPoll from "./runExsysEligibilityPendingRequestsPoll.mjs";
 import { getConfigFileData } from "../helpers/getConfigFileData.mjs";
 
-const handlePreauthPolls = (exsysData) => [
-  runPreauthorizationPoll({
-    includeMessageType: "claim-response",
-    delayTimeout: 2 * 1000,
-    ...exsysData,
-  }),
-  runPreauthorizationPoll({
-    excludeMessageType: "claim-response",
-    delayTimeout: 1 * 60 * 1000,
-    ...exsysData,
-  }),
-];
-
 (async () => {
-  const { organizations, authorization } = await getConfigFileData();
+  const { organizations, authorization, noAuthorizationOrClaimsPolls } =
+    await getConfigFileData();
 
   const organizationsValues = Object.values(organizations);
 
@@ -39,9 +27,22 @@ const handlePreauthPolls = (exsysData) => [
           runExsysEligibilityPendingRequestsPoll(baseOptions)
         );
 
-        acc.preauthPromises.push(
-          handlePreauthPolls({ ...baseOptions, preauthPollData })
-        );
+        if (!noAuthorizationOrClaimsPolls) {
+          acc.preauthPromises.push([
+            runPreauthorizationPoll({
+              includeMessageType: "claim-response",
+              delayTimeout: 2 * 1000,
+              preauthPollData,
+              ...baseOptions,
+            }),
+            runPreauthorizationPoll({
+              excludeMessageType: "claim-response",
+              delayTimeout: 1 * 60 * 1000,
+              preauthPollData,
+              ...baseOptions,
+            }),
+          ]);
+        }
 
         return acc;
       },
@@ -52,6 +53,9 @@ const handlePreauthPolls = (exsysData) => [
     );
 
     await Promise.all(eligibilityPromises);
-    await Promise.all(preauthPromises.flat());
+
+    if (!noAuthorizationOrClaimsPolls) {
+      await Promise.all(preauthPromises.flat());
+    }
   }
 })();
