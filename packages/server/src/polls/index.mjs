@@ -9,10 +9,12 @@ import runExsysEligibilityPendingRequestsPoll from "./runExsysEligibilityPending
 import { getConfigFileData } from "../helpers/getConfigFileData.mjs";
 
 (async () => {
-  const { organizations, authorization, noAuthorizationOrClaimsPolls } =
+  const { organizations, authorization, noAuthorizationOrClaimPolls } =
     await getConfigFileData();
 
   const organizationsValues = Object.values(organizations);
+
+  const useAuthorizationOrClaimPolls = noAuthorizationOrClaimPolls !== "Y";
 
   if (isArrayHasData(organizationsValues)) {
     const { eligibilityPromises, preauthPromises } = organizationsValues.reduce(
@@ -27,7 +29,7 @@ import { getConfigFileData } from "../helpers/getConfigFileData.mjs";
           runExsysEligibilityPendingRequestsPoll(baseOptions)
         );
 
-        if (!noAuthorizationOrClaimsPolls) {
+        if (useAuthorizationOrClaimPolls) {
           acc.preauthPromises.push([
             runPreauthorizationPoll({
               includeMessageType: "claim-response",
@@ -54,7 +56,7 @@ import { getConfigFileData } from "../helpers/getConfigFileData.mjs";
 
     await Promise.all(eligibilityPromises);
 
-    if (!noAuthorizationOrClaimsPolls) {
+    if (useAuthorizationOrClaimPolls) {
       await Promise.all(preauthPromises.flat());
     }
   }
