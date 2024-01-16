@@ -105,7 +105,7 @@ const scrapeNphiesSiteData = async () => {
         }
 
         await writeResultFile({
-          folderName: `${scrapFoldername}/${claim}/${createUUID()}`,
+          folderName: `${scrapFoldername}/claims/${createUUID()}`,
           data: {
             isNavigationRequest,
             requestUrl: url,
