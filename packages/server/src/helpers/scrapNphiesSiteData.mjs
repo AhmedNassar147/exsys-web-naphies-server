@@ -4,7 +4,7 @@
  *
  */
 import puppeteer from "puppeteer";
-import { writeResultFile } from "@exsys-web-server/helpers";
+import { writeResultFile, createUUID } from "@exsys-web-server/helpers";
 
 const nphiesPageUrl =
   "https://sso.nphies.sa/auth/realms/sehaticoreprod/protocol/openid-connect/auth?client_id=tv-ui&redirect_uri=https%3A%2F%2Fviewer.nphies.sa%2FLightFHIR&state=2f70125f-1c82-41af-b7d0-62461ef7b07b&response_mode=fragment&response_type=code&scope=openid&nonce=28f2911e-f02d-4903-85f2-41d4627c2506";
@@ -22,11 +22,12 @@ const scrapNphiesSiteData = async () => {
   });
 
   const page = await browser.newPage();
-  await page.setViewport({ width: 1285, height: 890 });
+  await page.setViewport({ width: 1270, height: 1024 });
   const pageData = await page.goto(nphiesPageUrl, { timeout: 100000 });
 
   await page.type("#username", "halsaggaf@sagaf-eye.com");
   await page.type("#password", "Hussien@123");
+  await page.setRequestInterception(true);
 
   const url = pageData.url();
   const text = await pageData.text();
@@ -38,32 +39,33 @@ const scrapNphiesSiteData = async () => {
       text,
     },
   });
-  await page.setRequestInterception(true);
 
   page.on("request", async (interceptedRequest) => {
     if (interceptedRequest.isInterceptResolutionHandled()) {
       return;
     }
 
-    if (interceptedRequest.isNavigationRequest()) {
-      return;
-    }
-
     interceptedRequest.continue();
 
-    const url = interceptedRequest.url();
+    // if (interceptedRequest.isNavigationRequest()) {
+    //   return;
+    // }
 
-    const shouldIgnoreUrl = ignoredUrlsSubValues.some((value) =>
-      url.includes(value)
-    );
+    const url = interceptedRequest.url();
+    const isNavigationRequest = interceptedRequest.isNavigationRequest();
+
+    const shouldIgnoreUrl =
+      // interceptedRequest.isNavigationRequest() ||
+      ignoredUrlsSubValues.some((value) => url.includes(value));
 
     if (shouldIgnoreUrl) {
       return;
     }
 
     await writeResultFile({
-      folderName: "nphies_interceptedRequest/1.json",
+      folderName: `nphies_interceptedRequest/${createUUID()}.json`,
       data: {
+        isNavigationRequest,
         requestUrl: url,
         requestHeaders: interceptedRequest.headers(),
         requestResponse: interceptedRequest.response(),
