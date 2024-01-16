@@ -11,7 +11,7 @@ const nphiesPageUrl =
 
 const scrapNphiesSiteData = async () => {
   const browser = await puppeteer.launch({
-    headless: "new",
+    headless: false,
     // args: [
     //   "--remote-debugging-port=9222",
     //   "--remote-debugging-address=192.168.13.84",
@@ -46,7 +46,7 @@ const scrapNphiesSiteData = async () => {
     });
   });
 
-  const pageData = await page.goto(nphiesPageUrl, { timeout: 50000 });
+  const pageData = await page.goto(nphiesPageUrl);
 
   const url = pageData.url();
   const text = await pageData.text();
