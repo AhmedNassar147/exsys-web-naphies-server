@@ -1,0 +1,29 @@
+/*
+ *
+ * Constants: `nphies-scraping`.
+ *
+ */
+export const loadingPageTimeout = 100000;
+
+export const nphiesViewerPageName = "viewer.nphies.sa/LightFHIR";
+export const loginPageUrl =
+  "https://sso.nphies.sa/auth/realms/sehaticoreprod/protocol/openid-connect/auth?client_id=tv-ui&redirect_uri=https%3A%2F%2Fviewer.nphies.sa%2FLightFHIR&state=2f70125f-1c82-41af-b7d0-62461ef7b07b&response_mode=fragment&response_type=code&scope=openid&nonce=28f2911e-f02d-4903-85f2-41d4627c2506";
+
+export const loginUserName = "nlubad@sagaf-eye.com";
+export const loginPassword = "ALsaggaf@20121";
+
+export const loginButtonSelector = "input[name='login']";
+export const optFieldSelector = "input[name='otp-number']";
+
+export const scrapFoldername = "nphiesDashboardScraping";
+
+export const ignoredUrlsSubValues = [
+  ".svg",
+  ".css",
+  ".png",
+  ".jpg",
+  ".woff",
+  ".woff2",
+  "login-actions/authenticate",
+  "recaptcha",
+];

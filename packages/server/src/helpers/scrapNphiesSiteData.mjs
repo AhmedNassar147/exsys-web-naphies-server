@@ -4,7 +4,11 @@
  *
  */
 import puppeteer from "puppeteer";
-import { writeResultFile, createUUID } from "@exsys-web-server/helpers";
+import {
+  writeResultFile,
+  createUUID,
+  delayProcess,
+} from "@exsys-web-server/helpers";
 
 const ignoredUrlsSubValues = [
   ".svg",
@@ -28,8 +32,6 @@ const loginPageUrl =
 
 const loginUserName = "nlubad@sagaf-eye.com";
 const loginPassword = "ALsaggaf@20121";
-
-const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 const submitForm = async (page, submissionSelector) =>
   await Promise.all([
@@ -72,7 +74,7 @@ const scrapeNphiesSiteData = async () => {
         optValueHasBeenSet = true;
         break;
       } else {
-        await sleep(1010);
+        await delayProcess(1010);
       }
     }
 
