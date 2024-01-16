@@ -72,7 +72,7 @@ const scrapeNphiesSiteData = async () => {
         optValueHasBeenSet = true;
         break;
       } else {
-        await sleep(1000);
+        await sleep(1010);
       }
     }
 
