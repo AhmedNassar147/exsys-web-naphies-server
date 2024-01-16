@@ -35,7 +35,7 @@ const scrapNphiesSiteData = async () => {
   const pageData = await page.goto(nphiesPageUrl, { timeout: 100000 });
 
   await page.type("#username", "halsaggaf@sagaf-eye.com");
-  await page.type("#password", "Hussien@123");
+  // await page.type("#password", "Hussien@123");
   await page.setRequestInterception(true);
 
   const url = pageData.url();
