@@ -9,7 +9,16 @@ import { writeResultFile, createUUID } from "@exsys-web-server/helpers";
 const nphiesPageUrl =
   "https://sso.nphies.sa/auth/realms/sehaticoreprod/protocol/openid-connect/auth?client_id=tv-ui&redirect_uri=https%3A%2F%2Fviewer.nphies.sa%2FLightFHIR&state=2f70125f-1c82-41af-b7d0-62461ef7b07b&response_mode=fragment&response_type=code&scope=openid&nonce=28f2911e-f02d-4903-85f2-41d4627c2506";
 
-const ignoredUrlsSubValues = [".svg", ".css", ".png", ".jpg", "recaptcha"];
+const ignoredUrlsSubValues = [
+  ".svg",
+  ".css",
+  ".png",
+  ".jpg",
+  ".woff",
+  ".woff2",
+  "login-actions/authenticate",
+  "recaptcha",
+];
 
 const scrapNphiesSiteData = async () => {
   const browser = await puppeteer.launch({
@@ -22,7 +31,7 @@ const scrapNphiesSiteData = async () => {
   });
 
   const page = await browser.newPage();
-  await page.setViewport({ width: 1270, height: 1024 });
+  // await page.setViewport({ width: 1270, height: 1024 });
   const pageData = await page.goto(nphiesPageUrl, { timeout: 100000 });
 
   await page.type("#username", "halsaggaf@sagaf-eye.com");
