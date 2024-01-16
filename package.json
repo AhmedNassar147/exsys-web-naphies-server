@@ -24,7 +24,8 @@
     "wecare-dev": "yarn start client=wecare --ignore-cert",
     "tadawi": "yarn start client=tadawi",
     "dev-tadawy": "yarn start --ignore-cert --port=9090",
-    "prod": "yarn start --production"
+    "prod": "yarn start --production",
+    "pup": "node packages/server/src/helpers/scrapNphiesSiteData.mjs"
   },
   "dependencies": {
     "@exsys-web-server/helpers": "1.0.0",
