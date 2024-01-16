@@ -17,8 +17,8 @@ const ignoredUrlsSubValues = [
   "recaptcha",
 ];
 
-const loginButtonSelector = 'input[name="login"]';
-const optFieldSelector = "#otp-number";
+const loginButtonSelector = "input[name='login']";
+const optFieldSelector = "input[name='otp-number']";
 
 const loginPageUrl =
   "https://sso.nphies.sa/auth/realms/sehaticoreprod/protocol/openid-connect/auth?client_id=tv-ui&redirect_uri=https%3A%2F%2Fviewer.nphies.sa%2FLightFHIR&state=2f70125f-1c82-41af-b7d0-62461ef7b07b&response_mode=fragment&response_type=code&scope=openid&nonce=28f2911e-f02d-4903-85f2-41d4627c2506";
@@ -26,50 +26,57 @@ const loginPageUrl =
 const loginUserName = "nlubad@sagaf-eye.com";
 const loginPassword = "ALsaggaf@20121";
 
-const opt = "";
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
-const submitForm = async (page, submissionSelector, formData) => {
-  const promises = Object.keys(formData).map((fieldSelector) =>
-    page.type(fieldSelector, formData[fieldSelector])
-  );
-
+const submitForm = async (page, submissionSelector) =>
   await Promise.all([
-    promises,
     page.waitForNavigation(), // The promise resolves after navigation has finished
     await page.evaluate(
       (selector) => document.querySelector(selector).click(), // click the submission button
       submissionSelector
     ),
   ]);
-};
 
 const scrapNphiesSiteData = async () => {
   const browser = await puppeteer.launch({
     headless: false,
-    defaultViewport: { width: 1080, height: 1024 },
+    defaultViewport: { width: 1080, height: 800 },
   });
 
   const page = await browser.newPage();
   await page.goto(loginPageUrl, { timeout: 100000 });
 
-  await submitForm(page, loginButtonSelector, {
-    "#username": loginUserName,
-    "#password": loginPassword,
-  });
+  // submit the base login form
+  await page.type("#username", loginUserName);
+  await page.type("#password", loginPassword);
+  await submitForm(page, loginButtonSelector);
 
   const currentPageUrl = page.url();
-
   const isCurrentPageIsOptPage = currentPageUrl.includes("login-actions");
   const optField = await page.$(optFieldSelector);
-  // await page.waitForSelector(optFieldSelector);
 
-  console.log({
-    currentPageUrl,
-    isCurrentPageIsOptPage,
-    optField,
-  });
+  if (isCurrentPageIsOptPage && optField) {
+    let optValueHasBeenSet = false;
 
-  // await page.type("#otp-number", opt);
+    while (!optValueHasBeenSet) {
+      const optValue = await page.$eval(
+        optFieldSelector,
+        (input) => input.value
+      );
+
+      if (optValue && optValue.length > 5) {
+        await submitForm(page, loginButtonSelector);
+        console.log("currentPageUrl in loop", page.url());
+        optValueHasBeenSet = true;
+        break;
+      } else {
+        console.log("sleep");
+        await sleep(450);
+      }
+    }
+
+    console.log("currentPageUrl out loop", page.url());
+  }
 
   // await writeResultFile({
   //   folderName: "nphies_interceptedRequest/navigation.json",
@@ -78,7 +85,6 @@ const scrapNphiesSiteData = async () => {
   //   },
   // });
 
-  // await page.type("#otp-number", "OTP");
   // await page.ent("input[valye=Log In]");
 
   // const url = pageData.url();
