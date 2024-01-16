@@ -11,7 +11,7 @@
     "src"
   ],
   "scripts": {
-    "start": "nodemon --ignore results/ -q ./src/index.js"
+    "start": "nodemon --ignore results/ --ignore ./src/helpers/scrapNphiesSiteData.mjs -q ./src/index.js"
   },
   "peerDependencies": {
     "@exsys-web-server/helpers": "1.0.0",
