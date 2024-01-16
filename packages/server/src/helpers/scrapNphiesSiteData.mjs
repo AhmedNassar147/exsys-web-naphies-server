@@ -71,7 +71,7 @@ const scrapNphiesSiteData = async () => {
         break;
       } else {
         console.log("sleep");
-        await sleep(450);
+        await sleep(1000);
       }
     }
 
