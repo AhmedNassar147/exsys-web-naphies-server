@@ -78,8 +78,6 @@ export default scrapNphiesSiteData;
 (async () => {
   const [startpuppteer] = process.argv || [];
 
-  console.log("startpuppteer", startpuppteer);
-
   if (startpuppteer) {
     await scrapNphiesSiteData();
   }
