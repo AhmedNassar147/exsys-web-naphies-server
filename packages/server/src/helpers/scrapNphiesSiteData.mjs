@@ -12,7 +12,11 @@ const nphiesPageUrl =
 const scrapNphiesSiteData = async () => {
   const browser = await puppeteer.launch({
     headless: "new",
-    timeout: 50000,
+    // args: [
+    //   "--remote-debugging-port=9222",
+    //   "--remote-debugging-address=192.168.13.84",
+    //   "--no-sandbox",
+    // ],
   });
 
   const page = await browser.newPage();
@@ -20,8 +24,6 @@ const scrapNphiesSiteData = async () => {
   await page.setRequestInterception(true);
 
   page.on("request", async (interceptedRequest) => {
-    console.log("interceptedRequest", interceptedRequest);
-
     if (interceptedRequest.isInterceptResolutionHandled()) {
       return;
     }
@@ -35,7 +37,7 @@ const scrapNphiesSiteData = async () => {
     const url = interceptedRequest.url();
 
     await writeResultFile({
-      folderName: "nphies_interceptedRequest",
+      folderName: "nphies_interceptedRequest/1.json",
       data: {
         requestUrl: url,
         requestHeaders: interceptedRequest.headers(),
@@ -44,7 +46,18 @@ const scrapNphiesSiteData = async () => {
     });
   });
 
-  await page.goto(nphiesPageUrl);
+  const pageData = await page.goto(nphiesPageUrl, { timeout: 50000 });
+
+  const url = pageData.url();
+  const text = await pageData.text();
+
+  await writeResultFile({
+    folderName: "nphies_interceptedRequest/json.json",
+    data: {
+      url,
+      text,
+    },
+  });
 };
 
 export default scrapNphiesSiteData;
