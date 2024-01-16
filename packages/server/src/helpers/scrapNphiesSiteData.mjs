@@ -1,6 +1,6 @@
 /*
  *
- * Helper: `scrapNphiesSiteData`.
+ * Helper: `scrapeNphiesSiteData`.
  *
  */
 import puppeteer from "puppeteer";
@@ -20,6 +20,9 @@ const ignoredUrlsSubValues = [
 const loginButtonSelector = "input[name='login']";
 const optFieldSelector = "input[name='otp-number']";
 
+const nphiesViewerPageName = "viewer.nphies.sa/LightFHIR";
+const scrapFoldername = "nphiesDashboardScraping";
+
 const loginPageUrl =
   "https://sso.nphies.sa/auth/realms/sehaticoreprod/protocol/openid-connect/auth?client_id=tv-ui&redirect_uri=https%3A%2F%2Fviewer.nphies.sa%2FLightFHIR&state=2f70125f-1c82-41af-b7d0-62461ef7b07b&response_mode=fragment&response_type=code&scope=openid&nonce=28f2911e-f02d-4903-85f2-41d4627c2506";
 
@@ -37,10 +40,10 @@ const submitForm = async (page, submissionSelector) =>
     ),
   ]);
 
-const scrapNphiesSiteData = async () => {
+const scrapeNphiesSiteData = async () => {
   const browser = await puppeteer.launch({
     headless: false,
-    defaultViewport: { width: 1080, height: 800 },
+    defaultViewport: { width: 1200, height: 800 },
   });
 
   const page = await browser.newPage();
@@ -66,80 +69,62 @@ const scrapNphiesSiteData = async () => {
 
       if (optValue && optValue.length > 5) {
         await submitForm(page, loginButtonSelector);
-        console.log("currentPageUrl in loop", page.url());
         optValueHasBeenSet = true;
         break;
       } else {
-        console.log("sleep");
         await sleep(1000);
       }
     }
 
-    console.log("currentPageUrl out loop", page.url());
+    const nphiesHomePage = page.url(); // https://viewer.nphies.sa/LightFHIR
+
+    if (nphiesHomePage.includes(nphiesViewerPageName)) {
+      await page.goto(`${nphiesHomePage}/tracking/claim`);
+
+      await page.setRequestInterception(true);
+      page.on("request", async (interceptedRequest) => {
+        if (interceptedRequest.isInterceptResolutionHandled()) {
+          return;
+        }
+
+        interceptedRequest.continue();
+
+        // if (interceptedRequest.isNavigationRequest()) {
+        //   return;
+        // }
+
+        const url = interceptedRequest.url();
+        const isNavigationRequest = interceptedRequest.isNavigationRequest();
+
+        const shouldIgnoreUrl =
+          // interceptedRequest.isNavigationRequest() ||
+          ignoredUrlsSubValues.some((value) => url.includes(value));
+
+        if (shouldIgnoreUrl) {
+          return;
+        }
+
+        await writeResultFile({
+          folderName: `${scrapFoldername}/${claim}/${createUUID()}`,
+          data: {
+            isNavigationRequest,
+            requestUrl: url,
+            requestHeaders: interceptedRequest.headers(),
+            requestResponse: interceptedRequest.response(),
+            interceptedRequest,
+          },
+        });
+      });
+    }
   }
-
-  // await writeResultFile({
-  //   folderName: "nphies_interceptedRequest/navigation.json",
-  //   data: {
-  //     url: currentPageUrl,
-  //   },
-  // });
-
-  // await page.ent("input[valye=Log In]");
-
-  // const url = pageData.url();
-  // const text = await pageData.text();
-
-  // await writeResultFile({
-  //   folderName: "nphies_interceptedRequest/json.json",
-  //   data: {
-  //     url,
-  //     text,
-  //   },
-  // });
-
-  // await page.setRequestInterception(true);
-  // page.on("request", async (interceptedRequest) => {
-  //   if (interceptedRequest.isInterceptResolutionHandled()) {
-  //     return;
-  //   }
-
-  //   interceptedRequest.continue();
-
-  //   // if (interceptedRequest.isNavigationRequest()) {
-  //   //   return;
-  //   // }
-
-  //   const url = interceptedRequest.url();
-  //   const isNavigationRequest = interceptedRequest.isNavigationRequest();
-
-  //   const shouldIgnoreUrl =
-  //     // interceptedRequest.isNavigationRequest() ||
-  //     ignoredUrlsSubValues.some((value) => url.includes(value));
-
-  //   if (shouldIgnoreUrl) {
-  //     return;
-  //   }
-
-  //   await writeResultFile({
-  //     folderName: `nphies_interceptedRequest/${createUUID()}.json`,
-  //     data: {
-  //       isNavigationRequest,
-  //       requestUrl: url,
-  //       requestHeaders: interceptedRequest.headers(),
-  //       requestResponse: interceptedRequest.response(),
-  //       interceptedRequest,
-  //     },
-  //   });
-  // });
 };
 
-export default scrapNphiesSiteData;
+export default scrapeNphiesSiteData;
 
 (async () => {
   const [startpuppteer] = process.argv || [];
 
   if (startpuppteer) {
-    await scrapNphiesSiteData();
+    await scrapeNphiesSiteData();
   }
 })();
