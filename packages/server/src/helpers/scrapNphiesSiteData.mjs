@@ -23,8 +23,11 @@ const ignoredUrlsSubValues = [
 
 const loginButtonSelector = "input[name='login']";
 const optFieldSelector = "input[name='otp-number']";
+const dashboardSideBarSelector = "ul[class='assista-aside-list']";
+const dashboardSideBarClaimsSelector = `${dashboardSideBarSelector} > li:nth-child(4)`;
+const dashboardSideBarPreAuthorizationsSelector = `${dashboardSideBarSelector} > li:nth-child(3)`;
 
-const nphiesViewerPageName = "viewer.nphies.sa/LightFHIR";
+const nphiesViewerPageName = "tracking/dashboard";
 const scrapFoldername = "nphiesDashboardScraping";
 
 const loginPageUrl =
@@ -81,21 +84,18 @@ const scrapeNphiesSiteData = async () => {
       }
     }
 
-    await page.waitForNavigation();
+    await page.waitForNavigation(); // The promise resolves after navigation has finished
+    const nphiesDashboardPage = page.url(); // https://viewer.nphies.sa/LightFHIR
 
-    const nphiesHomePage = page.url(); // https://viewer.nphies.sa/LightFHIR
+    if (nphiesDashboardPage.includes(nphiesViewerPageName)) {
+      await submitForm(page, dashboardSideBarClaimsSelector);
+      await page.setRequestInterception(true);
 
-    console.log("nphiesHomePage", nphiesHomePage);
-
-    if (nphiesHomePage.includes(nphiesViewerPageName)) {
-      await Promise.all([
-        page.goto(`${nphiesHomePage}/tracking/claim`, { timeout: 100000 }),
-        page.waitForNavigation(), // The promise resolves after navigation has finished
-      ]);
+      //  https://sgw.nphies.sa/viewerapi/claim?size=10&page=0&date_from=2024-01-16T21:00:00.240Z&date_to=2024-01-17T09:53:58.240Z
+      // https://sgw.nphies.sa/viewerapi/claim?size=10&page=0&date_from=2024-01-11T09:53:11.602Z&date_to=2024-01-17T09:53:11.602Z
 
       console.log("page.url after navigation", page.url());
 
-      await page.setRequestInterception(true);
       page.on("request", async (interceptedRequest) => {
         if (interceptedRequest.isInterceptResolutionHandled()) {
           return;
@@ -103,15 +103,11 @@ const scrapeNphiesSiteData = async () => {
 
         interceptedRequest.continue();
 
-        // if (interceptedRequest.isNavigationRequest()) {
-        //   return;
-        // }
-
         const url = interceptedRequest.url();
         const isNavigationRequest = interceptedRequest.isNavigationRequest();
 
         const shouldIgnoreUrl =
-          // interceptedRequest.isNavigationRequest() ||
+          isNavigationRequest ||
           ignoredUrlsSubValues.some((value) => url.includes(value));
 
         if (shouldIgnoreUrl) {
