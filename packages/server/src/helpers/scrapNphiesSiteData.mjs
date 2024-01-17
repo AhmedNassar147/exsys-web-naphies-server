@@ -9,6 +9,7 @@ import {
   createUUID,
   delayProcess,
 } from "@exsys-web-server/helpers";
+import axios from "axios";
 
 const ignoredUrlsSubValues = [
   ".svg",
@@ -39,9 +40,9 @@ const loginPageUrl =
 const loginUserName = "Halsaggaf@sagaf-eye.com";
 const loginPassword = "Hussien123";
 
-const submitForm = async (page, submissionSelector) =>
+const submitForm = async (page, submissionSelector, navigationOptions) =>
   await Promise.all([
-    page.waitForNavigation(), // The promise resolves after navigation has finished
+    page.waitForNavigation(navigationOptions), // The promise resolves after navigation has finished
     page.evaluate(
       (selector) => document.querySelector(selector).click(), // click the submission button
       submissionSelector
@@ -88,11 +89,56 @@ const scrapeNphiesSiteData = async () => {
     const nphiesDashboardPage = page.url(); // https://viewer.nphies.sa/LightFHIR
 
     if (nphiesDashboardPage.includes(nphiesViewerPageName)) {
-      await submitForm(page, dashboardSideBarClaimsSelector);
+      // await delayProcess(3000);
+      await submitForm(page, dashboardSideBarClaimsSelector, {
+        waitUntil: "networkidle0",
+      });
+
+      // try {
+      //   //  https://sgw.nphies.sa/viewerapi/claim?size=10&page=0&date_from=2024-01-16T21:00:00.240Z&date_to=2024-01-17T09:53:58.240Z
+      //   // https://sgw.nphies.sa/viewerapi/claim?size=10&page=0&date_from=2024-01-11T09:53:11.602Z&date_to=2024-01-17T09:53:11.602Z
+
+      //   const finalResponse = await page.waitForRequest(
+      //     request => {
+      //       const req = request.url();
+      //       const method = request.method()
+
+      //       console.log({
+      //         req,
+      //         method,
+      //         cond: request.url().startsWith('https://sgw.nphies.sa/viewerapi/claim?')
+      //       })
+
+      //       return request.url().startsWith('https://sgw.nphies.sa/viewerapi/claim?') && request.method() === "GET"
+      //     }, { timeout: 100000 }
+      //   );
+
+      //   await writeResultFile({
+      //     folderName: `${scrapFoldername}/claims-request`,
+      //     data: {finalResponse},
+      //   });
+      // } catch (error) {
+      //   console.log("error when wating the claims api request")
+      // }
+
       await page.setRequestInterception(true);
 
-      //  https://sgw.nphies.sa/viewerapi/claim?size=10&page=0&date_from=2024-01-16T21:00:00.240Z&date_to=2024-01-17T09:53:58.240Z
-      // https://sgw.nphies.sa/viewerapi/claim?size=10&page=0&date_from=2024-01-11T09:53:11.602Z&date_to=2024-01-17T09:53:11.602Z
+      page.on("response", async (response) => {
+        const url = response.url();
+
+        const shouldIgnoreUrl = ignoredUrlsSubValues.some((value) =>
+          url.includes(value)
+        );
+
+        const res = await response.text();
+
+        await writeResultFile({
+          folderName: `${scrapFoldername}/response`,
+          data: { url, shouldIgnoreUrl, res: res, response },
+        });
+        // if (!shouldIgnoreUrl) {
+        // }
+      });
 
       console.log("page.url after navigation", page.url());
 
@@ -138,3 +184,13 @@ export default scrapeNphiesSiteData;
     await scrapeNphiesSiteData();
   }
 })();
+
+// Host: sgw.nphies.sa
+// Origin: https://viewer.nphies.sa
+// Referer: https://viewer.nphies.sa/
+// Sec-Fetch-Dest: empty
+// Sec-Fetch-Mode: cors
+// Sec-Fetch-Site: same-site
+// sec-ch-ua: "Not_A Brand";v="8", "Chromium";v="120", "Google Chrome";v="120"
+// sec-ch-ua-mobile: ?0
+// sec-ch-ua-platform: "Windows"
