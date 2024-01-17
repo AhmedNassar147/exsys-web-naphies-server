@@ -126,15 +126,28 @@ const scrapeNphiesSiteData = async () => {
       page.on("response", async (response) => {
         const url = response.url();
 
-        const shouldIgnoreUrl = ignoredUrlsSubValues.some((value) =>
-          url.includes(value)
-        );
+        // const shouldIgnoreUrl = ignoredUrlsSubValues.some((value) =>
+        //   url.includes('/viewerapi/')
+        // );
 
-        const res = await response.text();
+        const isValidApiUrl = url.includes("/viewerapi/");
+
+        const headers = response.headers() || {};
+        const contentType = headers["content-Type"];
+        const isJsonResponse = (contentType || "").includes("application/json");
+        const res = await (isJsonResponse ? response.json : response.text)();
 
         await writeResultFile({
           folderName: `${scrapFoldername}/response`,
-          data: { url, shouldIgnoreUrl, res: res, response },
+          data: {
+            url,
+            isValidApiUrl,
+            headers,
+            contentType,
+            isJsonResponse,
+            res: res,
+            response,
+          },
         });
         // if (!shouldIgnoreUrl) {
         // }
