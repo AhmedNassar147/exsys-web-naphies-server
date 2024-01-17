@@ -30,13 +30,16 @@ const scrapFoldername = "nphiesDashboardScraping";
 const loginPageUrl =
   "https://sso.nphies.sa/auth/realms/sehaticoreprod/protocol/openid-connect/auth?client_id=tv-ui&redirect_uri=https%3A%2F%2Fviewer.nphies.sa%2FLightFHIR&state=2f70125f-1c82-41af-b7d0-62461ef7b07b&response_mode=fragment&response_type=code&scope=openid&nonce=28f2911e-f02d-4903-85f2-41d4627c2506";
 
-const loginUserName = "nlubad@sagaf-eye.com";
-const loginPassword = "ALsaggaf@20121";
+// const loginUserName = "nlubad@sagaf-eye.com";
+// const loginPassword = "ALsaggaf@20121";
+
+const loginUserName = "Halsaggaf@sagaf-eye.com";
+const loginPassword = "Hussien123";
 
 const submitForm = async (page, submissionSelector) =>
   await Promise.all([
     page.waitForNavigation(), // The promise resolves after navigation has finished
-    await page.evaluate(
+    page.evaluate(
       (selector) => document.querySelector(selector).click(), // click the submission button
       submissionSelector
     ),
@@ -78,10 +81,19 @@ const scrapeNphiesSiteData = async () => {
       }
     }
 
+    await page.waitForNavigation();
+
     const nphiesHomePage = page.url(); // https://viewer.nphies.sa/LightFHIR
 
+    console.log("nphiesHomePage", nphiesHomePage);
+
     if (nphiesHomePage.includes(nphiesViewerPageName)) {
-      await page.goto(`${nphiesHomePage}/tracking/claim`);
+      await Promise.all([
+        page.goto(`${nphiesHomePage}/tracking/claim`, { timeout: 100000 }),
+        page.waitForNavigation(), // The promise resolves after navigation has finished
+      ]);
+
+      console.log("page.url after navigation", page.url());
 
       await page.setRequestInterception(true);
       page.on("request", async (interceptedRequest) => {
