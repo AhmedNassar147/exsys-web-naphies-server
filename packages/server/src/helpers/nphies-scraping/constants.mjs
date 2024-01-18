@@ -22,7 +22,7 @@ export const dashboardSideBarSelector = "ul[class='assista-aside-list']";
 export const dashboardSideBarClaimsSelector = `${dashboardSideBarSelector} > li:nth-child(4)`;
 export const dashboardSideBarPreAuthorizationsSelector = `${dashboardSideBarSelector} > li:nth-child(3)`;
 
-const otpPageSubmissionApiUrl =
+export const otpPageSubmissionApiUrl =
   "auth/realms/sehaticoreprod/login-actions/authenticate?session_code";
 
 export const scrapFoldername = "nphiesDashboardScraping";
