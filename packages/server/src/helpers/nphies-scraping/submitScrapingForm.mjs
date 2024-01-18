@@ -3,10 +3,14 @@
  * Helper: `submitScrapingForm`.
  *
  */
-const submitScrapingForm = async (page, submissionSelector) =>
+const submitScrapingForm = async (
+  page,
+  submissionSelector,
+  navigationOptions
+) =>
   await Promise.all([
-    page.waitForNavigation(), // The promise resolves after navigation has finished
-    await page.evaluate(
+    page.waitForNavigation(navigationOptions), // The promise resolves after navigation has finished
+    page.evaluate(
       (selector) => document.querySelector(selector).click(), // click the submission button
       submissionSelector
     ),

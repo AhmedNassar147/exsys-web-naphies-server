@@ -18,6 +18,13 @@ export const loginPassword = "Hussien123";
 export const loginButtonSelector = "input[name='login']";
 export const optFieldSelector = "input[name='otp-number']";
 
+export const dashboardSideBarSelector = "ul[class='assista-aside-list']";
+export const dashboardSideBarClaimsSelector = `${dashboardSideBarSelector} > li:nth-child(4)`;
+export const dashboardSideBarPreAuthorizationsSelector = `${dashboardSideBarSelector} > li:nth-child(3)`;
+
+const otpPageSubmissionApiUrl =
+  "auth/realms/sehaticoreprod/login-actions/authenticate?session_code";
+
 export const scrapFoldername = "nphiesDashboardScraping";
 
 export const ignoredUrlsSubValues = [
