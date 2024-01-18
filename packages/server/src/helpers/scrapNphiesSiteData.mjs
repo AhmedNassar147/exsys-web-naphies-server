@@ -25,6 +25,7 @@ import {
   dashboardSideBarClaimsSelector,
   // dashboardSideBarPreAuthorizationsSelector,
   otpPageSubmissionApiUrl,
+  loadingPageTimeout,
 } from "./nphies-scraping/constants.mjs";
 
 // const params = {
@@ -42,7 +43,7 @@ const scrapeNphiesSiteData = async () => {
   });
 
   const page = await browser.newPage();
-  await page.goto(loginPageUrl, { timeout: 100000 });
+  await page.goto(loginPageUrl, { timeout: loadingPageTimeout });
 
   // submit the base login form
   await page.type("#username", loginUserName);
@@ -55,58 +56,130 @@ const scrapeNphiesSiteData = async () => {
 
   const isInsuredOptPage = isCurrentPageIsOptPage && optField;
 
+  let otpApiResponse = undefined;
+
   if (isInsuredOptPage) {
-    page.on("response", async (response) => {
-      const { isValidApiUrl, result, ...results } =
-        await getPageApiResponseData(response, [otpPageSubmissionApiUrl]);
+    const apiResponse = await page.waitForResponse(
+      (response) => {
+        const url = response.request().url();
+        return url.includes(otpPageSubmissionApiUrl);
+      },
+      { timeout: loadingPageTimeout }
+    );
 
-      if (isValidApiUrl) {
-        const isInvalidLogin = (result || "").includes("Invalid OTP number");
-
-        if (!isInvalidLogin) {
-          await page.waitForNavigation();
-          const nphiesDashboardPage = page.url();
-
-          console.log("nphiesDashboardPage", nphiesDashboardPage);
-
-          // if (nphiesDashboardPage.includes(nphiesViewerPageName)) {
-          //   // await delayProcess(3000);
-          //   await submitScrapingForm(page, dashboardSideBarClaimsSelector, {
-          //     waitUntil: "networkidle0",
-          //   });
-
-          //   page.on("response", async (response) => {
-          //     console.log("RESPONSE page.url()", page.url());
-          //     const { isValidApiUrl, ...results } =
-          //       await getPageApiResponseData(response, ["/viewerapi/"]);
-
-          //     if (!isValidApiUrl) {
-          //       return;
-          //     }
-
-          //     await writeResultFile({
-          //       folderName: `${scrapFoldername}/response`,
-          //       data: {
-          //         isValidApiUrl,
-          //         ...results,
-          //       },
-          //     });
-          //   });
-          // }
-        }
-
-        await writeResultFile({
-          folderName: `${scrapFoldername}/session-response`,
-          data: {
-            isInvalidLogin,
-            ...results,
-            result,
-          },
-        });
-      }
-    });
-    // page.off("response", handler);
+    otpApiResponse = await getPageApiResponseData(apiResponse, [
+      otpPageSubmissionApiUrl,
+    ]);
   }
+
+  const {
+    isValidApiUrl: isValidOptApiUrl,
+    result: otpResult,
+    ...optRestResults
+  } = otpApiResponse;
+
+  let shouldProcessNextPageApi = false;
+
+  if (isValidOptApiUrl) {
+    const isInvalidLogin = (otpResult || "").includes("Invalid OTP number");
+
+    shouldProcessNextPageApi = !isInvalidLogin;
+
+    await writeResultFile({
+      folderName: `${scrapFoldername}/session-response`,
+      data: {
+        isValidOptApiUrl,
+        isInvalidLogin,
+        ...optRestResults,
+        result: otpResult,
+      },
+    });
+  }
+
+  if (shouldProcessNextPageApi) {
+    await page.waitForNavigation();
+    const nphiesDashboardPage = page.url();
+
+    console.log("nphiesDashboardPage", nphiesDashboardPage);
+
+    // if (nphiesDashboardPage.includes(nphiesViewerPageName)) {
+    //   // await delayProcess(3000);
+    //   await submitScrapingForm(page, dashboardSideBarClaimsSelector, {
+    //     waitUntil: "networkidle0",
+    //   });
+
+    //   page.on("response", async (response) => {
+    //     console.log("RESPONSE page.url()", page.url());
+    //     const { isValidApiUrl, ...results } =
+    //       await getPageApiResponseData(response, ["/viewerapi/"]);
+
+    //     if (!isValidApiUrl) {
+    //       return;
+    //     }
+
+    //     await writeResultFile({
+    //       folderName: `${scrapFoldername}/response`,
+    //       data: {
+    //         isValidApiUrl,
+    //         ...results,
+    //       },
+    //     });
+    //   });
+    // }
+  }
+
+  // if (isInsuredOptPage) {
+  //   page.on("response", async (response) => {
+  //     const { isValidApiUrl, result, ...results } =
+  //       await getPageApiResponseData(response, [otpPageSubmissionApiUrl]);
+
+  //     if (isValidApiUrl) {
+  //       const isInvalidLogin = (result || "").includes("Invalid OTP number");
+
+  //       if (!isInvalidLogin) {
+  //         await page.waitForNavigation();
+  //         const nphiesDashboardPage = page.url();
+
+  //         console.log("nphiesDashboardPage", nphiesDashboardPage);
+
+  //         // if (nphiesDashboardPage.includes(nphiesViewerPageName)) {
+  //         //   // await delayProcess(3000);
+  //         //   await submitScrapingForm(page, dashboardSideBarClaimsSelector, {
+  //         //     waitUntil: "networkidle0",
+  //         //   });
+
+  //         //   page.on("response", async (response) => {
+  //         //     console.log("RESPONSE page.url()", page.url());
+  //         //     const { isValidApiUrl, ...results } =
+  //         //       await getPageApiResponseData(response, ["/viewerapi/"]);
+
+  //         //     if (!isValidApiUrl) {
+  //         //       return;
+  //         //     }
+
+  //         //     await writeResultFile({
+  //         //       folderName: `${scrapFoldername}/response`,
+  //         //       data: {
+  //         //         isValidApiUrl,
+  //         //         ...results,
+  //         //       },
+  //         //     });
+  //         //   });
+  //         // }
+  //       }
+
+  //       await writeResultFile({
+  //         folderName: `${scrapFoldername}/session-response`,
+  //         data: {
+  //           isInvalidLogin,
+  //           ...results,
+  //           result,
+  //         },
+  //       });
+  //     }
+  //   });
+  //   // page.off("response", handler);
+  // }
 };
 
 export default scrapeNphiesSiteData;
