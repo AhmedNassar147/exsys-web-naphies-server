@@ -96,6 +96,8 @@ const scrapeNphiesSiteData = async () => {
     });
   }
 
+  console.log("shouldProcessNextPageApi", shouldProcessNextPageApi);
+
   if (shouldProcessNextPageApi) {
     await page.waitForNavigation();
     const nphiesDashboardPage = page.url();
