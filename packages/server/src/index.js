@@ -30,6 +30,7 @@ import createStatusCheckRequestMiddleware from "./middlewares/claim/createStatus
 import createTotalFilesSizeMiddleware from "./middlewares/files/createTotalFilesSizeMiddleware.mjs";
 import createMergeClaimsFilesToOneFileMiddleware from "./middlewares/claim/createMergeClaimsFilesToOneFileMiddleware.mjs";
 import stopTheProcessIfCertificateNotFound from "./helpers/stopTheProcessIfCertificateNotFound.mjs";
+import { getConfigFileData } from "./helpers/getConfigFileData.mjs";
 
 const { client } = CLI_CONFIG;
 
@@ -56,6 +57,11 @@ const { client } = CLI_CONFIG;
   }
 
   (async () => await import("./polls/index.mjs"))();
+
+  const { bridgeServerPort } = await getConfigFileData();
+
+  console.log("bridgeServerPort", bridgeServerPort);
+  const serverPort = SERVER_PORT || bridgeServerPort;
 
   const app = express();
   app.use(cors());
@@ -84,10 +90,10 @@ const { client } = CLI_CONFIG;
     createMergeClaimsFilesToOneFileMiddleware(app)
   ); //;
 
-  const res = app.listen(SERVER_PORT, () =>
+  const res = app.listen(serverPort, () =>
     createCmdMessage({
       type: "success",
-      message: `app is running on http://localhost:${SERVER_PORT}`,
+      message: `app is running on http://localhost:${serverPort}`,
     })
   );
 
