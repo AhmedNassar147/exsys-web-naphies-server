@@ -6,12 +6,13 @@
 import puppeteer from "puppeteer";
 import {
   writeResultFile,
-  // createUUID,
+  createUUID,
   // delayProcess,
 } from "@exsys-web-server/helpers";
 import axios from "axios";
 import getPageApiResponseData from "./nphies-scraping/getPageApiResponseData.mjs";
 import submitScrapingForm from "./nphies-scraping/submitScrapingForm.mjs";
+import waitForPageResponse from "./nphies-scraping/waitForPageResponse.mjs";
 import {
   scrapFoldername,
   loginUserName,
@@ -26,6 +27,7 @@ import {
   // dashboardSideBarPreAuthorizationsSelector,
   otpPageSubmissionApiUrl,
   loadingPageTimeout,
+  viewerClaimsApiUrl,
 } from "./nphies-scraping/constants.mjs";
 
 // const params = {
@@ -59,17 +61,7 @@ const scrapeNphiesSiteData = async () => {
   let otpApiResponse = undefined;
 
   if (isInsuredOptPage) {
-    const apiResponse = await page.waitForResponse(
-      (response) => {
-        const url = response.request().url();
-        return url.includes(otpPageSubmissionApiUrl);
-      },
-      { timeout: loadingPageTimeout }
-    );
-
-    otpApiResponse = await getPageApiResponseData(apiResponse, [
-      otpPageSubmissionApiUrl,
-    ]);
+    otpApiResponse = await waitForPageResponse(page, otpPageSubmissionApiUrl);
   }
 
   const {
@@ -104,6 +96,22 @@ const scrapeNphiesSiteData = async () => {
 
     console.log("nphiesDashboardPage", nphiesDashboardPage);
 
+    if (nphiesDashboardPage.includes(nphiesViewerPageName)) {
+      await submitScrapingForm(page, dashboardSideBarClaimsSelector, {
+        waitUntil: "networkidle0",
+      });
+
+      const claimApiResponse = await waitForPageResponse(
+        page,
+        viewerClaimsApiUrl
+      );
+
+      await writeResultFile({
+        folderName: `${scrapFoldername}/claims/${createUUID()}`,
+        data: claimApiResponse,
+      });
+    }
+
     // if (nphiesDashboardPage.includes(nphiesViewerPageName)) {
     //   // await delayProcess(3000);
     //   await submitScrapingForm(page, dashboardSideBarClaimsSelector, {
@@ -119,13 +127,13 @@ const scrapeNphiesSiteData = async () => {
     //       return;
     //     }
 
-    //     await writeResultFile({
-    //       folderName: `${scrapFoldername}/response`,
-    //       data: {
-    //         isValidApiUrl,
-    //         ...results,
-    //       },
-    //     });
+    // await writeResultFile({
+    //   folderName: `${scrapFoldername}/response`,
+    //   data: {
+    //     isValidApiUrl,
+    //     ...results,
+    //   },
+    // });
     //   });
     // }
   }

@@ -9,8 +9,20 @@ const getPageApiResponseData = async (response, limitedApiUrls) => {
     url.includes(limitedApiUrl)
   );
 
+  const urlObject = new URL(url);
+
+  const searchParams = Array.from(urlObject.searchParams).reduce(
+    (acc, [key, value]) => {
+      acc[key] = value;
+      return acc;
+    },
+    {}
+  );
+
   if (!isValidApiUrl) {
     return {
+      url,
+      searchParams,
       isValidApiUrl: false,
     };
   }
@@ -33,6 +45,7 @@ const getPageApiResponseData = async (response, limitedApiUrls) => {
 
   return {
     url,
+    searchParams,
     isValidApiUrl,
     contentType,
     contentLength,

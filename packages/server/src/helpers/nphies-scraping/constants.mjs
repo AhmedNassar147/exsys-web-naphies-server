@@ -3,6 +3,8 @@
  * Constants: `nphies-scraping`.
  *
  */
+export const scrapFoldername = "nphiesDashboardScraping";
+
 export const loadingPageTimeout = 100000;
 
 export const nphiesViewerPageName = "viewer.nphies.sa/LightFHIR";
@@ -25,7 +27,7 @@ export const dashboardSideBarPreAuthorizationsSelector = `${dashboardSideBarSele
 export const otpPageSubmissionApiUrl =
   "auth/realms/sehaticoreprod/login-actions/authenticate?session_code";
 
-export const scrapFoldername = "nphiesDashboardScraping";
+export const viewerClaimsApiUrl = "/viewerapi/claim";
 
 export const ignoredUrlsSubValues = [
   ".svg",
