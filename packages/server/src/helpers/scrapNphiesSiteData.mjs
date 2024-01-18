@@ -13,17 +13,18 @@ import axios from "axios";
 import getPageApiResponseData from "./nphies-scraping/getPageApiResponseData.mjs";
 import submitScrapingForm from "./nphies-scraping/submitScrapingForm.mjs";
 import {
-  // ignoredUrlsSubValues,
+  scrapFoldername,
+  loginUserName,
+  loginPassword,
   loginButtonSelector,
   optFieldSelector,
+  // ignoredUrlsSubValues,
   // dashboardSideBarSelector,
   nphiesViewerPageName,
   loginPageUrl,
   dashboardSideBarClaimsSelector,
   // dashboardSideBarPreAuthorizationsSelector,
-  scrapFoldername,
-  loginUserName,
-  loginPassword,
+  otpPageSubmissionApiUrl,
 } from "./nphies-scraping/constants.mjs";
 
 // const params = {

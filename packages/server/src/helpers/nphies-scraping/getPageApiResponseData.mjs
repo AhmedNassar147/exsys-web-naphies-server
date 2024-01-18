@@ -5,8 +5,8 @@
  */
 const getPageApiResponseData = async (response, limitedApiUrls) => {
   const url = response.request().url();
-  const isValidApiUrl = limitedApiUrls.some((validUrl) =>
-    validUrl.includes(submitUrl)
+  const isValidApiUrl = limitedApiUrls.some((limitedApiUrl) =>
+    url.includes(limitedApiUrl)
   );
 
   if (!isValidApiUrl) {
