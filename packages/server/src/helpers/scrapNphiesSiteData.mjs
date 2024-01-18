@@ -140,9 +140,9 @@ const scrapeNphiesSiteData = async () => {
         await writeResultFile({
           folderName: `${scrapFoldername}/response`,
           data: {
+            headers,
             url,
             isValidApiUrl,
-            headers,
             contentType,
             isJsonResponse,
             res: res,
