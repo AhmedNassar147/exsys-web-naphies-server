@@ -22,6 +22,8 @@ import {
   dashboardSideBarClaimsSelector,
   // dashboardSideBarPreAuthorizationsSelector,
   scrapFoldername,
+  loginUserName,
+  loginPassword,
 } from "./nphies-scraping/constants.mjs";
 
 // const params = {
