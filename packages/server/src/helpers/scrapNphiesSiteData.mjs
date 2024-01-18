@@ -55,17 +55,45 @@ const scrapeNphiesSiteData = async () => {
 
   const isInsuredOptPage = isCurrentPageIsOptPage && optField;
 
-  let optValueHasBeenSet = false;
-
   if (isInsuredOptPage) {
-    const handler = async (response) => {
+    page.on("response", async (response) => {
       const { isValidApiUrl, result, ...results } =
         await getPageApiResponseData(response, [otpPageSubmissionApiUrl]);
 
       if (isValidApiUrl) {
         const isInvalidLogin = (result || "").includes("Invalid OTP number");
 
-        optValueHasBeenSet = !isInvalidLogin;
+        if (!isInvalidLogin) {
+          await page.waitForNavigation();
+          const nphiesDashboardPage = page.url();
+
+          console.log("nphiesDashboardPage", nphiesDashboardPage);
+
+          // if (nphiesDashboardPage.includes(nphiesViewerPageName)) {
+          //   // await delayProcess(3000);
+          //   await submitScrapingForm(page, dashboardSideBarClaimsSelector, {
+          //     waitUntil: "networkidle0",
+          //   });
+
+          //   page.on("response", async (response) => {
+          //     console.log("RESPONSE page.url()", page.url());
+          //     const { isValidApiUrl, ...results } =
+          //       await getPageApiResponseData(response, ["/viewerapi/"]);
+
+          //     if (!isValidApiUrl) {
+          //       return;
+          //     }
+
+          //     await writeResultFile({
+          //       folderName: `${scrapFoldername}/response`,
+          //       data: {
+          //         isValidApiUrl,
+          //         ...results,
+          //       },
+          //     });
+          //   });
+          // }
+        }
 
         await writeResultFile({
           folderName: `${scrapFoldername}/session-response`,
@@ -76,50 +104,8 @@ const scrapeNphiesSiteData = async () => {
           },
         });
       }
-    };
-
-    page.on("response", handler);
+    });
     // page.off("response", handler);
-  }
-
-  console.log("here", {
-    optValueHasBeenSet,
-    page: page.url(),
-  });
-
-  return;
-
-  if (!isInsuredOptPage) {
-    await page.waitForNavigation();
-  }
-
-  const nphiesDashboardPage = page.url();
-
-  if (nphiesDashboardPage.includes(nphiesViewerPageName)) {
-    // await delayProcess(3000);
-    await submitScrapingForm(page, dashboardSideBarClaimsSelector, {
-      waitUntil: "networkidle0",
-    });
-
-    page.on("response", async (response) => {
-      console.log("RESPONSE page.url()", page.url());
-      const { isValidApiUrl, ...results } = await getPageApiResponseData(
-        response,
-        ["/viewerapi/"]
-      );
-
-      if (!isValidApiUrl) {
-        return;
-      }
-
-      await writeResultFile({
-        folderName: `${scrapFoldername}/response`,
-        data: {
-          isValidApiUrl,
-          ...results,
-        },
-      });
-    });
   }
 };
 

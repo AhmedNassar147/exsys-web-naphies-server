@@ -60,7 +60,6 @@ const { client } = CLI_CONFIG;
 
   const { bridgeServerPort } = await getConfigFileData();
 
-  console.log("bridgeServerPort", bridgeServerPort);
   const serverPort = SERVER_PORT || bridgeServerPort;
 
   const app = express();
