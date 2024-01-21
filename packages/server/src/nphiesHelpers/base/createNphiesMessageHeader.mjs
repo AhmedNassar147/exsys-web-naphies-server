@@ -23,6 +23,8 @@ const {
   NPHIES_LICENSE_OWNER_URL,
 } = NPHIES_API_URLS;
 
+const { COMMUNICATION, POLL, CANCEL, STATUS_CHECK } = NPHIES_REQUEST_TYPES;
+
 const createNphiesMessageHeader = ({
   providerLicense,
   payerLicense,
@@ -30,12 +32,10 @@ const createNphiesMessageHeader = ({
   providerFocusUrl,
   requestType,
 }) => {
-  const isCommunication = requestType === NPHIES_REQUEST_TYPES.COMMUNICATION;
-  const isAuthorizationPollData = requestType === NPHIES_REQUEST_TYPES.POLL;
-  const isCancellingPreauthOrClaimRequest =
-    requestType === NPHIES_REQUEST_TYPES.CANCEL;
-  const isPreauthOrClaimStatusCheck =
-    requestType === NPHIES_REQUEST_TYPES.STATUS_CHECK;
+  const isCommunication = requestType === COMMUNICATION;
+  const isAuthorizationPollData = requestType === POLL;
+  const isCancellingPreauthOrClaimRequest = requestType === CANCEL;
+  const isPreauthOrClaimStatusCheck = requestType === STATUS_CHECK;
 
   const baseResourceData = createNphiesBaseResource({
     resourceType: RESOURCE_MESSAGE_HEADER,

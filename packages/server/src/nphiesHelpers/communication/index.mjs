@@ -12,7 +12,7 @@ import createOrganizationData from "../base/createOrganizationData.mjs";
 import createCommunicationEntry from "./createCommunicationEntry.mjs";
 import { NPHIES_REQUEST_TYPES } from "../../constants.mjs";
 
-const { COMMUNICATION } = NPHIES_REQUEST_TYPES;
+const { COMMUNICATION, COMMUNICATION_REQUEST } = NPHIES_REQUEST_TYPES;
 
 const createNaphiesCommunicationResponseFullData = ({
   provider_license,
@@ -43,11 +43,18 @@ const createNaphiesCommunicationResponseFullData = ({
   communication_about_id,
   communication_about_system_type,
   communication_payload,
+  is_communication_request,
 }) => {
+  const isCommunicationRequest = is_communication_request === "Y";
+
+  const requestType = isCommunicationRequest
+    ? COMMUNICATION_REQUEST
+    : COMMUNICATION;
+
   const { providerPatientUrl, providerOrganizationUrl, providerFocusUrl } =
     createProviderUrls({
       providerBaseUrl: site_url,
-      requestType: COMMUNICATION,
+      requestType,
     });
 
   const baseData = createNphiesBaseRequestData();
@@ -61,7 +68,7 @@ const createNaphiesCommunicationResponseFullData = ({
         payerLicense: payer_license,
         requestId,
         providerFocusUrl,
-        requestType: COMMUNICATION,
+        requestType,
       }),
       createCommunicationEntry({
         requestId,
@@ -81,6 +88,7 @@ const createNaphiesCommunicationResponseFullData = ({
         communicationAboutId: communication_about_id,
         communicationAboutSystemType: communication_about_system_type,
         communicationPayload: communication_payload,
+        isCommunicationRequest,
       }),
       createNphiesDoctorOrPatientData({
         patientOrDoctorId: patient_file_no,

@@ -12,10 +12,11 @@ import {
   NPHIES_RESOURCE_TYPES,
 } from "../../constants.mjs";
 
-const { PROFILE_COMMUNICATION } = NPHIES_BASE_PROFILE_TYPES;
+const { PROFILE_COMMUNICATION, PROFILE_COMMUNICATION_REQUEST } =
+  NPHIES_BASE_PROFILE_TYPES;
 const { BASE_TERMINOLOGY_CODE_SYS_URL } = NPHIES_API_URLS;
 const { COMMUNICATION_CAT } = NPHIES_BASE_CODE_TYPES;
-const { COMMUNICATION } = NPHIES_RESOURCE_TYPES;
+const { COMMUNICATION, COMMUNICATION_REQUEST } = NPHIES_RESOURCE_TYPES;
 
 const createCommunicationEntry = ({
   requestId,
@@ -35,18 +36,28 @@ const createCommunicationEntry = ({
   communicationAboutId,
   communicationAboutSystemType,
   communicationPayload,
+  isCommunicationRequest,
 }) => {
+  const resourceType = isCommunicationRequest
+    ? COMMUNICATION_REQUEST
+    : COMMUNICATION;
+  const profileType = isCommunicationRequest
+    ? PROFILE_COMMUNICATION_REQUEST
+    : PROFILE_COMMUNICATION;
+
+  PROFILE_COMMUNICATION_REQUEST;
+
   return {
     fullUrl: `${providerFocusUrl}/${requestId}`,
     resource: {
       ...createNphiesBaseResource({
-        resourceType: COMMUNICATION,
-        profileType: PROFILE_COMMUNICATION,
+        resourceType,
+        profileType,
         uuid: requestId,
       }),
       identifier: [
         {
-          system: providerFocusUrl.replace(COMMUNICATION, (value) =>
+          system: providerFocusUrl.replace(resourceType, (value) =>
             value.toLowerCase()
           ),
           value: `req_${requestId}`,
