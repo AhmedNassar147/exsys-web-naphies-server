@@ -14,8 +14,9 @@ const createMappedCommunicationRequests = async ({
   await createMappedRequestsArray({
     dataArray: data,
     printValues,
-    asyncFn: async ({ communicationPk, requestType }) =>
+    asyncFn: async ({ communicationPk, requestType, mode }) =>
       await fetchPreauthAndClaimCommunicationResponse({
+        isCommunicationRequest: mode === "communicationRequest",
         requestParams: {
           authorization,
           communication_pk: communicationPk,

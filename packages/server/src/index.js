@@ -77,7 +77,10 @@ const { client } = CLI_CONFIG;
     "/querySavedClaimOrPreauthData",
     createFetchSavedClaimDataToFrontendMiddleware(app)
   );
-  app.use("/fetchCommunicationResponse", createCommunicationMiddleware(app)); //
+  app.use(
+    "/fetchCommunicationResponseOrRequest",
+    createCommunicationMiddleware(app)
+  ); //
   app.use("/checkPatientInsurance", checkPatientInsuranceMiddleware(app)); //
   app.use(
     "/checkClaimOrPreauthStatus",

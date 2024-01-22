@@ -40,6 +40,8 @@ export const EXSYS_API_IDS_NAMES = {
   querySavedClaimsAndPreauthData: "querySavedClaimsAndPreauthData",
   collectExsysClaimOrPreauthCommunicationData:
     "collectExsysClaimOrPreauthCommunicationData",
+  collectExsysClaimOrPreauthCommunicationRequestData:
+    "collectExsysClaimOrPreauthCommunicationRequestData",
   saveExsysClaimOrPreauthCommunicationData:
     "saveExsysClaimOrPreauthCommunicationData",
   queryExsysClaimOrPreauthStatusCheckData:
@@ -105,6 +107,9 @@ export const EXSYS_API_IDS = {
   // http://149.102.140.8:9090/ords/exsys_api/hs_nphies_preauth_pkg/collect_communication?authorization=111111&communication_pk=1&request_type=priorauth
   [EXSYS_API_IDS_NAMES.collectExsysClaimOrPreauthCommunicationData]:
     "hs_nphies_preauth_pkg/collect_communication",
+  // http://149.102.140.8:9090/ords/exsys_api/nphies_pkg/collect_send_communication?authorization=111111&organization_no=001&clinicalEntityNo=&communication_pk=121&request_type=claim
+  [EXSYS_API_IDS_NAMES.collectExsysClaimOrPreauthCommunicationRequestData]:
+    "nphies_pkg/collect_send_communication",
   // http://149.102.140.8:9090/ords/exsys_api/hs_nphies_preauth_pkg/update_communicat_send_status?communication_pk=&creation_bundle_id=&communication_id=&outcome=
   [EXSYS_API_IDS_NAMES.saveExsysClaimOrPreauthCommunicationData]:
     "hs_nphies_preauth_pkg/update_communicat_send_status",

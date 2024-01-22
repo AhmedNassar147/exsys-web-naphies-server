@@ -12,6 +12,7 @@ import formatNphiesResponseIssue from "../nphiesHelpers/base/formatNphiesRespons
 
 const {
   collectExsysClaimOrPreauthCommunicationData,
+  collectExsysClaimOrPreauthCommunicationRequestData,
   saveExsysClaimOrPreauthCommunicationData,
 } = EXSYS_API_IDS_NAMES;
 
@@ -81,18 +82,29 @@ const createResultsDataFromExsysResponse = async ({
   };
 };
 
-const fetchPreauthAndClaimCommunicationResponse = async ({ requestParams }) => {
+const fetchPreauthAndClaimCommunicationResponse = async ({
+  requestParams,
+  isCommunicationRequest,
+}) => {
   const { request_type, communication_pk } = requestParams;
 
   const checkExsysDataValidationBeforeCallingNphies =
     validateSupportInfoDataBeforeCallingNphies("communication_payload", true);
 
+  const exsysQueryApiId = isCommunicationRequest
+    ? collectExsysClaimOrPreauthCommunicationRequestData
+    : collectExsysClaimOrPreauthCommunicationData;
+
+  const basePrintFolder = isCommunicationRequest
+    ? "communicationRequest"
+    : "communication";
+
   return await createBaseFetchExsysDataAndCallNphiesApi({
-    exsysQueryApiId: collectExsysClaimOrPreauthCommunicationData,
+    exsysQueryApiId,
     exsysSaveApiId: saveExsysClaimOrPreauthCommunicationData,
     requestParams,
     requestMethod: "GET",
-    printFolderName: `communication/${request_type}/${communication_pk}`,
+    printFolderName: `${basePrintFolder}/${request_type}/${communication_pk}`,
     exsysDataApiPrimaryKeyName: "communication_pk",
     createResultsDataFromExsysResponse,
     createNphiesRequestPayloadFn,
