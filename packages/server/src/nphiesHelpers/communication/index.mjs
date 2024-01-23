@@ -60,6 +60,10 @@ const createNaphiesCommunicationResponseFullData = ({
   const baseData = createNphiesBaseRequestData();
   const requestId = createUUID();
 
+  const messageHeaderRequestType = isCommunicationRequest
+    ? `${COMMUNICATION}-request`
+    : COMMUNICATION;
+
   const requestPayload = {
     ...baseData,
     entry: [
@@ -68,8 +72,9 @@ const createNaphiesCommunicationResponseFullData = ({
         payerLicense: payer_license,
         requestId,
         providerFocusUrl,
-        requestType,
+        requestType: messageHeaderRequestType,
       }),
+
       createCommunicationEntry({
         requestId,
         providerFocusUrl,
