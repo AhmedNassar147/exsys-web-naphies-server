@@ -23,7 +23,8 @@ const {
   NPHIES_LICENSE_OWNER_URL,
 } = NPHIES_API_URLS;
 
-const { COMMUNICATION, POLL, CANCEL, STATUS_CHECK } = NPHIES_REQUEST_TYPES;
+const { COMMUNICATION, POLL, CANCEL, STATUS_CHECK, COMMUNICATION_REQUEST } =
+  NPHIES_REQUEST_TYPES;
 
 const createNphiesMessageHeader = ({
   providerLicense,
@@ -33,6 +34,7 @@ const createNphiesMessageHeader = ({
   requestType,
 }) => {
   const isCommunication = requestType === COMMUNICATION;
+  const isCommunicationRequest = requestType === COMMUNICATION_REQUEST;
   const isAuthorizationPollData = requestType === POLL;
   const isCancellingPreauthOrClaimRequest = requestType === CANCEL;
   const isPreauthOrClaimStatusCheck = requestType === STATUS_CHECK;
@@ -65,7 +67,7 @@ const createNphiesMessageHeader = ({
         code:
           isCommunication || isPreauthOrClaimStatusCheck
             ? requestType
-            : `${requestType}-request`,
+            : `${isCommunicationRequest ? COMMUNICATION : requestType}-request`,
       },
       destination: [
         {
