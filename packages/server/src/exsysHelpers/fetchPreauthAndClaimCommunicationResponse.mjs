@@ -101,7 +101,9 @@ const fetchPreauthAndClaimCommunicationResponse = async ({
 
   return await createBaseFetchExsysDataAndCallNphiesApi({
     exsysQueryApiId,
-    exsysSaveApiId: saveExsysClaimOrPreauthCommunicationData,
+    exsysSaveApiId: isCommunicationRequest
+      ? undefined
+      : saveExsysClaimOrPreauthCommunicationData,
     requestParams,
     requestMethod: "GET",
     printFolderName: `${basePrintFolder}/${request_type}/${communication_pk}`,
