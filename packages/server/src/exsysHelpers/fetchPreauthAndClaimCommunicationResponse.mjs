@@ -33,35 +33,38 @@ const extractionFunctionsMap = {
     formatNphiesResponseIssue(issue),
 };
 
-const createExsysSaveApiParams = ({
-  primaryKey,
-  exsysDataApiPrimaryKeyName,
-  nphiesExtractedData: {
-    bundleId,
-    creationBundleId,
-    communicationStatus,
-    communicationOutcome,
-    communicationRequestId,
-    communicationResponseId,
-    issueError,
-    issueErrorCode,
-  },
-}) => {
-  const status =
-    !communicationOutcome || !!issueError || !!issueErrorCode
-      ? "error"
-      : communicationOutcome;
+const createExsysSaveApiParams =
+  (is_communication_request) =>
+  ({
+    primaryKey,
+    exsysDataApiPrimaryKeyName,
+    nphiesExtractedData: {
+      bundleId,
+      creationBundleId,
+      communicationStatus,
+      communicationOutcome,
+      communicationRequestId,
+      communicationResponseId,
+      issueError,
+      issueErrorCode,
+    },
+  }) => {
+    const status =
+      !communicationOutcome || !!issueError || !!issueErrorCode
+        ? "error"
+        : communicationOutcome;
 
-  return {
-    [exsysDataApiPrimaryKeyName]: primaryKey,
-    bundle_id: bundleId,
-    creation_bundle_id: creationBundleId,
-    outcome: status,
-    communication_id: communicationRequestId,
-    communication_status: communicationStatus,
-    communication_response_id: communicationResponseId,
+    return {
+      [exsysDataApiPrimaryKeyName]: primaryKey,
+      bundle_id: bundleId,
+      creation_bundle_id: creationBundleId,
+      outcome: status,
+      communication_id: communicationRequestId,
+      communication_status: communicationStatus,
+      communication_response_id: communicationResponseId,
+      is_communication_request,
+    };
   };
-};
 
 const createExsysErrorSaveApiBody = (errorMessage) => ({
   nphiesExtractedData: {
@@ -101,9 +104,7 @@ const fetchPreauthAndClaimCommunicationResponse = async ({
 
   return await createBaseFetchExsysDataAndCallNphiesApi({
     exsysQueryApiId,
-    exsysSaveApiId: isCommunicationRequest
-      ? undefined
-      : saveExsysClaimOrPreauthCommunicationData,
+    exsysSaveApiId: saveExsysClaimOrPreauthCommunicationData,
     requestParams,
     requestMethod: "GET",
     printFolderName: `${basePrintFolder}/${request_type}/${communication_pk}`,
@@ -112,7 +113,9 @@ const fetchPreauthAndClaimCommunicationResponse = async ({
     createNphiesRequestPayloadFn,
     extractionFunctionsMap,
     // setErrorIfExtractedDataFoundFn,
-    createExsysSaveApiParams,
+    createExsysSaveApiParams: createExsysSaveApiParams(
+      isCommunicationRequest ? "Y" : "N"
+    ),
     createExsysErrorSaveApiBody,
     checkExsysDataValidationBeforeCallingNphies,
   });
