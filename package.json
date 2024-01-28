@@ -21,7 +21,7 @@
     "blgoson": "yarn start client=blgoson --production",
     "ahd_dmam": "yarn start client=ahd_dmam --production",
     "wecare": "yarn start client=wecare --production",
-    "wecare-dev": "yarn start client=wecare --ignore-cert",
+    "wecaretest": "yarn start client=wecaretest --production",
     "tadawi": "yarn start client=tadawi",
     "dev-tadawy": "yarn start --ignore-cert --port=9090",
     "prod": "yarn start --production",
