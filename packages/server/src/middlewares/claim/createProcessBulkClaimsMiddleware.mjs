@@ -151,20 +151,21 @@ export default createProcessBulkClaimsMiddleware(
     if (printValues) {
       const keys = Object.keys(printInfoData);
 
-      await Promise.all(
-        keys.map((folderName) => {
-          const regexp = isClaimCancellation
-            ? cancellationFolderRegexp
-            : nphiesRequestTypeFolderRegexp;
+      while (keys.length) {
+        const [folderName] = keys.splice(0, 1);
+        const data = printInfoData[folderName];
 
-          const _folderName = basePrintFolderName.replace(regexp, "");
+        const regexp = isClaimCancellation
+          ? cancellationFolderRegexp
+          : nphiesRequestTypeFolderRegexp;
 
-          return writeResultFile({
-            folderName: _folderName,
-            data: printInfoData[folderName],
-          });
-        })
-      );
+        const _folderName = basePrintFolderName.replace(regexp, "");
+
+        await writeResultFile({
+          folderName: _folderName,
+          data: data,
+        });
+      }
     }
 
     return results;
