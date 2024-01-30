@@ -6,6 +6,7 @@
 import {
   isArrayHasData,
   reverseDate,
+  replaceUnwantedCharactersFromString,
   // createTimestamp,
 } from "@exsys-web-server/helpers";
 import createBaseEntryRequestData from "./createBaseEntryRequestData.mjs";
@@ -520,7 +521,9 @@ const createNphiesClaimData = ({
                   {
                     system: `${siteUrl}/${nphiesProductCodeType}`,
                     code: customerProductCode || nphiesProductCode,
-                    display: customerProductName || nphiesProductName,
+                    display: replaceUnwantedCharactersFromString(
+                      customerProductName || nphiesProductName
+                    ),
                   },
                 ].filter(Boolean),
               },
