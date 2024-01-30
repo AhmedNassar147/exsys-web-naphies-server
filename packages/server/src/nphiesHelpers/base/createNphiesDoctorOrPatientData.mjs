@@ -50,7 +50,7 @@ const patientIdentifierData = {
 
 const createNphiesDoctorOrPatientData = ({
   patientOrDoctorId,
-  identifierId,
+  identifierId: _identifierId,
   identifierIdType,
   firstName,
   secondName,
@@ -67,12 +67,16 @@ const createNphiesDoctorOrPatientData = ({
     Boolean
   );
 
+  const identifierId = `${_identifierId || ""}`;
+
   const [first] = identifierId.split("");
   const { code, display, system } =
     patientIdentifierData[first] || passportData;
 
   if (!identifierId) {
-    console.error("identifierId not found in createNphiesDoctorOrPatientData");
+    console.error(
+      `identifierId not found in createNphiesDoctorOrPatientData when isPatient=${isPatient}`
+    );
   }
 
   return {
