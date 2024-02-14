@@ -15,10 +15,12 @@ const buildPrintedResultPath = ({
   innerFolderName,
   segments,
   shouldFilterSegments,
+  skipThrowingOrganizationError,
 }) => {
   const organizationOrOrganizationUnitPath = buildOrganizationPath(
     organizationNo,
-    clinicalEntityNo
+    clinicalEntityNo,
+    skipThrowingOrganizationError
   );
 
   let _segments = isArrayHasData(segments) ? segments : [];

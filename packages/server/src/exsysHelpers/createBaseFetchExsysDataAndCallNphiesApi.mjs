@@ -65,10 +65,13 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
     exsysResultsData,
   };
 
+  const _organizationNo = organizationNo || organization_no;
+
   const printFolderPath = buildPrintedResultPath({
-    organizationNo: organizationNo || organization_no,
+    organizationNo: _organizationNo,
     clinicalEntityNo,
     innerFolderName: printFolderName,
+    skipThrowingOrganizationError: true,
   });
 
   const { shouldSaveDataToExsys, validationError } =
@@ -76,8 +79,14 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
       ? checkExsysDataValidationBeforeCallingNphies(exsysResultsData)
       : {};
 
+  const hasNoOrganizationNo = !_organizationNo;
+
   const hasErrorMessageOrFailed =
-    !!error_message || !isSuccess || !!exsysError || !!validationError;
+    hasNoOrganizationNo ||
+    !!error_message ||
+    !isSuccess ||
+    !!exsysError ||
+    !!validationError;
 
   if (
     !noPatientDataLogger &&
@@ -91,10 +100,9 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
 
   if (hasErrorMessageOrFailed) {
     const errorMessage =
-      error_message ||
-      exsysError ||
-      validationError ||
-      `error when calling exsys \`${EXSYS_API_IDS[exsysQueryApiId]}\` API`;
+      error_message || exsysError || validationError || hasErrorMessageOrFailed
+        ? "no organization no found"
+        : `error when calling exsys \`${EXSYS_API_IDS[exsysQueryApiId]}\` API`;
 
     if (exsysSaveApiId && (!!validationError ? shouldSaveDataToExsys : true)) {
       const errorSaveParams = createExsysSaveApiParams
