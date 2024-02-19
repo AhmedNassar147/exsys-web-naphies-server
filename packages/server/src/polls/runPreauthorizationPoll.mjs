@@ -96,6 +96,7 @@ const runPreauthorizationPoll = async ({
     const folderName = buildPrintedResultPath({
       organizationNo,
       clinicalEntityNo,
+      skipThrowingOrganizationError: true,
       innerFolderName: "authorizationPoll",
       segments: [
         messageHeaderRequestType,

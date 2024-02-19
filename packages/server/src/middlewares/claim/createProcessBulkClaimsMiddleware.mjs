@@ -65,6 +65,7 @@ export default createProcessBulkClaimsMiddleware(
       clinicalEntityNo,
       innerFolderName: "bulkClaim",
       segments: [request_type, nphies_request_type, soa_no],
+      skipThrowingOrganizationError: true,
     });
 
     const printData = {

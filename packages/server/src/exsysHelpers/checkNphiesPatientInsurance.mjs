@@ -96,6 +96,7 @@ const checkNphiesPatientInsurance = async ({
       organizationNo,
       clinicalEntityNo,
       innerFolderName: printFolderName,
+      skipThrowingOrganizationError: true,
     });
 
     await writeResultFile({
