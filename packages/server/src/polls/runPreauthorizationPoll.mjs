@@ -3,6 +3,7 @@
  * Helper: `runPreauthorizationPoll`.
  *
  */
+import chalk from "chalk";
 import {
   delayProcess,
   writeResultFile,
@@ -22,6 +23,9 @@ import callNphiesApiAndCollectResults from "../nphiesHelpers/base/callNphiesApiA
 import buildPrintedResultPath from "../helpers/buildPrintedResultPath.mjs";
 
 const { COVERAGE } = NPHIES_RESOURCE_TYPES;
+
+const MAX_DELAY_TIMEOUT = 1 * 60 * 1000;
+const MIN_DELAY_TIMEOUT = 5 * 1000;
 
 const setErrorIfExtractedDataFoundFn = ({ coverageErrors, claimErrors }) => [
   ...(coverageErrors || []),
@@ -47,12 +51,20 @@ const extractionFunctionsMap = {
 const runPreauthorizationPoll = async ({
   includeMessageType,
   excludeMessageType,
-  delayTimeout = 1 * 60 * 1000,
   preauthPollData,
   authorization,
   organizationNo,
   clinicalEntityNo,
 }) => {
+  const fullOptions = {
+    includeMessageType,
+    excludeMessageType,
+    preauthPollData,
+    authorization,
+    organizationNo,
+    clinicalEntityNo,
+  };
+
   try {
     const { siteUrl, siteName, providerLicense, providerOrganization } =
       preauthPollData;
@@ -93,6 +105,17 @@ const runPreauthorizationPoll = async ({
       ...otherExtractedData
     } = nphiesExtractedData || {};
 
+    if (!isObjectHasData(otherExtractedData)) {
+      createCmdMessage({
+        type: "info",
+        message: `Authorization poll has no messages yet`,
+      });
+
+      await delayProcess(MAX_DELAY_TIMEOUT);
+      await runPreauthorizationPoll(fullOptions);
+      return;
+    }
+
     const folderName = buildPrintedResultPath({
       organizationNo,
       clinicalEntityNo,
@@ -110,14 +133,6 @@ const runPreauthorizationPoll = async ({
       isError: hasError,
     });
 
-    if (!isObjectHasData(otherExtractedData)) {
-      createCmdMessage({
-        type: "info",
-        message: `Authorization poll has no messages yet`,
-      });
-      return;
-    }
-
     await savePreauthPollDataToExsys({
       authorization,
       nodeServerDataSentToNaphies,
@@ -125,22 +140,20 @@ const runPreauthorizationPoll = async ({
       nphiesExtractedData,
       requestType: messageHeaderRequestType,
     });
+
+    await delayProcess(MIN_DELAY_TIMEOUT);
+    await runPreauthorizationPoll(fullOptions);
   } catch (error) {
     createCmdMessage({
-      type: "info",
-      message: `Error from polling runPreauthorizationPoll\n ${error}`,
+      type: "error",
+      message: `Error when running preauth polling, ${chalk.bold.white(
+        `re-running the poll in ${MAX_DELAY_TIMEOUT / 1000} minutes`
+      )}  `,
+      data: error,
     });
-  } finally {
-    await delayProcess(delayTimeout);
-    await runPreauthorizationPoll({
-      includeMessageType,
-      excludeMessageType,
-      delayTimeout,
-      preauthPollData,
-      authorization,
-      organizationNo,
-      clinicalEntityNo,
-    });
+
+    await delayProcess(MAX_DELAY_TIMEOUT);
+    await runPreauthorizationPoll(fullOptions);
   }
 };
 

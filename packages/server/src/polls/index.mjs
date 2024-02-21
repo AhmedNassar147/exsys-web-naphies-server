@@ -33,13 +33,11 @@ import { getConfigFileData } from "../helpers/getConfigFileData.mjs";
           acc.preauthPromises.push([
             runPreauthorizationPoll({
               includeMessageType: "claim-response",
-              delayTimeout: 2 * 1000,
               preauthPollData,
               ...baseOptions,
             }),
             runPreauthorizationPoll({
               excludeMessageType: "claim-response",
-              delayTimeout: 1 * 60 * 1000,
               preauthPollData,
               ...baseOptions,
             }),
