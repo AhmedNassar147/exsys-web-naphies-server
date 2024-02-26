@@ -25,7 +25,7 @@
     "wecaretest": "yarn start client=wecaretest --production --port=9090",
     "// tadawi": "yarn start client=tadawi",
     "tadawi": "yarn start client=tadawi --production --exsys-base-url=http://192.168.1.4",
-    "dev-tadawy": "yarn start --ignore-cert --exsys-base-url=http://192.168.1.4 --port=4200",
+    "dev-tadawy": "yarn start client=tadawi --ignore-cert --exsys-base-url=http://192.168.1.4 --port=4200",
     "prod": "yarn start --production",
     "pup": "node packages/server/src/helpers/scrapNphiesSiteData.mjs --startpuppteer"
   },
