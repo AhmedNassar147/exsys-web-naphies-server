@@ -24,7 +24,7 @@
     "exsyscenter": "yarn start client=exsyscenter --production --port=9090",
     "wecaretest": "yarn start client=wecaretest --production --port=9090",
     "// tadawi": "yarn start client=tadawi",
-    "tadawi": "yarn start client=tadawi --production",
+    "tadawi": "yarn start client=tadawi --production --exsys-base-url=http://172.27.51.126",
     "dev-tadawy": "yarn start --ignore-cert --port=9090",
     "prod": "yarn start --production",
     "pup": "node packages/server/src/helpers/scrapNphiesSiteData.mjs --startpuppteer"
