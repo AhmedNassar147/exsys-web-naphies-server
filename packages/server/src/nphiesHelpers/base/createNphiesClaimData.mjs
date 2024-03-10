@@ -55,6 +55,12 @@ const {
   EXTENSION_TRANSFER,
   EXTENSION_AUTH_ONLINE_RESPONSE,
   RELATED_CLAIM_RELATION,
+  EXTENSION_PRESCRIBED_MEDS,
+  SCIENTIFIC_CODES,
+  EXTENSION_MEDS_SELECTION_REASON,
+  SELECTION_REASON,
+  EXTENSION_PHARM_SUBSTITUTE,
+  PHARM_SUBSTITUTE,
 } = NPHIES_BASE_CODE_TYPES;
 
 const PREAUTH_PROFILE_TYPES = {
@@ -457,6 +463,10 @@ const createNphiesClaimData = ({
               nphiesProductName,
               customerProductCode,
               customerProductName,
+              scientificCodes,
+              scientificCodesName,
+              pharmacistSelectionReason,
+              pharmacistSubstitute,
               servicedDate,
               quantity,
               unitPrice,
@@ -483,6 +493,41 @@ const createNphiesClaimData = ({
                 ? getSupportingInfoSequences(supportingInfo, days_supply_id)
                 : undefined,
               extension: [
+                !!scientificCodes && {
+                  url: `${BASE_PROFILE_URL}/${EXTENSION_PRESCRIBED_MEDS}`,
+                  valueCodeableConcept: {
+                    coding: [
+                      {
+                        system: `${BASE_CODE_SYS_URL}/${SCIENTIFIC_CODES}`,
+                        code: scientificCodes,
+                        display: scientificCodesName,
+                      },
+                    ],
+                  },
+                },
+                !!pharmacistSelectionReason && {
+                  url: `${BASE_PROFILE_URL}/${EXTENSION_MEDS_SELECTION_REASON}`,
+                  valueCodeableConcept: {
+                    coding: [
+                      {
+                        system: `${BASE_CODE_SYS_URL}/${SELECTION_REASON}`,
+                        code: pharmacistSelectionReason,
+                        display: pharmacistSelectionReason,
+                      },
+                    ],
+                  },
+                },
+                !!pharmacistSubstitute && {
+                  url: `${BASE_PROFILE_URL}/${EXTENSION_PHARM_SUBSTITUTE}`,
+                  valueCodeableConcept: {
+                    coding: [
+                      {
+                        system: `${BASE_CODE_SYS_URL}/${PHARM_SUBSTITUTE}`,
+                        code: pharmacistSubstitute,
+                      },
+                    ],
+                  },
+                },
                 !!extensionTax && {
                   url: `${BASE_PROFILE_URL}/${EXTENSION_TAX}`,
                   valueMoney: {

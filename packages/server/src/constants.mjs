@@ -286,6 +286,12 @@ export const NPHIES_BASE_CODE_TYPES = {
   COMMUNICATION_CAT: "communication-category",
   EXTENSION_TRANSFER: "extension-transfer",
   RELATED_CLAIM_RELATION: "related-claim-relationship",
+  EXTENSION_PRESCRIBED_MEDS: "extension-prescribed-medication",
+  SCIENTIFIC_CODES: "scientific-codes",
+  EXTENSION_MEDS_SELECTION_REASON: "extension-medication-selection-reason",
+  SELECTION_REASON: "selection-reason",
+  EXTENSION_PHARM_SUBSTITUTE: "extension-pharmacist-substitute",
+  PHARM_SUBSTITUTE: "pharmacist-substitute",
 };
 
 export const SUPPORT_INFO_KEY_NAMES = {
