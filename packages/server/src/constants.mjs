@@ -288,8 +288,8 @@ export const NPHIES_BASE_CODE_TYPES = {
   RELATED_CLAIM_RELATION: "related-claim-relationship",
   EXTENSION_PRESCRIBED_MEDS: "extension-prescribed-medication",
   SCIENTIFIC_CODES: "scientific-codes",
-  EXTENSION_MEDS_SELECTION_REASON: "extension-medication-selection-reason",
-  SELECTION_REASON: "selection-reason",
+  EXTENSION_MEDS_SELECTION_REASON: "extension-pharmacist-Selection-Reason",
+  SELECTION_REASON: "pharmacist-selection-reason",
   EXTENSION_PHARM_SUBSTITUTE: "extension-pharmacist-substitute",
   PHARM_SUBSTITUTE: "pharmacist-substitute",
 };
