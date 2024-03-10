@@ -511,7 +511,7 @@ const createNphiesClaimData = ({
                     coding: [
                       {
                         system: `${BASE_CODE_SYS_URL}/${SELECTION_REASON}`,
-                        code: pharmacistSelectionReason,
+                        code: pharmacistSelectionReason.toLowerCase(),
                         display: pharmacistSelectionReason,
                       },
                     ],
