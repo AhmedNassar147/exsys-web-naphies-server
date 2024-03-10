@@ -493,6 +493,33 @@ const createNphiesClaimData = ({
                 ? getSupportingInfoSequences(supportingInfo, days_supply_id)
                 : undefined,
               extension: [
+                !!extensionTax && {
+                  url: `${BASE_PROFILE_URL}/${EXTENSION_TAX}`,
+                  valueMoney: {
+                    value: extensionTax,
+                    currency,
+                  },
+                },
+                {
+                  url: `${BASE_PROFILE_URL}/${EXTENSION_PATIENT_SHARE}`,
+                  valueMoney: {
+                    value: extensionPatientShare,
+                    currency,
+                  },
+                },
+                !!(episodeInvoiceNo || patientInvoiceNo) && {
+                  url: `${BASE_PROFILE_URL}/${EXTENSION_PATIENT_INVOICE}`,
+                  valueIdentifier: {
+                    system: `${siteUrl}/patientInvoice`,
+                    value: `Invc-${
+                      patientInvoiceNo || episodeInvoiceNo
+                    }/T_${Date.now()}`,
+                  },
+                },
+                {
+                  url: `${BASE_PROFILE_URL}/${EXTENSION_PACKAGE}`,
+                  valueBoolean: extensionPackage === "Y",
+                },
                 !!scientificCodes && {
                   url: `${BASE_PROFILE_URL}/${EXTENSION_PRESCRIBED_MEDS}`,
                   valueCodeableConcept: {
@@ -527,33 +554,6 @@ const createNphiesClaimData = ({
                       },
                     ],
                   },
-                },
-                !!extensionTax && {
-                  url: `${BASE_PROFILE_URL}/${EXTENSION_TAX}`,
-                  valueMoney: {
-                    value: extensionTax,
-                    currency,
-                  },
-                },
-                {
-                  url: `${BASE_PROFILE_URL}/${EXTENSION_PATIENT_SHARE}`,
-                  valueMoney: {
-                    value: extensionPatientShare,
-                    currency,
-                  },
-                },
-                !!(episodeInvoiceNo || patientInvoiceNo) && {
-                  url: `${BASE_PROFILE_URL}/${EXTENSION_PATIENT_INVOICE}`,
-                  valueIdentifier: {
-                    system: `${siteUrl}/patientInvoice`,
-                    value: `Invc-${
-                      patientInvoiceNo || episodeInvoiceNo
-                    }/T_${Date.now()}`,
-                  },
-                },
-                {
-                  url: `${BASE_PROFILE_URL}/${EXTENSION_PACKAGE}`,
-                  valueBoolean: extensionPackage === "Y",
                 },
               ].filter(Boolean),
               productOrService: {
