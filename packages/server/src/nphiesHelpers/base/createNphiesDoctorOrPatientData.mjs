@@ -70,8 +70,13 @@ const createNphiesDoctorOrPatientData = ({
   const identifierId = `${_identifierId || ""}`;
 
   const [first] = identifierId.split("");
+
+  const isUsingNationalId = first === "1" && identifierId.length === 10;
+
   const { code, display, system } =
-    patientIdentifierData[first] || passportData;
+    (isUsingNationalId
+      ? patientIdentifierData[1]
+      : patientIdentifierData[first]) || passportData;
 
   if (!identifierId) {
     console.error(
