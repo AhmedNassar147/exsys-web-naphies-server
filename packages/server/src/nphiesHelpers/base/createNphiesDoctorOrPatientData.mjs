@@ -34,12 +34,13 @@ const passportData = {
   system: PASSPORT_NO_URL,
 };
 
+const nationalidData = {
+  code: "NI",
+  display: "nationalid",
+  system: NATIONAL_ID_URL,
+};
+
 const patientIdentifierData = {
-  1: {
-    code: "NI",
-    display: "nationalid",
-    system: NATIONAL_ID_URL,
-  },
   2: {
     code: "PRC",
     display: "iqama",
@@ -74,7 +75,7 @@ const createNphiesDoctorOrPatientData = ({
   const isUsingNationalId = first === "1" && identifierId.length === 10;
 
   const { code, display, system } = isUsingNationalId
-    ? patientIdentifierData[1]
+    ? nationalidData
     : patientIdentifierData[first] || passportData;
 
   if (!identifierId) {
