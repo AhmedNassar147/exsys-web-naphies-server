@@ -22,7 +22,7 @@ const {
   NATIONAL_ID_URL,
   PASSPORT_NO_URL,
   // VISA_NO_URL,
-  BORDER_NO_URL,
+  // BORDER_NO_URL,
   PRACTITIONER_URL,
 } = NPHIES_API_URLS;
 const { MARITAL_STATUS, KAS_EXT_ADMIN_GENDER, KSA_ADMIN_GENDER } =
@@ -40,13 +40,10 @@ const nationalidData = {
   system: NATIONAL_ID_URL,
 };
 
-const patientIdentifierData = {
-  2: {
-    code: "PRC",
-    display: "iqama",
-    system: IQAMA_URL,
-  },
-  3: passportData,
+const iqamaData = {
+  code: "PRC",
+  display: "iqama",
+  system: IQAMA_URL,
 };
 
 const createNphiesDoctorOrPatientData = ({
@@ -72,11 +69,22 @@ const createNphiesDoctorOrPatientData = ({
 
   const [first] = identifierId.split("");
 
-  const isUsingNationalId = first === "1" && identifierId.length === 10;
+  const identifierLength = identifierId.length;
 
-  const { code, display, system } = isUsingNationalId
-    ? nationalidData
-    : patientIdentifierData[first] || passportData;
+  const isUsingNationalId = first === "1" && identifierLength === 10;
+  const isUsingIqamaId = first === "2" && identifierLength === 10;
+
+  let identifierData = passportData;
+
+  if (isUsingNationalId) {
+    identifierData = nationalidData;
+  }
+
+  if (isUsingIqamaId) {
+    identifierData = iqamaData;
+  }
+
+  const { code, display, system } = identifierData;
 
   if (!identifierId) {
     console.error(
