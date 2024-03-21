@@ -21,9 +21,9 @@ const extractErrorsArray = (nphiesError, errorsFieldName = "code") =>
           }
 
           return {
-            error: `${extensionValue ? `${extensionValue} / ` : ""}${
-              display || valueString || ""
-            }`,
+            error: [extensionValue, display, valueString]
+              .filter(Boolean)
+              .join(" / "),
             errorCode,
           };
         })

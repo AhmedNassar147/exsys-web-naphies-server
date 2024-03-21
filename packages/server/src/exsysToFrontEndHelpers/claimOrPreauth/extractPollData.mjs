@@ -40,9 +40,7 @@ const extractPollData = (pollData, productsSentToNphies) => {
     // supportInfoErrors,
     // diagnosisErrors,
     otherClaimErrors,
-  } = extractNphiesSentDataErrors({
-    claimErrors,
-  });
+  } = extractNphiesSentDataErrors(nodeServerDataSentToNaphies, claimErrors);
 
   const productsData = createProductsData({
     extractedProductsData,

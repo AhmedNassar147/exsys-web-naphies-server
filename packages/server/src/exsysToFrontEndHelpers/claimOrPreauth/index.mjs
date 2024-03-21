@@ -172,9 +172,7 @@ const extractPreauthOrClaimDataSentToNphies = ({
     supportInfoErrors,
     diagnosisErrors,
     otherClaimErrors,
-  } = extractNphiesSentDataErrors({
-    claimErrors,
-  });
+  } = extractNphiesSentDataErrors(nodeServerDataSentToNaphies, claimErrors);
 
   const productsData = createProductsData({
     extractedProductsData,
