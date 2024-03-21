@@ -4,15 +4,13 @@
  *
  */
 import { isArrayHasData } from "@exsys-web-server/helpers";
+import getValueIndexFromString from "../../helpers/getValueIndexFromString.mjs";
 
 const createAssignErrorToObjectError =
   ({ error, errorCode }) =>
   (matchWith, errorObject) => {
     if (error) {
-      const regexp = new RegExp(`${matchWith}\\[\\d{0,}\\]`, "gm");
-
-      const [valueWithIndex] = error.match(regexp) || [];
-      const index = (valueWithIndex || "").replace(/\D/g, "");
+      const index = getValueIndexFromString(error, matchWith);
 
       const mainErrorRegexp = new RegExp(
         `bundle.+${matchWith}\\[\\d{0,}\\].`,
