@@ -493,10 +493,10 @@ const createNphiesClaimData = ({
                 ? getSupportingInfoSequences(supportingInfo, days_supply_id)
                 : undefined,
               extension: [
-                !!extensionTax && {
+                {
                   url: `${BASE_PROFILE_URL}/${EXTENSION_TAX}`,
                   valueMoney: {
-                    value: extensionTax,
+                    value: extensionTax || 0,
                     currency,
                   },
                 },
