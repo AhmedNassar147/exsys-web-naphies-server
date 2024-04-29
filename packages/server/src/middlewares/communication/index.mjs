@@ -7,10 +7,11 @@ import createCommunicationMiddleware from "../../helpers/createBaseExpressMiddle
 import createMappedCommunicationRequests from "../../exsysHelpers/createMappedCommunicationRequests.mjs";
 
 export default createCommunicationMiddleware(
-  async ({ authorization, printValues = false, data }) =>
+  async ({ authorization, clientName, printValues = false, data }) =>
     await createMappedCommunicationRequests({
       authorization,
       printValues,
       data,
+      clientName,
     })
 );

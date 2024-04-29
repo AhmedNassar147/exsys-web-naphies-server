@@ -73,6 +73,7 @@ const checkNphiesPatientInsurance = async ({
   printFolderName,
   organizationNo,
   clinicalEntityNo,
+  clientName,
 }) => {
   // https://hsb.nphies.sa/checkinsurance?PatientKey=2005274879&SystemType=1
   // http://hsb.oba.nphies.sa/checkinsurance?PatientKey=2005274879&SystemType=1
@@ -83,6 +84,7 @@ const checkNphiesPatientInsurance = async ({
     requestMethod: "GET",
     organizationNo,
     clinicalEntityNo,
+    clientName,
     requestParams: {
       PatientKey: patientKey,
       SystemType: systemType,
@@ -93,6 +95,7 @@ const checkNphiesPatientInsurance = async ({
 
   if (printValues) {
     const folderName = buildPrintedResultPath({
+      clientName,
       organizationNo,
       clinicalEntityNo,
       innerFolderName: printFolderName,
@@ -107,7 +110,7 @@ const checkNphiesPatientInsurance = async ({
         },
         data: results,
       },
-      folderName: folderName,
+      folderName,
     });
   }
 

@@ -8,11 +8,28 @@ import {
   checkPathExists,
   createCmdMessage,
   findRootYarnWorkSpaces,
+  isObjectHasData,
 } from "@exsys-web-server/helpers";
-import { getOrganizationsData } from "./getConfigFileData.mjs";
+import { getConfigFileData } from "./getConfigFileData.mjs";
 import { CLI_CONFIG } from "../constants.mjs";
 
 const { ignoreCert } = CLI_CONFIG;
+
+const mapOrganizationsAndCheckCertificates = (
+  organizations,
+  rootYarnWorkSpaces
+) => {
+  const organizationsValues = Object.values(organizations);
+
+  return organizationsValues.map(async ({ certificatePath }) => {
+    const doesFileExist = await checkPathExists(
+      `${rootYarnWorkSpaces}/${certificatePath}`
+    );
+    return !doesFileExist
+      ? `${chalk.bold.white(certificatePath)} doesn't exist`
+      : false;
+  });
+};
 
 const stopTheProcessIfCertificateNotFound = async () => {
   if (ignoreCert) {
@@ -29,22 +46,28 @@ const stopTheProcessIfCertificateNotFound = async () => {
     message: "checking certificate ...",
   });
 
-  const organizations = await getOrganizationsData();
-
-  const values = Object.values(organizations);
-
   const rootYarnWorkSpaces = await findRootYarnWorkSpaces();
 
-  const configPromises = values.map(async ({ certificatePath }) => {
-    const doesFileExsist = await checkPathExists(
-      `${rootYarnWorkSpaces}/${certificatePath}`
-    );
-    return !doesFileExsist
-      ? `${chalk.bold.white(certificatePath)} doesn't exist`
-      : false;
-  });
+  const { clients } = await getConfigFileData();
+  const clientValues = Object.values(clients);
 
-  const errors = (await Promise.all(configPromises)).filter(Boolean);
+  const configPromises = clientValues
+    .reduce((acc, { organizations }) => {
+      if (isObjectHasData(organizations)) {
+        acc.push(
+          ...mapOrganizationsAndCheckCertificates(
+            organizations,
+            rootYarnWorkSpaces
+          )
+        );
+      }
+
+      return acc;
+    }, [])
+    .flat()
+    .filter(Boolean);
+
+  const errors = await Promise.all(configPromises);
 
   if (errors.length) {
     errors.forEach((error) =>

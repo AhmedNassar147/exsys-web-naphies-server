@@ -116,6 +116,7 @@ const fetchExsysPreauthorizationDataAndCallNphies = async ({
   const onNphiesResponseWithSuccessFn = async ({
     nphiesExtractedData,
     isSizeLimitExceeded,
+    dbBaseUrl,
     ...options
   }) => {
     const { nodeServerDataSentToNaphies, nphiesResponse, exsysResultsData } =
@@ -125,6 +126,7 @@ const fetchExsysPreauthorizationDataAndCallNphies = async ({
 
     if (isClaimRequestType && claim_pk) {
       await createExsysRequest({
+        xBaseApiUrl: dbBaseUrl,
         resourceName: saveClaimHistory,
         requestMethod: "POST",
         requestParams: {
@@ -154,6 +156,7 @@ const fetchExsysPreauthorizationDataAndCallNphies = async ({
         authorization,
         nphiesExtractedData,
         requestType: nphiesRequestType,
+        dbBaseUrl,
         ...options,
       });
     }

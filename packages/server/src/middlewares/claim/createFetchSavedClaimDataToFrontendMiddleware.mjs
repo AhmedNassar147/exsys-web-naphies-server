@@ -8,11 +8,15 @@ import createFetchSavedClaimDataToFrontendMiddleware from "../../helpers/createB
 import fetchPreauthAndClaimSavedData from "../../exsysHelpers/fetchPreauthAndClaimSavedData.mjs";
 
 export default createFetchSavedClaimDataToFrontendMiddleware(
-  async ({ authorization, printValues = false, data }) =>
+  async ({ authorization, clientName, printValues = false, data }) =>
     await createMappedRequestsArray({
       dataArray: data,
       printValues,
       asyncFn: async (params) =>
-        await fetchPreauthAndClaimSavedData({ ...params, authorization }),
+        await fetchPreauthAndClaimSavedData({
+          ...params,
+          clientName,
+          authorization,
+        }),
     })
 );

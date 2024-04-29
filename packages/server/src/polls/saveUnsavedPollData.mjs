@@ -13,6 +13,7 @@ const saveUnsavedPollData = async (fileUrl) => {
     data || [{}];
 
   const result = await savePreauthPollDataToExsys({
+    dbBaseUrl: "NEEDED",
     authorization: 111111,
     nodeServerDataSentToNaphies,
     nphiesResponse,
@@ -21,8 +22,8 @@ const saveUnsavedPollData = async (fileUrl) => {
     logParams: true,
   });
 
-  console.log("result", result);
+  // console.log("result", result);
 };
 
-const fileUrl = "";
-await saveUnsavedPollData(fileUrl);
+// const fileUrl = "";
+// await saveUnsavedPollData(fileUrl);

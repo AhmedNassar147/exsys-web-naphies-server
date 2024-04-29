@@ -26,11 +26,13 @@ const createNphiesRequest = async ({
   baseAPiUrl: _baseAPiUrl,
   organizationNo,
   clinicalEntityNo,
+  clientName,
 }) => {
   const baseAPiUrl =
     _baseAPiUrl || (production ? NPHIES_PRODUCTION : NPHIES_DEVELOPMENT);
 
   const { passphrase, certificate } = await getCertificateData(
+    clientName,
     organizationNo,
     clinicalEntityNo
   );

@@ -7,11 +7,12 @@ import createStatusCheckRequestMiddleware from "../../helpers/createBaseExpressM
 import createMappedClaimOrPreauthCancellationOrStatusCheck from "../../exsysHelpers/createMappedClaimOrPreauthCancellationOrStatusCheck.mjs";
 
 export default createStatusCheckRequestMiddleware(
-  async ({ authorization, printValues = false, data }) =>
+  async ({ authorization, clientName, printValues = false, data }) =>
     await createMappedClaimOrPreauthCancellationOrStatusCheck({
       data,
       authorization,
       printValues,
+      clientName,
       isStatusCheck: true,
     })
 );

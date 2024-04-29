@@ -7,12 +7,30 @@ import { EXSYS_API_IDS_NAMES, EXSYS_API_IDS } from "../constants.mjs";
 import createExsysRequest from "../helpers/createExsysRequest.mjs";
 import extractPreauthOrClaimDataSentToNphies from "../exsysToFrontEndHelpers/claimOrPreauth/index.mjs";
 import extractEligibilityDataSentToNphies from "../exsysToFrontEndHelpers/eligibility/index.mjs";
+import getCurrentOrganizationDbUrl from "../helpers/getCurrentOrganizationDbUrl.mjs";
 
 const { querySavedClaimsAndPreauthData } = EXSYS_API_IDS_NAMES;
 const baseApiUrl = EXSYS_API_IDS[querySavedClaimsAndPreauthData];
 
 const fetchPreauthAndClaimSavedData = async (requestParams) => {
+  const {
+    request_type,
+    primary_key,
+    clientName,
+    organizationNo,
+    clinicalEntityNo,
+  } = requestParams;
+
+  const dbBaseUrl = await getCurrentOrganizationDbUrl({
+    clientName,
+    organizationNo,
+    clinicalEntityNo,
+    exsysQueryApiId: querySavedClaimsAndPreauthData,
+    calledFromFnName: "fetchPreauthAndClaimSavedData",
+  });
+
   const { isSuccess, error, result } = await createExsysRequest({
+    xBaseApiUrl: dbBaseUrl,
     resourceName: querySavedClaimsAndPreauthData,
     requestMethod: "GET",
     requestParams,
@@ -22,8 +40,6 @@ const fetchPreauthAndClaimSavedData = async (requestParams) => {
     requestParams,
     exsysResultsData: result,
   };
-
-  const { request_type, primary_key } = requestParams;
 
   const printFolderName = `exsysToFrontEndSavedData/${request_type}/${primary_key}`;
 

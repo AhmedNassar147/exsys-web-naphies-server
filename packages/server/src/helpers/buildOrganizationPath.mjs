@@ -18,7 +18,11 @@ const buildOrganizationPath = (
     throw new Error("organizationNo wasn't provided to getCertificateData");
   }
 
-  return [organizationNo, clinicalEntityNo].filter(Boolean).join("-");
+  const organizationUnit = [organizationNo, clinicalEntityNo]
+    .filter(Boolean)
+    .join("-");
+
+  return organizationUnit;
 };
 
 export default buildOrganizationPath;

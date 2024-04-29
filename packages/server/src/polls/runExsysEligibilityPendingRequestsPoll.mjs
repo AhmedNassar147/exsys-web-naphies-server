@@ -18,6 +18,7 @@ const { queryEligibilityPendingRequests } = EXSYS_API_IDS_NAMES;
     authorization,
     organizationNo,
     clinicalEntityNo,
+    clientName
   }
  */
 const runExsysEligibilityPendingRequestsPoll = async (options) => {

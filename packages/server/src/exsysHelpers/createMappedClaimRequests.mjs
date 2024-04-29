@@ -10,6 +10,7 @@ import { NPHIES_REQUEST_TYPES } from "../constants.mjs";
 const createMappedClaimRequests = async ({
   data,
   authorization,
+  clientName,
   printValues,
   formatReturnedResults,
 }) =>
@@ -35,6 +36,7 @@ const createMappedClaimRequests = async ({
           organization_no: organizationNo,
           clinicalEntityNo,
           message_event_type: messageEventType,
+          clientName,
         },
       }),
   });

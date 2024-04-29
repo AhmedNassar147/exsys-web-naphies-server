@@ -50,6 +50,7 @@ export default checkPatientInsuranceMiddleware(async (body) => {
     insuranceCompanyId: __insuranceCompanyId,
     beneficiaryNumber: __beneficiaryNo,
     clinicalEntityNo,
+    clientName,
   } = body;
 
   const systemType = _systemType || "1";
@@ -63,6 +64,7 @@ export default checkPatientInsuranceMiddleware(async (body) => {
     printFolderName,
     organizationNo: organization_no,
     clinicalEntityNo,
+    clientName,
   });
   const { insurance, errorCode, errorDescription } = apiResults;
 
@@ -131,6 +133,7 @@ export default checkPatientInsuranceMiddleware(async (body) => {
       customer_group_no,
       insurance_company: insuranceCompanyID || __insuranceCompanyId,
       clinicalEntityNo,
+      clientName,
     };
 
     const { printData, loggerValue, resultData } =

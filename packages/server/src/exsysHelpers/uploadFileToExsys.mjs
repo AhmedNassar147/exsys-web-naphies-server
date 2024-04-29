@@ -14,9 +14,10 @@ const uploadFileToExsys = async ({
   fileExtension,
   directoryName,
   requestParams,
+  dbBaseUrl,
 }) =>
   await createExsysRequest({
-    // xBaseApiUrl: "http://149.102.140.8:9090/ords/exsys_api",
+    xBaseApiUrl: dbBaseUrl,
     resourceName,
     body: fileBinaryData,
     retryTimes: 0,

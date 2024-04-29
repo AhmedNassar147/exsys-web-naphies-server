@@ -11,7 +11,8 @@ const createMappedEligibilityRequests = async ({
   data,
   authorization,
   printValues,
-  message_event,
+  messageEvent,
+  clientName,
 }) =>
   await createMappedRequestsArray({
     dataArray: data,
@@ -30,13 +31,14 @@ const createMappedEligibilityRequests = async ({
       return await fetchExsysEligibilityDataAndCallNphies({
         exsysAPiBodyData: {
           authorization,
-          message_event,
+          message_event: messageEvent,
           message_event_type,
           organization_no,
           clinicalEntityNo,
           patient_file_no: patientFileNo,
           memberid: patientIdNo,
           contract_no: contractNo,
+          clientName,
         },
       });
     },

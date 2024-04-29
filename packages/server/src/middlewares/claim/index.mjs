@@ -7,10 +7,11 @@ import createClaimMiddleware from "../../helpers/createBaseExpressMiddleware.mjs
 import createMappedClaimRequests from "../../exsysHelpers/createMappedClaimRequests.mjs";
 
 export default createClaimMiddleware(
-  async ({ authorization, printValues = false, data }) =>
+  async ({ authorization, clientName, printValues = false, data }) =>
     await createMappedClaimRequests({
       authorization,
       printValues,
       data,
+      clientName,
     })
 );

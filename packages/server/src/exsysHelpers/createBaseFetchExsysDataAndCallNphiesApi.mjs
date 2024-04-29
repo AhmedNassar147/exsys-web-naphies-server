@@ -3,11 +3,12 @@
  * Helper: `createBaseFetchExsysDataAndCallNphiesApi`.
  *
  */
-import { isObjectHasData } from "@exsys-web-server/helpers";
+import { createCmdMessage, isObjectHasData } from "@exsys-web-server/helpers";
 import { EXSYS_API_IDS } from "../constants.mjs";
 import createExsysRequest from "../helpers/createExsysRequest.mjs";
 import callNphiesAPIAndCollectResults from "../nphiesHelpers/base/callNphiesApiAndCollectResults.mjs";
 import buildPrintedResultPath from "../helpers/buildPrintedResultPath.mjs";
+import getCurrentOrganizationDbUrl from "../helpers/getCurrentOrganizationDbUrl.mjs";
 
 const createBaseFetchExsysDataAndCallNphiesApi = async ({
   exsysQueryApiId,
@@ -28,11 +29,27 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
   checkExsysDataValidationBeforeCallingNphies,
   checkPayloadNphiesSize,
 }) => {
+  const { clientName, organizationNo, organization_no, clinicalEntityNo } = {
+    ...(requestParams || null),
+    ...(requestBody || null),
+  };
+
+  const _organizationNo = organizationNo || organization_no;
+
+  const dbBaseUrl = await getCurrentOrganizationDbUrl({
+    clientName,
+    organizationNo: _organizationNo,
+    clinicalEntityNo,
+    exsysQueryApiId,
+    calledFromFnName: "createBaseFetchExsysDataAndCallNphiesApi",
+  });
+
   const {
     isSuccess,
     result,
     error: exsysError,
   } = await createExsysRequest({
+    xBaseApiUrl: dbBaseUrl,
     resourceName: exsysQueryApiId,
     requestMethod,
     requestParams,
@@ -53,9 +70,9 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
     patient_file_no,
     patient_name,
     memberid,
-    organization_no,
-    organizationNo,
-    clinicalEntityNo,
+    organization_no: __organization_no,
+    organizationNo: __organizationNo,
+    clinicalEntityNo: __clinicalEntityNo,
     ...otherResults
   } = exsysResultsData;
 
@@ -65,9 +82,8 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
     exsysResultsData,
   };
 
-  const _organizationNo = organizationNo || organization_no;
-
   const printFolderPath = buildPrintedResultPath({
+    clientName,
     organizationNo: _organizationNo,
     clinicalEntityNo,
     innerFolderName: printFolderName,
@@ -114,6 +130,7 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
         : undefined;
 
       await createExsysRequest({
+        xBaseApiUrl: dbBaseUrl,
         resourceName: exsysSaveApiId,
         requestParams: errorSaveParams,
         body: {
@@ -187,6 +204,7 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
       : undefined;
 
     await createExsysRequest({
+      xBaseApiUrl: dbBaseUrl,
       resourceName: exsysSaveApiId,
       requestParams: successSaveParams,
       body: {
@@ -204,11 +222,13 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
 
   if (onNphiesResponseWithSuccessFn) {
     await onNphiesResponseWithSuccessFn({
+      dbBaseUrl,
       nodeServerDataSentToNaphies,
       nphiesResponse,
       nphiesExtractedData,
       exsysResultsData,
       isSizeLimitExceeded,
+      clientName,
     });
   }
 
@@ -227,8 +247,8 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
     printData: {
       folderName,
       data: {
-        exsysRequstParams: requestParams,
-        exsysRequstBody: requestBody,
+        exsysRequestParams: requestParams,
+        exsysRequestBody: requestBody,
         ...nphiesResultData,
       },
       hasNphiesApiError: hasError,

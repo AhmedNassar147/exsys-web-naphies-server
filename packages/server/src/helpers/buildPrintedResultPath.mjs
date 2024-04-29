@@ -4,12 +4,10 @@
  *
  */
 import { isArrayHasData } from "@exsys-web-server/helpers";
-import { CLI_CONFIG } from "../constants.mjs";
 import buildOrganizationPath from "./buildOrganizationPath.mjs";
 
-const { client } = CLI_CONFIG;
-
 const buildPrintedResultPath = ({
+  clientName,
   organizationNo,
   clinicalEntityNo,
   innerFolderName,
@@ -30,7 +28,7 @@ const buildPrintedResultPath = ({
   }
 
   const folderName = [
-    client,
+    clientName,
     organizationOrOrganizationUnitPath,
     innerFolderName,
     ..._segments,

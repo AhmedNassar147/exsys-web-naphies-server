@@ -55,6 +55,8 @@ const runPreauthorizationPoll = async ({
   authorization,
   organizationNo,
   clinicalEntityNo,
+  clientName,
+  dbBaseUrl,
 }) => {
   const fullOptions = {
     includeMessageType,
@@ -63,6 +65,8 @@ const runPreauthorizationPoll = async ({
     authorization,
     organizationNo,
     clinicalEntityNo,
+    clientName,
+    dbBaseUrl,
   };
 
   try {
@@ -82,6 +86,7 @@ const runPreauthorizationPoll = async ({
       exsysResultsData: {
         organizationNo,
         clinicalEntityNo,
+        clientName,
         ...preauthPollData,
       },
       setErrorIfExtractedDataFoundFn,
@@ -139,6 +144,7 @@ const runPreauthorizationPoll = async ({
       nphiesResponse,
       nphiesExtractedData,
       requestType: messageHeaderRequestType,
+      dbBaseUrl,
     });
 
     await delayProcess(MIN_DELAY_TIMEOUT);

@@ -10,6 +10,7 @@ import createNphiesStatusCheckPreauthOrClaimData from "./createNphiesStatusCheck
 const createMappedClaimOrPreauthCancellationOrStatusCheck = async ({
   data,
   authorization,
+  clientName,
   printValues,
   formatReturnedResults,
   isStatusCheck,
@@ -29,6 +30,7 @@ const createMappedClaimOrPreauthCancellationOrStatusCheck = async ({
     }) => {
       const options = {
         requestParams: {
+          clientName,
           authorization: authorizationNo || authorization,
           patient_file_no: patientFileNo,
           organization_no: organizationNo,

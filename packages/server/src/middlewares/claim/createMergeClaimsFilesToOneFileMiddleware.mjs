@@ -12,11 +12,16 @@ import createMergeClaimsFilesToOneFileMiddleware from "../../helpers/createBaseE
 import createExsysRequest from "../../helpers/createExsysRequest.mjs";
 import uploadFileToExsys from "../../exsysHelpers/uploadFileToExsys.mjs";
 import { EXSYS_API_IDS_NAMES } from "../../constants.mjs";
+import getCurrentOrganizationDbUrl from "../../helpers/getCurrentOrganizationDbUrl.mjs";
 
 const { queryClaimsToCreatePdfFile, saveCreatedClaimPdfStatus } =
   EXSYS_API_IDS_NAMES;
 
-const saveFileThenSaveRecordStatus = async (record) => {
+const saveFileThenSaveRecordStatus = async ({
+  clientName,
+  dbBaseUrl,
+  ...record
+}) => {
   const {
     patentFileNo,
     episodeInvoiceNo,
@@ -33,6 +38,7 @@ const saveFileThenSaveRecordStatus = async (record) => {
     fileBinaryData: pdfFileBytes,
     fileName: pdfFileName,
     fileExtension: "pdf",
+    dbBaseUrl,
     directoryName,
     requestParams: {
       authorization,
@@ -43,6 +49,7 @@ const saveFileThenSaveRecordStatus = async (record) => {
   if (isFileUploaded) {
     const { isSuccess: isClaimCreatedPdfStatusUpdated } =
       await createExsysRequest({
+        xBaseApiUrl: dbBaseUrl,
         resourceName: saveCreatedClaimPdfStatus,
         body: {
           authorization,
@@ -62,9 +69,18 @@ const saveFileThenSaveRecordStatus = async (record) => {
 };
 
 export default createMergeClaimsFilesToOneFileMiddleware(async (body) => {
-  const { authorization } = body;
+  const { authorization, clientName, organization_no, clinicalEntityNo } = body;
+
+  const dbBaseUrl = await getCurrentOrganizationDbUrl({
+    clientName,
+    organizationNo: organization_no,
+    clinicalEntityNo,
+    exsysQueryApiId: queryClaimsToCreatePdfFile,
+    calledFromFnName: "createMergeClaimsFilesToOneFileMiddleware",
+  });
 
   const { result, error } = await createExsysRequest({
+    xBaseApiUrl: dbBaseUrl,
     resourceName: queryClaimsToCreatePdfFile,
     requestMethod: "GET",
     requestParams: body,
@@ -123,6 +139,8 @@ export default createMergeClaimsFilesToOneFileMiddleware(async (body) => {
           authorization,
           pdfFileBytes,
           ...recordData,
+          clientName,
+          dbBaseUrl,
         });
 
       if (isFileUploaded) {

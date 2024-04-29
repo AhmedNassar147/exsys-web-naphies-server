@@ -15,6 +15,7 @@ import { EXSYS_API_IDS_NAMES, EXSYS_API_IDS } from "../../constants.mjs";
 import createMappedClaimOrPreauthCancellation from "../../exsysHelpers/createMappedClaimOrPreauthCancellationOrStatusCheck.mjs";
 import createMappedClaimRequests from "../../exsysHelpers/createMappedClaimRequests.mjs";
 import buildPrintedResultPath from "../../helpers/buildPrintedResultPath.mjs";
+import getCurrentOrganizationDbUrl from "../../helpers/getCurrentOrganizationDbUrl.mjs";
 
 const { queryBulkClaimsDataToCancellationOrCreation } = EXSYS_API_IDS_NAMES;
 const exsysApiBaseUrl =
@@ -23,12 +24,13 @@ const exsysApiBaseUrl =
 const claimsToBeSentToNphiesPerRequestsMap = 5;
 
 export default createProcessBulkClaimsMiddleware(
-  async ({ authorization, data, printValues = false }) => {
+  async ({ authorization, clientName, data, printValues = false }) => {
     const [baseRequestParams] = data;
 
     const requestParams = {
       ...baseRequestParams,
       authorization,
+      clientName,
     };
 
     const {
@@ -46,7 +48,16 @@ export default createProcessBulkClaimsMiddleware(
       `${nphies_request_type}\/`
     );
 
+    const dbBaseUrl = await getCurrentOrganizationDbUrl({
+      clientName,
+      organizationNo: organization_no,
+      clinicalEntityNo,
+      exsysQueryApiId: queryBulkClaimsDataToCancellationOrCreation,
+      calledFromFnName: "createProcessBulkClaimsMiddleware",
+    });
+
     const { isSuccess, error, result } = await createExsysRequest({
+      xBaseApiUrl: dbBaseUrl,
       resourceName: queryBulkClaimsDataToCancellationOrCreation,
       requestMethod: "GET",
       retryTimes: 0,
@@ -61,6 +72,7 @@ export default createProcessBulkClaimsMiddleware(
     };
 
     const basePrintFolderName = buildPrintedResultPath({
+      clientName,
       organizationNo: organization_no,
       clinicalEntityNo,
       innerFolderName: "bulkClaim",
@@ -127,6 +139,7 @@ export default createProcessBulkClaimsMiddleware(
       const { resultsData, printInfo } = await mappedRequestsFn({
         data,
         authorization,
+        clientName,
         printValues: false,
         formatReturnedResults: ({ printInfo, resultsData }) => ({
           printInfo,

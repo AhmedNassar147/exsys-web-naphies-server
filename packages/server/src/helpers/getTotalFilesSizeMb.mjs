@@ -3,7 +3,6 @@
  * Helper: `getTotalFilesSizeMb`.
  *
  */
-
 import {
   isArrayHasData,
   getRemoteFilePathData,

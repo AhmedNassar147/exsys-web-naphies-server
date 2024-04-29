@@ -23,6 +23,7 @@ const savePreauthPollDataToExsys = async ({
   nphiesExtractedData,
   requestType,
   logParams,
+  dbBaseUrl,
 }) => {
   const {
     claimRequestId,
@@ -47,6 +48,7 @@ const savePreauthPollDataToExsys = async ({
   }
 
   await createExsysRequest({
+    xBaseApiUrl: dbBaseUrl,
     resourceName: savePreauthOrClaimPollData,
     body: {
       nodeServerDataSentToNaphies,
@@ -85,6 +87,7 @@ const savePreauthPollDataToExsys = async ({
   }
 
   return await createExsysRequest({
+    xBaseApiUrl: dbBaseUrl,
     resourceName: saveApiName,
     requestParams,
     body: {

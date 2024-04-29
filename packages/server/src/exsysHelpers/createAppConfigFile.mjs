@@ -11,13 +11,10 @@ import { getConfigFilePath } from "../helpers/getConfigFileData.mjs";
 
 const { queryProgramOrganizations } = EXSYS_API_IDS_NAMES;
 
-const createAppConfigFile = async (clientName) => {
+const createAppConfigFile = async () => {
   const { isSuccess, result } = await createExsysRequest({
     resourceName: queryProgramOrganizations,
     requestMethod: "GET",
-    requestParams: {
-      client: clientName,
-    },
   });
 
   if (!isSuccess) {

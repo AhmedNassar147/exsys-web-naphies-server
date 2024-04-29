@@ -23,7 +23,7 @@ import createMappedEligibilityRequests from "../../exsysHelpers/createMappedElig
 // "statement_no": "" ,
 
 export default createEligibilityMiddleware(async (body, originalUrl) => {
-  const { authorization, printValues = false, data } = body;
+  const { authorization, printValues = false, data, clientName } = body;
 
   const message_event = originalUrl.replace("/", "");
 
@@ -32,5 +32,6 @@ export default createEligibilityMiddleware(async (body, originalUrl) => {
     authorization,
     printValues,
     message_event,
+    clientName,
   });
 });

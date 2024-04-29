@@ -7,10 +7,11 @@ import createCancelClaimRequestMiddleware from "../../helpers/createBaseExpressM
 import createMappedClaimOrPreauthCancellation from "../../exsysHelpers/createMappedClaimOrPreauthCancellationOrStatusCheck.mjs";
 
 export default createCancelClaimRequestMiddleware(
-  async ({ authorization, printValues = false, data }) =>
+  async ({ authorization, clientName, printValues = false, data }) =>
     await createMappedClaimOrPreauthCancellation({
       data,
       authorization,
       printValues,
+      clientName,
     })
 );

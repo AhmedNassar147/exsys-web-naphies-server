@@ -5,7 +5,9 @@
  */
 
 import { readFile } from "fs/promises";
+import chalk from "chalk";
 import {
+  createCmdMessage,
   findRootYarnWorkSpaces,
   readJsonFile,
 } from "@exsys-web-server/helpers";
@@ -26,23 +28,56 @@ const getConfigFileData = async () => {
   return await readJsonFile(configFilePath, true);
 };
 
-const getOrganizationsData = async (organizationOrOrganizationUnitPath) => {
-  const { organizations } = await getConfigFileData();
+const getOrganizationsData = async (
+  clientName,
+  organizationOrOrganizationUnitPath
+) => {
+  const { clients } = await getConfigFileData();
+
+  const clientData = clients[clientName];
+
+  if (!clientName || !clientData) {
+    createCmdMessage({
+      type: "info",
+      message: `the client ${chalk.bold.red(
+        clientName
+      )} is not found in database .`,
+    });
+  }
+
+  const { organizations } = clientData;
 
   return organizationOrOrganizationUnitPath
     ? organizations[organizationOrOrganizationUnitPath]
     : organizations;
 };
 
-const getCertificateData = async (organizationNo, clinicalEntityNo) => {
+const getCertificateData = async (
+  clientName,
+  organizationNo,
+  clinicalEntityNo
+) => {
   const organizationOrOrganizationUnitPath = buildOrganizationPath(
     organizationNo,
     clinicalEntityNo
   );
 
-  const { certificatePath, certificatePassphrase } = await getOrganizationsData(
-    organizationOrOrganizationUnitPath
-  );
+  const { certificatePath, certificatePassphrase } =
+    (await getOrganizationsData(
+      clientName,
+      organizationOrOrganizationUnitPath
+    )) || {};
+
+  if (!ignoreCert && (!certificatePath || !certificatePassphrase)) {
+    createCmdMessage({
+      type: "error",
+      message: `the client=${clientName} certificate wasn't found in ${certificatePath}`,
+    });
+
+    return {
+      passphrase: certificatePassphrase,
+    };
+  }
 
   if (ignoreCert) {
     return {
@@ -56,10 +91,6 @@ const getCertificateData = async (organizationNo, clinicalEntityNo) => {
     `${rootYarnWorkSpaces}/${certificatePath}`
   );
 
-  if (!certificate) {
-    throw new Error(`the certificate wasn't found in ${certificatePath}`);
-  }
-
   return {
     passphrase: certificatePassphrase,
     certificate,
@@ -67,8 +98,8 @@ const getCertificateData = async (organizationNo, clinicalEntityNo) => {
 };
 
 export {
+  getConfigFilePath,
   getConfigFileData,
   getOrganizationsData,
   getCertificateData,
-  getConfigFilePath,
 };

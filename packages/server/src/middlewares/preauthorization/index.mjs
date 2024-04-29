@@ -9,7 +9,7 @@ import createPreauthorizationMiddleware from "../../helpers/createBaseExpressMid
 import fetchExsysPreauthorizationDataAndCallNphies from "../../exsysHelpers/fetchExsysPreauthorizationDataAndCallNphies.mjs";
 
 export default createPreauthorizationMiddleware(
-  async ({ authorization, printValues = false, data }) =>
+  async ({ authorization, clientName, printValues = false, data }) =>
     await createMappedRequestsArray({
       dataArray: data,
       printValues,
@@ -19,6 +19,7 @@ export default createPreauthorizationMiddleware(
           requestParams: {
             authorization,
             preauth_pk,
+            clientName,
           },
         }),
     })

@@ -9,6 +9,7 @@ import fetchPreauthAndClaimCommunicationResponse from "./fetchPreauthAndClaimCom
 const createMappedCommunicationRequests = async ({
   data,
   authorization,
+  clientName,
   printValues,
 }) =>
   await createMappedRequestsArray({
@@ -21,6 +22,7 @@ const createMappedCommunicationRequests = async ({
           authorization,
           communication_pk: communicationPk,
           request_type: requestType,
+          clientName,
         },
       }),
   });

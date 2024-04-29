@@ -11,12 +11,7 @@ import {
   RESTART_SERVER_MS,
   createCmdMessage,
 } from "@exsys-web-server/helpers";
-import {
-  SERVER_PORT,
-  FILES_ENCODING_LIMIT,
-  CLI_CONFIG,
-  CLIENT_NAMES_KEYS,
-} from "./constants.mjs";
+import { SERVER_PORT, FILES_ENCODING_LIMIT } from "./constants.mjs";
 import createAppConfigFile from "./exsysHelpers/createAppConfigFile.mjs";
 import createEligibilityMiddleware from "./middlewares/eligibility/index.mjs";
 import createPreauthorizationMiddleware from "./middlewares/preauthorization/index.mjs";
@@ -32,22 +27,8 @@ import createMergeClaimsFilesToOneFileMiddleware from "./middlewares/claim/creat
 import stopTheProcessIfCertificateNotFound from "./helpers/stopTheProcessIfCertificateNotFound.mjs";
 import { getConfigFileData } from "./helpers/getConfigFileData.mjs";
 
-const { client } = CLI_CONFIG;
-
 (async () => {
-  const isAuthorizedClient = CLIENT_NAMES_KEYS.includes(client);
-
-  if (!isAuthorizedClient) {
-    createCmdMessage({
-      type: "error",
-      message: "client is not authorized",
-    });
-
-    process.kill(process.pid);
-    process.exit();
-  }
-
-  await createAppConfigFile(client);
+  await createAppConfigFile();
 
   const shouldStopApp = await stopTheProcessIfCertificateNotFound();
 
@@ -69,10 +50,10 @@ const { client } = CLI_CONFIG;
   app.use(bodyParser.text());
   app.use(bodyParser.raw({ limit: FILES_ENCODING_LIMIT }));
   app.use("/eligibility", createEligibilityMiddleware(app));
-  app.use("/preauth", createPreauthorizationMiddleware(app)); //
-  app.use("/claim", createClaimMiddleware(app)); //;
-  app.use("/cancelClaimRequest", createCancelClaimRequestMiddleware(app)); //;
-  app.use("/processSoaClaims", createProcessBulkClaimsMiddleware(app)); //
+  app.use("/preauth", createPreauthorizationMiddleware(app));
+  app.use("/claim", createClaimMiddleware(app));
+  app.use("/cancelClaimRequest", createCancelClaimRequestMiddleware(app));
+  app.use("/processSoaClaims", createProcessBulkClaimsMiddleware(app));
   app.use(
     "/querySavedClaimOrPreauthData",
     createFetchSavedClaimDataToFrontendMiddleware(app)
@@ -80,17 +61,17 @@ const { client } = CLI_CONFIG;
   app.use(
     "/fetchCommunicationResponseOrRequest",
     createCommunicationMiddleware(app)
-  ); //
-  app.use("/checkPatientInsurance", checkPatientInsuranceMiddleware(app)); //
+  );
+  app.use("/checkPatientInsurance", checkPatientInsuranceMiddleware(app));
   app.use(
     "/checkClaimOrPreauthStatus",
     createStatusCheckRequestMiddleware(app)
-  ); //;
-  app.use("/getFilesTotalSize", createTotalFilesSizeMiddleware(app)); //;
+  );
+  app.use("/getFilesTotalSize", createTotalFilesSizeMiddleware(app));
   app.use(
     "/mergeClaimsFilesToOne",
     createMergeClaimsFilesToOneFileMiddleware(app)
-  ); //;
+  );
 
   const res = app.listen(serverPort, () =>
     createCmdMessage({
