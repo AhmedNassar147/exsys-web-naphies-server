@@ -68,6 +68,7 @@ export const CLIENT_NAMES = {
   shj: "shj",
   flahShobra: " flahShobra",
   meshaal: "meshaal",
+  yashfen: "yashfen",
 };
 
 export const CLIENT_NAMES_KEYS = Object.keys(CLIENT_NAMES);
