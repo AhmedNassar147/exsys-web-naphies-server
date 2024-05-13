@@ -3,6 +3,7 @@
  * helper: `extractPatientData`.
  *
  */
+import { createDateFromNativeDate } from "@exsys-web-server/helpers";
 import extractNphiesCodeAndDisplayFromCodingType from "../../nphiesHelpers/extraction/extractNphiesCodeAndDisplayFromCodingType.mjs";
 
 const extractPatientData = ({
@@ -15,10 +16,14 @@ const extractPatientData = ({
   const [{ text }] = name || [{}];
   const [{ value: patientPhone }] = telecom || [{}];
 
+  const { dateString } = createDateFromNativeDate(birthDate, {
+    returnReversedDate: false,
+  });
+
   return {
     patientFileNo: id,
     patientName: text,
-    patientBirthDate: birthDate,
+    patientBirthDate: dateString,
     patientGender: gender,
     patientPhone,
     patientIdentifierIdType: [code, display].filter(Boolean).join(" - "),
