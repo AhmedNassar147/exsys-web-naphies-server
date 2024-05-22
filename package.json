@@ -27,7 +27,7 @@
     "shj": "yarn start client=shj --production --port=9090 --exsys-base-url=http://94.97.253.213",
     "yashfen": "yarn start client=yashfen --production --exsys-base-url=http://37.224.99.197",
     "zaher": "yarn start client=zaher --production --exsys-base-url=http://192.168.100.41",
-    "zaher_azizzia": "yarn start client=zaher --production --exsys-base-url=http://192.168.1.41",
+    "zaher_azizzia": "yarn start client=zaher_azizzia --production --exsys-base-url=http://192.168.1.41",
     "wecaretest": "yarn start client=wecaretest --production --port=9090",
     "// tadawi": "yarn start client=tadawi",
     "tadawi": "yarn start client=tadawi --production --exsys-base-url=http://192.168.1.4",
