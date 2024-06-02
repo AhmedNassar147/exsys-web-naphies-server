@@ -16,8 +16,10 @@ import checkNphiesPatientInsurance from "../../exsysHelpers/checkNphiesPatientIn
 import createBaseFetchExsysDataAndCallNphiesApi from "../../exsysHelpers/createBaseFetchExsysDataAndCallNphiesApi.mjs";
 import extractEligibilityDataSentToNphies from "../../exsysToFrontEndHelpers/eligibility/index.mjs";
 import { EXSYS_API_IDS_NAMES } from "../../constants.mjs";
+import createExsysRequest from "../../helpers/createExsysRequest.mjs";
 
-const { queryEligibilityDataFromCchi } = EXSYS_API_IDS_NAMES;
+const { queryEligibilityDataFromCchi, queryExsysCchiPatient } =
+  EXSYS_API_IDS_NAMES;
 
 const extractionFunctionsMap = {
   CoverageEligibilityResponse: extractCoverageEligibilityEntryResponseData,
@@ -60,23 +62,68 @@ export default checkPatientInsuranceMiddleware(async (body) => {
 
   const isCCHITotallySuccesseded = !!isSuccess && !hasError;
 
+  const [firstItem] = insurance || [];
+
+  const {
+    name,
+    identityNumber,
+    gender,
+    dateOfBirth,
+    mobileNumber,
+    insuranceCompanyID,
+    beneficiaryNumber,
+    nationalityCode,
+    nationalityID,
+    nationality,
+    policyNumber,
+    className,
+  } = firstItem || {};
+
+  const { result: cchiPatientResult } = await createExsysRequest({
+    resourceName: queryExsysCchiPatient,
+    requestMethod: "GET",
+    retryTimes: 0,
+    requestParams: {
+      beneficiaryKey,
+      nationalityCode: nationalityCode || nationalityID || nationality,
+      gender,
+      insuranceCompanyId: insuranceCompanyID,
+      policyNumber,
+      className,
+    },
+  });
+
+  const { data: cchiPatientResultData } = cchiPatientResult || {};
+
+  const {
+    nationalityCode: exsysNationalityCode,
+    nationalityName,
+    genderCode,
+    genderName,
+    customerNo,
+    customerGroupNo,
+    birthDate,
+  } = cchiPatientResultData || {};
+
+  const __customer_no = customer_no || customerNo;
+  const __customer_group_no = customer_group_no || customerGroupNo;
+
   const shouldCallEligibilityApi =
     isCCHITotallySuccesseded &&
-    !!(organization_no && customer_no && customer_group_no);
+    !!(organization_no && __customer_no && __customer_group_no);
+
+  const __insuranceData = isArrayHasData(insurance)
+    ? insurance.map((item) => ({
+        ...item,
+        nationalityCode: exsysNationalityCode,
+        nationality: nationalityName,
+        dateOfBirth: birthDate,
+        gender: genderName,
+        genderCode,
+      }))
+    : [];
 
   if (shouldCallEligibilityApi) {
-    const [firstItem] = insurance || [];
-
-    const {
-      name,
-      identityNumber,
-      gender,
-      dateOfBirth,
-      mobileNumber,
-      insuranceCompanyID,
-      beneficiaryNumber,
-    } = firstItem || {};
-
     const [
       patient_first_name,
       patient_second_name,
@@ -94,16 +141,19 @@ export default checkPatientInsuranceMiddleware(async (body) => {
       memberid: beneficiaryNumber,
       iqama_no: identityNumber || beneficiaryKey,
       patient_phone: mobileNumber,
-      gender: gender === "1" ? "male" : "female",
-      birthDate: dateOfBirth || dateString,
+      gender: (
+        genderName || (gender === "1" ? "male" : "female")
+      ).toLowerCase(),
+      birthDate: dateOfBirth || birthDate,
+      // birthDate: dateOfBirth || birthDate || dateString,
       relationship: "self",
     };
 
     const exsysApiParams = {
       authorization,
       organization_no,
-      customer_no,
-      customer_group_no,
+      customer_no: __customer_no,
+      customer_group_no: __customer_group_no,
       insurance_company: insuranceCompanyID,
       clinicalEntityNo,
     };
@@ -154,13 +204,23 @@ export default checkPatientInsuranceMiddleware(async (body) => {
 
     return {
       data: {
-        ...(apiResults || null),
+        errorCode,
+        errorDescription,
+        insurance: __insuranceData,
+        customerNo: __customer_no,
+        customerGroupNo: __customer_group_no,
         frontEndEligibilityData,
       },
     };
   }
 
   return {
-    data: apiResults || {},
+    data: {
+      errorCode,
+      errorDescription,
+      insurance: __insuranceData,
+      customerNo: __customer_no,
+      customerGroupNo: __customer_group_no,
+    },
   };
 });

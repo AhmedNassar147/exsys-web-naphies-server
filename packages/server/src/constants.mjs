@@ -54,6 +54,7 @@ export const EXSYS_API_IDS_NAMES = {
   uploadExsysClaimFile: "uploadExsysClaimFile",
   queryClaimsToCreatePdfFile: "queryClaimsToCreatePdfFile",
   saveCreatedClaimPdfStatus: "saveCreatedClaimPdfStatus",
+  queryExsysCchiPatient: "queryExsysCchiPatient",
 };
 
 export const CLIENT_NAMES = {
@@ -144,6 +145,9 @@ export const EXSYS_API_IDS = {
   // http://149.102.140.8:9090/ords/exsys_api/hs_patient_billing_report/update_claim_create_pdf_status
   [EXSYS_API_IDS_NAMES.saveCreatedClaimPdfStatus]:
     "hs_patient_billing_report/update_claim_create_pdf_status",
+  // http://149.102.140.8:9090/ords/exsys_api/hs_nphies_preauth_pkg/get_cchi_patient_data?authorization=111111&organization_no=001&customer_group_no=&customer_no=&insurance_company=
+  [EXSYS_API_IDS_NAMES.queryExsysCchiPatient]:
+    "hs_nphies_preauth_pkg/get_cchi_patient_data",
 };
 
 export const HTTP_STATUS_CODE = {
