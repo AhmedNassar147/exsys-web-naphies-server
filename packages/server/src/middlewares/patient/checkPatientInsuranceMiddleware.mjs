@@ -79,23 +79,28 @@ export default checkPatientInsuranceMiddleware(async (body) => {
     className,
   } = firstItem || {};
 
-  const { result: cchiPatientResult } = await createExsysRequest({
-    resourceName: queryExsysCchiPatient,
-    requestMethod: "GET",
-    retryTimes: 0,
-    requestParams: {
-      authorization,
-      beneficiaryId: identityNumber || beneficiaryKey,
-      nationalityCode: nationalityCode || nationalityID || nationality,
-      gender,
-      insuranceCompanyId: insuranceCompanyID,
-      policyNumber,
-      className,
-      planguageid: 1,
-    },
-  });
+  let cchiPatientResultData = {};
 
-  const { data: cchiPatientResultData } = cchiPatientResult || {};
+  if (isCCHITotallySuccesseded) {
+    const { result } = await createExsysRequest({
+      resourceName: queryExsysCchiPatient,
+      requestMethod: "GET",
+      retryTimes: 0,
+      requestParams: {
+        authorization,
+        beneficiaryId: identityNumber || beneficiaryKey,
+        nationalityCode: nationalityCode || nationalityID || nationality,
+        gender,
+        insuranceCompanyId: insuranceCompanyID,
+        policyNumber,
+        className,
+        planguageid: 1,
+      },
+    });
+
+    const { data } = result || {};
+    cchiPatientResultData = data || {};
+  }
 
   const {
     nationalityCode: exsysNationalityCode,
@@ -109,7 +114,7 @@ export default checkPatientInsuranceMiddleware(async (body) => {
     patientFileNo,
     contractNo,
     contractName,
-  } = cchiPatientResultData || {};
+  } = cchiPatientResultData;
 
   const __customer_no = customer_no || customerNo;
   const __customer_group_no = customer_group_no || customerGroupNo;
@@ -159,9 +164,7 @@ export default checkPatientInsuranceMiddleware(async (body) => {
       memberid: beneficiaryNumber,
       iqama_no: identityNumber || beneficiaryKey,
       patient_phone: mobileNumber,
-      gender: (
-        genderName || (gender === "1" ? "male" : "female")
-      ).toLowerCase(),
+      gender: genderName || (gender === "1" ? "male" : "female"),
       birthDate: dateOfBirth || birthDate,
       // birthDate: dateOfBirth || birthDate || dateString,
       relationship: "self",
