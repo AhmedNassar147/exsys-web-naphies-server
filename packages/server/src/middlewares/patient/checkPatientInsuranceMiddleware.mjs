@@ -84,12 +84,14 @@ export default checkPatientInsuranceMiddleware(async (body) => {
     requestMethod: "GET",
     retryTimes: 0,
     requestParams: {
-      beneficiaryKey,
+      authorization,
+      beneficiaryId: identityNumber || beneficiaryKey,
       nationalityCode: nationalityCode || nationalityID || nationality,
       gender,
       insuranceCompanyId: insuranceCompanyID,
       policyNumber,
       className,
+      planguageid: 1,
     },
   });
 
@@ -102,7 +104,11 @@ export default checkPatientInsuranceMiddleware(async (body) => {
     genderName,
     customerNo,
     customerGroupNo,
+    // customerGroupName
     birthDate,
+    patientFileNo,
+    contractNo,
+    contractName,
   } = cchiPatientResultData || {};
 
   const __customer_no = customer_no || customerNo;
@@ -122,6 +128,18 @@ export default checkPatientInsuranceMiddleware(async (body) => {
         genderCode,
       }))
     : [];
+
+  const extraData = {
+    patientFileNo,
+    contractNo,
+    contractName,
+    dateOfBirth,
+    genderCode,
+    nationalityCode: exsysNationalityCode,
+    customerNo: __customer_no,
+    customerGroupNo: __customer_group_no,
+    insurance: __insuranceData,
+  };
 
   if (shouldCallEligibilityApi) {
     const [
@@ -206,9 +224,7 @@ export default checkPatientInsuranceMiddleware(async (body) => {
       data: {
         errorCode,
         errorDescription,
-        insurance: __insuranceData,
-        customerNo: __customer_no,
-        customerGroupNo: __customer_group_no,
+        ...extraData,
         frontEndEligibilityData,
       },
     };
@@ -218,9 +234,7 @@ export default checkPatientInsuranceMiddleware(async (body) => {
     data: {
       errorCode,
       errorDescription,
-      insurance: __insuranceData,
-      customerNo: __customer_no,
-      customerGroupNo: __customer_group_no,
+      ...extraData,
     },
   };
 });

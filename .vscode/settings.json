@@ -42,6 +42,7 @@
     "networkidle",
     "payeetype",
     "payor",
+    "planguageid",
     "preauthorization",
     "priorauth",
     "processpriority",
