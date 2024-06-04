@@ -145,7 +145,7 @@ export const EXSYS_API_IDS = {
   // http://149.102.140.8:9090/ords/exsys_api/hs_patient_billing_report/update_claim_create_pdf_status
   [EXSYS_API_IDS_NAMES.saveCreatedClaimPdfStatus]:
     "hs_patient_billing_report/update_claim_create_pdf_status",
-  // http://149.102.140.8:9090/ords/exsys_api/nphies_pkg/get_cchi_patient_data?Aauthorization=111111&beneficiaryId=2167720701&nationalityCode=113&insuranceCompanyId=101&policyNumber=23235228&className=GL/B&gender=0&planguageid=1
+  // http://149.102.140.8:9090/ords/exsys_api/nphies_pkg/get_cchi_patient_data?Aauthorization=111111&beneficiaryId=2167720701&nationalityCode=113&insuranceCompanyId=101&policyNumber=23235228&className=GL/B&gender=0&planguageid=1&organization_no=001
   [EXSYS_API_IDS_NAMES.queryExsysCchiPatient]:
     "nphies_pkg/get_cchi_patient_data",
 };

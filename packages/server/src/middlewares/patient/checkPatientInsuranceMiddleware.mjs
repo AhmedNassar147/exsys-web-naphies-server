@@ -7,6 +7,7 @@ import {
   writeResultFile,
   getCurrentDate,
   isArrayHasData,
+  createDateFromNativeDate,
 } from "@exsys-web-server/helpers";
 import extractCoverageEligibilityEntryResponseData from "../../nphiesHelpers/extraction/extractCoverageEligibilityEntryResponseData.mjs";
 import extractCoverageEntryResponseData from "../../nphiesHelpers/extraction/extractCoverageEntryResponseData.mjs";
@@ -68,7 +69,7 @@ export default checkPatientInsuranceMiddleware(async (body) => {
     name,
     identityNumber,
     gender,
-    dateOfBirth,
+    dateOfBirth: insuranceDateOfBirth,
     mobileNumber,
     insuranceCompanyID,
     beneficiaryNumber,
@@ -79,7 +80,7 @@ export default checkPatientInsuranceMiddleware(async (body) => {
     className,
   } = firstItem || {};
 
-  let cchiPatientResultData = {};
+  let exsysCchiPatientData = {};
 
   if (isCCHITotallySuccesseded) {
     const { result } = await createExsysRequest({
@@ -88,36 +89,41 @@ export default checkPatientInsuranceMiddleware(async (body) => {
       retryTimes: 0,
       requestParams: {
         authorization,
-        beneficiaryId: identityNumber || beneficiaryKey,
+        organization_no,
+        beneficiaryId: beneficiaryKey,
         nationalityCode: nationalityCode || nationalityID || nationality,
         gender,
         insuranceCompanyId: insuranceCompanyID,
         policyNumber,
-        className: (className || "").replace("class", "").replace(/\s/g, ""),
-        planguageid: 1,
+        className: (className || "")
+          .replace(/\s{1,}/g, " ")
+          .split(" ")
+          .filter((v) => v !== "class")
+          .join(" "),
       },
     });
 
     const { data } = result || {};
-    cchiPatientResultData = data || {};
+    exsysCchiPatientData = data || {};
   }
 
   const {
     nationalityCode: exsysNationalityCode,
-    nationalityName,
+    nationality: nationalityName,
+    gender: genderName,
     genderCode,
-    genderName,
     customerNo,
     customerGroupNo,
-    // customerGroupName
-    birthDate,
-    patientFileNo,
-    contractNo,
-    contractName,
-  } = cchiPatientResultData;
+    dateOfBirth,
+  } = exsysCchiPatientData;
 
   const __customer_no = customer_no || customerNo;
   const __customer_group_no = customer_group_no || customerGroupNo;
+  const __dateOfBirth =
+    dateOfBirth ||
+    createDateFromNativeDate(insuranceDateOfBirth, {
+      returnReversedDate: false,
+    }).dateString;
 
   const shouldCallEligibilityApi =
     isCCHITotallySuccesseded &&
@@ -128,21 +134,16 @@ export default checkPatientInsuranceMiddleware(async (body) => {
         ...item,
         nationalityCode: exsysNationalityCode,
         nationality: nationalityName,
-        dateOfBirth: birthDate,
+        dateOfBirth: __dateOfBirth,
         gender: genderName,
         genderCode,
       }))
     : [];
 
   const extraData = {
-    patientFileNo,
-    contractNo,
-    contractName,
-    dateOfBirth,
-    genderCode,
-    nationalityCode: exsysNationalityCode,
     customerNo: __customer_no,
     customerGroupNo: __customer_group_no,
+    exsysCchiPatientData,
     insurance: __insuranceData,
   };
 
@@ -165,7 +166,7 @@ export default checkPatientInsuranceMiddleware(async (body) => {
       iqama_no: identityNumber || beneficiaryKey,
       patient_phone: mobileNumber,
       gender: genderName || (gender === "1" ? "male" : "female"),
-      birthDate: dateOfBirth || birthDate,
+      birthDate: __dateOfBirth,
       // birthDate: dateOfBirth || birthDate || dateString,
       relationship: "self",
     };
