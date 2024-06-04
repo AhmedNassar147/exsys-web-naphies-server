@@ -93,7 +93,7 @@ export default checkPatientInsuranceMiddleware(async (body) => {
         gender,
         insuranceCompanyId: insuranceCompanyID,
         policyNumber,
-        className: (className || "").replace(/class[\s]/gm, ""),
+        className: (className || "").replace("class", "").replace(/\s/g, ""),
         planguageid: 1,
       },
     });
