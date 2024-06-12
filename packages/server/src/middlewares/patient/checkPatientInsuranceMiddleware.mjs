@@ -154,7 +154,7 @@ export default checkPatientInsuranceMiddleware(async (body) => {
       patient_third_name,
       patient_family_name,
     ] = (name || "").split(" ");
-    const { dateString } = getCurrentDate(true);
+    // const { dateString } = getCurrentDate(true);
 
     const baseEligibilityData = {
       patient_first_name: patient_first_name || "",
@@ -166,8 +166,7 @@ export default checkPatientInsuranceMiddleware(async (body) => {
       iqama_no: identityNumber || beneficiaryKey,
       patient_phone: mobileNumber,
       gender: genderName || (gender === "1" ? "male" : "female"),
-      birthDate: __dateOfBirth,
-      // birthDate: dateOfBirth || birthDate || dateString,
+      birthDate: __dateOfBirth || "1900-01-01",
       relationship: "self",
     };
 
@@ -197,13 +196,13 @@ export default checkPatientInsuranceMiddleware(async (body) => {
         }),
       });
 
+    const { nphiesExtractedData } = resultData || {};
+
     const {
-      nphiesExtractedData: {
-        nodeServerDataSentToNphies,
-        nphiesResponse,
-        ...nphiesExtractedData
-      },
-    } = resultData;
+      nodeServerDataSentToNphies,
+      nphiesResponse,
+      ...otherNphiesExtractedData
+    } = nphiesExtractedData || {};
 
     if (printValues) {
       const { data, hasNphiesApiError, folderName } = printData;
@@ -221,7 +220,7 @@ export default checkPatientInsuranceMiddleware(async (body) => {
     const frontEndEligibilityData = extractEligibilityDataSentToNphies({
       nodeServerDataSentToNaphies: nodeServerDataSentToNphies,
       nphiesResponse,
-      nphiesExtractedData,
+      nphiesExtractedData: otherNphiesExtractedData,
     });
 
     return {
