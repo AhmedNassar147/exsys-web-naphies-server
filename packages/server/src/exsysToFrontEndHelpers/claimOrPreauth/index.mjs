@@ -3,7 +3,13 @@
  * Helper: `extractPreauthOrClaimDataSentToNphies`.
  *
  */
-import { getLastPartOfUrl, isArrayHasData } from "@exsys-web-server/helpers";
+import {
+  getLastPartOfUrl,
+  isArrayHasData,
+  readJsonFile,
+  writeResultFile,
+  findRootYarnWorkSpaces,
+} from "@exsys-web-server/helpers";
 import { NPHIES_BASE_CODE_TYPES } from "../../constants.mjs";
 import mapEntriesAndExtractNeededData from "../../nphiesHelpers/extraction/mapEntriesAndExtractNeededData.mjs";
 import extractNphiesCodeAndDisplayFromCodingType from "../../nphiesHelpers/extraction/extractNphiesCodeAndDisplayFromCodingType.mjs";
@@ -108,6 +114,7 @@ const extractionFunctionsMap = {
       referral,
       identifier,
       related,
+      careTeam,
     },
   }) => ({
     supportingInfo,
@@ -120,9 +127,27 @@ const extractionFunctionsMap = {
     referalName: getValueFromObject(referral, "display"),
     claimIdentifierType: getIdentifierUrlType(identifier),
     ...getExtensionData(extension),
-
     ...createRequestRelatedData(related),
+    careTeam: isArrayHasData(careTeam)
+      ? careTeam.map(({ sequence, role, qualification }) => ({
+          sequence,
+          role: extractNphiesCodeAndDisplayFromCodingType(role).code,
+          practiceCode:
+            extractNphiesCodeAndDisplayFromCodingType(qualification).code,
+        }))
+      : [],
   }),
+  Practitioner: ({ resource: { id, name, identifier } }) => {
+    const [{ text }] = name || [{}];
+    const [value] = extractIdentifierData(identifier);
+    return {
+      careTeamData: {
+        id,
+        name: text,
+        license: value,
+      },
+    };
+  },
   Patient: extractPatientData,
   Coverage: ({ resource: { relationship } }) => ({
     relationship: extractCoverageRelationship(relationship),
@@ -172,6 +197,8 @@ const extractPreauthOrClaimDataSentToNphies = ({
     extensionPriorauthId,
     claimIdentifierType,
     claimRelatedIdentifier,
+    careTeam,
+    careTeamData,
   } = mapEntriesAndExtractNeededData({
     nphiesResponse: nodeServerDataSentToNaphies,
     extractionFunctionsMap,
@@ -310,6 +337,14 @@ const extractPreauthOrClaimDataSentToNphies = ({
     );
   }
 
+  const finalCareTeam =
+    isArrayHasData(careTeam) && !!careTeamData
+      ? careTeam.map((item) => ({
+          ...item,
+          ...(careTeamData || null),
+        }))
+      : [];
+
   return {
     exsysRecordPk: preauth_pk || claim_pk,
     bundleId: nphiesBundleId,
@@ -326,6 +361,7 @@ const extractPreauthOrClaimDataSentToNphies = ({
     productsTotalNet,
     claimErrors: otherClaimErrors,
     extensionCode: claimExtensionCode,
+    careTeam: finalCareTeam,
     diagnosis: diagnosisData,
     products: productsData,
     supportInfo: supportInfoData,
@@ -354,5 +390,18 @@ const extractPreauthOrClaimDataSentToNphies = ({
     pollData: extractPollData(pollData, productsSentToNphies),
   };
 };
+
+// const base = await findRootYarnWorkSpaces();
+// const [{ nodeServerDataSentToNaphies, nphiesResponse, nphiesExtractedData }] =
+//   await readJsonFile(`${base}/results/exsys/auth-poll/claim-2.json`, true);
+
+// await writeResultFile({
+//   data: extractPreauthOrClaimDataSentToNphies({
+//     nphiesExtractedData,
+//     nphiesResponse,
+//     nodeServerDataSentToNaphies,
+//   }),
+//   folderName: "exsysFromEnd",
+// });
 
 export default extractPreauthOrClaimDataSentToNphies;
