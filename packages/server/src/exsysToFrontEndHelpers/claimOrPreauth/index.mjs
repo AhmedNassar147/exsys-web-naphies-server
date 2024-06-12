@@ -19,23 +19,56 @@ import extractCancellationData from "./extractCancellationData.mjs";
 import extractPollData from "./extractPollData.mjs";
 import createProductsData from "./createProductsData.mjs";
 
-const { EXTENSION_AUTH_OFFLINE_DATE, EXTENSION_AUTH_ONLINE_RESPONSE } =
-  NPHIES_BASE_CODE_TYPES;
+const {
+  EXTENSION_AUTH_OFFLINE_DATE,
+  EXTENSION_AUTH_ONLINE_RESPONSE,
+  EXTENSION_EPISODE,
+  EXT_PERIOD_START,
+  EXTENSION_TRANSFER,
+} = NPHIES_BASE_CODE_TYPES;
 
 const getExtensionData = (extension) => {
   if (isArrayHasData(extension)) {
-    return extension.reduce((acc, { url, valueDateTime, valueReference }) => {
-      if (url.includes(EXTENSION_AUTH_OFFLINE_DATE)) {
-        acc.offlineRequestDate = valueDateTime;
-      }
+    return extension.reduce(
+      (
+        acc,
+        {
+          url,
+          valueDateTime,
+          valueReference,
+          valueIdentifier,
+          valuePeriod,
+          valueBoolean,
+        }
+      ) => {
+        if (url.includes(EXTENSION_AUTH_OFFLINE_DATE)) {
+          acc.offlineRequestDate = valueDateTime;
+        }
 
-      if (url.includes(EXTENSION_AUTH_ONLINE_RESPONSE)) {
-        const { identifier } = valueReference;
-        acc.extensionPriorauthId = getValueFromObject(identifier);
-      }
+        if (url.includes(EXTENSION_AUTH_ONLINE_RESPONSE)) {
+          const { identifier } = valueReference;
+          acc.extensionPriorauthId = getValueFromObject(identifier);
+        }
 
-      return acc;
-    }, {});
+        if (url.includes(EXTENSION_EPISODE)) {
+          const { value } = valueIdentifier;
+          acc.extensionEpisodeNo = value;
+        }
+
+        if (url.includes(EXT_PERIOD_START)) {
+          const { start, end } = valuePeriod;
+          acc.extensionBatchPeriod = [start, end].join(" ~ ");
+          acc.extensionAccountPeriod = valueDate || start;
+        }
+
+        if (url.includes(EXTENSION_TRANSFER)) {
+          acc.extensionIsTransfer = valueBoolean;
+        }
+
+        return acc;
+      },
+      {}
+    );
   }
 
   return null;
@@ -87,6 +120,7 @@ const extractionFunctionsMap = {
     referalName: getValueFromObject(referral, "display"),
     claimIdentifierType: getIdentifierUrlType(identifier),
     ...getExtensionData(extension),
+
     ...createRequestRelatedData(related),
   }),
   Patient: extractPatientData,
@@ -283,11 +317,14 @@ const extractPreauthOrClaimDataSentToNphies = ({
     claimRequestId,
     creationBundleId,
     messageEventType: claimMessageEventType,
+    provider,
+    insurer,
+    receiver,
     created,
+    outcome: claimOutcome,
     disposition: claimDisposition,
     productsTotalNet,
     claimErrors: otherClaimErrors,
-    outcome: claimOutcome,
     extensionCode: claimExtensionCode,
     diagnosis: diagnosisData,
     products: productsData,
@@ -305,9 +342,6 @@ const extractPreauthOrClaimDataSentToNphies = ({
     subType,
     priority,
     relationship,
-    provider,
-    insurer,
-    receiver,
     referalName,
     offlineRequestDate,
     extensionPriorauthId,
