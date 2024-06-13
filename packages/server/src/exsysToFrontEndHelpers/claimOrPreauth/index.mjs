@@ -83,7 +83,12 @@ const getExtensionData = (extension) => {
 const getIdentifierUrlType = (identifier) => {
   const [, system] = extractIdentifierData(identifier);
   const type = getLastPartOfUrl(system);
-  return type ? type : undefined;
+  return type || undefined;
+};
+
+const getMemberId = (identifier) => {
+  const [value] = extractIdentifierData(identifier);
+  return value;
 };
 
 const createRequestRelatedData = (related) => {
@@ -149,8 +154,10 @@ const extractionFunctionsMap = {
     };
   },
   Patient: extractPatientData,
-  Coverage: ({ resource: { relationship } }) => ({
+  Coverage: ({ resource: { relationship, identifier, type } }) => ({
     relationship: extractCoverageRelationship(relationship),
+    memberId: getMemberId(identifier),
+    coverageType: extractNphiesCodeAndDisplayFromCodingType(type).code,
   }),
   Organization: extractOrganizationData("prov"),
 };
@@ -182,15 +189,8 @@ const extractPreauthOrClaimDataSentToNphies = ({
     productsSentToNphies,
     productsTotalNet,
     created,
-    patientFileNo,
-    patientName,
-    patientBirthDate,
-    patientGender,
-    patientPhone,
-    patientIdentifierIdType,
     priority,
     subType,
-    relationship,
     provider,
     referalName,
     offlineRequestDate,
@@ -199,6 +199,7 @@ const extractPreauthOrClaimDataSentToNphies = ({
     claimRelatedIdentifier,
     careTeam,
     careTeamData,
+    ...otherData
   } = mapEntriesAndExtractNeededData({
     nphiesResponse: nodeServerDataSentToNaphies,
     extractionFunctionsMap,
@@ -240,6 +241,23 @@ const extractPreauthOrClaimDataSentToNphies = ({
     productsSentToNphies,
     productErrors,
   });
+
+  const totalValues = isArrayHasData(productsData)
+    ? productsData.reduce(
+        (acc, { extensionTax, extensionPatientShare }) => {
+          acc.totalTax = acc.totalTax + (extensionTax || 0);
+          return {
+            totalTax: acc.totalTax + (extensionTax || 0),
+            totalPatientShare:
+              acc.totalPatientShare + (extensionPatientShare || 0),
+          };
+        },
+        {
+          totalTax: 0,
+          totalPatientShare: 0,
+        }
+      )
+    : {};
 
   if (isArrayHasData(supportingInfo)) {
     supportInfoData = supportingInfo.map(
@@ -359,6 +377,7 @@ const extractPreauthOrClaimDataSentToNphies = ({
     outcome: claimOutcome,
     disposition: claimDisposition,
     productsTotalNet,
+    ...totalValues,
     claimErrors: otherClaimErrors,
     extensionCode: claimExtensionCode,
     careTeam: finalCareTeam,
@@ -369,15 +388,9 @@ const extractPreauthOrClaimDataSentToNphies = ({
       ? claimPreauthRef.join(" - ")
       : claimPreauthRef,
     claimPeriod: [claimPeriodStart, claimPeriodEnd].filter(Boolean).join(" ~ "),
-    patientFileNo,
-    patientName,
-    patientBirthDate,
-    patientGender,
-    patientPhone,
-    patientIdentifierIdType,
+    ...otherData,
     subType,
     priority,
-    relationship,
     referalName,
     offlineRequestDate,
     extensionPriorauthId,
