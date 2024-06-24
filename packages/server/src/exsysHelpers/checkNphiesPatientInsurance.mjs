@@ -51,10 +51,15 @@ const transformResults = (result) => {
       }
 
       if (!isValueObject && !isValueArray) {
-        const _value = isAlreadyReversedDate(value)
+        let _value = isAlreadyReversedDate(value)
           ? createDateFromNativeDate(value, { returnReversedDate: false })
               .dateString
           : value;
+
+        const isNameField = key === "Name";
+        if (isNameField) {
+          _value = (_value || "").replace(/\d\s-\s|\s\(\d{0,}.+/gm, "");
+        }
 
         finalResults[lowerKey] = _value;
       }
