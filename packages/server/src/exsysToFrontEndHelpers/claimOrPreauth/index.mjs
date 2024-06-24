@@ -45,6 +45,7 @@ const getExtensionData = (extension) => {
           valueIdentifier,
           valuePeriod,
           valueBoolean,
+          valueDate,
         }
       ) => {
         if (url.includes(EXTENSION_AUTH_OFFLINE_DATE)) {
