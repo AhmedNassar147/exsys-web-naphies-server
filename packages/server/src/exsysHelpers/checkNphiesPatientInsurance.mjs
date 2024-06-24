@@ -61,7 +61,7 @@ const transformResults = (result) => {
           _value = (_value || "").replace(/\d\s-\s|\s\(\d{0,}.+/gm, "");
 
           const [first, second, third, last] = _value.split(" ");
-          const thirdName = last ? third || "" : "";
+          const thirdName = last ? third || "." : ".";
           const lastName = last || third || "";
 
           _value = `${first} ${second} ${thirdName} ${lastName}`;
