@@ -29,6 +29,7 @@
     "zaher": "yarn start client=zaher --production --exsys-base-url=http://192.168.100.41",
     "zaher_azizzia": "yarn start client=zaher_azizzia --production --exsys-base-url=http://192.168.1.41",
     "wecaretest": "yarn start client=wecaretest --production --port=9090",
+    "kafaat": "yarn start client=kafaat --production --port=4600 --exsys-base-url=http://10.100.0.13",
     "// tadawi": "yarn start client=tadawi",
     "tadawi": "yarn start client=tadawi --production --exsys-base-url=http://192.168.1.4",
     "dev-tadawy": "yarn start client=tadawi --ignore-cert --exsys-base-url=http://192.168.1.4 --port=4200",
