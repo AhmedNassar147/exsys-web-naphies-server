@@ -97,8 +97,10 @@ const mergeFilesToOnePdf = (filesData) =>
 
       return resolve({ pdfFileBytes: pdfBytes });
     } catch (error) {
+      let _error = error.message || "something wrong when merging the files";
+      _error += filesData.map(({ url }) => url).join(" ----------- ");
       resolve({
-        pdfFileError: error.message || "something wrong when merging the files",
+        pdfFileError: _error,
       });
     }
   });
