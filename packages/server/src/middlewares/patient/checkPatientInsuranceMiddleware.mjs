@@ -48,14 +48,15 @@ export default checkPatientInsuranceMiddleware(async (body) => {
 
   const printFolderName = `CCHI/${beneficiaryKey}/${systemType}`;
 
-  const { apiResults, isSuccess } = await checkNphiesPatientInsurance({
-    patientKey: beneficiaryKey,
-    systemType,
-    printValues,
-    printFolderName,
-    organizationNo: organization_no,
-    clinicalEntityNo,
-  });
+  const { apiResults, isSuccess, cchiOriginalResults } =
+    await checkNphiesPatientInsurance({
+      patientKey: beneficiaryKey,
+      systemType,
+      printValues,
+      printFolderName,
+      organizationNo: organization_no,
+      clinicalEntityNo,
+    });
   const { insurance, errorCode, errorDescription } = apiResults;
 
   const hasError =
@@ -227,6 +228,7 @@ export default checkPatientInsuranceMiddleware(async (body) => {
       data: {
         errorCode,
         errorDescription,
+        cchiOriginalResults,
         ...extraData,
         frontEndEligibilityData,
       },
@@ -237,6 +239,7 @@ export default checkPatientInsuranceMiddleware(async (body) => {
     data: {
       errorCode,
       errorDescription,
+      cchiOriginalResults,
       ...extraData,
     },
   };

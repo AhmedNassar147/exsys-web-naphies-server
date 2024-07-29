@@ -110,8 +110,6 @@ const checkNphiesPatientInsurance = async ({
       skipThrowingOrganizationError: true,
     });
 
-    console.log("CCHI folderName", folderName);
-
     await writeResultFile({
       data: {
         params: {
@@ -130,6 +128,7 @@ const checkNphiesPatientInsurance = async ({
   return {
     apiResults: apiResults || {},
     isSuccess,
+    cchiOriginalResults: result,
   };
 };
 

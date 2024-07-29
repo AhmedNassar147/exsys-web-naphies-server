@@ -26,10 +26,10 @@ const formatProductItem = (adjudicationItem) => {
   if (!adjudicationItem) {
     return {};
   }
-  const { category, amount, reason, value: itemValue } = adjudicationItem;
+  const { category, reason, amount, value: itemValue } = adjudicationItem;
   const { code } = extractNphiesCodeAndDisplayFromCodingType(category);
   const { currency, value } = amount || {};
-  const { coding: reasonCoding } = reason | {};
+  const { coding: reasonCoding } = reason || {};
 
   const _code = code.replace(/-/g, "_");
 
@@ -98,6 +98,7 @@ const extractClaimResponseData = ({
     output,
     priority,
     use,
+    // total,
   },
 }) => {
   const { identifier: requestIdentifier } = request || {};
@@ -119,6 +120,7 @@ const extractClaimResponseData = ({
     extractNphiesCodeAndDisplayFromCodingType(fundsReserve);
 
   const { start, end } = preAuthPeriod || {};
+  // const [] = total
 
   const processNotes = isArrayHasData(processNote)
     ? processNote.map(({ text, number }) => `${number}-${text}`).join(` , `)
