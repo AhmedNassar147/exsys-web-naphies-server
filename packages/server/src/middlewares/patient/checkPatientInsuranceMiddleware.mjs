@@ -42,27 +42,29 @@ export default checkPatientInsuranceMiddleware(async (body) => {
     customer_no,
     customer_group_no,
     clinicalEntityNo,
+    withoutCchiChecking,
   } = body;
 
   const systemType = _systemType || "1";
 
   const printFolderName = `CCHI/${beneficiaryKey}/${systemType}`;
 
-  const { apiResults, isSuccess, cchiOriginalResults } =
-    await checkNphiesPatientInsurance({
-      patientKey: beneficiaryKey,
-      systemType,
-      printValues,
-      printFolderName,
-      organizationNo: organization_no,
-      clinicalEntityNo,
-    });
+  const { apiResults, cchiOriginalResults, isCCHITotallySuccesseded } =
+    withoutCchiChecking
+      ? {
+          apiResults: {},
+          cchiOriginalResults: {},
+          isCCHITotallySuccesseded: false,
+        }
+      : await checkNphiesPatientInsurance({
+          patientKey: beneficiaryKey,
+          systemType,
+          printValues,
+          printFolderName,
+          organizationNo: organization_no,
+          clinicalEntityNo,
+        });
   const { insurance, errorCode, errorDescription } = apiResults;
-
-  const hasError =
-    !!(errorCode || errorDescription) || !isArrayHasData(insurance);
-
-  const isCCHITotallySuccesseded = !!isSuccess && !hasError;
 
   const [firstItem] = insurance || [];
 
@@ -127,7 +129,7 @@ export default checkPatientInsuranceMiddleware(async (body) => {
     }).dateString;
 
   const shouldCallEligibilityApi =
-    isCCHITotallySuccesseded &&
+    (withoutCchiChecking || isCCHITotallySuccesseded) &&
     !!(organization_no && __customer_no && __customer_group_no);
 
   const __insuranceData = isArrayHasData(insurance)
@@ -141,7 +143,10 @@ export default checkPatientInsuranceMiddleware(async (body) => {
       }))
     : [];
 
-  const extraData = {
+  const baseResponse = {
+    errorCode,
+    errorDescription,
+    cchiOriginalResults,
     customerNo: __customer_no,
     customerGroupNo: __customer_group_no,
     exsysCchiPatientData,
@@ -226,21 +231,13 @@ export default checkPatientInsuranceMiddleware(async (body) => {
 
     return {
       data: {
-        errorCode,
-        errorDescription,
-        cchiOriginalResults,
-        ...extraData,
+        ...baseResponse,
         frontEndEligibilityData,
       },
     };
   }
 
   return {
-    data: {
-      errorCode,
-      errorDescription,
-      cchiOriginalResults,
-      ...extraData,
-    },
+    data: baseResponse,
   };
 });
