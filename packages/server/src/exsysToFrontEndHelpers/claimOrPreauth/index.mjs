@@ -30,6 +30,7 @@ const {
   EXTENSION_AUTH_ONLINE_RESPONSE,
   EXTENSION_EPISODE,
   EXT_PERIOD_START,
+  EXT_ACCOUNT_PERIOD,
   EXTENSION_TRANSFER,
 } = NPHIES_BASE_CODE_TYPES;
 
@@ -65,7 +66,10 @@ const getExtensionData = (extension) => {
         if (url.includes(EXT_PERIOD_START)) {
           const { start, end } = valuePeriod;
           acc.extensionBatchPeriod = [start, end].join(" ~ ");
-          acc.extensionAccountPeriod = valueDate || start;
+        }
+
+        if (url.includes(EXT_ACCOUNT_PERIOD)) {
+          acc.extensionAccountPeriod = valueDate;
         }
 
         if (url.includes(EXTENSION_TRANSFER)) {

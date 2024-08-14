@@ -89,6 +89,7 @@ const createAuthorizationExtensions = ({
   offlineRequestDate,
   episodeInvoiceNo,
   batchPeriodStart,
+  batchAccountingPeriod,
   batchPeriodEnd,
   extensionPriorauthId,
   isTransfer,
@@ -121,9 +122,9 @@ const createAuthorizationExtensions = ({
         end: batchPeriodEnd,
       },
     },
-    !!batchPeriodStart && {
+    !!batchAccountingPeriod && {
       url: `${BASE_PROFILE_URL}/${EXT_ACCOUNT_PERIOD}`,
-      valueDate: batchPeriodStart,
+      valueDate: batchAccountingPeriod,
     },
     !!isTransfer && {
       url: `${BASE_PROFILE_URL}/${EXTENSION_TRANSFER}`,
@@ -176,6 +177,7 @@ const createNphiesClaimData = ({
   preauthRefs,
   batchPeriodStart,
   batchPeriodEnd,
+  batchAccountingPeriod,
   offlineRequestDate,
   referalName,
   referalIdentifier,
@@ -205,6 +207,7 @@ const createNphiesClaimData = ({
     batchPeriodStart,
     batchPeriodEnd,
     isTransfer,
+    batchAccountingPeriod,
   });
 
   const { fullUrl, resource } = createBaseEntryRequestData({
@@ -346,7 +349,10 @@ const createNphiesClaimData = ({
               },
               index
             ) => {
-              const isInfoCode = categoryCode === SUPPORT_INFO_KEY_NAMES.info;
+              const isInfoCode = [
+                SUPPORT_INFO_KEY_NAMES.info,
+                SUPPORT_INFO_KEY_NAMES.patient_history,
+              ].includes(categoryCode);
               const isOnsetCode = categoryCode === SUPPORT_INFO_KEY_NAMES.onset;
               const isHospitalizedCode =
                 categoryCode === SUPPORT_INFO_KEY_NAMES.hospitalized;
@@ -411,7 +417,7 @@ const createNphiesClaimData = ({
                   ? {
                       contentType,
                       title: _title,
-                      creation: reverseDate(creation),
+                      creation: reverseDate(creation || batchPeriodStart),
                       data: value,
                     }
                   : undefined,

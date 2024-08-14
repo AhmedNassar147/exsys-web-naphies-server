@@ -307,6 +307,7 @@ export const NPHIES_BASE_CODE_TYPES = {
 
 export const SUPPORT_INFO_KEY_NAMES = {
   info: "info",
+  patient_history: "patient-history",
   onset: "onset",
   attachment: "attachment",
   missingtooth: "missingtooth",
