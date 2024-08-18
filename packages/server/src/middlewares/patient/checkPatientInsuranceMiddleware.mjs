@@ -41,9 +41,11 @@ export default checkPatientInsuranceMiddleware(async (body) => {
     organization_no,
     customer_no,
     customer_group_no,
-    clinicalEntityNo,
+    clinicalEntityNo: __clinicalEntityNo,
     withoutCchiChecking,
   } = body;
+
+  const clinicalEntityNo = __clinicalEntityNo || "";
 
   const systemType = _systemType || "1";
 
@@ -120,8 +122,8 @@ export default checkPatientInsuranceMiddleware(async (body) => {
     dateOfBirth,
   } = exsysCchiPatientData;
 
-  const __customer_no = customer_no || customerNo;
-  const __customer_group_no = customer_group_no || customerGroupNo;
+  const __customer_no = customer_no || customerNo || "";
+  const __customer_group_no = customer_group_no || customerGroupNo || "";
   const __dateOfBirth =
     dateOfBirth ||
     createDateFromNativeDate(insuranceDateOfBirth, {
@@ -181,7 +183,7 @@ export default checkPatientInsuranceMiddleware(async (body) => {
       organization_no,
       customer_no: __customer_no,
       customer_group_no: __customer_group_no,
-      insurance_company: insuranceCompanyID,
+      insurance_company: insuranceCompanyID || "",
       clinicalEntityNo,
     };
 
