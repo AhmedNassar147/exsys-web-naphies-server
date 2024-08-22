@@ -52,6 +52,7 @@ const checkInsuranceEligibility = async ({
   clinicalEntityNo,
   printFolderName,
   originalApiParams,
+  printValues,
 }) => {
   const baseEligibilityData = {
     patient_first_name: firstName || "",
@@ -174,6 +175,7 @@ export default checkPatientInsuranceMiddleware(async (body) => {
       clinicalEntityNo,
       printFolderName,
       originalApiParams: body,
+      printValues,
     });
 
     return {
@@ -312,6 +314,7 @@ export default checkPatientInsuranceMiddleware(async (body) => {
       clinicalEntityNo,
       printFolderName,
       originalApiParams: body,
+      printValues,
     });
 
     return {
