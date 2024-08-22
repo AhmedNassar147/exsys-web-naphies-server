@@ -184,6 +184,8 @@ const createNphiesClaimData = ({
   extensionPriorauthId,
   relatedParentClaimIdentifier,
   isTransfer,
+  billablePeriodStartDate,
+  billablePeriodEndDate,
 }) => {
   const profileType = PREAUTH_PROFILE_TYPES[message_event_type];
 
@@ -299,6 +301,14 @@ const createNphiesClaimData = ({
           ],
         },
       },
+      ...(!!(billablePeriodStartDate && billablePeriodEndDate)
+        ? {
+            billablePeriod: {
+              start: billablePeriodStartDate,
+              end: billablePeriodEndDate,
+            },
+          }
+        : null),
       ...(referalName
         ? {
             referral: {

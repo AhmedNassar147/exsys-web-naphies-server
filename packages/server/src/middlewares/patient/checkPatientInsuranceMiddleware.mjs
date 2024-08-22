@@ -5,7 +5,7 @@
  */
 import {
   writeResultFile,
-  getCurrentDate,
+  // getCurrentDate,
   isArrayHasData,
   createDateFromNativeDate,
 } from "@exsys-web-server/helpers";
@@ -42,7 +42,6 @@ export default checkPatientInsuranceMiddleware(async (body) => {
     customer_no,
     customer_group_no,
     clinicalEntityNo: __clinicalEntityNo,
-    withoutCchiChecking,
   } = body;
 
   const clinicalEntityNo = __clinicalEntityNo || "";
@@ -52,20 +51,15 @@ export default checkPatientInsuranceMiddleware(async (body) => {
   const printFolderName = `CCHI/${beneficiaryKey}/${systemType}`;
 
   const { apiResults, cchiOriginalResults, isCCHITotallySuccesseded } =
-    withoutCchiChecking
-      ? {
-          apiResults: {},
-          cchiOriginalResults: {},
-          isCCHITotallySuccesseded: false,
-        }
-      : await checkNphiesPatientInsurance({
-          patientKey: beneficiaryKey,
-          systemType,
-          printValues,
-          printFolderName,
-          organizationNo: organization_no,
-          clinicalEntityNo,
-        });
+    await checkNphiesPatientInsurance({
+      patientKey: beneficiaryKey,
+      systemType,
+      printValues,
+      printFolderName,
+      organizationNo: organization_no,
+      clinicalEntityNo,
+    });
+
   const { insurance, errorCode, errorDescription } = apiResults;
 
   const [firstItem] = insurance || [];
@@ -131,7 +125,7 @@ export default checkPatientInsuranceMiddleware(async (body) => {
     }).dateString;
 
   const shouldCallEligibilityApi =
-    (withoutCchiChecking || isCCHITotallySuccesseded) &&
+    isCCHITotallySuccesseded &&
     !!(organization_no && __customer_no && __customer_group_no);
 
   const __insuranceData = isArrayHasData(insurance)
