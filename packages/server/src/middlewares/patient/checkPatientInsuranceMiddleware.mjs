@@ -32,7 +32,8 @@ const setErrorIfExtractedDataFoundFn = ({
   coverageErrors,
 }) => [...(eligibilityErrors || []), ...(coverageErrors || [])];
 
-const makeNphiesGenderName = (gender) => (gender === "1" ? "male" : "female");
+const makeNphiesGenderName = (gender) =>
+  gender ? (gender === "1" ? "male" : "female") : "";
 
 const checkInsuranceEligibility = async ({
   firstName,
@@ -143,7 +144,6 @@ export default checkPatientInsuranceMiddleware(async (body) => {
     dateOfBirth: dateOfBirthFromBody,
     mobileNumber: mobileFromBody,
     insuranceCompanyId: insuranceCompanyIdFromBody,
-    onlyCheckEligibility,
   } = body;
 
   const clinicalEntityNo = __clinicalEntityNo || "";
@@ -151,43 +151,6 @@ export default checkPatientInsuranceMiddleware(async (body) => {
   const systemType = _systemType || "1";
 
   const printFolderName = `CCHI/${beneficiaryKey}/${systemType}`;
-
-  if (onlyCheckEligibility) {
-    const dateOfBirth = createDateFromNativeDate(dateOfBirthFromBody, {
-      returnReversedDate: true,
-    }).dateString;
-
-    const frontEndEligibilityData = await checkInsuranceEligibility({
-      firstName,
-      secondName,
-      thirdName,
-      familyName: lastName,
-      patientFileNoOrMemberId: beneficiaryNumberFromBody,
-      beneficiaryKey,
-      mobileNumber: mobileFromBody,
-      genderName: makeNphiesGenderName(genderCodeFromBody),
-      dateOfBirth: dateOfBirth,
-      authorization,
-      organization_no,
-      customer_no: customer_no,
-      customer_group_no: customer_group_no,
-      insurance_company: insuranceCompanyIdFromBody,
-      clinicalEntityNo,
-      printFolderName,
-      originalApiParams: body,
-      printValues,
-    });
-
-    return {
-      data: {
-        cchiOriginalResults: undefined,
-        customerNo: customer_no,
-        customerGroupNo: customer_group_no,
-        exsysCchiPatientData: {},
-        frontEndEligibilityData,
-      },
-    };
-  }
 
   const { apiResults, cchiOriginalResults, isCCHITotallySuccesseded } =
     await checkNphiesPatientInsurance({
@@ -218,6 +181,9 @@ export default checkPatientInsuranceMiddleware(async (body) => {
     className,
   } = firstItem || {};
 
+  const __genderCode = gender || genderCodeFromBody;
+  const __nationalityCode = nationalityCode || nationalityID || nationality;
+
   let exsysCchiPatientData = {};
 
   if (isCCHITotallySuccesseded) {
@@ -229,9 +195,9 @@ export default checkPatientInsuranceMiddleware(async (body) => {
         authorization,
         organization_no,
         beneficiaryId: beneficiaryKey,
-        nationalityCode: nationalityCode || nationalityID || nationality,
-        gender: gender,
-        insuranceCompanyId: insuranceCompanyID,
+        nationalityCode: __nationalityCode,
+        gender: __genderCode,
+        insuranceCompanyId: insuranceCompanyID || insuranceCompanyIdFromBody,
         policyNumber,
         className: (className || "")
           .replace(/\s{1,}/g, " ")
@@ -257,24 +223,30 @@ export default checkPatientInsuranceMiddleware(async (body) => {
 
   const __customer_no = customer_no || customerNo || "";
   const __customer_group_no = customer_group_no || customerGroupNo || "";
+  const mockedDateOfBirth = dateOfBirthFromBody || "01-12-1970";
+
   const __dateOfBirth =
     dateOfBirth ||
-    createDateFromNativeDate(insuranceDateOfBirth, {
-      returnReversedDate: false,
+    createDateFromNativeDate(insuranceDateOfBirth || mockedDateOfBirth, {
+      returnReversedDate: !!mockedDateOfBirth,
     }).dateString;
 
-  const shouldCallEligibilityApi =
-    isCCHITotallySuccesseded &&
-    !!(organization_no && __customer_no && __customer_group_no);
+  const shouldCallEligibilityApi = !!(
+    organization_no &&
+    __customer_no &&
+    __customer_group_no
+  );
+
+  const mainGender = genderName || makeNphiesGenderName(__genderCode) || "";
 
   const __insuranceData = isArrayHasData(insurance)
     ? insurance.map((item) => ({
         ...item,
-        nationalityCode: exsysNationalityCode,
-        nationality: nationalityName,
+        nationalityCode: exsysNationalityCode || __nationalityCode,
+        nationality: nationalityName || "",
         dateOfBirth: __dateOfBirth,
-        gender: genderName,
-        genderCode,
+        gender: mainGender,
+        genderCode: genderCode || __genderCode,
       }))
     : [];
 
@@ -296,15 +268,18 @@ export default checkPatientInsuranceMiddleware(async (body) => {
       patient_family_name,
     ] = (name || "").split(" ");
 
+    const __beneficiaryKey = identityNumber || beneficiaryKey;
+
     const frontEndEligibilityData = await checkInsuranceEligibility({
-      firstName: patient_first_name,
-      secondName: patient_second_name,
-      thirdName: patient_third_name,
-      familyName: patient_family_name,
-      patientFileNoOrMemberId: beneficiaryNumber,
-      beneficiaryKey: identityNumber || beneficiaryKey,
-      mobileNumber,
-      genderName: genderName || makeNphiesGenderName(gender),
+      firstName: patient_first_name || firstName || "No",
+      secondName: patient_second_name || secondName || "Name",
+      thirdName: patient_third_name || thirdName || "",
+      familyName: patient_family_name || lastName || "",
+      patientFileNoOrMemberId:
+        beneficiaryNumber || beneficiaryNumberFromBody || __beneficiaryKey,
+      beneficiaryKey: __beneficiaryKey,
+      mobileNumber: mobileNumber || mobileFromBody || "",
+      genderName: mainGender || "male",
       dateOfBirth: __dateOfBirth,
       authorization,
       organization_no,
