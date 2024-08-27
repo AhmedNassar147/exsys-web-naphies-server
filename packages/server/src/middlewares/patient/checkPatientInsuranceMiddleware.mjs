@@ -223,13 +223,6 @@ export default checkPatientInsuranceMiddleware(async (body) => {
 
   const __customer_no = customer_no || customerNo || "";
   const __customer_group_no = customer_group_no || customerGroupNo || "";
-  const mockedDateOfBirth = dateOfBirthFromBody || "01-12-1970";
-
-  const __dateOfBirth =
-    dateOfBirth ||
-    createDateFromNativeDate(insuranceDateOfBirth || mockedDateOfBirth, {
-      returnReversedDate: !!mockedDateOfBirth,
-    }).dateString;
 
   const shouldCallEligibilityApi = !!(
     organization_no &&
@@ -248,6 +241,14 @@ export default checkPatientInsuranceMiddleware(async (body) => {
       notificationError: "Please select customer and customer group",
     };
   }
+
+  const mockedDateOfBirth = dateOfBirthFromBody || "01-12-1970";
+
+  const __dateOfBirth =
+    dateOfBirth ||
+    createDateFromNativeDate(insuranceDateOfBirth || mockedDateOfBirth, {
+      returnReversedDate: !!mockedDateOfBirth,
+    }).dateString;
 
   const mainGender = genderName || makeNphiesGenderName(__genderCode) || "";
 
@@ -304,9 +305,18 @@ export default checkPatientInsuranceMiddleware(async (body) => {
       printValues,
     });
 
+    const { outcome, disposition } = frontEndEligibilityData;
+    const isMemberidNotValid = (disposition || "").includes(
+      "Member ID is invalid"
+    );
+
     return {
       data: {
         ...baseResponse,
+        isErrorOutcome: outcome === "error",
+        notificationError: isMemberidNotValid
+          ? "Please enter card no then make a new request"
+          : "",
         frontEndEligibilityData,
       },
     };
