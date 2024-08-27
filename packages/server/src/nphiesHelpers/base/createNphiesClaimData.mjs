@@ -10,6 +10,7 @@ import {
   // createTimestamp,
 } from "@exsys-web-server/helpers";
 import createBaseEntryRequestData from "./createBaseEntryRequestData.mjs";
+import removeInvisibleCharactersFromString from "../../helpers/removeInvisibleCharactersFromString.mjs";
 import {
   NPHIES_BASE_PROFILE_TYPES,
   NPHIES_RESOURCE_TYPES,
@@ -405,7 +406,9 @@ const createNphiesClaimData = ({
                         text,
                       }
                     : undefined,
-                valueString: isInfoCode ? value : undefined,
+                valueString: isInfoCode
+                  ? removeInvisibleCharactersFromString(value)
+                  : undefined,
                 timingDate:
                   isOnsetCode || isMissingTooth
                     ? reverseDate(value)
@@ -426,7 +429,7 @@ const createNphiesClaimData = ({
                 valueAttachment: !!isAttachment
                   ? {
                       contentType,
-                      title: _title ? _title.replace(/\s{1,200}/g, " ") : "",
+                      title: removeInvisibleCharactersFromString(_title),
                       creation: reverseDate(creation || batchPeriodStart),
                       data: value,
                     }

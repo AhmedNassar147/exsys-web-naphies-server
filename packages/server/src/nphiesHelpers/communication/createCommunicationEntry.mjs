@@ -5,6 +5,7 @@
  */
 import { isArrayHasData, reverseDate } from "@exsys-web-server/helpers";
 import createNphiesBaseResource from "../base/createNphiesBaseResource.mjs";
+import removeInvisibleCharactersFromString from "../../helpers/removeInvisibleCharactersFromString.mjs";
 import {
   NPHIES_BASE_PROFILE_TYPES,
   NPHIES_API_URLS,
@@ -123,7 +124,7 @@ const createCommunicationEntry = ({
 
               return {
                 contentAttachment: {
-                  title: _title ? _title.replace(/\s{1,200}/g, " ") : "",
+                  title: removeInvisibleCharactersFromString(_title),
                   creation: reverseDate(creation),
                   contentType,
                   data: value,
