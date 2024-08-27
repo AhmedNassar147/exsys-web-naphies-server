@@ -70,7 +70,6 @@ const createNaphiesCommunicationResponseFullData = ({
         providerFocusUrl,
         requestType,
       }),
-
       createCommunicationEntry({
         requestId,
         providerFocusUrl,

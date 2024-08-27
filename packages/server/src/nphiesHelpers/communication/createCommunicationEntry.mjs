@@ -113,7 +113,9 @@ const createCommunicationEntry = ({
         ? communicationPayload.map(
             ({ value, contentType, title, creation }) => {
               if (!contentType) {
-                return { contentString: value || "" };
+                return {
+                  contentString: removeInvisibleCharactersFromString(value),
+                };
               }
 
               let _title = title || "";

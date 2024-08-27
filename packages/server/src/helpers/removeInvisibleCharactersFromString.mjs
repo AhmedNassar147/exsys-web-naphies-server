@@ -3,7 +3,6 @@
  * helper: `removeInvisibleCharactersFromString`.
  *
  */
-
 const removeInvisibleCharactersFromString = (value) => {
   if (!value) {
     return "";
