@@ -123,7 +123,7 @@ const createCommunicationEntry = ({
 
               return {
                 contentAttachment: {
-                  title: _title,
+                  title: _title ? _title.replace(/\s{1,200}/g, " ") : "",
                   creation: reverseDate(creation),
                   contentType,
                   data: value,

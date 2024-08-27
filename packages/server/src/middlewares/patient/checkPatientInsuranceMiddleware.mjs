@@ -237,6 +237,18 @@ export default checkPatientInsuranceMiddleware(async (body) => {
     __customer_group_no
   );
 
+  if (!shouldCallEligibilityApi) {
+    return {
+      errorCode,
+      errorDescription,
+      cchiOriginalResults,
+      customerNo: __customer_no,
+      customerGroupNo: __customer_group_no,
+      exsysCchiPatientData,
+      notificationError: "Please select customer and customer group",
+    };
+  }
+
   const mainGender = genderName || makeNphiesGenderName(__genderCode) || "";
 
   const __insuranceData = isArrayHasData(insurance)
@@ -276,7 +288,7 @@ export default checkPatientInsuranceMiddleware(async (body) => {
       thirdName: patient_third_name || thirdName || "",
       familyName: patient_family_name || lastName || "",
       patientFileNoOrMemberId:
-        beneficiaryNumber || beneficiaryNumberFromBody || __beneficiaryKey,
+        beneficiaryNumber || beneficiaryNumberFromBody || beneficiaryKey,
       beneficiaryKey: __beneficiaryKey,
       mobileNumber: mobileNumber || mobileFromBody || "",
       genderName: mainGender || "male",

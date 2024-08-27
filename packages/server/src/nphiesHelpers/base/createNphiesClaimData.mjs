@@ -426,7 +426,7 @@ const createNphiesClaimData = ({
                 valueAttachment: !!isAttachment
                   ? {
                       contentType,
-                      title: _title,
+                      title: _title ? _title.replace(/\s{1,200}/g, " ") : "",
                       creation: reverseDate(creation || batchPeriodStart),
                       data: value,
                     }

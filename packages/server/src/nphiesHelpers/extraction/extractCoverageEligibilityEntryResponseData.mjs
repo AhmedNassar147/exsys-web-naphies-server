@@ -28,6 +28,7 @@ const extractCoverageEligibilityEntryResponseData = ({
   const [{ valueCodeableConcept }] = extension || [{}];
   const { code: valueCodeableConceptCode } =
     extractNphiesCodeAndDisplayFromCodingType(valueCodeableConcept);
+
   const errors = extractErrorsArray(error);
 
   const isPatientEligible =
