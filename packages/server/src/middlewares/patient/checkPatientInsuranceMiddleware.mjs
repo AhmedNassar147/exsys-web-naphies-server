@@ -239,7 +239,8 @@ export default checkPatientInsuranceMiddleware(async (body) => {
         customerNo: __customer_no,
         customerGroupNo: __customer_group_no,
         exsysCchiPatientData,
-        notificationError: "Please select customer and customer group",
+        notificationError:
+          "Please select customer, customer-group and add card no",
       },
     };
   }
