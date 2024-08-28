@@ -232,13 +232,15 @@ export default checkPatientInsuranceMiddleware(async (body) => {
 
   if (!shouldCallEligibilityApi) {
     return {
-      errorCode,
-      errorDescription,
-      cchiOriginalResults,
-      customerNo: __customer_no,
-      customerGroupNo: __customer_group_no,
-      exsysCchiPatientData,
-      notificationError: "Please select customer and customer group",
+      data: {
+        errorCode,
+        errorDescription,
+        cchiOriginalResults,
+        customerNo: __customer_no,
+        customerGroupNo: __customer_group_no,
+        exsysCchiPatientData,
+        notificationError: "Please select customer and customer group",
+      },
     };
   }
 
