@@ -62,6 +62,7 @@ const {
   SELECTION_REASON,
   EXTENSION_PHARM_SUBSTITUTE,
   PHARM_SUBSTITUTE,
+  EXTENSION_MATERNITY,
 } = NPHIES_BASE_CODE_TYPES;
 
 const PREAUTH_PROFILE_TYPES = {
@@ -486,6 +487,7 @@ const createNphiesClaimData = ({
               scientificCodesName,
               pharmacistSelectionReason,
               pharmacistSubstitute,
+              isMaternity,
               servicedDate,
               quantity,
               unitPrice,
@@ -573,6 +575,10 @@ const createNphiesClaimData = ({
                       },
                     ],
                   },
+                },
+                {
+                  url: `${BASE_PROFILE_URL}/${EXTENSION_MATERNITY}`,
+                  valueBoolean: isMaternity === "Y" ? true : false,
                 },
               ].filter(Boolean),
               productOrService: {

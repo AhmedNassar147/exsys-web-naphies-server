@@ -303,6 +303,7 @@ export const NPHIES_BASE_CODE_TYPES = {
   SELECTION_REASON: "pharmacist-selection-reason",
   EXTENSION_PHARM_SUBSTITUTE: "extension-pharmacist-substitute",
   PHARM_SUBSTITUTE: "pharmacist-substitute",
+  EXTENSION_MATERNITY: "extension-maternity",
 };
 
 export const SUPPORT_INFO_KEY_NAMES = {
