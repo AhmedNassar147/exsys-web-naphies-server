@@ -9,7 +9,10 @@ import createNphiesBaseRequestData from "../base/createNphiesBaseRequestData.mjs
 import createNphiesMessageHeader from "../base/createNphiesMessageHeader.mjs";
 import createNphiesTaskData from "../base/createNphiesTaskData.mjs";
 import createOrganizationData from "../base/createOrganizationData.mjs";
-import { NPHIES_REQUEST_TYPES } from "../../constants.mjs";
+import {
+  NPHIES_REQUEST_TYPES,
+  ORGANIZATION_SECTION_TYPES,
+} from "../../constants.mjs";
 
 const { POLL } = NPHIES_REQUEST_TYPES;
 
@@ -50,7 +53,7 @@ const createNphiesPreauthOrClaimPollData = ({
         organizationReference: providerOrganization,
         siteName,
         providerOrganizationUrl,
-        isProvider: true,
+        organizationType: ORGANIZATION_SECTION_TYPES.P,
       }),
     ],
   };

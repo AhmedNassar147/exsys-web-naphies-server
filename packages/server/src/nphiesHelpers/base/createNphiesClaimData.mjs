@@ -364,6 +364,9 @@ const createNphiesClaimData = ({
               const isInfoCode = [
                 SUPPORT_INFO_KEY_NAMES.info,
                 SUPPORT_INFO_KEY_NAMES.patient_history,
+                SUPPORT_INFO_KEY_NAMES.treatment_plan,
+                SUPPORT_INFO_KEY_NAMES.physical_examination,
+                SUPPORT_INFO_KEY_NAMES.history_of_present_illness,
               ].includes(categoryCode);
               const isOnsetCode = categoryCode === SUPPORT_INFO_KEY_NAMES.onset;
               const isHospitalizedCode =

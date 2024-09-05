@@ -28,7 +28,7 @@ const createNphiesCoverage = ({
   subscriberPatientId,
   relationship = "self",
   networkName,
-  classes,
+  className,
   payerOrganization,
   payerBaseUrl = "http://payer.com",
   providerOrganizationUrl,
@@ -76,6 +76,9 @@ const createNphiesCoverage = ({
         reference: subscriberUrl,
       },
       // subscriberId: _memberId,
+      // policyHolder: {
+      //   reference: "http://provider.com/Organization/13",
+      // },
       beneficiary: {
         reference: patientUrlReference,
       },
@@ -106,21 +109,22 @@ const createNphiesCoverage = ({
         },
       ],
       network: networkName,
-      class:
-        Array.isArray(classes) && classes.length
-          ? classes.map(({ code, value, name }) => ({
+      class: className
+        ? [
+            {
               type: {
                 coding: [
                   {
                     system: coverageClassUrl,
-                    code,
+                    code: "plan",
                   },
                 ],
               },
-              value,
-              name,
-            }))
-          : undefined,
+              value: className,
+              name: className,
+            },
+          ]
+        : undefined,
     },
   };
 };

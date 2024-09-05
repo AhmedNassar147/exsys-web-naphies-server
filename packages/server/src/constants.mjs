@@ -226,6 +226,7 @@ export const NPHIES_API_URLS = {
   PASSPORT_NO_URL: `${BASE_NPHIES_URL}/identifier/passportnumber`,
   VISA_NO_URL: `${BASE_NPHIES_URL}/identifier/DP`,
   BORDER_NO_URL: `${BASE_NPHIES_URL}/identifier/bordernumber`,
+  ORGANIZATION_IDENTIFIER_URL: `${BASE_NPHIES_URL}/identifier/organization`,
   PROVIDER_LICENSE_URL: `${BASE_NPHIES_LICENSE_URL}/provider-license`,
   PAYER_LICENSE_URL: `${BASE_NPHIES_LICENSE_URL}/payer-license`,
   LOCATION_LICENSE_URL: `${BASE_NPHIES_LICENSE_URL}/location-license`,
@@ -244,6 +245,7 @@ export const NPHIES_BASE_PROFILE_TYPES = {
   MESSAGE_HEADER: "message-header|1.0.0",
   ELIGIBILITY_REQUEST: "eligibility-request|1.0.0",
   PROVIDER_ORGANIZATION: "provider-organization|1.0.0",
+  POLICYHOLDER_ORGANIZATION: "policyholder-organization|1.0.0",
   PROFILE_PATIENT: "patient|1.0.0",
   PROFILE_PRACTITIONER: "practitioner|1.0.0",
   EXT_KSA_ADMIN_GENDER: "extension-ksa-administrative-gender",
@@ -304,11 +306,16 @@ export const NPHIES_BASE_CODE_TYPES = {
   EXTENSION_PHARM_SUBSTITUTE: "extension-pharmacist-substitute",
   PHARM_SUBSTITUTE: "pharmacist-substitute",
   EXTENSION_MATERNITY: "extension-maternity",
+  EXTENSION_OCCUPATION: "extension-occupation",
+  EXTENSION_PROVIDER_TYPE: "extension-provider-type",
 };
 
 export const SUPPORT_INFO_KEY_NAMES = {
   info: "info",
   patient_history: "patient-history",
+  treatment_plan: "treatment-plan",
+  physical_examination: "physical-examination",
+  history_of_present_illness: "history-of-present-illness",
   onset: "onset",
   attachment: "attachment",
   missingtooth: "missingtooth",
@@ -324,4 +331,27 @@ export const SUPPORT_INFO_KEY_NAMES = {
   days_supply: "days-supply",
   lab_test: "lab-test",
   ventilation_hours: "ventilation-hours",
+};
+
+export const ORGANIZATION_SECTION_TYPES = {
+  P: "P",
+  I: "I",
+  PH: "PH",
+};
+
+export const ORGANIZATION_TYPE_VALUES = {
+  [ORGANIZATION_SECTION_TYPES.P]: {
+    profileType: NPHIES_BASE_PROFILE_TYPES.PROVIDER_ORGANIZATION,
+    idSystem: NPHIES_API_URLS.PROVIDER_LICENSE_URL,
+    typeCode: "prov",
+  },
+  [ORGANIZATION_SECTION_TYPES.I]: {
+    profileType: NPHIES_BASE_PROFILE_TYPES.INSURER_ORGANIZATION,
+    idSystem: NPHIES_API_URLS.PAYER_LICENSE_URL,
+    typeCode: "ins",
+  },
+  [ORGANIZATION_SECTION_TYPES.PH]: {
+    profileType: NPHIES_BASE_PROFILE_TYPES.POLICYHOLDER_ORGANIZATION,
+    idSystem: NPHIES_API_URLS.ORGANIZATION_IDENTIFIER_URL,
+  },
 };

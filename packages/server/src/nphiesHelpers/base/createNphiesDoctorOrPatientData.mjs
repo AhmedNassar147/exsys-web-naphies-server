@@ -25,8 +25,12 @@ const {
   // BORDER_NO_URL,
   PRACTITIONER_URL,
 } = NPHIES_API_URLS;
-const { MARITAL_STATUS, KAS_EXT_ADMIN_GENDER, KSA_ADMIN_GENDER } =
-  NPHIES_BASE_CODE_TYPES;
+const {
+  MARITAL_STATUS,
+  KAS_EXT_ADMIN_GENDER,
+  KSA_ADMIN_GENDER,
+  EXTENSION_OCCUPATION,
+} = NPHIES_BASE_CODE_TYPES;
 
 const passportData = {
   code: "PPN",
@@ -56,6 +60,8 @@ const createNphiesDoctorOrPatientData = ({
   familyName,
   staffPhone,
   gender,
+  religion,
+  occupationCode,
   patientBirthdate,
   patientMaritalStatus,
   providerDoctorOrPatientUrl,
@@ -100,6 +106,23 @@ const createNphiesDoctorOrPatientData = ({
         profileType: isPatient ? PROFILE_PATIENT : PROFILE_PRACTITIONER,
         uuid: patientOrDoctorId,
       }),
+      ...(occupationCode
+        ? {
+            extension: [
+              {
+                url: `${BASE_PROFILE_URL}/${EXTENSION_OCCUPATION}`,
+                valueCodeableConcept: {
+                  coding: [
+                    {
+                      system: `${BASE_TERMINOLOGY_CODE_SYS_URL}/occupation`,
+                      code: occupationCode,
+                    },
+                  ],
+                },
+              },
+            ],
+          }
+        : null),
       identifier: [
         {
           type: {

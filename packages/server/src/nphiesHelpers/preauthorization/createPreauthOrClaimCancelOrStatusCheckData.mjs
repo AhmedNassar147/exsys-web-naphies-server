@@ -9,6 +9,7 @@ import createNphiesBaseRequestData from "../base/createNphiesBaseRequestData.mjs
 import createNphiesMessageHeader from "../base/createNphiesMessageHeader.mjs";
 import createNphiesTaskData from "../base/createNphiesTaskData.mjs";
 import createOrganizationData from "../base/createOrganizationData.mjs";
+import { ORGANIZATION_SECTION_TYPES } from "../../constants.mjs";
 
 const createNphiesPreauthOrClaimStatusCheckData = ({
   site_url,
@@ -59,13 +60,14 @@ const createNphiesPreauthOrClaimStatusCheckData = ({
         organizationReference: provider_organization,
         siteName: site_name,
         providerOrganizationUrl,
-        isProvider: true,
+        organizationType: ORGANIZATION_SECTION_TYPES.P,
       }),
       createOrganizationData({
         organizationLicense: payer_child_license || payer_license,
         organizationReference: payer_organization,
         siteName: payer_name,
         providerOrganizationUrl,
+        organizationType: ORGANIZATION_SECTION_TYPES.I,
       }),
     ],
   };

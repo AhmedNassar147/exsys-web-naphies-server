@@ -13,7 +13,10 @@ import createOrganizationData from "../base/createOrganizationData.mjs";
 // import createLocationData from "../base/createLocationData.mjs";
 import createNphiesClaimData from "../base/createNphiesClaimData.mjs";
 import createNphiesVisionPrescriptionData from "./createNphiesVisionPrescriptionData.mjs";
-import { NPHIES_REQUEST_TYPES } from "../../constants.mjs";
+import {
+  NPHIES_REQUEST_TYPES,
+  ORGANIZATION_SECTION_TYPES,
+} from "../../constants.mjs";
 
 const { PREAUTH, CLAIM } = NPHIES_REQUEST_TYPES;
 
@@ -72,6 +75,8 @@ const createNaphiesPreauthRequestFullData = ({
   // location_license,
   patient_martial_status,
   subscriber_file_no,
+  subscriber_occupationCode,
+  subscriber_religion,
   subscriber_iqama_no,
   subscriber_national_id_type,
   subscriber_first_name,
@@ -84,6 +89,10 @@ const createNaphiesPreauthRequestFullData = ({
   subscriber_martial_status,
   relationship,
   network_name,
+  occupationCode,
+  religion,
+  className,
+  // policy_holder
   classes,
   business_arrangement,
   message_event,
@@ -222,6 +231,8 @@ const createNaphiesPreauthRequestFullData = ({
         patientBirthdate: birthDate,
         patientMaritalStatus: patient_martial_status,
         providerDoctorOrPatientUrl: providerPatientUrl,
+        occupationCode,
+        religion,
       }),
       createNphiesCoverage({
         requestId,
@@ -237,6 +248,7 @@ const createNaphiesPreauthRequestFullData = ({
         providerCoverageUrl,
         networkName: network_name,
         classes,
+        className,
         coveragePeriodStart,
         coveragePeriodEnd,
       }),
@@ -277,6 +289,8 @@ const createNaphiesPreauthRequestFullData = ({
           patientBirthdate: subscriber_birthDate,
           patientMaritalStatus: subscriber_martial_status,
           providerDoctorOrPatientUrl: providerPatientUrl,
+          occupationCode: subscriber_occupationCode,
+          religion: subscriber_religion,
         }),
       buildVisionPrescription &&
         createNphiesVisionPrescriptionData({
@@ -295,13 +309,14 @@ const createNaphiesPreauthRequestFullData = ({
         organizationReference: provider_organization,
         siteName: site_name,
         providerOrganizationUrl,
-        isProvider: true,
+        organizationType: ORGANIZATION_SECTION_TYPES.P,
       }),
       createOrganizationData({
         organizationLicense: payer_child_license || payer_license,
         organizationReference: payer_organization,
         siteName: payer_name,
         providerOrganizationUrl,
+        organizationType: ORGANIZATION_SECTION_TYPES.I,
       }),
       // createLocationData({
       //   locationLicense: location_license,

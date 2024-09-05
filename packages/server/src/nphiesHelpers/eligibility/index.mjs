@@ -12,7 +12,11 @@ import createNphiesCoverage from "../base/createNphiesCoverage.mjs";
 import createOrganizationData from "../base/createOrganizationData.mjs";
 import createLocationData from "../base/createLocationData.mjs";
 import createCoverageEligibilityRequest from "./createCoverageEligibilityRequest.mjs";
-import { NPHIES_REQUEST_TYPES, ELIGIBILITY_TYPES } from "../../constants.mjs";
+import {
+  NPHIES_REQUEST_TYPES,
+  ELIGIBILITY_TYPES,
+  ORGANIZATION_SECTION_TYPES,
+} from "../../constants.mjs";
 
 const { ELIGIBILITY } = NPHIES_REQUEST_TYPES;
 
@@ -63,6 +67,10 @@ const createNaphiesEligibilityRequestFullData = ({
   business_arrangement,
   network_name,
   classes,
+  className,
+  occupationCode,
+  religion,
+  // policy_holder
   message_event_type,
 }) => {
   const {
@@ -122,6 +130,7 @@ const createNaphiesEligibilityRequestFullData = ({
         providerPatientUrl,
         providerCoverageUrl,
         networkName: network_name,
+        className,
         classes,
       }),
       createOrganizationData({
@@ -129,7 +138,7 @@ const createNaphiesEligibilityRequestFullData = ({
         organizationReference: provider_organization,
         siteName: site_name,
         providerOrganizationUrl,
-        isProvider: true,
+        organizationType: ORGANIZATION_SECTION_TYPES.P,
       }),
       createNphiesDoctorOrPatientData({
         patientOrDoctorId: patient_file_no,
@@ -141,6 +150,8 @@ const createNaphiesEligibilityRequestFullData = ({
         familyName: patient_family_name,
         staffPhone: patient_phone,
         gender,
+        occupationCode,
+        religion,
         patientBirthdate: birthDate,
         patientMaritalStatus: patient_martial_status,
         providerDoctorOrPatientUrl: providerPatientUrl,
@@ -150,6 +161,7 @@ const createNaphiesEligibilityRequestFullData = ({
         organizationReference: payer_organization,
         siteName: payer_name,
         providerOrganizationUrl,
+        organizationType: ORGANIZATION_SECTION_TYPES.I,
       }),
       createLocationData({
         locationLicense: location_license,

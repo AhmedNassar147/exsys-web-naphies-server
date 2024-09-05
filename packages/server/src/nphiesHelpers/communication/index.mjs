@@ -10,7 +10,10 @@ import createNphiesMessageHeader from "../base/createNphiesMessageHeader.mjs";
 import createNphiesDoctorOrPatientData from "../base/createNphiesDoctorOrPatientData.mjs";
 import createOrganizationData from "../base/createOrganizationData.mjs";
 import createCommunicationEntry from "./createCommunicationEntry.mjs";
-import { NPHIES_REQUEST_TYPES } from "../../constants.mjs";
+import {
+  NPHIES_REQUEST_TYPES,
+  ORGANIZATION_SECTION_TYPES,
+} from "../../constants.mjs";
 
 const { COMMUNICATION, COMMUNICATION_REQUEST } = NPHIES_REQUEST_TYPES;
 
@@ -33,6 +36,9 @@ const createNaphiesCommunicationResponseFullData = ({
   patient_phone,
   gender,
   birthDate,
+  occupationCode,
+  religion,
+  // policy_holder
   patient_martial_status,
   communication_status,
   communication_category,
@@ -100,6 +106,8 @@ const createNaphiesCommunicationResponseFullData = ({
         familyName: patient_family_name,
         staffPhone: patient_phone,
         gender,
+        occupationCode,
+        religion,
         patientBirthdate: birthDate,
         patientMaritalStatus: patient_martial_status,
         providerDoctorOrPatientUrl: providerPatientUrl,
@@ -109,13 +117,14 @@ const createNaphiesCommunicationResponseFullData = ({
         organizationReference: provider_organization,
         siteName: site_name,
         providerOrganizationUrl,
-        isProvider: true,
+        organizationType: ORGANIZATION_SECTION_TYPES.P,
       }),
       createOrganizationData({
         organizationLicense: payer_child_license || payer_license,
         organizationReference: payer_organization,
         siteName: payer_name,
         providerOrganizationUrl,
+        organizationType: ORGANIZATION_SECTION_TYPES.I,
       }),
     ].filter(Boolean),
   };
