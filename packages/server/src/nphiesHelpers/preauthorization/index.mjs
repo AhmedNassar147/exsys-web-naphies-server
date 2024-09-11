@@ -76,6 +76,7 @@ const createNaphiesPreauthRequestFullData = ({
   subscriber_religion,
   subscriber_iqama_no,
   subscriber_national_id_type,
+
   subscriber_first_name,
   subscriber_second_name,
   subscriber_third_name,
@@ -89,7 +90,7 @@ const createNaphiesPreauthRequestFullData = ({
   occupationCode,
   religion,
   className,
-  // policy_holder
+  classPolicyNo,
   classes,
   business_arrangement,
   message_event,
@@ -251,6 +252,7 @@ const createNaphiesPreauthRequestFullData = ({
         networkName: network_name,
         classes,
         className,
+        classPolicyNo,
         coveragePeriodStart,
         coveragePeriodEnd,
         policyHolderReference,

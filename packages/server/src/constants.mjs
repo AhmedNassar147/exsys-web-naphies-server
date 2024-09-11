@@ -322,6 +322,7 @@ export const SUPPORT_INFO_KEY_NAMES = {
   hospitalized: "hospitalized",
   employmentImpacted: "employmentImpacted",
   reason_for_visit: "reason-for-visit",
+  investigation_result: "investigation-result",
   // supports unit
   vital_sign_weight: "vital-sign-weight",
   vital_sign_systolic: "vital-sign-systolic",

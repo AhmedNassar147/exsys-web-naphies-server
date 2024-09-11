@@ -29,6 +29,7 @@ const createNphiesCoverage = ({
   relationship = "self",
   networkName,
   className,
+  classPolicyNo,
   payerOrganization,
   payerBaseUrl = "http://payer.com",
   providerOrganizationUrl,
@@ -128,7 +129,7 @@ const createNphiesCoverage = ({
                   },
                 ],
               },
-              value: className,
+              value: classPolicyNo || "",
               name: className,
             },
           ]
