@@ -23,6 +23,8 @@ const createNphiesPreauthOrClaimPollData = ({
   siteName,
   includeMessageType,
   excludeMessageType,
+  providerTypeCode,
+  providerTypeDisplay,
 }) => {
   const requestId = createUUID();
 
@@ -54,6 +56,8 @@ const createNphiesPreauthOrClaimPollData = ({
         siteName,
         providerOrganizationUrl,
         organizationType: ORGANIZATION_SECTION_TYPES.P,
+        providerTypeCode,
+        providerTypeDisplay,
       }),
     ],
   };

@@ -36,6 +36,7 @@ const createNphiesCoverage = ({
   providerCoverageUrl,
   coveragePeriodStart,
   coveragePeriodEnd,
+  policyHolderReference,
 }) => {
   const patientUrlReference = `${providerPatientUrl}/${patientId}`;
   const subscriberUrl = subscriberPatientId
@@ -72,6 +73,13 @@ const createNphiesCoverage = ({
           },
         ],
       },
+      ...(!!policyHolderReference
+        ? {
+            policyHolder: {
+              reference: `${providerOrganizationUrl}/${policyHolderReference}`,
+            },
+          }
+        : null),
       subscriber: {
         reference: subscriberUrl,
       },

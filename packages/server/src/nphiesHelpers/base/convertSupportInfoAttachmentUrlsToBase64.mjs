@@ -3,7 +3,6 @@
  * Helper: `convertSupportInfoAttachmentUrlsToBase64`.
  *
  */
-
 import { isArrayHasData, fixContentType } from "@exsys-web-server/helpers";
 import { SUPPORT_INFO_KEY_NAMES } from "../../constants.mjs";
 import convertFileUrlToBase64 from "../../helpers/convertFileUrlToBase64.mjs";

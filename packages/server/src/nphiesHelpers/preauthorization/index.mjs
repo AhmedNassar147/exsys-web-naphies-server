@@ -9,14 +9,11 @@ import createNphiesBaseRequestData from "../base/createNphiesBaseRequestData.mjs
 import createNphiesMessageHeader from "../base/createNphiesMessageHeader.mjs";
 import createNphiesDoctorOrPatientData from "../base/createNphiesDoctorOrPatientData.mjs";
 import createNphiesCoverage from "../base/createNphiesCoverage.mjs";
-import createOrganizationData from "../base/createOrganizationData.mjs";
+import createAllOrganizationEntries from "../base/createAllOrganizationEntries.mjs";
 // import createLocationData from "../base/createLocationData.mjs";
 import createNphiesClaimData from "../base/createNphiesClaimData.mjs";
 import createNphiesVisionPrescriptionData from "./createNphiesVisionPrescriptionData.mjs";
-import {
-  NPHIES_REQUEST_TYPES,
-  ORGANIZATION_SECTION_TYPES,
-} from "../../constants.mjs";
+import { NPHIES_REQUEST_TYPES } from "../../constants.mjs";
 
 const { PREAUTH, CLAIM } = NPHIES_REQUEST_TYPES;
 
@@ -117,6 +114,11 @@ const createNaphiesPreauthRequestFullData = ({
   transfer_to_other_provider,
   billablePeriodStartDate,
   billablePeriodEndDate,
+  providerTypeCode,
+  providerTypeDisplay,
+  policyHolderLicense,
+  policyHolderName,
+  policyHolderReference,
 }) => {
   const isClaimRequest = message_event.includes("claim-request");
   const requestType = isClaimRequest ? CLAIM : PREAUTH;
@@ -251,6 +253,7 @@ const createNaphiesPreauthRequestFullData = ({
         className,
         coveragePeriodStart,
         coveragePeriodEnd,
+        policyHolderReference,
       }),
       ...(hasDoctorsData
         ? doctorsData.map(
@@ -304,19 +307,19 @@ const createNaphiesPreauthRequestFullData = ({
           doctorId: primaryDoctorId,
           patientId: patient_file_no,
         }),
-      createOrganizationData({
+      ...createAllOrganizationEntries({
         organizationLicense: provider_license,
         organizationReference: provider_organization,
         siteName: site_name,
         providerOrganizationUrl,
-        organizationType: ORGANIZATION_SECTION_TYPES.P,
-      }),
-      createOrganizationData({
-        organizationLicense: payer_child_license || payer_license,
-        organizationReference: payer_organization,
-        siteName: payer_name,
-        providerOrganizationUrl,
-        organizationType: ORGANIZATION_SECTION_TYPES.I,
+        providerTypeCode,
+        providerTypeDisplay,
+        payerLicense: payer_child_license || payer_license,
+        payerReference: payer_organization,
+        payerName: payer_name,
+        policyHolderLicense,
+        policyHolderName,
+        policyHolderReference,
       }),
       // createLocationData({
       //   locationLicense: location_license,

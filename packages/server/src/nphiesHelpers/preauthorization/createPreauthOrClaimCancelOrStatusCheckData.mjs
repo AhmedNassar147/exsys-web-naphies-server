@@ -8,8 +8,7 @@ import createProviderUrls from "../base/createProviderUrls.mjs";
 import createNphiesBaseRequestData from "../base/createNphiesBaseRequestData.mjs";
 import createNphiesMessageHeader from "../base/createNphiesMessageHeader.mjs";
 import createNphiesTaskData from "../base/createNphiesTaskData.mjs";
-import createOrganizationData from "../base/createOrganizationData.mjs";
-import { ORGANIZATION_SECTION_TYPES } from "../../constants.mjs";
+import createAllOrganizationEntries from "../base/createAllOrganizationEntries.mjs";
 
 const createNphiesPreauthOrClaimStatusCheckData = ({
   site_url,
@@ -25,6 +24,11 @@ const createNphiesPreauthOrClaimStatusCheckData = ({
   cancellationReasonCode,
   focus_type,
   nullifyRequest,
+  providerTypeCode,
+  providerTypeDisplay,
+  policyHolderLicense,
+  policyHolderName,
+  policyHolderReference,
 }) => {
   const requestId = createUUID();
 
@@ -55,19 +59,19 @@ const createNphiesPreauthOrClaimStatusCheckData = ({
         focusType: focus_type,
         nullifyRequest: nullifyRequest === "Y",
       }),
-      createOrganizationData({
+      ...createAllOrganizationEntries({
         organizationLicense: provider_license,
         organizationReference: provider_organization,
         siteName: site_name,
         providerOrganizationUrl,
-        organizationType: ORGANIZATION_SECTION_TYPES.P,
-      }),
-      createOrganizationData({
-        organizationLicense: payer_child_license || payer_license,
-        organizationReference: payer_organization,
-        siteName: payer_name,
-        providerOrganizationUrl,
-        organizationType: ORGANIZATION_SECTION_TYPES.I,
+        providerTypeCode,
+        providerTypeDisplay,
+        payerLicense: payer_child_license || payer_license,
+        payerReference: payer_organization,
+        payerName: payer_name,
+        policyHolderLicense,
+        policyHolderName,
+        policyHolderReference,
       }),
     ],
   };

@@ -8,12 +8,9 @@ import createProviderUrls from "../base/createProviderUrls.mjs";
 import createNphiesBaseRequestData from "../base/createNphiesBaseRequestData.mjs";
 import createNphiesMessageHeader from "../base/createNphiesMessageHeader.mjs";
 import createNphiesDoctorOrPatientData from "../base/createNphiesDoctorOrPatientData.mjs";
-import createOrganizationData from "../base/createOrganizationData.mjs";
+import createAllOrganizationEntries from "../base/createAllOrganizationEntries.mjs";
 import createCommunicationEntry from "./createCommunicationEntry.mjs";
-import {
-  NPHIES_REQUEST_TYPES,
-  ORGANIZATION_SECTION_TYPES,
-} from "../../constants.mjs";
+import { NPHIES_REQUEST_TYPES } from "../../constants.mjs";
 
 const { COMMUNICATION, COMMUNICATION_REQUEST } = NPHIES_REQUEST_TYPES;
 
@@ -38,7 +35,6 @@ const createNaphiesCommunicationResponseFullData = ({
   birthDate,
   occupationCode,
   religion,
-  // policy_holder
   patient_martial_status,
   communication_status,
   communication_category,
@@ -50,6 +46,11 @@ const createNaphiesCommunicationResponseFullData = ({
   communication_about_system_type,
   communication_payload,
   is_communication_request,
+  providerTypeCode,
+  providerTypeDisplay,
+  policyHolderLicense,
+  policyHolderReference,
+  policyHolderName,
 }) => {
   const isCommunicationRequest = is_communication_request === "Y";
 
@@ -112,19 +113,19 @@ const createNaphiesCommunicationResponseFullData = ({
         patientMaritalStatus: patient_martial_status,
         providerDoctorOrPatientUrl: providerPatientUrl,
       }),
-      createOrganizationData({
+      ...createAllOrganizationEntries({
         organizationLicense: provider_license,
         organizationReference: provider_organization,
         siteName: site_name,
         providerOrganizationUrl,
-        organizationType: ORGANIZATION_SECTION_TYPES.P,
-      }),
-      createOrganizationData({
-        organizationLicense: payer_child_license || payer_license,
-        organizationReference: payer_organization,
-        siteName: payer_name,
-        providerOrganizationUrl,
-        organizationType: ORGANIZATION_SECTION_TYPES.I,
+        providerTypeCode,
+        providerTypeDisplay,
+        payerLicense: payer_child_license || payer_license,
+        payerReference: payer_organization,
+        payerName: payer_name,
+        policyHolderLicense,
+        policyHolderName,
+        policyHolderReference,
       }),
     ].filter(Boolean),
   };

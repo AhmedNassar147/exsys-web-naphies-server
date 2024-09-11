@@ -66,16 +66,10 @@ const runPreauthorizationPoll = async ({
   };
 
   try {
-    const { siteUrl, siteName, providerLicense, providerOrganization } =
-      preauthPollData;
-
     const options = {
       createNphiesRequestPayloadFn: () =>
         createNphiesPreauthOrClaimPollData({
-          providerLicense,
-          providerOrganization,
-          siteUrl,
-          siteName,
+          ...preauthPollData,
           includeMessageType,
           excludeMessageType,
         }),

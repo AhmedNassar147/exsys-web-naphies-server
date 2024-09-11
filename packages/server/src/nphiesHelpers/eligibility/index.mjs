@@ -9,14 +9,10 @@ import createNphiesBaseRequestData from "../base/createNphiesBaseRequestData.mjs
 import createNphiesMessageHeader from "../base/createNphiesMessageHeader.mjs";
 import createNphiesDoctorOrPatientData from "../base/createNphiesDoctorOrPatientData.mjs";
 import createNphiesCoverage from "../base/createNphiesCoverage.mjs";
-import createOrganizationData from "../base/createOrganizationData.mjs";
 import createLocationData from "../base/createLocationData.mjs";
+import createAllOrganizationEntries from "../base/createAllOrganizationEntries.mjs";
 import createCoverageEligibilityRequest from "./createCoverageEligibilityRequest.mjs";
-import {
-  NPHIES_REQUEST_TYPES,
-  ELIGIBILITY_TYPES,
-  ORGANIZATION_SECTION_TYPES,
-} from "../../constants.mjs";
+import { NPHIES_REQUEST_TYPES, ELIGIBILITY_TYPES } from "../../constants.mjs";
 
 const { ELIGIBILITY } = NPHIES_REQUEST_TYPES;
 
@@ -70,8 +66,12 @@ const createNaphiesEligibilityRequestFullData = ({
   className,
   occupationCode,
   religion,
-  // policy_holder
   message_event_type,
+  providerTypeCode,
+  providerTypeDisplay,
+  policyHolderLicense,
+  policyHolderName,
+  policyHolderReference,
 }) => {
   const {
     providerPatientUrl,
@@ -132,13 +132,21 @@ const createNaphiesEligibilityRequestFullData = ({
         networkName: network_name,
         className,
         classes,
+        policyHolderReference,
       }),
-      createOrganizationData({
+      ...createAllOrganizationEntries({
         organizationLicense: provider_license,
         organizationReference: provider_organization,
         siteName: site_name,
         providerOrganizationUrl,
-        organizationType: ORGANIZATION_SECTION_TYPES.P,
+        providerTypeCode,
+        providerTypeDisplay,
+        payerLicense: payer_child_license || payer_license,
+        payerReference: payer_organization,
+        payerName: payer_name,
+        policyHolderLicense,
+        policyHolderName,
+        policyHolderReference,
       }),
       createNphiesDoctorOrPatientData({
         patientOrDoctorId: patient_file_no,
@@ -156,13 +164,7 @@ const createNaphiesEligibilityRequestFullData = ({
         patientMaritalStatus: patient_martial_status,
         providerDoctorOrPatientUrl: providerPatientUrl,
       }),
-      createOrganizationData({
-        organizationLicense: payer_child_license || payer_license,
-        organizationReference: payer_organization,
-        siteName: payer_name,
-        providerOrganizationUrl,
-        organizationType: ORGANIZATION_SECTION_TYPES.I,
-      }),
+
       createLocationData({
         locationLicense: location_license,
         siteName: site_name,
