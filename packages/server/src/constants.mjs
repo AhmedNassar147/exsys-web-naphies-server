@@ -310,6 +310,9 @@ export const NPHIES_BASE_CODE_TYPES = {
   EXTENSION_PROVIDER_TYPE: "extension-provider-type",
 };
 
+export const USE_NEW_INVESTIGATION_AS_ATTACHMENT = false;
+export const INVESTIGATION_RESULT_CODE_FOR_ATTACHMENT = "IRA";
+
 export const SUPPORT_INFO_KEY_NAMES = {
   info: "info",
   patient_history: "patient-history",

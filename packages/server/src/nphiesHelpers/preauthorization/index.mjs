@@ -120,6 +120,8 @@ const createNaphiesPreauthRequestFullData = ({
   policyHolderLicense,
   policyHolderName,
   policyHolderReference,
+  accidentDate,
+  accidentCode,
 }) => {
   const isClaimRequest = message_event.includes("claim-request");
   const requestType = isClaimRequest ? CLAIM : PREAUTH;
@@ -220,6 +222,8 @@ const createNaphiesPreauthRequestFullData = ({
         isTransfer: transfer_to_other_provider === "Y",
         billablePeriodEndDate,
         billablePeriodStartDate,
+        accidentDate,
+        accidentCode,
       }),
       createNphiesDoctorOrPatientData({
         patientOrDoctorId: patient_file_no,

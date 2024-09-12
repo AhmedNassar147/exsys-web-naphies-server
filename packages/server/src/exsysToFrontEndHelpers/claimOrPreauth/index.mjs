@@ -6,9 +6,9 @@
 import {
   getLastPartOfUrl,
   isArrayHasData,
-  readJsonFile,
-  writeResultFile,
-  findRootYarnWorkSpaces,
+  // readJsonFile,
+  // writeResultFile,
+  // findRootYarnWorkSpaces,
 } from "@exsys-web-server/helpers";
 import { NPHIES_BASE_CODE_TYPES } from "../../constants.mjs";
 import mapEntriesAndExtractNeededData from "../../nphiesHelpers/extraction/mapEntriesAndExtractNeededData.mjs";
@@ -109,6 +109,17 @@ const createRequestRelatedData = (related) => {
   return null;
 };
 
+const getSentPreAuthRef = (insurance) => {
+  if (isArrayHasData(insurance)) {
+    return insurance
+      .reduce((acc, { preAuthRef }) => acc.concat(preAuthRef), [])
+      .filter(Boolean)
+      .jon(" , ");
+  }
+
+  return "";
+};
+
 const extractionFunctionsMap = {
   MessageHeader: extractMessageHeaderData(),
   Claim: ({
@@ -125,6 +136,7 @@ const extractionFunctionsMap = {
       identifier,
       related,
       careTeam,
+      insurance,
     },
   }) => ({
     supportingInfo,
@@ -132,6 +144,7 @@ const extractionFunctionsMap = {
     productsSentToNphies: item,
     productsTotalNet: getValueFromObject(total),
     created,
+    sentPreAuthRef: getSentPreAuthRef(insurance),
     priority: extractNphiesCodeAndDisplayFromCodingType(priority).code,
     subType: extractNphiesCodeAndDisplayFromCodingType(subType).code,
     referalName: getValueFromObject(referral, "display"),

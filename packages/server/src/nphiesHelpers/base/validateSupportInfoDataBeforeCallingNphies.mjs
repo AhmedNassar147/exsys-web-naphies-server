@@ -4,17 +4,16 @@
  *
  */
 import { createCmdMessage, isArrayHasData } from "@exsys-web-server/helpers";
-import { SUPPORT_INFO_KEY_NAMES } from "../../constants.mjs";
-
-const { attachment } = SUPPORT_INFO_KEY_NAMES;
+import isAttachmentCategoryCode from "./isAttachmentCategoryCode.mjs";
 
 const validateSupportInfoDataBeforeCallingNphies =
   (supportInfoKey, shouldValidate) =>
   ({ [supportInfoKey]: supportInfoValues }) => {
     if (shouldValidate && isArrayHasData(supportInfoValues)) {
       const indexOfSomeAttachmentNotFound = supportInfoValues.findIndex(
-        ({ categoryCode, value }) =>
-          categoryCode === attachment && (typeof value === "boolean" || !value)
+        ({ categoryCode, value, code }) =>
+          isAttachmentCategoryCode(categoryCode, code) &&
+          (typeof value === "boolean" || !value)
       );
 
       const someAttachmentNotFound = indexOfSomeAttachmentNotFound !== -1;

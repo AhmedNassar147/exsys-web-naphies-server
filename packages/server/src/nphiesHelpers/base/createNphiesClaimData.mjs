@@ -17,6 +17,8 @@ import {
   NPHIES_BASE_CODE_TYPES,
   NPHIES_API_URLS,
   SUPPORT_INFO_KEY_NAMES,
+  USE_NEW_INVESTIGATION_AS_ATTACHMENT,
+  INVESTIGATION_RESULT_CODE_FOR_ATTACHMENT,
 } from "../../constants.mjs";
 
 const {
@@ -73,6 +75,8 @@ const PREAUTH_PROFILE_TYPES = {
   professional: PROFILE_PROFESSIONAL_PREAUTH,
 };
 
+const { investigation_result, attachment } = SUPPORT_INFO_KEY_NAMES;
+
 const currency = "SAR";
 
 const getSequences = (arrayData, ids, idPropName) => {
@@ -84,6 +88,64 @@ const getSequences = (arrayData, ids, idPropName) => {
       ids.includes(id) ? index + 1 : undefined
     )
     .filter(Boolean);
+};
+
+const buildAttachmentSupportInfoWithCodeSection = ({
+  categoryCode,
+  code,
+  title,
+  contentType,
+  creation,
+  batchPeriodStart,
+  value,
+  systemUrl,
+  display,
+  text,
+}) => {
+  const hasCodeSection = !!(systemUrl && code);
+
+  const codeSection = {
+    coding: [
+      {
+        system: systemUrl,
+        code,
+        display,
+      },
+    ],
+    text,
+  };
+
+  if (categoryCode === attachment) {
+    let _title = title || "";
+
+    const isUsingNewAttachmentCode =
+      USE_NEW_INVESTIGATION_AS_ATTACHMENT &&
+      code === INVESTIGATION_RESULT_CODE_FOR_ATTACHMENT;
+
+    const currentCategoryCode = isUsingNewAttachmentCode
+      ? investigation_result
+      : categoryCode;
+
+    if (contentType) {
+      _title += ` ${contentType.replace("/", ".")}`;
+    }
+
+    return {
+      currentCategoryCode,
+      codeSection: isUsingNewAttachmentCode ? codeSection : undefined,
+      valueAttachment: {
+        contentType,
+        title: removeInvisibleCharactersFromString(_title),
+        creation: reverseDate(creation || batchPeriodStart),
+        data: value,
+      },
+    };
+  }
+
+  return {
+    currentCategoryCode: categoryCode,
+    codeSection: hasCodeSection ? codeSection : undefined,
+  };
 };
 
 const createAuthorizationExtensions = ({
@@ -188,6 +250,8 @@ const createNphiesClaimData = ({
   isTransfer,
   billablePeriodStartDate,
   billablePeriodEndDate,
+  accidentDate,
+  accidentCode,
 }) => {
   const profileType = PREAUTH_PROFILE_TYPES[message_event_type];
 
@@ -368,24 +432,34 @@ const createNphiesClaimData = ({
                 SUPPORT_INFO_KEY_NAMES.physical_examination,
                 SUPPORT_INFO_KEY_NAMES.history_of_present_illness,
               ].includes(categoryCode);
+
               const isOnsetCode = categoryCode === SUPPORT_INFO_KEY_NAMES.onset;
+
               const isHospitalizedCode =
                 categoryCode === SUPPORT_INFO_KEY_NAMES.hospitalized;
-              const isAttachment =
-                categoryCode === SUPPORT_INFO_KEY_NAMES.attachment;
+
               const isMissingTooth =
                 categoryCode === SUPPORT_INFO_KEY_NAMES.missingtooth;
+
               const isEmploymentImpacted =
                 categoryCode === SUPPORT_INFO_KEY_NAMES.employmentImpacted;
+
               const hasTimingPeriod =
                 isHospitalizedCode || isEmploymentImpacted;
 
-              const hasCodeSection = !!(systemUrl && code);
-              let _title = title || "";
-
-              if (contentType) {
-                _title += ` ${contentType.replace("/", ".")}`;
-              }
+              const { currentCategoryCode, codeSection, valueAttachment } =
+                buildAttachmentSupportInfoWithCodeSection({
+                  categoryCode,
+                  code,
+                  title,
+                  contentType,
+                  value,
+                  creation,
+                  batchPeriodStart,
+                  systemUrl,
+                  display,
+                  text,
+                });
 
               return {
                 sequence: index + 1,
@@ -393,23 +467,12 @@ const createNphiesClaimData = ({
                   coding: [
                     {
                       system: `${BASE_CODE_SYS_URL}/${CLAIM_INFO_CATEGORY}`,
-                      code: categoryCode,
+                      code: currentCategoryCode,
                     },
                   ],
                 },
-                code:
-                  hasCodeSection && !isAttachment
-                    ? {
-                        coding: [
-                          {
-                            system: systemUrl,
-                            code,
-                            display,
-                          },
-                        ],
-                        text,
-                      }
-                    : undefined,
+                code: codeSection,
+                valueAttachment,
                 valueString: isInfoCode
                   ? removeInvisibleCharactersFromString(value)
                   : undefined,
@@ -428,14 +491,6 @@ const createNphiesClaimData = ({
                       value: value,
                       system: systemUrl,
                       code: unit,
-                    }
-                  : undefined,
-                valueAttachment: !!isAttachment
-                  ? {
-                      contentType,
-                      title: removeInvisibleCharactersFromString(_title),
-                      creation: reverseDate(creation || batchPeriodStart),
-                      data: value,
                     }
                   : undefined,
               };
@@ -478,6 +533,22 @@ const createNphiesClaimData = ({
             })
           )
         : undefined,
+      ...(!!(accidentDate && accidentCode)
+        ? {
+            accident: {
+              date: reverseDate(accidentDate),
+              type: {
+                coding: [
+                  {
+                    system: "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                    code: accidentCode,
+                  },
+                ],
+              },
+            },
+          }
+        : null),
+
       item: hasProductsData
         ? productsData.map(
             ({
