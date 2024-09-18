@@ -114,7 +114,7 @@ const getSentPreAuthRef = (insurance) => {
     return insurance
       .reduce((acc, { preAuthRef }) => acc.concat(preAuthRef), [])
       .filter(Boolean)
-      .jon(" , ");
+      .join(" , ");
   }
 
   return "";
