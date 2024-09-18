@@ -26,7 +26,6 @@ const createNphiesEncounter = ({
   encounterUrl,
   requestId,
   encounterServiceEventType,
-  encounterIdentifier,
   encounterStatus,
   encounterClassCode,
   encounterClassDisplay,
@@ -64,7 +63,7 @@ const createNphiesEncounter = ({
       identifier: [
         {
           system: encounterUrl.replace(ENCOUNTER, ENCOUNTER.toLowerCase()),
-          value: encounterIdentifier,
+          value: `${ENCOUNTER}${requestId}`,
         },
       ],
       status: encounterStatus,

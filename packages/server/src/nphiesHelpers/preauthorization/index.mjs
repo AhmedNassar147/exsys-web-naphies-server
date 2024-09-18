@@ -124,7 +124,6 @@ const createNaphiesPreauthRequestFullData = ({
   accidentDate,
   accidentCode,
   encounterServiceEventType,
-  encounterIdentifier,
   encounterStatus,
   encounterClassCode,
   encounterClassDisplay,
@@ -182,9 +181,7 @@ const createNaphiesPreauthRequestFullData = ({
     }
   }
 
-  const hasEncounterSection = !!(
-    encounterServiceEventType && encounterIdentifier
-  );
+  const hasEncounterSection = !!(encounterServiceEventType && encounterStatus);
 
   const requestPayload = {
     ...createNphiesBaseRequestData(),
@@ -333,7 +330,6 @@ const createNaphiesPreauthRequestFullData = ({
           requestId,
           encounterUrl,
           encounterServiceEventType,
-          encounterIdentifier,
           encounterStatus,
           encounterClassCode,
           encounterClassDisplay,
