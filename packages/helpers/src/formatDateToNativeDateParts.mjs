@@ -23,4 +23,4 @@ const formatDateToNativeDateParts = (date) => {
 export default formatDateToNativeDateParts;
 
 // const date = "2023-12-05 11:10:12";
-console.log(formatDateToNativeDateParts(date));
+// console.log(formatDateToNativeDateParts(date));
