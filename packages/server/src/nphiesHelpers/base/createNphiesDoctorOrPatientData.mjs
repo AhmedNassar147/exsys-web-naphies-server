@@ -114,7 +114,7 @@ const createNphiesDoctorOrPatientData = ({
                 valueCodeableConcept: {
                   coding: [
                     {
-                      system: `${BASE_TERMINOLOGY_CODE_SYS_URL}/occupation`,
+                      system: `${BASE_CODE_SYS_URL}/occupation`,
                       code: occupationCode,
                     },
                   ],
