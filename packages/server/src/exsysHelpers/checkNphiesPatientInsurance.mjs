@@ -124,7 +124,7 @@ const checkNphiesPatientInsurance = async ({
   }
 
   const apiResults = isSuccess ? transformResults(result) : result;
-  const { insurance, errorCode, errorDescription } = apiResults;
+  const { insurance, errorCode, errorDescription } = apiResults || {};
 
   const hasCchiError =
     !!(errorCode || errorDescription) || !isArrayHasData(insurance);
