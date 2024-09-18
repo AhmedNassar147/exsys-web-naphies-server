@@ -15,6 +15,7 @@ const {
   LOCATION,
   PRACTITIONER,
   VISION_PRESCRIPTION,
+  ENCOUNTER,
 } = NPHIES_RESOURCE_TYPES;
 
 const createProviderUrls = ({ providerBaseUrl, requestType }) => {
@@ -28,6 +29,7 @@ const createProviderUrls = ({ providerBaseUrl, requestType }) => {
     providerFocusUrl: `${providerBaseUrl}/${requestTypeValue}`,
     providerLocationUrl: `${providerBaseUrl}/${LOCATION}`,
     visionPrescriptionUrl: `${providerBaseUrl}/${VISION_PRESCRIPTION}`,
+    encounterUrl: `${providerBaseUrl}/${ENCOUNTER}`,
   };
 };
 

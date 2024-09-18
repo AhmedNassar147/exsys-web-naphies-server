@@ -31,6 +31,7 @@ import isAlreadyReversedDate from "./isAlreadyReversedDate.mjs";
 import getRemoteFilePathData from "./getRemoteFilePathData.mjs";
 import mergeFilesToOnePdf from "./mergeFilesToOnePdf.mjs";
 import replaceUnwantedCharactersFromString from "./replaceUnwantedCharactersFromString.mjs";
+import formatDateToNativeDateParts from "./formatDateToNativeDateParts.mjs";
 
 export {
   capitalizeFirstLetter,
@@ -61,6 +62,7 @@ export {
   getRemoteFilePathData,
   mergeFilesToOnePdf,
   replaceUnwantedCharactersFromString,
+  formatDateToNativeDateParts,
 };
 
 export * from "./constants.mjs";

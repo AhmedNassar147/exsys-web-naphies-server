@@ -65,6 +65,7 @@ const {
   EXTENSION_PHARM_SUBSTITUTE,
   PHARM_SUBSTITUTE,
   EXTENSION_MATERNITY,
+  EXTENSION_ENCOUNTER,
 } = NPHIES_BASE_CODE_TYPES;
 
 const PREAUTH_PROFILE_TYPES = {
@@ -157,6 +158,7 @@ const createAuthorizationExtensions = ({
   batchPeriodEnd,
   extensionPriorauthId,
   isTransfer,
+  encounterUrl,
 }) => {
   const extension = [
     !!offlineRequestDate && {
@@ -177,6 +179,12 @@ const createAuthorizationExtensions = ({
       valueIdentifier: {
         system: `${siteUrl}/episode`,
         value: `EpisodeID-${episodeInvoiceNo}`,
+      },
+    },
+    !!encounterUrl && {
+      url: `${BASE_PROFILE_URL}/${EXTENSION_ENCOUNTER}`,
+      valueReference: {
+        reference: encounterUrl,
       },
     },
     !!(batchPeriodStart && batchPeriodEnd) && {
@@ -252,6 +260,7 @@ const createNphiesClaimData = ({
   billablePeriodEndDate,
   accidentDate,
   accidentCode,
+  encounterUrl,
 }) => {
   const profileType = PREAUTH_PROFILE_TYPES[message_event_type];
 
@@ -276,6 +285,7 @@ const createNphiesClaimData = ({
     batchPeriodEnd,
     isTransfer,
     batchAccountingPeriod,
+    encounterUrl: encounterUrl ? `${encounterUrl}/${requestId}` : undefined,
   });
 
   const { fullUrl, resource } = createBaseEntryRequestData({

@@ -13,7 +13,15 @@ const reverseDate = (dateValue) => {
   if (isAlreadyReversedDate(dateValue)) {
     return dateValue;
   }
-  return dateValue ? dateValue.split("-").reverse().join("-") : dateValue;
+
+  const [date, time] = dateValue.split(" ");
+  let reversedDate = date.split("-").reverse().join("-");
+
+  if (time) {
+    reversedDate += ` ${time}`;
+  }
+
+  return reversedDate;
 };
 
 export default reverseDate;

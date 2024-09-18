@@ -12,6 +12,7 @@ import createNphiesCoverage from "../base/createNphiesCoverage.mjs";
 import createAllOrganizationEntries from "../base/createAllOrganizationEntries.mjs";
 // import createLocationData from "../base/createLocationData.mjs";
 import createNphiesClaimData from "../base/createNphiesClaimData.mjs";
+import createNphiesEncounter from "../base/createNphiesEncounter.mjs";
 import createNphiesVisionPrescriptionData from "./createNphiesVisionPrescriptionData.mjs";
 import { NPHIES_REQUEST_TYPES } from "../../constants.mjs";
 
@@ -122,6 +123,14 @@ const createNaphiesPreauthRequestFullData = ({
   policyHolderReference,
   accidentDate,
   accidentCode,
+  encounterServiceEventType,
+  encounterIdentifier,
+  encounterStatus,
+  encounterClassCode,
+  encounterClassDisplay,
+  encounterServiceType,
+  encounterPeriodStart,
+  encounterPeriodEnd,
 }) => {
   const isClaimRequest = message_event.includes("claim-request");
   const requestType = isClaimRequest ? CLAIM : PREAUTH;
@@ -133,6 +142,7 @@ const createNaphiesPreauthRequestFullData = ({
     providerOrganizationUrl,
     providerFocusUrl,
     visionPrescriptionUrl,
+    encounterUrl,
     // providerLocationUrl,
   } = createProviderUrls({
     providerBaseUrl: site_url,
@@ -171,6 +181,10 @@ const createNaphiesPreauthRequestFullData = ({
       supportingInfo = [...supportingInfo, ...filteredDaySupply];
     }
   }
+
+  const hasEncounterSection = !!(
+    encounterServiceEventType && encounterIdentifier
+  );
 
   const requestPayload = {
     ...createNphiesBaseRequestData(),
@@ -224,6 +238,7 @@ const createNaphiesPreauthRequestFullData = ({
         billablePeriodStartDate,
         accidentDate,
         accidentCode,
+        encounterUrl: hasEncounterSection ? encounterUrl : undefined,
       }),
       createNphiesDoctorOrPatientData({
         patientOrDoctorId: patient_file_no,
@@ -312,6 +327,23 @@ const createNaphiesPreauthRequestFullData = ({
           providerPatientUrl,
           doctorId: primaryDoctorId,
           patientId: patient_file_no,
+        }),
+      hasEncounterSection &&
+        createNphiesEncounter({
+          requestId,
+          encounterUrl,
+          encounterServiceEventType,
+          encounterIdentifier,
+          encounterStatus,
+          encounterClassCode,
+          encounterClassDisplay,
+          encounterServiceType,
+          encounterPeriodStart,
+          encounterPeriodEnd,
+          providerPatientUrl,
+          patientFileNo: patient_file_no,
+          organizationReference: provider_organization,
+          providerOrganizationUrl,
         }),
       ...createAllOrganizationEntries({
         organizationLicense: provider_license,

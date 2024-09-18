@@ -4,6 +4,10 @@
  *
  */
 
-const createTimestamp = () => new Date().toISOString();
+const createTimestamp = (date) => {
+  const __date = (Array.isArray(date) ? date : [data]).filter(Boolean);
+
+  return new Date(...__date).toISOString();
+};
 
 export default createTimestamp;

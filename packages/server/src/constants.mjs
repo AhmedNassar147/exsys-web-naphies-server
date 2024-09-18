@@ -196,6 +196,7 @@ export const NPHIES_RESOURCE_TYPES = {
   TASK: "Task",
   COMMUNICATION: "Communication",
   COMMUNICATION_REQUEST: "CommunicationRequest",
+  ENCOUNTER: "Encounter",
 };
 
 export const NPHIES_RESOURCE_MAP_TO_REQUEST_TYPE = {
@@ -261,6 +262,7 @@ export const NPHIES_BASE_PROFILE_TYPES = {
   PROFILE_TASK: "task|1.0.0",
   PROFILE_COMMUNICATION: "communication|1.0.0",
   PROFILE_COMMUNICATION_REQUEST: "communication-request|1.0.0",
+  PROFILE_ENCOUNTER: "encounter|1.0.0",
 };
 
 export const NPHIES_BASE_CODE_TYPES = {
@@ -307,7 +309,10 @@ export const NPHIES_BASE_CODE_TYPES = {
   PHARM_SUBSTITUTE: "pharmacist-substitute",
   EXTENSION_MATERNITY: "extension-maternity",
   EXTENSION_OCCUPATION: "extension-occupation",
+  EXTENSION_ENCOUNTER: "extension-encounter",
   EXTENSION_PROVIDER_TYPE: "extension-provider-type",
+  EXTENSION_SERVICE_EVENT_TYPE: "extension-serviceEventType",
+  CODE_SERVICE_EVENT_TYPE: "service-event-type",
 };
 
 export const USE_NEW_INVESTIGATION_AS_ATTACHMENT = false;
