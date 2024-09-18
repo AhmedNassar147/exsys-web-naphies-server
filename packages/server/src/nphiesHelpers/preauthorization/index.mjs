@@ -130,6 +130,10 @@ const createNaphiesPreauthRequestFullData = ({
   encounterServiceType,
   encounterPeriodStart,
   encounterPeriodEnd,
+  encounterAdmissionSpecialtyCode,
+  encounterAdmissionSpecialtyDisplay,
+  encounterAdmitSourceCode,
+  encounterAdmitSourceDisplay,
 }) => {
   const isClaimRequest = message_event.includes("claim-request");
   const requestType = isClaimRequest ? CLAIM : PREAUTH;
@@ -336,6 +340,10 @@ const createNaphiesPreauthRequestFullData = ({
           encounterServiceType,
           encounterPeriodStart,
           encounterPeriodEnd,
+          encounterAdmissionSpecialtyCode,
+          encounterAdmissionSpecialtyDisplay,
+          encounterAdmitSourceCode,
+          encounterAdmitSourceDisplay,
           providerPatientUrl,
           patientFileNo: patient_file_no,
           organizationReference: provider_organization,

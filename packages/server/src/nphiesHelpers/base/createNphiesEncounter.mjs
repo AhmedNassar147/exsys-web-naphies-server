@@ -16,13 +16,20 @@ import {
 } from "../../constants.mjs";
 
 const { PROFILE_ENCOUNTER } = NPHIES_BASE_PROFILE_TYPES;
-const { EXTENSION_SERVICE_EVENT_TYPE, CODE_SERVICE_EVENT_TYPE } =
-  NPHIES_BASE_CODE_TYPES;
+const {
+  EXTENSION_SERVICE_EVENT_TYPE,
+  CODE_SERVICE_EVENT_TYPE,
+  EXTENSION_ADMISSION_SPECIALTY,
+  PRACTICE_CODES,
+  ADMISSION_SOURCE,
+} = NPHIES_BASE_CODE_TYPES;
 const { ENCOUNTER } = NPHIES_RESOURCE_TYPES;
 const { BASE_CODE_SYS_URL, BASE_PROFILE_URL, BASE_TERMINOLOGY_CODE_SYS_URL } =
   NPHIES_API_URLS;
 
 const createNphiesEncounter = ({
+  organizationReference,
+  providerOrganizationUrl,
   encounterUrl,
   requestId,
   encounterServiceEventType,
@@ -34,9 +41,18 @@ const createNphiesEncounter = ({
   encounterPeriodEnd,
   providerPatientUrl,
   patientFileNo,
-  organizationReference,
-  providerOrganizationUrl,
+  encounterAdmissionSpecialtyCode,
+  encounterAdmissionSpecialtyDisplay,
+  encounterAdmitSourceCode,
+  encounterAdmitSourceDisplay,
 }) => {
+  const showHospitalizationSection = [
+    encounterAdmissionSpecialtyCode,
+    encounterAdmissionSpecialtyDisplay,
+    encounterAdmitSourceCode,
+    encounterAdmitSourceDisplay,
+  ].every(Boolean);
+
   const baseResourceData = createNphiesBaseResource({
     resourceType: ENCOUNTER,
     profileType: PROFILE_ENCOUNTER,
@@ -92,6 +108,33 @@ const createNphiesEncounter = ({
         ),
         end: createTimestamp(formatDateToNativeDateParts(encounterPeriodEnd)),
       },
+      hospitalization: showHospitalizationSection
+        ? {
+            extension: [
+              {
+                url: `${BASE_PROFILE_URL}/${EXTENSION_ADMISSION_SPECIALTY}`,
+                valueCodeableConcept: {
+                  coding: [
+                    {
+                      system: `${BASE_CODE_SYS_URL}/${PRACTICE_CODES}`,
+                      code: encounterAdmissionSpecialtyCode,
+                      display: encounterAdmissionSpecialtyDisplay,
+                    },
+                  ],
+                },
+              },
+            ],
+            admitSource: {
+              coding: [
+                {
+                  system: `${BASE_CODE_SYS_URL}/${ADMISSION_SOURCE}`,
+                  code: encounterAdmitSourceCode,
+                  display: encounterAdmitSourceDisplay,
+                },
+              ],
+            },
+          }
+        : undefined,
       serviceProvider: {
         reference: `${providerOrganizationUrl}/${organizationReference}`,
       },

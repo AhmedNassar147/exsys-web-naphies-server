@@ -313,6 +313,8 @@ export const NPHIES_BASE_CODE_TYPES = {
   EXTENSION_PROVIDER_TYPE: "extension-provider-type",
   EXTENSION_SERVICE_EVENT_TYPE: "extension-serviceEventType",
   CODE_SERVICE_EVENT_TYPE: "service-event-type",
+  EXTENSION_ADMISSION_SPECIALTY: "extension-admissionSpecialty",
+  ADMISSION_SOURCE: "admit-source",
 };
 
 export const USE_NEW_INVESTIGATION_AS_ATTACHMENT = false;
