@@ -49,6 +49,9 @@ const checkInsuranceEligibility = async ({
   organization_no,
   customer_no,
   customer_group_no,
+  policyNumber,
+  className,
+  policyHolder,
   insuranceCompanyID,
   clinicalEntityNo,
   printFolderName,
@@ -67,6 +70,12 @@ const checkInsuranceEligibility = async ({
     gender: genderName,
     birthDate: dateOfBirth || "1900-01-01",
     relationship: "self",
+    classPolicyNo: policyNumber,
+    className,
+    policyHolderLicense: policyNumber,
+    policyHolderName: policyHolder,
+    occupationCode: "others",
+    patient_martial_status: "U",
   };
 
   const exsysApiParams = {
@@ -179,6 +188,7 @@ export default checkPatientInsuranceMiddleware(async (body) => {
     nationality,
     policyNumber,
     className,
+    policyHolder,
   } = firstItem || {};
 
   const __genderCode = gender || genderCodeFromBody;
@@ -297,6 +307,9 @@ export default checkPatientInsuranceMiddleware(async (body) => {
       mobileNumber: mobileNumber || mobileFromBody || "",
       genderName: mainGender || "male",
       dateOfBirth: __dateOfBirth,
+      policyNumber: policyNumber || "00000000",
+      className: className || "class A+",
+      policyHolder: policyHolder || "policy holder test",
       authorization,
       organization_no,
       customer_no: __customer_no,

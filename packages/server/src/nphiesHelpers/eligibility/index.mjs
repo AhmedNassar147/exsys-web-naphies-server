@@ -70,8 +70,8 @@ const createNaphiesEligibilityRequestFullData = ({
   message_event_type,
   providerTypeCode,
   providerTypeDisplay,
-  policyHolderLicense,
   policyHolderName,
+  policyHolderLicense,
   policyHolderReference,
 }) => {
   const {
