@@ -311,10 +311,20 @@ export const NPHIES_BASE_CODE_TYPES = {
   EXTENSION_OCCUPATION: "extension-occupation",
   EXTENSION_ENCOUNTER: "extension-encounter",
   EXTENSION_PROVIDER_TYPE: "extension-provider-type",
-  EXTENSION_SERVICE_EVENT_TYPE: "extension-serviceEventType",
-  CODE_SERVICE_EVENT_TYPE: "service-event-type",
   EXTENSION_ADMISSION_SPECIALTY: "extension-admissionSpecialty",
   ADMISSION_SOURCE: "admit-source",
+  EXTENSION_EMERGENCY_ARRIVAL_CODE: "extension-emergencyArrivalCode",
+  EMERGENCY_ARRIVAL_CODE: "emergency-arrival-code",
+  EXTENSION_EMERGENCY_SERVICE_START: "extension-emergencyServiceStart",
+  EXTENSION_EMERGENCY_DISPOSITION: "extension-emergencyDepartmentDisposition",
+  EMERGENCY_DISPOSITION: "emergency-department-disposition",
+  EXTENSION_TRIAGE_CATEGORY: "extension-triageCategory",
+  TRIAGE_CATEGORY: "triage-category",
+  EXTENSION_TRIAGE_DATE: "extension-triageDate",
+  EXTENSION_SERVICE_EVENT_TYPE: "extension-serviceEventType",
+  CODE_SERVICE_EVENT_TYPE: "service-event-type",
+  EXTENSION_CAUSE_OF_DEATH: "extension-causeOfDeath",
+  CAUSE_OF_DEATH: "cause-of-death",
 };
 
 export const USE_NEW_INVESTIGATION_AS_ATTACHMENT = false;

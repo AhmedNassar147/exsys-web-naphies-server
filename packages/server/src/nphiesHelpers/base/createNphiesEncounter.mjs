@@ -22,6 +22,16 @@ const {
   EXTENSION_ADMISSION_SPECIALTY,
   PRACTICE_CODES,
   ADMISSION_SOURCE,
+  EXTENSION_EMERGENCY_ARRIVAL_CODE,
+  EMERGENCY_ARRIVAL_CODE,
+  EXTENSION_EMERGENCY_SERVICE_START,
+  EXTENSION_EMERGENCY_DISPOSITION,
+  EMERGENCY_DISPOSITION,
+  EXTENSION_TRIAGE_CATEGORY,
+  TRIAGE_CATEGORY,
+  EXTENSION_TRIAGE_DATE,
+  EXTENSION_CAUSE_OF_DEATH,
+  CAUSE_OF_DEATH,
 } = NPHIES_BASE_CODE_TYPES;
 const { ENCOUNTER } = NPHIES_RESOURCE_TYPES;
 const { BASE_CODE_SYS_URL, BASE_PROFILE_URL, BASE_TERMINOLOGY_CODE_SYS_URL } =
@@ -45,6 +55,16 @@ const createNphiesEncounter = ({
   encounterAdmissionSpecialtyDisplay,
   encounterAdmitSourceCode,
   encounterAdmitSourceDisplay,
+  encounterArrivalCode,
+  encounterArrivalDisplay,
+  encounterEmergencyServiceStartDate,
+  encounterEmergencyDispositionCode,
+  encounterEmergencyDispositionDisplay,
+  encounterTriageCategoryCode,
+  encounterTriageCategoryDisplay,
+  encounterTriageDate,
+  encounterCauseOfDeathCode,
+  encounterCauseOfDeathDisplay,
 }) => {
   const showHospitalizationSection = [
     encounterAdmissionSpecialtyCode,
@@ -64,7 +84,55 @@ const createNphiesEncounter = ({
     resource: {
       ...baseResourceData,
       extension: [
-        {
+        !!encounterArrivalCode && {
+          url: `${BASE_PROFILE_URL}/${EXTENSION_EMERGENCY_ARRIVAL_CODE}`,
+          valueCodeableConcept: {
+            coding: [
+              {
+                system: `${BASE_CODE_SYS_URL}/${EMERGENCY_ARRIVAL_CODE}`,
+                code: encounterArrivalCode,
+                display: encounterArrivalDisplay,
+              },
+            ],
+          },
+        },
+        !!encounterEmergencyServiceStartDate && {
+          url: `${BASE_PROFILE_URL}/${EXTENSION_EMERGENCY_SERVICE_START}`,
+          valueDateTime: createTimestamp(
+            formatDateToNativeDateParts(encounterEmergencyServiceStartDate)
+          ),
+        },
+        !!encounterEmergencyDispositionCode && {
+          url: `${BASE_PROFILE_URL}/${EXTENSION_EMERGENCY_DISPOSITION}`,
+          valueCodeableConcept: {
+            coding: [
+              {
+                system: `${BASE_CODE_SYS_URL}/${EMERGENCY_DISPOSITION}`,
+                code: encounterEmergencyDispositionCode,
+                display: encounterEmergencyDispositionDisplay,
+              },
+            ],
+          },
+        },
+        !!encounterTriageCategoryCode && {
+          url: `${BASE_PROFILE_URL}/${EXTENSION_TRIAGE_CATEGORY}`,
+          valueCodeableConcept: {
+            coding: [
+              {
+                system: `${BASE_CODE_SYS_URL}/${TRIAGE_CATEGORY}`,
+                code: encounterTriageCategoryCode,
+                display: encounterTriageCategoryDisplay,
+              },
+            ],
+          },
+        },
+        !!encounterTriageDate && {
+          url: `${BASE_PROFILE_URL}/${EXTENSION_TRIAGE_DATE}`,
+          valueDateTime: createTimestamp(
+            formatDateToNativeDateParts(encounterTriageDate)
+          ),
+        },
+        !!encounterServiceEventType && {
           url: `${BASE_PROFILE_URL}/${EXTENSION_SERVICE_EVENT_TYPE}`,
           valueCodeableConcept: {
             coding: [
@@ -75,7 +143,19 @@ const createNphiesEncounter = ({
             ],
           },
         },
-      ],
+        !!encounterCauseOfDeathCode && {
+          url: `${BASE_PROFILE_URL}/${EXTENSION_CAUSE_OF_DEATH}`,
+          valueCodeableConcept: {
+            coding: [
+              {
+                system: `${BASE_CODE_SYS_URL}/${CAUSE_OF_DEATH}`,
+                code: encounterCauseOfDeathCode,
+                display: encounterCauseOfDeathDisplay,
+              },
+            ],
+          },
+        },
+      ].filter(Boolean),
       identifier: [
         {
           system: encounterUrl.replace(ENCOUNTER, ENCOUNTER.toLowerCase()),

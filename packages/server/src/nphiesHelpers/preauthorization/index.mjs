@@ -134,6 +134,16 @@ const createNaphiesPreauthRequestFullData = ({
   encounterAdmissionSpecialtyDisplay,
   encounterAdmitSourceCode,
   encounterAdmitSourceDisplay,
+  encounterArrivalCode,
+  encounterArrivalDisplay,
+  encounterEmergencyServiceStartDate,
+  encounterEmergencyDispositionCode,
+  encounterEmergencyDispositionDisplay,
+  encounterTriageCategoryCode,
+  encounterTriageCategoryDisplay,
+  encounterTriageDate,
+  encounterCauseOfDeathCode,
+  encounterCauseOfDeathDisplay,
 }) => {
   const isClaimRequest = message_event.includes("claim-request");
   const requestType = isClaimRequest ? CLAIM : PREAUTH;
@@ -185,7 +195,7 @@ const createNaphiesPreauthRequestFullData = ({
     }
   }
 
-  const hasEncounterSection = !!(encounterServiceEventType && encounterStatus);
+  const hasEncounterSection = !!encounterStatus;
 
   const requestPayload = {
     ...createNphiesBaseRequestData(),
@@ -344,6 +354,16 @@ const createNaphiesPreauthRequestFullData = ({
           encounterAdmissionSpecialtyDisplay,
           encounterAdmitSourceCode,
           encounterAdmitSourceDisplay,
+          encounterArrivalCode,
+          encounterArrivalDisplay,
+          encounterEmergencyServiceStartDate,
+          encounterEmergencyDispositionCode,
+          encounterEmergencyDispositionDisplay,
+          encounterTriageCategoryCode,
+          encounterTriageCategoryDisplay,
+          encounterTriageDate,
+          encounterCauseOfDeathCode,
+          encounterCauseOfDeathDisplay,
           providerPatientUrl,
           patientFileNo: patient_file_no,
           organizationReference: provider_organization,
