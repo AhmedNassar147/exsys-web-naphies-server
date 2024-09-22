@@ -66,6 +66,7 @@ const {
   PHARM_SUBSTITUTE,
   EXTENSION_MATERNITY,
   EXTENSION_ENCOUNTER,
+  EXTENSION_ONSET_CONDITION_CODE,
 } = NPHIES_BASE_CODE_TYPES;
 
 const PREAUTH_PROFILE_TYPES = {
@@ -509,7 +510,36 @@ const createNphiesClaimData = ({
         : undefined,
       diagnosis: hasDiagnosisData
         ? diagnosisData.map(
-            ({ onAdmission, diagCode, diagType, diagDisplay }, index) => ({
+            (
+              {
+                onAdmission,
+                diagCode,
+                diagType,
+                diagDisplay,
+                onSetExtensionCode,
+              },
+              index
+            ) => ({
+              ...(!!onSetExtensionCode
+                ? {
+                    extension: [
+                      {
+                        url: `${BASE_PROFILE_URL}/${EXTENSION_ONSET_CONDITION_CODE}`,
+                        valueCodeableConcept: {
+                          coding: [
+                            {
+                              system: `${BASE_CODE_SYS_URL}/${EXTENSION_ONSET_CONDITION_CODE.replace(
+                                "extension-",
+                                ""
+                              )}`,
+                              code: onSetExtensionCode,
+                            },
+                          ],
+                        },
+                      },
+                    ],
+                  }
+                : null),
               sequence: index + 1,
               onAdmission: ["y", "Y"].includes(onAdmission)
                 ? {

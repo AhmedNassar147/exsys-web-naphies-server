@@ -325,6 +325,7 @@ export const NPHIES_BASE_CODE_TYPES = {
   CODE_SERVICE_EVENT_TYPE: "service-event-type",
   EXTENSION_CAUSE_OF_DEATH: "extension-causeOfDeath",
   CAUSE_OF_DEATH: "cause-of-death",
+  EXTENSION_ONSET_CONDITION_CODE: "extension-condition-onset",
 };
 
 export const USE_NEW_INVESTIGATION_AS_ATTACHMENT = false;
