@@ -135,14 +135,12 @@ const buildAttachmentSupportInfoWithCodeSection = ({
     return {
       currentCategoryCode,
       codeSection: isUsingNewAttachmentCode ? codeSection : undefined,
-      valueAttachment: !value
-        ? undefined
-        : {
-            contentType,
-            title: removeInvisibleCharactersFromString(_title),
-            creation: reverseDate(creation || batchPeriodStart),
-            data: value,
-          },
+      valueAttachment: {
+        contentType,
+        title: removeInvisibleCharactersFromString(_title),
+        creation: reverseDate(creation || batchPeriodStart),
+        data: value,
+      },
     };
   }
 
@@ -464,6 +462,10 @@ const createNphiesClaimData = ({
 
               const hasValue = !!value || typeof value === "number";
 
+              const hasAbsenceReason = !!(
+                absenceReasonCode && absenceReasonUrl
+              );
+
               const { currentCategoryCode, codeSection, valueAttachment } =
                 buildAttachmentSupportInfoWithCodeSection({
                   categoryCode,
@@ -488,7 +490,7 @@ const createNphiesClaimData = ({
                     },
                   ],
                 },
-                ...(!!(absenceReasonCode && absenceReasonUrl)
+                ...(hasAbsenceReason
                   ? {
                       reason: {
                         coding: [
@@ -500,25 +502,23 @@ const createNphiesClaimData = ({
                       },
                     }
                   : null),
-                code: hasValue ? codeSection : undefined,
+                code: codeSection,
                 valueAttachment,
-                valueString:
-                  hasValue && isInfoCode
-                    ? removeInvisibleCharactersFromString(value)
-                    : undefined,
+                valueString: isInfoCode
+                  ? removeInvisibleCharactersFromString(value)
+                  : undefined,
                 timingDate:
-                  hasValue && (isOnsetCode || isMissingTooth)
+                  isOnsetCode || isMissingTooth
                     ? reverseDate(value)
                     : undefined,
-                timingPeriod:
-                  !!(periodStart && periodEnd) && hasTimingPeriod
-                    ? {
-                        start: reverseDate(periodStart),
-                        end: reverseDate(periodEnd),
-                      }
-                    : undefined,
+                timingPeriod: hasTimingPeriod
+                  ? {
+                      start: reverseDate(periodStart),
+                      end: reverseDate(periodEnd),
+                    }
+                  : undefined,
                 valueQuantity:
-                  hasValue && !!unit
+                  !hasAbsenceReason && !!unit
                     ? {
                         value: value,
                         system: systemUrl,
