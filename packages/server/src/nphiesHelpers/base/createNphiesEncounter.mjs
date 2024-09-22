@@ -32,6 +32,9 @@ const {
   EXTENSION_TRIAGE_DATE,
   EXTENSION_CAUSE_OF_DEATH,
   CAUSE_OF_DEATH,
+  EXTENSION_DISCHARGE_SPECIALTY,
+  ENCOUNTER_LENGTH_OF_STAY,
+  EXTENSION_DISCHARGE_DISPOSITION,
 } = NPHIES_BASE_CODE_TYPES;
 const { ENCOUNTER } = NPHIES_RESOURCE_TYPES;
 const { BASE_CODE_SYS_URL, BASE_PROFILE_URL, BASE_TERMINOLOGY_CODE_SYS_URL } =
@@ -65,13 +68,20 @@ const createNphiesEncounter = ({
   encounterTriageDate,
   encounterCauseOfDeathCode,
   encounterCauseOfDeathDisplay,
+  extensionDischargeSpecialtyCode,
+  extensionDischargeSpecialtyDisplay,
+  extensionIntendedLengthOfStayCode,
+  extensionIntendedLengthOfStayDisplay,
+  dischargeDispositionCode,
+  dischargeDispositionDisplay,
 }) => {
   const showHospitalizationSection = [
+    extensionDischargeSpecialtyCode,
+    extensionIntendedLengthOfStayCode,
     encounterAdmissionSpecialtyCode,
-    encounterAdmissionSpecialtyDisplay,
     encounterAdmitSourceCode,
-    encounterAdmitSourceDisplay,
-  ].every(Boolean);
+    dischargeDispositionCode,
+  ].some(Boolean);
 
   const baseResourceData = createNphiesBaseResource({
     resourceType: ENCOUNTER,
@@ -191,7 +201,31 @@ const createNphiesEncounter = ({
       hospitalization: showHospitalizationSection
         ? {
             extension: [
-              {
+              !!extensionDischargeSpecialtyCode && {
+                url: `${BASE_PROFILE_URL}/${EXTENSION_DISCHARGE_SPECIALTY}`,
+                valueCodeableConcept: {
+                  coding: [
+                    {
+                      system: `${BASE_CODE_SYS_URL}/${PRACTICE_CODES}`,
+                      code: extensionDischargeSpecialtyCode,
+                      display: extensionDischargeSpecialtyDisplay,
+                    },
+                  ],
+                },
+              },
+              !!extensionIntendedLengthOfStayCode && {
+                url: `${BASE_PROFILE_URL}/${EXTENSION_LENGTH_OF_STAY}`,
+                valueCodeableConcept: {
+                  coding: [
+                    {
+                      system: `${BASE_CODE_SYS_URL}/${ENCOUNTER_LENGTH_OF_STAY}`,
+                      code: extensionIntendedLengthOfStayCode,
+                      display: extensionIntendedLengthOfStayDisplay,
+                    },
+                  ],
+                },
+              },
+              !!encounterAdmissionSpecialtyCode && {
                 url: `${BASE_PROFILE_URL}/${EXTENSION_ADMISSION_SPECIALTY}`,
                 valueCodeableConcept: {
                   coding: [
@@ -203,16 +237,33 @@ const createNphiesEncounter = ({
                   ],
                 },
               },
-            ],
-            admitSource: {
-              coding: [
-                {
-                  system: `${BASE_CODE_SYS_URL}/${ADMISSION_SOURCE}`,
-                  code: encounterAdmitSourceCode,
-                  display: encounterAdmitSourceDisplay,
-                },
-              ],
-            },
+            ].filter(Boolean),
+            ...(!!encounterAdmitSourceCode
+              ? {
+                  admitSource: {
+                    coding: [
+                      {
+                        system: `${BASE_CODE_SYS_URL}/${ADMISSION_SOURCE}`,
+                        code: encounterAdmitSourceCode,
+                        display: encounterAdmitSourceDisplay,
+                      },
+                    ],
+                  },
+                }
+              : null),
+            ...(!!dischargeDispositionCode
+              ? {
+                  dischargeDisposition: {
+                    coding: [
+                      {
+                        system: `${BASE_CODE_SYS_URL}/${EXTENSION_DISCHARGE_DISPOSITION}`,
+                        code: dischargeDispositionCode,
+                        display: dischargeDispositionDisplay,
+                      },
+                    ],
+                  },
+                }
+              : null),
           }
         : undefined,
       serviceProvider: {

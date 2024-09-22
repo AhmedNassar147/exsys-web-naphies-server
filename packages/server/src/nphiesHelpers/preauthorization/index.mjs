@@ -144,6 +144,12 @@ const createNaphiesPreauthRequestFullData = ({
   encounterTriageDate,
   encounterCauseOfDeathCode,
   encounterCauseOfDeathDisplay,
+  extensionDischargeSpecialtyCode,
+  extensionDischargeSpecialtyDisplay,
+  extensionIntendedLengthOfStayCode,
+  extensionIntendedLengthOfStayDisplay,
+  dischargeDispositionCode,
+  dischargeDispositionDisplay,
 }) => {
   const isClaimRequest = message_event.includes("claim-request");
   const requestType = isClaimRequest ? CLAIM : PREAUTH;
@@ -364,6 +370,12 @@ const createNaphiesPreauthRequestFullData = ({
           encounterTriageDate,
           encounterCauseOfDeathCode,
           encounterCauseOfDeathDisplay,
+          extensionDischargeSpecialtyCode,
+          extensionDischargeSpecialtyDisplay,
+          extensionIntendedLengthOfStayCode,
+          extensionIntendedLengthOfStayDisplay,
+          dischargeDispositionCode,
+          dischargeDispositionDisplay,
           providerPatientUrl,
           patientFileNo: patient_file_no,
           organizationReference: provider_organization,

@@ -326,6 +326,10 @@ export const NPHIES_BASE_CODE_TYPES = {
   EXTENSION_CAUSE_OF_DEATH: "extension-causeOfDeath",
   CAUSE_OF_DEATH: "cause-of-death",
   EXTENSION_ONSET_CONDITION_CODE: "extension-condition-onset",
+  EXTENSION_DISCHARGE_SPECIALTY: "extension-dischargeSpecialty",
+  EXTENSION_LENGTH_OF_STAY: "extension-intendedLengthOfStay",
+  ENCOUNTER_LENGTH_OF_STAY: "intended-length-of-stay",
+  EXTENSION_DISCHARGE_DISPOSITION: "discharge-disposition",
 };
 
 export const USE_NEW_INVESTIGATION_AS_ATTACHMENT = false;

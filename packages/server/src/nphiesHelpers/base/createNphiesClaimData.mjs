@@ -135,12 +135,14 @@ const buildAttachmentSupportInfoWithCodeSection = ({
     return {
       currentCategoryCode,
       codeSection: isUsingNewAttachmentCode ? codeSection : undefined,
-      valueAttachment: {
-        contentType,
-        title: removeInvisibleCharactersFromString(_title),
-        creation: reverseDate(creation || batchPeriodStart),
-        data: value,
-      },
+      valueAttachment: !value
+        ? undefined
+        : {
+            contentType,
+            title: removeInvisibleCharactersFromString(_title),
+            creation: reverseDate(creation || batchPeriodStart),
+            data: value,
+          },
     };
   }
 
@@ -433,6 +435,8 @@ const createNphiesClaimData = ({
                 creation,
                 periodStart,
                 periodEnd,
+                absenceReasonCode,
+                absenceReasonUrl,
               },
               index
             ) => {
@@ -458,6 +462,8 @@ const createNphiesClaimData = ({
               const hasTimingPeriod =
                 isHospitalizedCode || isEmploymentImpacted;
 
+              const hasValue = !!value || typeof value === "number";
+
               const { currentCategoryCode, codeSection, valueAttachment } =
                 buildAttachmentSupportInfoWithCodeSection({
                   categoryCode,
@@ -482,28 +488,43 @@ const createNphiesClaimData = ({
                     },
                   ],
                 },
-                code: codeSection,
+                ...(!!(absenceReasonCode && absenceReasonUrl)
+                  ? {
+                      reason: {
+                        coding: [
+                          {
+                            system: absenceReasonUrl,
+                            code: absenceReasonCode,
+                          },
+                        ],
+                      },
+                    }
+                  : null),
+                code: hasValue ? codeSection : undefined,
                 valueAttachment,
-                valueString: isInfoCode
-                  ? removeInvisibleCharactersFromString(value)
-                  : undefined,
+                valueString:
+                  hasValue && isInfoCode
+                    ? removeInvisibleCharactersFromString(value)
+                    : undefined,
                 timingDate:
-                  isOnsetCode || isMissingTooth
+                  hasValue && (isOnsetCode || isMissingTooth)
                     ? reverseDate(value)
                     : undefined,
-                timingPeriod: hasTimingPeriod
-                  ? {
-                      start: reverseDate(periodStart),
-                      end: reverseDate(periodEnd),
-                    }
-                  : undefined,
-                valueQuantity: !!unit
-                  ? {
-                      value: value,
-                      system: systemUrl,
-                      code: unit,
-                    }
-                  : undefined,
+                timingPeriod:
+                  !!(periodStart && periodEnd) && hasTimingPeriod
+                    ? {
+                        start: reverseDate(periodStart),
+                        end: reverseDate(periodEnd),
+                      }
+                    : undefined,
+                valueQuantity:
+                  hasValue && !!unit
+                    ? {
+                        value: value,
+                        system: systemUrl,
+                        code: unit,
+                      }
+                    : undefined,
               };
             }
           )
