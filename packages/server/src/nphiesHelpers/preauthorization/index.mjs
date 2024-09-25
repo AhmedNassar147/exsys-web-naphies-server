@@ -150,6 +150,7 @@ const createNaphiesPreauthRequestFullData = ({
   extensionIntendedLengthOfStayDisplay,
   dischargeDispositionCode,
   dischargeDispositionDisplay,
+  relatedRelationshipCode,
 }) => {
   const isClaimRequest = message_event.includes("claim-request");
   const requestType = isClaimRequest ? CLAIM : PREAUTH;
@@ -250,6 +251,7 @@ const createNaphiesPreauthRequestFullData = ({
         referalIdentifier,
         extensionPriorauthId,
         relatedParentClaimIdentifier,
+        relatedRelationshipCode,
         isTransfer: transfer_to_other_provider === "Y",
         billablePeriodEndDate,
         billablePeriodStartDate,

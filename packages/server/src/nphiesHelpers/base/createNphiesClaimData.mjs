@@ -262,6 +262,7 @@ const createNphiesClaimData = ({
   accidentDate,
   accidentCode,
   encounterUrl,
+  relatedRelationshipCode,
 }) => {
   const profileType = PREAUTH_PROFILE_TYPES[message_event_type];
 
@@ -332,7 +333,7 @@ const createNphiesClaimData = ({
                   coding: [
                     {
                       system: `${BASE_CODE_SYS_URL}/${RELATED_CLAIM_RELATION}`,
-                      code: "prior",
+                      code: relatedRelationshipCode || "prior",
                     },
                   ],
                 },
