@@ -241,21 +241,6 @@ export default checkPatientInsuranceMiddleware(async (body) => {
     __customer_group_no
   );
 
-  if (!shouldCallEligibilityApi) {
-    return {
-      data: {
-        errorCode,
-        errorDescription,
-        cchiOriginalResults,
-        customerNo: __customer_no,
-        customerGroupNo: __customer_group_no,
-        exsysCchiPatientData,
-        notificationError:
-          "Please select customer, customer-group and add card no",
-      },
-    };
-  }
-
   const mockedDateOfBirth = dateOfBirthFromBody || "01-12-1970";
 
   const __dateOfBirth =
@@ -276,6 +261,22 @@ export default checkPatientInsuranceMiddleware(async (body) => {
         genderCode: genderCode || __genderCode,
       }))
     : [];
+
+  if (!shouldCallEligibilityApi) {
+    return {
+      data: {
+        errorCode,
+        errorDescription,
+        cchiOriginalResults,
+        customerNo: __customer_no,
+        customerGroupNo: __customer_group_no,
+        exsysCchiPatientData,
+        insurance: __insuranceData,
+        notificationError:
+          "Please select customer, customer-group and add card no",
+      },
+    };
+  }
 
   const baseResponse = {
     errorCode,
