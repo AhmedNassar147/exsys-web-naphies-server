@@ -229,6 +229,7 @@ export default checkPatientInsuranceMiddleware(async (body) => {
     customerNo,
     customerGroupNo,
     dateOfBirth,
+    patientCardNo: exsysPatientCardNo,
   } = exsysCchiPatientData;
 
   const __customer_no = customer_no || customerNo || "";
@@ -286,6 +287,12 @@ export default checkPatientInsuranceMiddleware(async (body) => {
     insurance: __insuranceData,
   };
 
+  const patientFileNoOrMemberId =
+    beneficiaryNumber ||
+    beneficiaryNumberFromBody ||
+    exsysPatientCardNo ||
+    beneficiaryKey;
+
   if (shouldCallEligibilityApi) {
     const [
       patient_first_name,
@@ -301,8 +308,7 @@ export default checkPatientInsuranceMiddleware(async (body) => {
       secondName: patient_second_name || secondName || "Name",
       thirdName: patient_third_name || thirdName || "",
       familyName: patient_family_name || lastName || "",
-      patientFileNoOrMemberId:
-        beneficiaryNumber || beneficiaryNumberFromBody || beneficiaryKey,
+      patientFileNoOrMemberId,
       beneficiaryKey: __beneficiaryKey,
       mobileNumber: mobileNumber || mobileFromBody || "",
       genderName: mainGender || "male",
