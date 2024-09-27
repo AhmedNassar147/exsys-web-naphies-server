@@ -235,12 +235,6 @@ export default checkPatientInsuranceMiddleware(async (body) => {
   const __customer_no = customer_no || customerNo || "";
   const __customer_group_no = customer_group_no || customerGroupNo || "";
 
-  const shouldCallEligibilityApi = !!(
-    organization_no &&
-    __customer_no &&
-    __customer_group_no
-  );
-
   const mockedDateOfBirth = dateOfBirthFromBody || "01-12-1970";
 
   const __dateOfBirth =
@@ -262,22 +256,6 @@ export default checkPatientInsuranceMiddleware(async (body) => {
       }))
     : [];
 
-  if (!shouldCallEligibilityApi) {
-    return {
-      data: {
-        errorCode,
-        errorDescription,
-        cchiOriginalResults,
-        customerNo: __customer_no,
-        customerGroupNo: __customer_group_no,
-        exsysCchiPatientData,
-        insurance: __insuranceData,
-        notificationError:
-          "Please select customer, customer-group and add card no",
-      },
-    };
-  }
-
   const baseResponse = {
     errorCode,
     errorDescription,
@@ -287,6 +265,22 @@ export default checkPatientInsuranceMiddleware(async (body) => {
     exsysCchiPatientData,
     insurance: __insuranceData,
   };
+
+  const shouldCallEligibilityApi = !!(
+    organization_no &&
+    __customer_no &&
+    __customer_group_no
+  );
+
+  if (!shouldCallEligibilityApi) {
+    return {
+      data: {
+        ...baseResponse,
+        notificationError:
+          "Please select customer, customer-group and add card no",
+      },
+    };
+  }
 
   const patientFileNoOrMemberId =
     beneficiaryNumber ||
