@@ -3,10 +3,7 @@
  * Helpers: `createNphiesEncounter`.
  *
  */
-import {
-  createTimestamp,
-  formatDateToNativeDateParts,
-} from "@exsys-web-server/helpers";
+import { formatDateToNativeDateParts } from "@exsys-web-server/helpers";
 import createNphiesBaseResource from "./createNphiesBaseResource.mjs";
 import {
   NPHIES_BASE_PROFILE_TYPES,
@@ -40,6 +37,11 @@ const {
 const { ENCOUNTER } = NPHIES_RESOURCE_TYPES;
 const { BASE_CODE_SYS_URL, BASE_PROFILE_URL, BASE_TERMINOLOGY_CODE_SYS_URL } =
   NPHIES_API_URLS;
+
+const periodFormatOptions = {
+  subtractMonthBy: 1,
+  returnResultAsTimeStamp: true,
+};
 
 const createNphiesEncounter = ({
   organizationReference,
@@ -109,8 +111,9 @@ const createNphiesEncounter = ({
         },
         !!encounterEmergencyServiceStartDate && {
           url: `${BASE_PROFILE_URL}/${EXTENSION_EMERGENCY_SERVICE_START}`,
-          valueDateTime: createTimestamp(
-            formatDateToNativeDateParts(encounterEmergencyServiceStartDate)
+          valueDateTime: formatDateToNativeDateParts(
+            encounterEmergencyServiceStartDate,
+            periodFormatOptions
           ),
         },
         !!encounterEmergencyDispositionCode && {
@@ -139,8 +142,9 @@ const createNphiesEncounter = ({
         },
         !!encounterTriageDate && {
           url: `${BASE_PROFILE_URL}/${EXTENSION_TRIAGE_DATE}`,
-          valueDateTime: createTimestamp(
-            formatDateToNativeDateParts(encounterTriageDate)
+          valueDateTime: formatDateToNativeDateParts(
+            encounterTriageDate,
+            periodFormatOptions
           ),
         },
         !!encounterServiceEventType && {
@@ -194,10 +198,14 @@ const createNphiesEncounter = ({
         reference: `${providerPatientUrl}/${patientFileNo}`,
       },
       period: {
-        start: createTimestamp(
-          formatDateToNativeDateParts(encounterPeriodStart)
+        start: formatDateToNativeDateParts(
+          encounterPeriodStart,
+          periodFormatOptions
         ),
-        end: createTimestamp(formatDateToNativeDateParts(encounterPeriodEnd)),
+        end: formatDateToNativeDateParts(
+          encounterPeriodEnd,
+          periodFormatOptions
+        ),
       },
       hospitalization: showHospitalizationSection
         ? {

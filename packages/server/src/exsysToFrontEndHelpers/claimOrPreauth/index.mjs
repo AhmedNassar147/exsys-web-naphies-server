@@ -39,6 +39,8 @@ const {
   EXTENSION_TRANSFER,
 } = NPHIES_BASE_CODE_TYPES;
 
+const dateFormatOptions = { stringifyReturnedDate: true };
+
 const getExtensionData = (extension) => {
   if (isArrayHasData(extension)) {
     return extension.reduce(
@@ -135,7 +137,7 @@ const getAccidentData = (accident) => {
 
   const { code } = extractNphiesCodeAndDisplayFromCodingType(type);
 
-  const value = [formatDateToNativeDateParts(date, true), code]
+  const value = [formatDateToNativeDateParts(date, dateFormatOptions), code]
     .filter(Boolean)
     .join("  ");
 
@@ -150,8 +152,14 @@ const getBillableDates = (billablePeriod) => {
   }
 
   const { start, end } = billablePeriod || {};
-  const billablePeriodStartDate = formatDateToNativeDateParts(start, true);
-  const billablePeriodEndDate = formatDateToNativeDateParts(end, true);
+  const billablePeriodStartDate = formatDateToNativeDateParts(
+    start,
+    dateFormatOptions
+  );
+  const billablePeriodEndDate = formatDateToNativeDateParts(
+    end,
+    dateFormatOptions
+  );
 
   return {
     billablePeriod: [billablePeriodStartDate, billablePeriodEndDate]

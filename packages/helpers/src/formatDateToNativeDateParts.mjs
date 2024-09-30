@@ -3,9 +3,13 @@
  * Helper: `formatDateToNativeDateParts`.
  *
  */
+import createTimestamp from "./createTimestamp.mjs";
 import reverseDate from "./reverseDate.mjs";
 
-const formatDateToNativeDateParts = (date, stringifyReturnedDate) => {
+const formatDateToNativeDateParts = (
+  date,
+  { stringifyReturnedDate, subtractMonthBy, returnResultAsTimeStamp }
+) => {
   if (!date) {
     return undefined;
   }
@@ -17,9 +21,15 @@ const formatDateToNativeDateParts = (date, stringifyReturnedDate) => {
   const [year, month, day] = __date.split("-");
   const timeParts = (time || "").split(":");
 
-  const dateParts = [+year, month, +day, ...timeParts].filter(Boolean);
+  const __month = subtractMonthBy ? month - subtractMonthBy : month;
 
-  return stringifyReturnedDate ? dateParts.reverse().join("-") : dateParts;
+  const dateParts = [+year, __month, +day, ...timeParts].filter(Boolean);
+
+  if (stringifyReturnedDate) {
+    return dateParts.reverse().join("-");
+  }
+
+  return returnResultAsTimeStamp ? createTimestamp(dateParts) : dateParts;
 };
 
 export default formatDateToNativeDateParts;
