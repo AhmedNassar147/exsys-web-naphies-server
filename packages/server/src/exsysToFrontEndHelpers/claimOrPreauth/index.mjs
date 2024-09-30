@@ -4,15 +4,12 @@
  *
  */
 import {
-  findRootYarnWorkSpaces,
+  // findRootYarnWorkSpaces,
+  // readJsonFile,
+  // writeResultFile,
   formatDateToNativeDateParts,
   getLastPartOfUrl,
   isArrayHasData,
-  readJsonFile,
-  writeResultFile,
-  // readJsonFile,
-  // writeResultFile,
-  // findRootYarnWorkSpaces,
 } from "@exsys-web-server/helpers";
 import { NPHIES_BASE_CODE_TYPES } from "../../constants.mjs";
 import mapEntriesAndExtractNeededData from "../../nphiesHelpers/extraction/mapEntriesAndExtractNeededData.mjs";
@@ -446,12 +443,12 @@ const extractPreauthOrClaimDataSentToNphies = ({
   };
 };
 
-const base = await findRootYarnWorkSpaces();
-const [result] = await readJsonFile(`${base}/results/exsys/test2.json`, true);
+// const base = await findRootYarnWorkSpaces();
+// const [result] = await readJsonFile(`${base}/results/exsys/test2.json`, true);
 
-await writeResultFile({
-  data: extractPreauthOrClaimDataSentToNphies(result),
-  folderName: "exsysFromEndnew",
-});
+// await writeResultFile({
+//   data: extractPreauthOrClaimDataSentToNphies(result),
+//   folderName: "exsysFromEndnew",
+// });
 
 export default extractPreauthOrClaimDataSentToNphies;
