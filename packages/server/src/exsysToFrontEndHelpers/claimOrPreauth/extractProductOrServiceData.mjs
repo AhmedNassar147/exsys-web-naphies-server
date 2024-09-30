@@ -3,11 +3,7 @@
  * Helper: `extractProductOrServiceData`.
  *
  */
-import { isArrayHasData } from "@exsys-web-server/helpers";
-import extractValueFromUrl from "../../nphiesHelpers/extraction/extractValueFromUrl.mjs";
-import { NPHIES_API_URLS } from "../../constants.mjs";
-
-const { BASE_CODE_SYS_URL } = NPHIES_API_URLS;
+import { getLastPartOfUrl, isArrayHasData } from "@exsys-web-server/helpers";
 
 const extractProductOrServiceData = (productOrService) => {
   const { coding } = productOrService || {};
@@ -20,7 +16,7 @@ const extractProductOrServiceData = (productOrService) => {
     const { code: customerProductCode, display: customerProductName } =
       customerItem || {};
 
-    const codeType = extractValueFromUrl(system, BASE_CODE_SYS_URL);
+    const codeType = getLastPartOfUrl(system);
 
     return {
       nphiesProductCode,

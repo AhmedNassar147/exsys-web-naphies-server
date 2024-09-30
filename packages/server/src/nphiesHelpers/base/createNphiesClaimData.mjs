@@ -287,7 +287,7 @@ const createNphiesClaimData = ({
     batchPeriodEnd,
     isTransfer,
     batchAccountingPeriod,
-    encounterUrl: encounterUrl ? `${encounterUrl}/${requestId}` : undefined,
+    encounterUrl,
   });
 
   const { fullUrl, resource } = createBaseEntryRequestData({

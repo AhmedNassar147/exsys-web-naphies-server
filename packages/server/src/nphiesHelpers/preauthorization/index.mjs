@@ -124,6 +124,7 @@ const createNaphiesPreauthRequestFullData = ({
   accidentDate,
   accidentCode,
   encounterServiceEventType,
+  encounterRequestId,
   encounterStatus,
   encounterClassCode,
   encounterClassDisplay,
@@ -202,7 +203,11 @@ const createNaphiesPreauthRequestFullData = ({
     }
   }
 
-  const hasEncounterSection = !!encounterStatus;
+  const hasEncounterSection = !!encounterRequestId;
+
+  const fullEncounterUrl = hasEncounterSection
+    ? `${encounterUrl}/${encounterRequestId}`
+    : undefined;
 
   const requestPayload = {
     ...createNphiesBaseRequestData(),
@@ -257,7 +262,7 @@ const createNaphiesPreauthRequestFullData = ({
         billablePeriodStartDate,
         accidentDate,
         accidentCode,
-        encounterUrl: hasEncounterSection ? encounterUrl : undefined,
+        encounterUrl: fullEncounterUrl,
       }),
       createNphiesDoctorOrPatientData({
         patientOrDoctorId: patient_file_no,
@@ -349,7 +354,7 @@ const createNaphiesPreauthRequestFullData = ({
         }),
       hasEncounterSection &&
         createNphiesEncounter({
-          requestId,
+          requestId: encounterRequestId,
           encounterUrl,
           encounterServiceEventType,
           encounterStatus,

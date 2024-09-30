@@ -4,8 +4,12 @@
  *
  */
 import {
+  findRootYarnWorkSpaces,
+  formatDateToNativeDateParts,
   getLastPartOfUrl,
   isArrayHasData,
+  readJsonFile,
+  writeResultFile,
   // readJsonFile,
   // writeResultFile,
   // findRootYarnWorkSpaces,
@@ -24,6 +28,10 @@ import extractCoverageRelationship from "../../nphiesHelpers/extraction/extractC
 import extractCancellationData from "./extractCancellationData.mjs";
 import extractPollData from "./extractPollData.mjs";
 import createProductsData from "./createProductsData.mjs";
+import makeFinalCareTeamData from "./makeFinalCareTeamData.mjs";
+import createDiagnosisData from "./createDiagnosisData.mjs";
+import extractContentAttachment from "./extractContentAttachment.mjs";
+import extractSavedCommunicationData from "./extractSavedCommunicationData.mjs";
 
 const {
   EXTENSION_AUTH_OFFLINE_DATE,
@@ -98,11 +106,16 @@ const getMemberId = (identifier) => {
 
 const createRequestRelatedData = (related) => {
   if (isArrayHasData(related)) {
-    const [{ claim }] = related;
+    const [{ claim, relationship }] = related;
     const { identifier } = claim;
     const [value] = extractIdentifierData(identifier);
+
+    const { code } = extractNphiesCodeAndDisplayFromCodingType(relationship);
+
     return {
-      claimRelatedIdentifier: (value || "").replace("req_", ""),
+      claimRelatedIdentifier: [(value || "").replace("req_", ""), code]
+        .filter(Boolean)
+        .join(" - "),
     };
   }
 
@@ -118,6 +131,36 @@ const getSentPreAuthRef = (insurance) => {
   }
 
   return "";
+};
+
+const getAccidentData = (accident) => {
+  const { date, type } = accident || {};
+
+  const { code } = extractNphiesCodeAndDisplayFromCodingType(type);
+
+  const value = [formatDateToNativeDateParts(date, true), code]
+    .filter(Boolean)
+    .join("  ");
+
+  return {
+    accidentDateCode: value || undefined,
+  };
+};
+
+const getBillableDates = (billablePeriod) => {
+  if (!billablePeriod) {
+    return null;
+  }
+
+  const { start, end } = billablePeriod || {};
+  const billablePeriodStartDate = formatDateToNativeDateParts(start, true);
+  const billablePeriodEndDate = formatDateToNativeDateParts(end, true);
+
+  return {
+    billablePeriod: [billablePeriodStartDate, billablePeriodEndDate]
+      .filter(Boolean)
+      .join(" ~ "),
+  };
 };
 
 const extractionFunctionsMap = {
@@ -137,6 +180,8 @@ const extractionFunctionsMap = {
       related,
       careTeam,
       insurance,
+      accident,
+      billablePeriod,
     },
   }) => ({
     supportingInfo,
@@ -151,6 +196,8 @@ const extractionFunctionsMap = {
     claimIdentifierType: getIdentifierUrlType(identifier),
     ...getExtensionData(extension),
     ...createRequestRelatedData(related),
+    ...getAccidentData(accident),
+    ...getBillableDates(billablePeriod),
     careTeam: isArrayHasData(careTeam)
       ? careTeam.map(({ sequence, role, qualification }) => ({
           sequence,
@@ -184,6 +231,19 @@ const extractionFunctionsMapForInsuranceOrg = {
   Organization: extractOrganizationData("ins"),
 };
 
+// support info
+// absenceReasonCode,
+// absenceReasonUrlCode,
+
+// diagnosis
+// extensionConditionOnset
+
+// accidentDateCode,
+// billablePeriod
+
+// product extension
+// extensionMaternity boolean
+
 const extractPreauthOrClaimDataSentToNphies = ({
   nodeServerDataSentToNaphies,
   nphiesResponse,
@@ -192,9 +252,10 @@ const extractPreauthOrClaimDataSentToNphies = ({
   pollData,
   preauth_pk,
   claim_pk,
+  communicationReplyData,
+  communicationRequestData,
 }) => {
   let supportInfoData = undefined;
-  let diagnosisData = undefined;
 
   const { id: creationBundleId } = nodeServerDataSentToNaphies || {};
   const { issue } = nphiesResponse || {};
@@ -254,28 +315,15 @@ const extractPreauthOrClaimDataSentToNphies = ({
     otherClaimErrors,
   } = extractNphiesSentDataErrors(nodeServerDataSentToNaphies, claimErrors);
 
-  const productsData = createProductsData({
+  const diagnosisData = createDiagnosisData(diagnosis, diagnosisErrors);
+
+  const { productsData, totalValues } = createProductsData({
     extractedProductsData,
     productsSentToNphies,
     productErrors,
   });
 
-  const totalValues = isArrayHasData(productsData)
-    ? productsData.reduce(
-        (acc, { extensionTax, extensionPatientShare }) => {
-          acc.totalTax = acc.totalTax + (extensionTax || 0);
-          return {
-            totalTax: acc.totalTax + (extensionTax || 0),
-            totalPatientShare:
-              acc.totalPatientShare + (extensionPatientShare || 0),
-          };
-        },
-        {
-          totalTax: 0,
-          totalPatientShare: 0,
-        }
-      )
-    : {};
+  const finalCareTeam = makeFinalCareTeamData(careTeam, careTeamData);
 
   if (isArrayHasData(supportingInfo)) {
     supportInfoData = supportingInfo.map(
@@ -288,6 +336,7 @@ const extractPreauthOrClaimDataSentToNphies = ({
         valueString,
         timingDate,
         timingPeriod,
+        reason,
       }) => {
         const { code: categoryCode } =
           extractNphiesCodeAndDisplayFromCodingType(category);
@@ -297,6 +346,9 @@ const extractPreauthOrClaimDataSentToNphies = ({
           display,
           text,
         } = extractNphiesCodeAndDisplayFromCodingType(code);
+
+        const { code: absenceReasonCode, codingSystemUrl: absenceReasonUrl } =
+          extractNphiesCodeAndDisplayFromCodingType(reason);
 
         let value = valueString || timingDate;
         let unit;
@@ -310,26 +362,25 @@ const extractPreauthOrClaimDataSentToNphies = ({
         }
 
         if (valueAttachment) {
-          const {
-            contentType: _contentType,
-            data,
-            title: _title,
-            creation: _creation,
-          } = valueAttachment;
+          const result = extractContentAttachment(valueAttachment);
 
-          value =
-            !!data && typeof data === "string"
-              ? `data:${_contentType};base64,${data}`
-              : undefined;
-          contentType = _contentType;
-          title = _title;
-          creation = _creation;
+          value = result.value;
+          contentType = result.contentType;
+          title = result.title;
+          creation = result.creation;
         }
 
         if (timingPeriod) {
           const { start, end } = timingPeriod;
           value = [start, end].filter(Boolean).join(" ~ ");
         }
+
+        const __absenceReasonCode = [
+          absenceReasonCode,
+          getLastPartOfUrl(absenceReasonUrl),
+        ]
+          .filter(Boolean)
+          .join("  ");
 
         return {
           sequence,
@@ -342,44 +393,13 @@ const extractPreauthOrClaimDataSentToNphies = ({
           title,
           contentType,
           creation,
+          extendable: "y",
+          absenceReasonCode: __absenceReasonCode || undefined,
           error: supportInfoErrors[sequence],
         };
       }
     );
   }
-
-  if (isArrayHasData(diagnosis)) {
-    diagnosisData = diagnosis.map(
-      ({ sequence, onAdmission, diagnosisCodeableConcept, type }) => {
-        const { code: _onAdmission } =
-          extractNphiesCodeAndDisplayFromCodingType(onAdmission);
-
-        const { code: diagCode, display: diagDisplay } =
-          extractNphiesCodeAndDisplayFromCodingType(diagnosisCodeableConcept);
-
-        const { code: diagType } = extractNphiesCodeAndDisplayFromCodingType(
-          isArrayHasData(type) ? type[0] : {}
-        );
-
-        return {
-          sequence,
-          onAdmission: _onAdmission === "y",
-          diagCode,
-          diagDisplay,
-          diagType,
-          error: diagnosisErrors[sequence],
-        };
-      }
-    );
-  }
-
-  const finalCareTeam =
-    isArrayHasData(careTeam) && !!careTeamData
-      ? careTeam.map((item) => ({
-          ...item,
-          ...(careTeamData || null),
-        }))
-      : [];
 
   return {
     exsysRecordPk: preauth_pk || claim_pk,
@@ -419,20 +439,19 @@ const extractPreauthOrClaimDataSentToNphies = ({
     ...issueValues,
     cancellationData: extractCancellationData(cancellationData),
     pollData: extractPollData(pollData, productsSentToNphies),
+    ...extractSavedCommunicationData(
+      communicationReplyData,
+      communicationRequestData
+    ),
   };
 };
 
-// const base = await findRootYarnWorkSpaces();
-// const [{ nodeServerDataSentToNaphies, nphiesResponse, nphiesExtractedData }] =
-//   await readJsonFile(`${base}/results/exsys/auth-poll/claim-2.json`, true);
+const base = await findRootYarnWorkSpaces();
+const [result] = await readJsonFile(`${base}/results/exsys/test2.json`, true);
 
-// await writeResultFile({
-//   data: extractPreauthOrClaimDataSentToNphies({
-//     nphiesExtractedData,
-//     nphiesResponse,
-//     nodeServerDataSentToNaphies,
-//   }),
-//   folderName: "exsysFromEnd",
-// });
+await writeResultFile({
+  data: extractPreauthOrClaimDataSentToNphies(result),
+  folderName: "exsysFromEndnew",
+});
 
 export default extractPreauthOrClaimDataSentToNphies;

@@ -5,7 +5,7 @@
  */
 import reverseDate from "./reverseDate.mjs";
 
-const formatDateToNativeDateParts = (date) => {
+const formatDateToNativeDateParts = (date, stringifyReturnedDate) => {
   if (!date) {
     return undefined;
   }
@@ -17,7 +17,9 @@ const formatDateToNativeDateParts = (date) => {
   const [year, month, day] = __date.split("-");
   const timeParts = (time || "").split(":");
 
-  return [+year, month - 1, +day, ...timeParts].filter(Boolean);
+  const dateParts = [+year, month, +day, ...timeParts].filter(Boolean);
+
+  return stringifyReturnedDate ? dateParts.reverse().join("-") : dateParts;
 };
 
 export default formatDateToNativeDateParts;

@@ -7,7 +7,7 @@ import { isArrayHasData } from "@exsys-web-server/helpers";
 import extractNphiesCodeAndDisplayFromCodingType from "../../nphiesHelpers/extraction/extractNphiesCodeAndDisplayFromCodingType.mjs";
 import getValueFromObject from "../../nphiesHelpers/extraction/getValueFromObject.mjs";
 import extractProductOrServiceData from "./extractProductOrServiceData.mjs";
-import extraProductExtensionsSentToNphies from "./extraProductExtensionsSentToNphies.mjs";
+import extractExtensionsSentToNphies from "./extractExtensionsSentToNphies.mjs";
 
 const createProductsData = ({
   extractedProductsData,
@@ -43,7 +43,7 @@ const createProductsData = ({
         servicedDate,
         quantity: getValueFromObject(quantity),
         unitPrice: getValueFromObject(unitPrice),
-        ...extraProductExtensionsSentToNphies(extension),
+        ...extractExtensionsSentToNphies(extension),
         net_price: getValueFromObject(net),
         factor,
         tooth: extractNphiesCodeAndDisplayFromCodingType(bodySite).code,
@@ -54,7 +54,24 @@ const createProductsData = ({
     );
   }
 
-  return productsData;
+  const totalValues = isArrayHasData(productsData)
+    ? productsData.reduce(
+        (acc, { extensionTax, extensionPatientShare }) => {
+          acc.totalTax = acc.totalTax + (extensionTax || 0);
+          return {
+            totalTax: acc.totalTax + (extensionTax || 0),
+            totalPatientShare:
+              acc.totalPatientShare + (extensionPatientShare || 0),
+          };
+        },
+        {
+          totalTax: 0,
+          totalPatientShare: 0,
+        }
+      )
+    : {};
+
+  return { productsData, totalValues };
 };
 
 export default createProductsData;

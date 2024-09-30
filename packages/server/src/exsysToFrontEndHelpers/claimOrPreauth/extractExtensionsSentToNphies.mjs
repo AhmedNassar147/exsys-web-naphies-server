@@ -1,16 +1,16 @@
 /*
  *
- * Helper: `extraProductExtensionsSentToNphies`.
+ * Helper: `extractExtensionsSentToNphies`.
  *
  */
-import { isArrayHasData, toCamelCase } from "@exsys-web-server/helpers";
+import {
+  getLastPartOfUrl,
+  isArrayHasData,
+  toCamelCase,
+} from "@exsys-web-server/helpers";
 import extractNphiesCodeAndDisplayFromCodingType from "../../nphiesHelpers/extraction/extractNphiesCodeAndDisplayFromCodingType.mjs";
-import extractValueFromUrl from "../../nphiesHelpers/extraction/extractValueFromUrl.mjs";
-import { NPHIES_API_URLS } from "../../constants.mjs";
 
-const { BASE_PROFILE_URL } = NPHIES_API_URLS;
-
-const extraProductExtensionsSentToNphies = (extension) => {
+const extractExtensionsSentToNphies = (extension) => {
   if (isArrayHasData(extension)) {
     return extension.reduce(
       (
@@ -18,7 +18,7 @@ const extraProductExtensionsSentToNphies = (extension) => {
         { valueMoney, valueIdentifier, valueBoolean, url, valueCodeableConcept }
       ) => {
         const filedName = toCamelCase(
-          extractValueFromUrl(url, BASE_PROFILE_URL).replace("-", " ")
+          getLastPartOfUrl(url, (value) => value.replace("-", " "))
         );
 
         let value = valueBoolean;
@@ -48,4 +48,4 @@ const extraProductExtensionsSentToNphies = (extension) => {
   return {};
 };
 
-export default extraProductExtensionsSentToNphies;
+export default extractExtensionsSentToNphies;

@@ -8,7 +8,7 @@ const extractNphiesCodeAndDisplayFromCodingType = (type) => {
     return {};
   }
   const { coding, text, extension: typeExtension } = type;
-  const [{ code, display, extension }] = coding || [{}];
+  const [{ code, display, extension, system }] = coding || [{}];
   const [{ valueString }] = extension || [{}];
   const [{ valueString: typeExtensionValue }] = typeExtension || [{}];
 
@@ -17,6 +17,7 @@ const extractNphiesCodeAndDisplayFromCodingType = (type) => {
     display,
     extensionValue: valueString || typeExtensionValue,
     text,
+    codingSystemUrl: system,
   };
 };
 

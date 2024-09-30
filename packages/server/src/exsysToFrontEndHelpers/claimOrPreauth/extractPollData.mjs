@@ -42,7 +42,7 @@ const extractPollData = (pollData, productsSentToNphies) => {
     otherClaimErrors,
   } = extractNphiesSentDataErrors(nodeServerDataSentToNaphies, claimErrors);
 
-  const productsData = createProductsData({
+  const { productsData } = createProductsData({
     extractedProductsData,
     productsSentToNphies,
     productErrors,

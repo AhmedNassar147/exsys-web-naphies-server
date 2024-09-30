@@ -44,30 +44,19 @@ const fetchPreauthAndClaimSavedData = async (requestParams) => {
     };
   }
 
-  const { data, ...others } = result || {};
+  const __result = result || {};
 
   const extractionFunction =
     request_type === "eligibility"
       ? extractEligibilityDataSentToNphies
       : extractPreauthOrClaimDataSentToNphies;
 
-  const extractedData = extractionFunction({
-    ...(data || null),
-    ...others,
-  });
-
-  const {
-    nodeServerDataSentToNphies,
-    nphiesResponse: _nphiesResponse,
-    cancellationData,
-    pollData,
-    ..._extractedData
-  } = extractedData;
+  const extractedData = extractionFunction(__result);
 
   return {
     printData: {
       folderName: printFolderName,
-      data: { ...basePrintedData, extractedData: _extractedData },
+      data: { ...basePrintedData, extractedData },
     },
     resultData: {
       extractedData,
