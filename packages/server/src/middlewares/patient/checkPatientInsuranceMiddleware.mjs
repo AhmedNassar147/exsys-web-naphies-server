@@ -194,32 +194,28 @@ export default checkPatientInsuranceMiddleware(async (body) => {
   const __genderCode = gender || genderCodeFromBody;
   const __nationalityCode = nationalityCode || nationalityID || nationality;
 
-  let exsysCchiPatientData = {};
+  const { result } = await createExsysRequest({
+    resourceName: queryExsysCchiPatient,
+    requestMethod: "GET",
+    retryTimes: 0,
+    requestParams: {
+      authorization,
+      organization_no,
+      beneficiaryId: beneficiaryKey,
+      nationalityCode: __nationalityCode,
+      gender: __genderCode,
+      insuranceCompanyId: insuranceCompanyID || insuranceCompanyIdFromBody,
+      policyNumber,
+      className: (className || "")
+        .replace(/\s{1,}/g, " ")
+        .split(" ")
+        .filter((v) => v !== "class")
+        .join(" "),
+    },
+  });
 
-  if (isCCHITotallySuccesseded) {
-    const { result } = await createExsysRequest({
-      resourceName: queryExsysCchiPatient,
-      requestMethod: "GET",
-      retryTimes: 0,
-      requestParams: {
-        authorization,
-        organization_no,
-        beneficiaryId: beneficiaryKey,
-        nationalityCode: __nationalityCode,
-        gender: __genderCode,
-        insuranceCompanyId: insuranceCompanyID || insuranceCompanyIdFromBody,
-        policyNumber,
-        className: (className || "")
-          .replace(/\s{1,}/g, " ")
-          .split(" ")
-          .filter((v) => v !== "class")
-          .join(" "),
-      },
-    });
-
-    const { data } = result || {};
-    exsysCchiPatientData = data || {};
-  }
+  const { data: __data } = result || {};
+  const exsysCchiPatientData = __data || {};
 
   const {
     nationalityCode: exsysNationalityCode,
