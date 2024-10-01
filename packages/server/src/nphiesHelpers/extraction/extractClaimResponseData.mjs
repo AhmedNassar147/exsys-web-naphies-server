@@ -146,26 +146,27 @@ const extractClaimResponseData = ({
   const errors = [
     ...extractErrorsArray(error),
     ...extractNphiesOutputErrors(output),
-  ];
+  ].filter(Boolean);
 
   return {
     claimResourceType: resourceType,
     claimResponseId: claimResponseId.replace("req_", "") || id,
     claimRequestId,
+    claimMessageEventType,
     claimStatus: status,
     claimOutcome: outcome,
-    claimDisposition: disposition,
-    claimPreauthRef: preAuthRef,
     claimPeriodStart: createDateFromNativeDate(start).dateString,
     claimPeriodEnd: createDateFromNativeDate(end).dateString,
+    claimPreauthRef: preAuthRef,
     claimPriority: priority,
+
+    claimDisposition: disposition,
     claimExtensionCode: !claimExtensionCode
       ? outcome === "queued"
         ? "pended"
         : outcome
       : claimExtensionCode,
     ...extensionOthersValues,
-    claimMessageEventType,
     processNotes: processNotes,
     productsData,
     fundsReserveCode,

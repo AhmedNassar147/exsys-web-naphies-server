@@ -55,6 +55,7 @@ export const EXSYS_API_IDS_NAMES = {
   queryClaimsToCreatePdfFile: "queryClaimsToCreatePdfFile",
   saveCreatedClaimPdfStatus: "saveCreatedClaimPdfStatus",
   queryExsysCchiPatient: "queryExsysCchiPatient",
+  queryMedicationsValidationPollData: "queryMedicationsValidationPollData",
 };
 
 export const CLIENT_NAMES = {
@@ -149,6 +150,9 @@ export const EXSYS_API_IDS = {
   // http://149.102.140.8:9090/ords/exsys_api/nphies_pkg/get_cchi_patient_data?Aauthorization=111111&beneficiaryId=2167720701&nationalityCode=113&insuranceCompanyId=101&policyNumber=23235228&className=GL/B&gender=0&planguageid=1&organization_no=001
   [EXSYS_API_IDS_NAMES.queryExsysCchiPatient]:
     "nphies_pkg/get_cchi_patient_data",
+
+  // http://149.102.140.8:9090/ords/exsys_api/
+  [EXSYS_API_IDS_NAMES.queryMedicationsValidationPollData]: "",
 };
 
 export const HTTP_STATUS_CODE = {
@@ -180,6 +184,9 @@ export const NPHIES_REQUEST_TYPES = {
   COMMUNICATION_REQUEST: "CommunicationRequest",
   CANCEL: "cancel",
   STATUS_CHECK: "status-check",
+  STATUS_CHECK: "status-check",
+  MEDICATION_REQUEST: "medicationRequest",
+  PRESCRIBER: "prescriber",
 };
 
 export const NPHIES_RESOURCE_TYPES = {
@@ -197,6 +204,7 @@ export const NPHIES_RESOURCE_TYPES = {
   COMMUNICATION: "Communication",
   COMMUNICATION_REQUEST: "CommunicationRequest",
   ENCOUNTER: "Encounter",
+  MedicationRequest: "MedicationRequest",
 };
 
 export const NPHIES_RESOURCE_MAP_TO_REQUEST_TYPE = {
@@ -263,6 +271,8 @@ export const NPHIES_BASE_PROFILE_TYPES = {
   PROFILE_COMMUNICATION: "communication|1.0.0",
   PROFILE_COMMUNICATION_REQUEST: "communication-request|1.0.0",
   PROFILE_ENCOUNTER: "encounter|1.0.0",
+  PROFILE_MEDICATION_REQUEST: "medicationRequest|1.0.0",
+  PROFILE_PRESCRIBER_PREAUTH: "prescriber-priorauth|1.0.0",
 };
 
 export const NPHIES_BASE_CODE_TYPES = {
@@ -330,6 +340,9 @@ export const NPHIES_BASE_CODE_TYPES = {
   EXTENSION_LENGTH_OF_STAY: "extension-intendedLengthOfStay",
   ENCOUNTER_LENGTH_OF_STAY: "intended-length-of-stay",
   EXTENSION_DISCHARGE_DISPOSITION: "discharge-disposition",
+  ROUTE_OF_ADMINS: "route-of-admin",
+  EXTENSION_MEDICATION_REQUEST: "extension-medicationRequest",
+  EXTENSION_STRENGTH: "extension-strength",
 };
 
 export const USE_NEW_INVESTIGATION_AS_ATTACHMENT = false;

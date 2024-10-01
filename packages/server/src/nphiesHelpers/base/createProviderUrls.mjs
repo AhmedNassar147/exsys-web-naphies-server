@@ -6,6 +6,7 @@
 import {
   NPHIES_RESOURCE_TYPES,
   NPHIES_RESOURCE_MAP_TO_REQUEST_TYPE,
+  NPHIES_REQUEST_TYPES,
 } from "../../constants.mjs";
 
 const {
@@ -17,6 +18,8 @@ const {
   VISION_PRESCRIPTION,
   ENCOUNTER,
 } = NPHIES_RESOURCE_TYPES;
+
+const { MEDICATION_REQUEST } = NPHIES_REQUEST_TYPES;
 
 const createProviderUrls = ({ providerBaseUrl, requestType }) => {
   const requestTypeValue = NPHIES_RESOURCE_MAP_TO_REQUEST_TYPE[requestType];
@@ -30,6 +33,7 @@ const createProviderUrls = ({ providerBaseUrl, requestType }) => {
     providerLocationUrl: `${providerBaseUrl}/${LOCATION}`,
     visionPrescriptionUrl: `${providerBaseUrl}/${VISION_PRESCRIPTION}`,
     encounterUrl: `${providerBaseUrl}/${ENCOUNTER}`,
+    medicationRequestUrl: `${providerBaseUrl}/${MEDICATION_REQUEST}`,
   };
 };
 

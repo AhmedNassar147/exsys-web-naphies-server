@@ -147,6 +147,7 @@ const createNphiesDoctorOrPatientData = ({
           use: "official",
         },
       ],
+      gender: isPatient ? undefined : gender,
       ...(isPatient
         ? {
             ...(staffPhone

@@ -19,6 +19,7 @@ import {
   SUPPORT_INFO_KEY_NAMES,
   USE_NEW_INVESTIGATION_AS_ATTACHMENT,
   INVESTIGATION_RESULT_CODE_FOR_ATTACHMENT,
+  NPHIES_REQUEST_TYPES,
 } from "../../constants.mjs";
 
 const {
@@ -34,9 +35,11 @@ const {
   PROFILE_ORAL_PREAUTH,
   PROFILE_PHARMACY_PREAUTH,
   PROFILE_PROFESSIONAL_PREAUTH,
+  PROFILE_PRESCRIBER_PREAUTH,
 } = NPHIES_BASE_PROFILE_TYPES;
 
 const { CLAIM } = NPHIES_RESOURCE_TYPES;
+const { PRESCRIBER } = NPHIES_REQUEST_TYPES;
 
 const {
   CLAIM_TYPE,
@@ -67,6 +70,8 @@ const {
   EXTENSION_MATERNITY,
   EXTENSION_ENCOUNTER,
   EXTENSION_ONSET_CONDITION_CODE,
+  EXTENSION_MEDICATION_REQUEST,
+  EXTENSION_STRENGTH,
 } = NPHIES_BASE_CODE_TYPES;
 
 const PREAUTH_PROFILE_TYPES = {
@@ -75,6 +80,7 @@ const PREAUTH_PROFILE_TYPES = {
   oral: PROFILE_ORAL_PREAUTH,
   pharmacy: PROFILE_PHARMACY_PREAUTH,
   professional: PROFILE_PROFESSIONAL_PREAUTH,
+  [PRESCRIBER]: PROFILE_PRESCRIBER_PREAUTH,
 };
 
 const { investigation_result, attachment } = SUPPORT_INFO_KEY_NAMES;
@@ -223,6 +229,10 @@ const getSupportingInfoSequences = (supportingInfo, daysSupplyId) =>
 
 const createNphiesClaimData = ({
   requestId,
+  isPrescriberRequestData,
+  medicationRequestUrl,
+  medicationRequestIds,
+  approvalPrescriptionId,
   providerOrganization,
   payerOrganization,
   patientId,
@@ -264,31 +274,44 @@ const createNphiesClaimData = ({
   encounterUrl,
   relatedRelationshipCode,
 }) => {
-  const profileType = PREAUTH_PROFILE_TYPES[message_event_type];
+  const profileType = isPrescriberRequestData
+    ? PREAUTH_PROFILE_TYPES[PRESCRIBER]
+    : PREAUTH_PROFILE_TYPES[message_event_type];
 
-  const _profileType = isClaimRequest
-    ? profileType.replace("priorauth", "claim")
-    : profileType;
+  const _profileType =
+    isClaimRequest && !isPrescriberRequestData
+      ? profileType.replace("priorauth", "claim")
+      : profileType;
 
-  const identifierUrl = `${siteUrl}/${
-    !isClaimRequest
-      ? "authorization"
-      : referalIdentifier
-      ? "authorization"
-      : "claim"
-  }`;
+  const identifierUrlLastPart = isPrescriberRequestData
+    ? "prescription"
+    : !isClaimRequest
+    ? "authorization"
+    : referalIdentifier
+    ? "authorization"
+    : "claim";
 
-  const extension = createAuthorizationExtensions({
-    siteUrl,
-    extensionPriorauthId,
-    offlineRequestDate,
-    episodeInvoiceNo,
-    batchPeriodStart,
-    batchPeriodEnd,
-    isTransfer,
-    batchAccountingPeriod,
-    encounterUrl,
-  });
+  const useValue = isPrescriberRequestData
+    ? "predetermination"
+    : isClaimRequest
+    ? "claim"
+    : "preauthorization";
+
+  const identifierUrl = `${siteUrl}/${identifierUrlLastPart}`;
+
+  const extension = isPrescriberRequestData
+    ? undefined
+    : createAuthorizationExtensions({
+        siteUrl,
+        extensionPriorauthId,
+        offlineRequestDate,
+        episodeInvoiceNo,
+        batchPeriodStart,
+        batchPeriodEnd,
+        isTransfer,
+        batchAccountingPeriod,
+        encounterUrl,
+      });
 
   const { fullUrl, resource } = createBaseEntryRequestData({
     requestId,
@@ -312,8 +335,6 @@ const createNphiesClaimData = ({
   const hasDiagnosisData = isArrayHasData(diagnosisData);
   const hasSupportingInfoData = isArrayHasData(supportingInfo);
   const hasProductsData = isArrayHasData(productsData);
-
-  const useValue = isClaimRequest ? "claim" : "preauthorization";
 
   return {
     fullUrl,
@@ -369,16 +390,23 @@ const createNphiesClaimData = ({
             },
           }
         : null),
-      payee: {
-        type: {
-          coding: [
-            {
-              system: `${BASE_TERMINOLOGY_CODE_SYS_URL}/${PAYEE_TYPE}`,
-              code: "provider",
+      prescription: approvalPrescriptionId
+        ? {
+            display: approvalPrescriptionId,
+          }
+        : undefined,
+      payee: isPrescriberRequestData
+        ? undefined
+        : {
+            type: {
+              coding: [
+                {
+                  system: `${BASE_TERMINOLOGY_CODE_SYS_URL}/${PAYEE_TYPE}`,
+                  code: "provider",
+                },
+              ],
             },
-          ],
-        },
-      },
+          },
       ...(!!(billablePeriodStartDate && billablePeriodEndDate)
         ? {
             billablePeriod: {
@@ -613,32 +641,36 @@ const createNphiesClaimData = ({
 
       item: hasProductsData
         ? productsData.map(
-            ({
-              nphiesProductCode,
-              nphiesProductCodeType,
-              nphiesProductName,
-              customerProductCode,
-              customerProductName,
-              scientificCodes,
-              scientificCodesName,
-              pharmacistSelectionReason,
-              pharmacistSubstitute,
-              isMaternity,
-              servicedDate,
-              quantity,
-              unitPrice,
-              extensionTax,
-              extensionPatientShare,
-              extensionPackage,
-              diagnosisIds,
-              doctorsIds,
-              sequence,
-              days_supply_id,
-              net_price,
-              patientInvoiceNo,
-              tooth,
-              factor,
-            }) => ({
+            (
+              {
+                nphiesProductCode,
+                nphiesProductCodeType,
+                nphiesProductName,
+                customerProductCode,
+                customerProductName,
+                scientificCodes,
+                scientificCodesName,
+                pharmacistSelectionReason,
+                pharmacistSubstitute,
+                isMaternity,
+                servicedDate,
+                quantity,
+                unitPrice,
+                extensionTax,
+                extensionPatientShare,
+                extensionPackage,
+                diagnosisIds,
+                doctorsIds,
+                sequence,
+                days_supply_id,
+                net_price,
+                patientInvoiceNo,
+                tooth,
+                factor,
+                medicationStrength,
+              },
+              index
+            ) => ({
               sequence,
               careTeamSequence: getSequences(doctorsData, doctorsIds, "id"),
               diagnosisSequence: getSequences(
@@ -651,71 +683,86 @@ const createNphiesClaimData = ({
                 : undefined,
               extension: [
                 {
-                  url: `${BASE_PROFILE_URL}/${EXTENSION_TAX}`,
-                  valueMoney: {
-                    value: extensionTax || 0,
-                    currency,
-                  },
-                },
-                {
-                  url: `${BASE_PROFILE_URL}/${EXTENSION_PATIENT_SHARE}`,
-                  valueMoney: {
-                    value: extensionPatientShare,
-                    currency,
-                  },
-                },
-                !!(episodeInvoiceNo || patientInvoiceNo) && {
-                  url: `${BASE_PROFILE_URL}/${EXTENSION_PATIENT_INVOICE}`,
-                  valueIdentifier: {
-                    system: `${siteUrl}/patientInvoice`,
-                    value: `Invc-${
-                      patientInvoiceNo || episodeInvoiceNo
-                    }/T_${Date.now()}`,
-                  },
-                },
-                {
                   url: `${BASE_PROFILE_URL}/${EXTENSION_PACKAGE}`,
                   valueBoolean: extensionPackage === "Y",
                 },
-                !!scientificCodes && {
-                  url: `${BASE_PROFILE_URL}/${EXTENSION_PRESCRIBED_MEDS}`,
-                  valueCodeableConcept: {
-                    coding: [
+                ...(isPrescriberRequestData
+                  ? [
                       {
-                        system: `${BASE_CODE_SYS_URL}/${SCIENTIFIC_CODES}`,
-                        code: scientificCodes,
-                        display: scientificCodesName,
+                        url: `${BASE_PROFILE_URL}/${EXTENSION_MEDICATION_REQUEST}`,
+                        valueReference: {
+                          reference: `${medicationRequestUrl}/${medicationRequestIds[index]}`,
+                        },
                       },
-                    ],
-                  },
-                },
-                !!pharmacistSelectionReason && {
-                  url: `${BASE_PROFILE_URL}/${EXTENSION_MEDS_SELECTION_REASON}`,
-                  valueCodeableConcept: {
-                    coding: [
                       {
-                        system: `${BASE_CODE_SYS_URL}/${SELECTION_REASON}`,
-                        code: pharmacistSelectionReason,
-                        display: pharmacistSelectionReason,
+                        url: `${BASE_PROFILE_URL}/${EXTENSION_STRENGTH}`,
+                        valueString: medicationStrength,
                       },
-                    ],
-                  },
-                },
-                !!pharmacistSubstitute && {
-                  url: `${BASE_PROFILE_URL}/${EXTENSION_PHARM_SUBSTITUTE}`,
-                  valueCodeableConcept: {
-                    coding: [
+                    ]
+                  : [
                       {
-                        system: `${BASE_CODE_SYS_URL}/${PHARM_SUBSTITUTE}`,
-                        code: pharmacistSubstitute,
+                        url: `${BASE_PROFILE_URL}/${EXTENSION_TAX}`,
+                        valueMoney: {
+                          value: extensionTax || 0,
+                          currency,
+                        },
                       },
-                    ],
-                  },
-                },
-                {
-                  url: `${BASE_PROFILE_URL}/${EXTENSION_MATERNITY}`,
-                  valueBoolean: isMaternity === "Y" ? true : false,
-                },
+                      {
+                        url: `${BASE_PROFILE_URL}/${EXTENSION_PATIENT_SHARE}`,
+                        valueMoney: {
+                          value: extensionPatientShare,
+                          currency,
+                        },
+                      },
+                      !!(episodeInvoiceNo || patientInvoiceNo) && {
+                        url: `${BASE_PROFILE_URL}/${EXTENSION_PATIENT_INVOICE}`,
+                        valueIdentifier: {
+                          system: `${siteUrl}/patientInvoice`,
+                          value: `Invc-${
+                            patientInvoiceNo || episodeInvoiceNo
+                          }/T_${Date.now()}`,
+                        },
+                      },
+                      !!scientificCodes && {
+                        url: `${BASE_PROFILE_URL}/${EXTENSION_PRESCRIBED_MEDS}`,
+                        valueCodeableConcept: {
+                          coding: [
+                            {
+                              system: `${BASE_CODE_SYS_URL}/${SCIENTIFIC_CODES}`,
+                              code: scientificCodes,
+                              display: scientificCodesName,
+                            },
+                          ],
+                        },
+                      },
+                      !!pharmacistSelectionReason && {
+                        url: `${BASE_PROFILE_URL}/${EXTENSION_MEDS_SELECTION_REASON}`,
+                        valueCodeableConcept: {
+                          coding: [
+                            {
+                              system: `${BASE_CODE_SYS_URL}/${SELECTION_REASON}`,
+                              code: pharmacistSelectionReason,
+                              display: pharmacistSelectionReason,
+                            },
+                          ],
+                        },
+                      },
+                      !!pharmacistSubstitute && {
+                        url: `${BASE_PROFILE_URL}/${EXTENSION_PHARM_SUBSTITUTE}`,
+                        valueCodeableConcept: {
+                          coding: [
+                            {
+                              system: `${BASE_CODE_SYS_URL}/${PHARM_SUBSTITUTE}`,
+                              code: pharmacistSubstitute,
+                            },
+                          ],
+                        },
+                      },
+                      {
+                        url: `${BASE_PROFILE_URL}/${EXTENSION_MATERNITY}`,
+                        valueBoolean: isMaternity === "Y" ? true : false,
+                      },
+                    ]),
               ].filter(Boolean),
               productOrService: {
                 coding: [
@@ -724,7 +771,7 @@ const createNphiesClaimData = ({
                     code: nphiesProductCode,
                     display: nphiesProductName,
                   },
-                  {
+                  !isPrescriberRequestData && {
                     system: `${siteUrl}/${nphiesProductCodeType}`,
                     code: customerProductCode || nphiesProductCode,
                     display: replaceUnwantedCharactersFromString(
@@ -732,20 +779,6 @@ const createNphiesClaimData = ({
                     ),
                   },
                 ].filter(Boolean),
-              },
-              servicedDate: reverseDate(servicedDate),
-              // factor: (discount / unitprice) - 1
-              quantity: {
-                value: quantity,
-              },
-              unitPrice: {
-                value: unitPrice || 0,
-                currency,
-              },
-              factor,
-              net: {
-                value: net_price,
-                currency,
               },
               ...(tooth
                 ? {
@@ -760,13 +793,32 @@ const createNphiesClaimData = ({
                     },
                   }
                 : null),
+              ...(!isPrescriberRequestData
+                ? {
+                    servicedDate: reverseDate(servicedDate),
+                    quantity: {
+                      value: quantity,
+                    },
+                    unitPrice: {
+                      value: unitPrice || 0,
+                      currency,
+                    },
+                    factor,
+                    net: {
+                      value: net_price,
+                      currency,
+                    },
+                  }
+                : null),
             })
           )
         : undefined,
-      total: {
-        value: productsTotalNet,
-        currency,
-      },
+      total: isPrescriberRequestData
+        ? undefined
+        : {
+            value: productsTotalNet,
+            currency,
+          },
     },
   };
 };

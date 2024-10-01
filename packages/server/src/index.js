@@ -28,6 +28,7 @@ import createCommunicationMiddleware from "./middlewares/communication/index.mjs
 import checkPatientInsuranceMiddleware from "./middlewares/patient/checkPatientInsuranceMiddleware.mjs";
 import createStatusCheckRequestMiddleware from "./middlewares/claim/createStatusCheckRequestMiddleware.mjs";
 import createTotalFilesSizeMiddleware from "./middlewares/files/createTotalFilesSizeMiddleware.mjs";
+import checkMedicationValidationMiddleware from "./middlewares/medication/checkMedicationValidation.mjs";
 import createMergeClaimsFilesToOneFileMiddleware from "./middlewares/claim/createMergeClaimsFilesToOneFileMiddleware.mjs";
 import stopTheProcessIfCertificateNotFound from "./helpers/stopTheProcessIfCertificateNotFound.mjs";
 import { getConfigFileData } from "./helpers/getConfigFileData.mjs";
@@ -77,6 +78,7 @@ const { client } = CLI_CONFIG;
     "/querySavedClaimOrPreauthData",
     createFetchSavedClaimDataToFrontendMiddleware(app)
   );
+  app.use("/validateMedications", checkMedicationValidationMiddleware(app));
   app.use(
     "/fetchCommunicationResponseOrRequest",
     createCommunicationMiddleware(app)

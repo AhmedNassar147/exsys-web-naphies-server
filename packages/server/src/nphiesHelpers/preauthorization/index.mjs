@@ -13,10 +13,11 @@ import createAllOrganizationEntries from "../base/createAllOrganizationEntries.m
 // import createLocationData from "../base/createLocationData.mjs";
 import createNphiesClaimData from "../base/createNphiesClaimData.mjs";
 import createNphiesEncounter from "../base/createNphiesEncounter.mjs";
+import createMedicationRequestEntry from "../base/createMedicationRequestEntry.mjs";
 import createNphiesVisionPrescriptionData from "./createNphiesVisionPrescriptionData.mjs";
 import { NPHIES_REQUEST_TYPES } from "../../constants.mjs";
 
-const { PREAUTH, CLAIM } = NPHIES_REQUEST_TYPES;
+const { PREAUTH, CLAIM, PRESCRIBER } = NPHIES_REQUEST_TYPES;
 
 // message_event_type: "vision"
 // visionPrescriptionId,
@@ -69,15 +70,14 @@ const createNaphiesPreauthRequestFullData = ({
   batch_period_start,
   batch_period_end,
   batch_accounting_period,
-  // provider_location,
-  // location_license,
   patient_martial_status,
+  relationship,
+
   subscriber_file_no,
   subscriber_occupationCode,
   subscriber_religion,
   subscriber_iqama_no,
   subscriber_national_id_type,
-
   subscriber_first_name,
   subscriber_second_name,
   subscriber_third_name,
@@ -86,7 +86,7 @@ const createNaphiesPreauthRequestFullData = ({
   subscriber_gender,
   subscriber_birthDate,
   subscriber_martial_status,
-  relationship,
+
   network_name,
   occupationCode,
   religion,
@@ -113,6 +113,7 @@ const createNaphiesPreauthRequestFullData = ({
   referalIdentifier,
   extensionPriorauthId,
   relatedParentClaimIdentifier,
+  relatedRelationshipCode,
   transfer_to_other_provider,
   billablePeriodStartDate,
   billablePeriodEndDate,
@@ -151,10 +152,15 @@ const createNaphiesPreauthRequestFullData = ({
   extensionIntendedLengthOfStayDisplay,
   dischargeDispositionCode,
   dischargeDispositionDisplay,
-  relatedRelationshipCode,
+  approvalPrescriptionId,
 }) => {
   const isClaimRequest = message_event.includes("claim-request");
-  const requestType = isClaimRequest ? CLAIM : PREAUTH;
+  const isPrescriberRequestData = message_event.includes(PRESCRIBER);
+
+  const requestType =
+    isClaimRequest || isPrescriberRequestData ? CLAIM : PREAUTH;
+
+  const requestId = createUUID();
 
   const {
     providerPatientUrl,
@@ -164,16 +170,17 @@ const createNaphiesPreauthRequestFullData = ({
     providerFocusUrl,
     visionPrescriptionUrl,
     encounterUrl,
-    // providerLocationUrl,
+    medicationRequestUrl,
   } = createProviderUrls({
     providerBaseUrl: site_url,
     requestType,
   });
 
   const hasDoctorsData = isArrayHasData(doctorsData);
-  const buildVisionPrescription = !!(
-    visionPrescriptionId && visionPrescriptionCreatedAt
-  );
+
+  const shouldBuildVisionPrescription =
+    !isPrescriberRequestData &&
+    !!(visionPrescriptionId && visionPrescriptionCreatedAt);
 
   const primaryDoctorIndex = hasDoctorsData
     ? doctorsData.findIndex(({ roleCode }) => roleCode === "primary")
@@ -185,11 +192,11 @@ const createNaphiesPreauthRequestFullData = ({
     ? doctorsData[primaryDoctorIndex]
     : {};
 
-  const requestId = createUUID();
+  const hasProductsData = isArrayHasData(productsData);
 
   let supportingInfo = [...(supportInformationData || [])];
 
-  if (isArrayHasData(productsData) && isArrayHasData(daysSupply)) {
+  if (hasProductsData && isArrayHasData(daysSupply)) {
     const productsWithDaysSupplyIDs = productsData
       .map(({ days_supply_id }) => days_supply_id)
       .filter((daysSupplyValue) => typeof daysSupplyValue === "number");
@@ -209,6 +216,11 @@ const createNaphiesPreauthRequestFullData = ({
     ? `${encounterUrl}/${encounterRequestId}`
     : undefined;
 
+  const medicationRequestIds =
+    isPrescriberRequestData && hasProductsData
+      ? productsData.map(() => createUUID())
+      : [];
+
   const requestPayload = {
     ...createNphiesBaseRequestData(),
     entry: [
@@ -217,10 +229,14 @@ const createNaphiesPreauthRequestFullData = ({
         payerLicense: payer_license,
         requestId,
         providerFocusUrl,
-        requestType,
+        requestType: isPrescriberRequestData ? PRESCRIBER : requestType,
       }),
       createNphiesClaimData({
         requestId,
+        isPrescriberRequestData,
+        approvalPrescriptionId,
+        medicationRequestUrl,
+        medicationRequestIds,
         providerOrganization: provider_organization,
         payerOrganization: payer_organization,
         patientId: patient_file_no,
@@ -231,7 +247,7 @@ const createNaphiesPreauthRequestFullData = ({
         providerFocusUrl,
         siteUrl: site_url,
         visionPrescriptionUrl,
-        useVisionPrescriptionUrl: buildVisionPrescription,
+        useVisionPrescriptionUrl: shouldBuildVisionPrescription,
         hasDoctorsData,
         primaryDoctorSequence: isPrimaryDoctorIndexFound
           ? primaryDoctorIndex + 1
@@ -340,7 +356,7 @@ const createNaphiesPreauthRequestFullData = ({
           occupationCode: subscriber_occupationCode,
           religion: subscriber_religion,
         }),
-      buildVisionPrescription &&
+      shouldBuildVisionPrescription &&
         createNphiesVisionPrescriptionData({
           visionPrescriptionUrl,
           visionPrescriptionId,
@@ -402,14 +418,19 @@ const createNaphiesPreauthRequestFullData = ({
         policyHolderName,
         policyHolderReference,
       }),
-      // createLocationData({
-      //   locationLicense: location_license,
-      //   siteName: site_name,
-      //   providerLocation: provider_location,
-      //   providerOrganization: provider_organization,
-      //   providerLocationUrl,
-      //   providerOrganizationUrl,
-      // }),
+      ...(!!(isPrescriberRequestData && hasProductsData)
+        ? productsData.map((product, index) =>
+            createMedicationRequestEntry({
+              medicationRequestUrl,
+              providerPatientUrl,
+              providerDoctorUrl,
+              medicationRequestId: medicationRequestIds[index],
+              patientId: patient_file_no,
+              primaryDoctorId,
+              product,
+            })
+          )
+        : []),
     ].filter(Boolean),
   };
 
