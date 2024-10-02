@@ -680,6 +680,12 @@ const createNphiesClaimData = ({
               informationSequence: hasSupportingInfoData
                 ? getSupportingInfoSequences(supportingInfo, days_supply_id)
                 : undefined,
+
+              // {
+              // 	"system": "http://nphies.sa/terminology/CodeSystem/scientific-codes",
+              // 	"code": "7000000961-500-100000073665"
+              // }
+
               extension: [
                 {
                   url: `${BASE_PROFILE_URL}/${EXTENSION_PACKAGE}`,
@@ -692,18 +698,6 @@ const createNphiesClaimData = ({
                     value: `Invc-${
                       patientInvoiceNo || episodeInvoiceNo
                     }/T_${Date.now()}`,
-                  },
-                },
-                !!scientificCodes && {
-                  url: `${BASE_PROFILE_URL}/${EXTENSION_PRESCRIBED_MEDS}`,
-                  valueCodeableConcept: {
-                    coding: [
-                      {
-                        system: `${BASE_CODE_SYS_URL}/${SCIENTIFIC_CODES}`,
-                        code: scientificCodes,
-                        display: scientificCodesName,
-                      },
-                    ],
                   },
                 },
                 !!pharmacistSelectionReason && {
@@ -747,6 +741,18 @@ const createNphiesClaimData = ({
                       },
                     ]
                   : [
+                      !!scientificCodes && {
+                        url: `${BASE_PROFILE_URL}/${EXTENSION_PRESCRIBED_MEDS}`,
+                        valueCodeableConcept: {
+                          coding: [
+                            {
+                              system: `${BASE_CODE_SYS_URL}/${SCIENTIFIC_CODES}`,
+                              code: scientificCodes,
+                              display: scientificCodesName,
+                            },
+                          ],
+                        },
+                      },
                       {
                         url: `${BASE_PROFILE_URL}/${EXTENSION_TAX}`,
                         valueMoney: {
@@ -766,9 +772,15 @@ const createNphiesClaimData = ({
               productOrService: {
                 coding: [
                   {
-                    system: `${BASE_CODE_SYS_URL}/${nphiesProductCodeType}`,
-                    code: nphiesProductCode,
-                    display: nphiesProductName,
+                    system: isPrescriberRequestData
+                      ? `${BASE_CODE_SYS_URL}/${SCIENTIFIC_CODES}`
+                      : `${BASE_CODE_SYS_URL}/${nphiesProductCodeType}`,
+                    code: isPrescriberRequestData
+                      ? scientificCodes
+                      : nphiesProductCode,
+                    display: isPrescriberRequestData
+                      ? undefined
+                      : nphiesProductName,
                   },
                   !isPrescriberRequestData && {
                     system: `${siteUrl}/${nphiesProductCodeType}`,
