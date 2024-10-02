@@ -139,7 +139,7 @@ const fetchExsysMedicationCheckingDataAndCallNphies = async ({
     createExsysErrorSaveApiBody,
     checkExsysDataValidationBeforeCallingNphies,
     checkPayloadNphiesSize: true,
-    noSave,
+    noSave: true,
   });
 };
 
