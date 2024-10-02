@@ -685,6 +685,54 @@ const createNphiesClaimData = ({
                   url: `${BASE_PROFILE_URL}/${EXTENSION_PACKAGE}`,
                   valueBoolean: extensionPackage === "Y",
                 },
+                !!(episodeInvoiceNo || patientInvoiceNo) && {
+                  url: `${BASE_PROFILE_URL}/${EXTENSION_PATIENT_INVOICE}`,
+                  valueIdentifier: {
+                    system: `${siteUrl}/patientInvoice`,
+                    value: `Invc-${
+                      patientInvoiceNo || episodeInvoiceNo
+                    }/T_${Date.now()}`,
+                  },
+                },
+                !!scientificCodes && {
+                  url: `${BASE_PROFILE_URL}/${EXTENSION_PRESCRIBED_MEDS}`,
+                  valueCodeableConcept: {
+                    coding: [
+                      {
+                        system: `${BASE_CODE_SYS_URL}/${SCIENTIFIC_CODES}`,
+                        code: scientificCodes,
+                        display: scientificCodesName,
+                      },
+                    ],
+                  },
+                },
+                !!pharmacistSelectionReason && {
+                  url: `${BASE_PROFILE_URL}/${EXTENSION_MEDS_SELECTION_REASON}`,
+                  valueCodeableConcept: {
+                    coding: [
+                      {
+                        system: `${BASE_CODE_SYS_URL}/${SELECTION_REASON}`,
+                        code: pharmacistSelectionReason,
+                        display: pharmacistSelectionReason,
+                      },
+                    ],
+                  },
+                },
+                !!pharmacistSubstitute && {
+                  url: `${BASE_PROFILE_URL}/${EXTENSION_PHARM_SUBSTITUTE}`,
+                  valueCodeableConcept: {
+                    coding: [
+                      {
+                        system: `${BASE_CODE_SYS_URL}/${PHARM_SUBSTITUTE}`,
+                        code: pharmacistSubstitute,
+                      },
+                    ],
+                  },
+                },
+                {
+                  url: `${BASE_PROFILE_URL}/${EXTENSION_MATERNITY}`,
+                  valueBoolean: isMaternity === "Y" ? true : false,
+                },
                 ...(isPrescriberRequestData
                   ? [
                       {
@@ -712,54 +760,6 @@ const createNphiesClaimData = ({
                           value: extensionPatientShare,
                           currency,
                         },
-                      },
-                      !!(episodeInvoiceNo || patientInvoiceNo) && {
-                        url: `${BASE_PROFILE_URL}/${EXTENSION_PATIENT_INVOICE}`,
-                        valueIdentifier: {
-                          system: `${siteUrl}/patientInvoice`,
-                          value: `Invc-${
-                            patientInvoiceNo || episodeInvoiceNo
-                          }/T_${Date.now()}`,
-                        },
-                      },
-                      !!scientificCodes && {
-                        url: `${BASE_PROFILE_URL}/${EXTENSION_PRESCRIBED_MEDS}`,
-                        valueCodeableConcept: {
-                          coding: [
-                            {
-                              system: `${BASE_CODE_SYS_URL}/${SCIENTIFIC_CODES}`,
-                              code: scientificCodes,
-                              display: scientificCodesName,
-                            },
-                          ],
-                        },
-                      },
-                      !!pharmacistSelectionReason && {
-                        url: `${BASE_PROFILE_URL}/${EXTENSION_MEDS_SELECTION_REASON}`,
-                        valueCodeableConcept: {
-                          coding: [
-                            {
-                              system: `${BASE_CODE_SYS_URL}/${SELECTION_REASON}`,
-                              code: pharmacistSelectionReason,
-                              display: pharmacistSelectionReason,
-                            },
-                          ],
-                        },
-                      },
-                      !!pharmacistSubstitute && {
-                        url: `${BASE_PROFILE_URL}/${EXTENSION_PHARM_SUBSTITUTE}`,
-                        valueCodeableConcept: {
-                          coding: [
-                            {
-                              system: `${BASE_CODE_SYS_URL}/${PHARM_SUBSTITUTE}`,
-                              code: pharmacistSubstitute,
-                            },
-                          ],
-                        },
-                      },
-                      {
-                        url: `${BASE_PROFILE_URL}/${EXTENSION_MATERNITY}`,
-                        valueBoolean: isMaternity === "Y" ? true : false,
                       },
                     ]),
               ].filter(Boolean),
