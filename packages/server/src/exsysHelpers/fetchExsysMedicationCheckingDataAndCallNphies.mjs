@@ -118,11 +118,11 @@ const fetchExsysMedicationCheckingDataAndCallNphies = async ({
 
   const __printFolderName__ = [
     isRunningFromPoll ? "exsys" : "",
-    "medications_Validation",
+    `${PRESCRIBER}-request`,
     isRunningFromPoll ? "poll" : "",
   ]
     .filter(Boolean)
-    .join("__");
+    .join("_");
 
   const onNphiesResponseWithSuccessFn = async (data) => {
     const {
