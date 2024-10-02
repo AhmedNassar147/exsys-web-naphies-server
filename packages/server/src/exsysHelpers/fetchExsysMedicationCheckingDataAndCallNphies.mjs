@@ -55,7 +55,7 @@ const createExsysSaveApiParams = ({
     !claimOutcome || !!(issueError || issueErrorCode) ? "error" : claimOutcome;
 
   return {
-    claim_pk: primaryKey,
+    preauth_pk: primaryKey,
     bundle_id: bundleId,
     claim_request_id: claimRequestId,
     claim_response_id: claimResponseId,
