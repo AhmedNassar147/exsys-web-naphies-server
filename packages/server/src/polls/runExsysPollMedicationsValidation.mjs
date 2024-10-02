@@ -11,6 +11,7 @@ import {
   NPHIES_REQUEST_TYPES,
 } from "../constants.mjs";
 import fetchExsysMedicationCheckingDataAndCallNphies from "../exsysHelpers/fetchExsysMedicationCheckingDataAndCallNphies.mjs";
+import chalk from "chalk";
 
 const { queryMedicationsValidationPollData } = EXSYS_API_IDS_NAMES;
 const { PRESCRIBER } = NPHIES_REQUEST_TYPES;
@@ -31,6 +32,12 @@ const runExsysPollMedicationsValidation = async (authorization) => {
 
     if (!visitId) {
       await delayProcess(__EXSYS_POLLS_TIMEOUT);
+      createCmdMessage({
+        type: "info",
+        message: `couldn't find visitId in exsys prescriber poll ${chalk.green(
+          "refetch...."
+        )}`,
+      });
       await runExsysPollMedicationsValidation(authorization);
       return;
     }
