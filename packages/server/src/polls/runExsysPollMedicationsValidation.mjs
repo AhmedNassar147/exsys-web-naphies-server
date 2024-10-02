@@ -58,7 +58,7 @@ const runExsysPollMedicationsValidation = async (authorization) => {
     ]);
 
     await createPrintResultsOrLog({
-      printValues,
+      printValues: true,
       printData: printInfo,
       loggerValues,
     });
