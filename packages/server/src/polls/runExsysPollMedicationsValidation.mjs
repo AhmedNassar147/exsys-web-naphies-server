@@ -3,11 +3,7 @@
  * Helper: `runExsysPollMedicationsValidation`.
  *
  */
-import {
-  delayProcess,
-  createCmdMessage,
-  writeResultFile,
-} from "@exsys-web-server/helpers";
+import { delayProcess, createCmdMessage } from "@exsys-web-server/helpers";
 import createExsysRequest from "../helpers/createExsysRequest.mjs";
 import {
   EXSYS_API_IDS_NAMES,
@@ -19,46 +15,38 @@ import fetchExsysMedicationCheckingDataAndCallNphies from "../exsysHelpers/fetch
 const { queryMedicationsValidationPollData } = EXSYS_API_IDS_NAMES;
 const { PRESCRIBER } = NPHIES_REQUEST_TYPES;
 
+const __EXSYS_POLLS_TIMEOUT = EXSYS_POLLS_TIMEOUT * 3;
+
 const runExsysPollMedicationsValidation = async (authorization) => {
-  const { result } = await createExsysRequest({
-    resourceName: queryMedicationsValidationPollData,
-    requestMethod: "GET",
-    requestParams: {
-      authorization,
-    },
-  });
-
-  const { visitId } = result;
-
-  if (!visitId) {
-    await delayProcess(EXSYS_POLLS_TIMEOUT);
-    await runExsysPollMedicationsValidation(authorization);
-    return;
-  }
-
   try {
-    const {
-      printData: { data, isError, folderName },
-    } = await fetchExsysMedicationCheckingDataAndCallNphies({
-      isRunningFromPoll: true,
-      nphiesRequestType: PRESCRIBER,
-      requestParams: { visitId, authorization },
+    const { result } = await createExsysRequest({
+      resourceName: queryMedicationsValidationPollData,
+      requestMethod: "GET",
+      requestParams: {
+        authorization,
+      },
     });
 
-    await writeResultFile({
-      folderName,
-      data: {
-        isError,
-        ...data,
-      },
+    const { visitId } = result;
+
+    if (!visitId) {
+      await delayProcess(__EXSYS_POLLS_TIMEOUT);
+      await runExsysPollMedicationsValidation(authorization);
+      return;
+    }
+
+    await fetchExsysMedicationCheckingDataAndCallNphies({
+      isRunningFromPoll: true,
+      nphiesRequestType: PRESCRIBER,
+      requestParams: { preauth_pk: visitId, authorization },
     });
   } catch (error) {
     createCmdMessage({
       type: "error",
-      message: `Error from special exsys medications validation polling\n ${error}`,
+      message: `Error from exsys medications validation polling\n ${error}`,
     });
   } finally {
-    await delayProcess(EXSYS_POLLS_TIMEOUT);
+    await delayProcess(__EXSYS_POLLS_TIMEOUT);
     await runExsysPollMedicationsValidation(authorization);
   }
 };
