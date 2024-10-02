@@ -83,7 +83,7 @@ const CONFIG_MAP = {
   [NPHIES_REQUEST_TYPES.PREAUTH]: {
     exsysDataApiPrimaryKeyName: "prescription_pk",
     exsysQueryApiId: collectExsysPreauthData,
-    // exsysSaveApiId: savePreauthData,
+    exsysSaveApiId: savePreauthData,
   },
 };
 
