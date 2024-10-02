@@ -254,7 +254,7 @@ const createNaphiesPreauthRequestFullData = ({
           : undefined,
         primaryDoctorFocal: isPrimaryDoctorIndexFound ? true : undefined,
         providerDoctorUrl,
-        isClaimRequest: isPrescriberRequestData ? false : isClaimRequest,
+        isClaimRequest,
         message_event_type,
         claim_subType,
         supportingInfo,

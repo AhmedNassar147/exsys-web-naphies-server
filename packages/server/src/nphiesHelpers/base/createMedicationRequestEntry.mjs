@@ -13,7 +13,7 @@ import createNphiesBaseResource from "./createNphiesBaseResource.mjs";
 import {
   NPHIES_BASE_PROFILE_TYPES,
   NPHIES_RESOURCE_TYPES,
-  NPHIES_BASE_CODE_TYPES,
+  // NPHIES_BASE_CODE_TYPES,
   NPHIES_API_URLS,
   NPHIES_REQUEST_TYPES,
 } from "../../constants.mjs";
@@ -21,7 +21,7 @@ import {
 const { MEDICATION_REQUEST } = NPHIES_REQUEST_TYPES;
 
 const { BASE_CODE_SYS_URL } = NPHIES_API_URLS;
-const { ROUTE_OF_ADMINS } = NPHIES_BASE_CODE_TYPES;
+// const { ROUTE_OF_ADMINS } = NPHIES_BASE_CODE_TYPES;
 
 const { PROFILE_MEDICATION_REQUEST } = NPHIES_BASE_PROFILE_TYPES;
 const { MedicationRequest } = NPHIES_RESOURCE_TYPES;
@@ -102,6 +102,7 @@ const createMedicationRequestEntry = ({
               doseSystemUrl,
               routeCode,
               routeDisplay,
+              routeUrl,
             }) => ({
               sequence,
               text,
@@ -134,17 +135,15 @@ const createMedicationRequestEntry = ({
                   },
                 },
               ],
-              route: !!routeCode
-                ? {
-                    coding: [
-                      {
-                        system: `${BASE_CODE_SYS_URL}/${ROUTE_OF_ADMINS}`,
-                        code: routeCode,
-                        display: routeDisplay,
-                      },
-                    ],
-                  }
-                : undefined,
+              route: {
+                coding: [
+                  {
+                    system: routeUrl,
+                    code: routeCode,
+                    display: routeDisplay,
+                  },
+                ],
+              },
             })
           ),
     },
