@@ -8,7 +8,12 @@ import reverseDate from "./reverseDate.mjs";
 
 const formatDateToNativeDateParts = (
   date,
-  { stringifyReturnedDate, subtractMonthBy, returnResultAsTimeStamp }
+  {
+    stringifyReturnedDate,
+    subtractMonthBy,
+    returnResultAsTimeStamp,
+    replaceWith,
+  }
 ) => {
   if (!date) {
     return undefined;
@@ -29,7 +34,13 @@ const formatDateToNativeDateParts = (
     return dateParts.reverse().join("-");
   }
 
-  return returnResultAsTimeStamp ? createTimestamp(dateParts) : dateParts;
+  let value = returnResultAsTimeStamp ? createTimestamp(dateParts) : dateParts;
+
+  if (replaceWith && replaceWith.length && typeof value === "string") {
+    value = value.replace(...replaceWith);
+  }
+
+  return value;
 };
 
 export default formatDateToNativeDateParts;

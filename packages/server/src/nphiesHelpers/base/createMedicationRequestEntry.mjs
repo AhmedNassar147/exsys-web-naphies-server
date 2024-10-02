@@ -26,7 +26,11 @@ const { BASE_CODE_SYS_URL } = NPHIES_API_URLS;
 const { PROFILE_MEDICATION_REQUEST } = NPHIES_BASE_PROFILE_TYPES;
 const { MedicationRequest } = NPHIES_RESOURCE_TYPES;
 
-const dateOptions = { subtractMonthBy: 1, returnResultAsTimeStamp: true };
+const dateOptions = {
+  subtractMonthBy: 1,
+  returnResultAsTimeStamp: true,
+  replaceWith: ["Z", "+03:00"],
+};
 
 const createMedicationRequestEntry = ({
   medicationRequestUrl,
@@ -113,11 +117,11 @@ const createMedicationRequestEntry = ({
                     start: formatDateToNativeDateParts(
                       boundsPeriodStart,
                       dateOptions
-                    ).replace("Z", "+03:00"),
+                    ),
                     end: formatDateToNativeDateParts(
                       boundsPeriodEnd,
                       dateOptions
-                    ).replace("Z", "+03:00"),
+                    ),
                   },
                   duration,
                   durationUnit,
