@@ -20,13 +20,15 @@ const { queryMedicationsValidationPollData } = EXSYS_API_IDS_NAMES;
 const { PRESCRIBER } = NPHIES_REQUEST_TYPES;
 
 const runExsysPollMedicationsValidation = async (authorization) => {
-  const { visitId } = createExsysRequest({
+  const { result } = await createExsysRequest({
     resourceName: queryMedicationsValidationPollData,
     requestMethod: "GET",
     requestParams: {
       authorization,
     },
   });
+
+  const { visitId } = result;
 
   if (!visitId) {
     await delayProcess(EXSYS_POLLS_TIMEOUT);

@@ -150,9 +150,9 @@ export const EXSYS_API_IDS = {
   // http://149.102.140.8:9090/ords/exsys_api/nphies_pkg/get_cchi_patient_data?Aauthorization=111111&beneficiaryId=2167720701&nationalityCode=113&insuranceCompanyId=101&policyNumber=23235228&className=GL/B&gender=0&planguageid=1&organization_no=001
   [EXSYS_API_IDS_NAMES.queryExsysCchiPatient]:
     "nphies_pkg/get_cchi_patient_data",
-
-  // http://149.102.140.8:9090/ords/exsys_api/
-  [EXSYS_API_IDS_NAMES.queryMedicationsValidationPollData]: "",
+  // http://149.102.140.8:9090/ords/exsys_api/hs_nphies_prescription_pkg/prescription_pending_request?authorization=24190201
+  [EXSYS_API_IDS_NAMES.queryMedicationsValidationPollData]:
+    "hs_nphies_prescription_pkg/prescription_pending_request",
 };
 
 export const HTTP_STATUS_CODE = {

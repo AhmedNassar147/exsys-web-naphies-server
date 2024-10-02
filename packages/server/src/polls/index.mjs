@@ -6,7 +6,7 @@
 import { isArrayHasData } from "@exsys-web-server/helpers";
 import runExsysEligibilityPendingRequestsPoll from "./runExsysEligibilityPendingRequestsPoll.mjs";
 import runPreauthorizationPoll from "./runPreauthorizationPoll.mjs";
-// import runExsysPollMedicationsValidation from "./runExsysPollMedicationsValidation.mjs";
+import runExsysPollMedicationsValidation from "./runExsysPollMedicationsValidation.mjs";
 import { getConfigFileData } from "../helpers/getConfigFileData.mjs";
 
 (async () => {
@@ -58,8 +58,10 @@ import { getConfigFileData } from "../helpers/getConfigFileData.mjs";
       }
     );
 
-    // await runExsysPollMedicationsValidation(authorization);
-    await Promise.all(eligibilityPromises);
+    await Promise.all([
+      runExsysPollMedicationsValidation(authorization),
+      ...eligibilityPromises,
+    ]);
 
     if (useAuthorizationOrClaimPolls) {
       await Promise.all(preauthPromises.flat());
