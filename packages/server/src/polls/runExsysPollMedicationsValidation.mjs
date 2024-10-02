@@ -3,6 +3,7 @@
  * Helper: `runExsysPollMedicationsValidation`.
  *
  */
+import chalk from "chalk";
 import { delayProcess, createCmdMessage } from "@exsys-web-server/helpers";
 import createExsysRequest from "../helpers/createExsysRequest.mjs";
 import {
@@ -11,7 +12,6 @@ import {
   NPHIES_REQUEST_TYPES,
 } from "../constants.mjs";
 import fetchExsysMedicationCheckingDataAndCallNphies from "../exsysHelpers/fetchExsysMedicationCheckingDataAndCallNphies.mjs";
-import chalk from "chalk";
 
 const { queryMedicationsValidationPollData } = EXSYS_API_IDS_NAMES;
 const { PRESCRIBER } = NPHIES_REQUEST_TYPES;
