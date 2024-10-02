@@ -15,7 +15,7 @@ export default checkMedicationValidationMiddleware(
       printValues,
       asyncFn: async ({ visitId }) =>
         await fetchExsysMedicationCheckingDataAndCallNphies({
-          nphiesRequestType: NPHIES_REQUEST_TYPES.PREAUTH,
+          nphiesRequestType: NPHIES_REQUEST_TYPES.PRESCRIBER,
           requestParams: {
             authorization,
             preauth_pk: visitId,

@@ -21,10 +21,10 @@ const { COVERAGE } = NPHIES_RESOURCE_TYPES;
 const { PRESCRIBER } = NPHIES_REQUEST_TYPES;
 
 const {
-  collectExsysPreauthData,
-  savePreauthData,
-  // collectExsysClaimData,
-  // saveClaimData,
+  // collectExsysPreauthData,
+  // savePreauthData,
+  collectExsysClaimData,
+  saveClaimData,
   // saveClaimHistory,
 } = EXSYS_API_IDS_NAMES;
 
@@ -75,15 +75,10 @@ const createExsysErrorSaveApiBody = (errorMessage) => ({
 });
 
 const CONFIG_MAP = {
-  // [NPHIES_REQUEST_TYPES.CLAIM]: {
-  //   exsysDataApiPrimaryKeyName: "claim_pk",
-  //   exsysQueryApiId: collectExsysClaimData,
-  //   exsysSaveApiId: saveClaimData,
-  // },
-  [NPHIES_REQUEST_TYPES.PREAUTH]: {
+  [NPHIES_REQUEST_TYPES.PRESCRIBER]: {
     exsysDataApiPrimaryKeyName: "prescription_pk",
-    exsysQueryApiId: collectExsysPreauthData,
-    exsysSaveApiId: savePreauthData,
+    exsysQueryApiId: collectExsysClaimData,
+    exsysSaveApiId: saveClaimData,
   },
 };
 
