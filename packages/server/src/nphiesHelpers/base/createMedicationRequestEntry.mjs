@@ -113,11 +113,11 @@ const createMedicationRequestEntry = ({
                     start: formatDateToNativeDateParts(
                       boundsPeriodStart,
                       dateOptions
-                    ),
+                    ).replace("Z", "+03:00"),
                     end: formatDateToNativeDateParts(
                       boundsPeriodEnd,
                       dateOptions
-                    ),
+                    ).replace("Z", "+03:00"),
                   },
                   duration,
                   durationUnit,
