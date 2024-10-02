@@ -278,10 +278,9 @@ const createNphiesClaimData = ({
     ? PREAUTH_PROFILE_TYPES[PRESCRIBER]
     : PREAUTH_PROFILE_TYPES[message_event_type];
 
-  const _profileType =
-    isClaimRequest && !isPrescriberRequestData
-      ? profileType.replace("priorauth", "claim")
-      : profileType;
+  const _profileType = isClaimRequest
+    ? profileType.replace("priorauth", "claim")
+    : profileType;
 
   const identifierUrlLastPart = isPrescriberRequestData
     ? "prescription"
