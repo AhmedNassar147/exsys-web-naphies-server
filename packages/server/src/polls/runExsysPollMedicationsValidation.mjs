@@ -4,7 +4,12 @@
  *
  */
 import chalk from "chalk";
-import { delayProcess, createCmdMessage } from "@exsys-web-server/helpers";
+import {
+  delayProcess,
+  createCmdMessage,
+  createApiResultsAndLoggerValues,
+  createPrintResultsOrLog,
+} from "@exsys-web-server/helpers";
 import createExsysRequest from "../helpers/createExsysRequest.mjs";
 import {
   EXSYS_API_IDS_NAMES,
@@ -42,10 +47,20 @@ const runExsysPollMedicationsValidation = async (authorization) => {
       return;
     }
 
-    await fetchExsysMedicationCheckingDataAndCallNphies({
+    const apiFetchResult = await fetchExsysMedicationCheckingDataAndCallNphies({
       isRunningFromPoll: true,
       nphiesRequestType: PRESCRIBER,
       requestParams: { preauth_pk: visitId, authorization },
+    });
+
+    const { printInfo, loggerValues } = await createApiResultsAndLoggerValues([
+      apiFetchResult,
+    ]);
+
+    await createPrintResultsOrLog({
+      printValues,
+      printData: printInfo,
+      loggerValues,
     });
   } catch (error) {
     createCmdMessage({
