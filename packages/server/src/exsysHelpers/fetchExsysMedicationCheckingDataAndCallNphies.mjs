@@ -3,7 +3,7 @@
  * Helper: `fetchExsysMedicationCheckingDataAndCallNphies`.
  *
  */
-import { isArrayHasData } from "@exsys-web-server/helpers";
+import { isArrayHasData, writeResultFile } from "@exsys-web-server/helpers";
 import convertSupportInfoAttachmentUrlsToBase64 from "../nphiesHelpers/base/convertSupportInfoAttachmentUrlsToBase64.mjs";
 import createBaseFetchExsysDataAndCallNphiesApi from "./createBaseFetchExsysDataAndCallNphiesApi.mjs";
 import extractClaimResponseData from "../nphiesHelpers/extraction/extractClaimResponseData.mjs";
@@ -11,6 +11,8 @@ import extractMessageHeaderData from "../nphiesHelpers/extraction/extractMessage
 import extractCoverageEntryResponseData from "../nphiesHelpers/extraction/extractCoverageEntryResponseData.mjs";
 import createNphiesRequestPayloadFn from "../nphiesHelpers/preauthorization/index.mjs";
 import validateSupportInfoDataBeforeCallingNphies from "../nphiesHelpers/base/validateSupportInfoDataBeforeCallingNphies.mjs";
+import savePreauthPollDataToExsys from "../polls/savePreauthPollDataToExsys.mjs";
+import buildPrintedResultPath from "../helpers/buildPrintedResultPath.mjs";
 import {
   EXSYS_API_IDS_NAMES,
   NPHIES_RESOURCE_TYPES,
@@ -75,7 +77,7 @@ const createExsysErrorSaveApiBody = (errorMessage) => ({
 });
 
 const CONFIG_MAP = {
-  [NPHIES_REQUEST_TYPES.PRESCRIBER]: {
+  [PRESCRIBER]: {
     exsysDataApiPrimaryKeyName: "prescription_pk",
     exsysQueryApiId: collectExsysPreauthData,
     exsysSaveApiId: savePreauthData,
@@ -112,13 +114,65 @@ const fetchExsysMedicationCheckingDataAndCallNphies = async ({
     isPrescription: "Y",
   };
 
+  const { authorization } = requestParams;
+
   const __printFolderName__ = [
-    isRunningFromPoll ? "spacial_exsys" : "",
+    isRunningFromPoll ? "exsys" : "",
     "medications_Validation",
     isRunningFromPoll ? "poll" : "",
   ]
     .filter(Boolean)
     .join("__");
+
+  const onNphiesResponseWithSuccessFn = async (data) => {
+    const {
+      nphiesExtractedData,
+      isSizeLimitExceeded,
+      exsysResultsData,
+      ...options
+    } = data;
+    const {
+      claimRequestId,
+      claimPreauthRef,
+      claimResponseId,
+      productsData,
+      mainBundleId,
+      bundleId,
+      creationBundleId,
+    } = nphiesExtractedData || {};
+
+    const { organizationNo, organization_no, clinicalEntityNo } =
+      exsysResultsData;
+
+    if (
+      nphiesExtractedData &&
+      claimRequestId &&
+      claimResponseId &&
+      claimPreauthRef &&
+      isArrayHasData(productsData)
+    ) {
+      await savePreauthPollDataToExsys({
+        authorization,
+        nphiesExtractedData,
+        requestType: PRESCRIBER,
+        ...options,
+      });
+
+      const folderName = buildPrintedResultPath({
+        organizationNo: organizationNo || organization_no,
+        clinicalEntityNo,
+        skipThrowingOrganizationError: false,
+        innerFolderName: __printFolderName__.replace("poll", "request-poll"),
+        segments: [mainBundleId || bundleId || creationBundleId],
+        shouldFilterSegments: true,
+      });
+
+      await writeResultFile({
+        folderName,
+        data,
+      });
+    }
+  };
 
   return await createBaseFetchExsysDataAndCallNphiesApi({
     exsysQueryApiId,
@@ -134,6 +188,7 @@ const fetchExsysMedicationCheckingDataAndCallNphies = async ({
     createExsysSaveApiParams,
     createExsysErrorSaveApiBody,
     checkExsysDataValidationBeforeCallingNphies,
+    onNphiesResponseWithSuccessFn,
     checkPayloadNphiesSize: true,
   });
 };

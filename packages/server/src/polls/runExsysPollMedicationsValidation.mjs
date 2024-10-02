@@ -53,7 +53,7 @@ const runExsysPollMedicationsValidation = async (authorization) => {
   } catch (error) {
     createCmdMessage({
       type: "error",
-      message: `Error from medications validation polling\n ${error}`,
+      message: `Error from special exsys medications validation polling\n ${error}`,
     });
   } finally {
     await delayProcess(EXSYS_POLLS_TIMEOUT);

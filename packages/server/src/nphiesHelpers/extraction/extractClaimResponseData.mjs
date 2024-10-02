@@ -150,7 +150,7 @@ const extractClaimResponseData = ({
 
   return {
     claimResourceType: resourceType,
-    claimResponseId: claimResponseId.replace("req_", "") || id,
+    claimResponseId: id || claimResponseId.replace("req_", ""),
     claimRequestId,
     claimMessageEventType,
     claimStatus: status,

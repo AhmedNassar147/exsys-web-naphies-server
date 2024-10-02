@@ -162,7 +162,7 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
     errorMessageCode,
     isNphiesServerConnected,
   } = await callNphiesAPIAndCollectResults({
-    exsysResultsData: exsysResultsData,
+    exsysResultsData,
     createNphiesRequestPayloadFn,
     extractionFunctionsMap,
     setErrorIfExtractedDataFoundFn,
