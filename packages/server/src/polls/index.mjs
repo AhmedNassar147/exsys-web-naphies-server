@@ -42,6 +42,11 @@ import { getConfigFileData } from "../helpers/getConfigFileData.mjs";
               preauthPollData,
               ...baseOptions,
             }),
+            runPreauthorizationPoll({
+              includeMessageType: "prescriber-response",
+              preauthPollData,
+              ...baseOptions,
+            }),
           ]);
         }
 

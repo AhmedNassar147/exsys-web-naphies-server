@@ -21,7 +21,7 @@ import {
 const { MEDICATION_REQUEST } = NPHIES_REQUEST_TYPES;
 
 const { BASE_CODE_SYS_URL } = NPHIES_API_URLS;
-const { ROUTE_OF_ADMINS, SCIENTIFIC_CODES } = NPHIES_BASE_CODE_TYPES;
+const { SCIENTIFIC_CODES } = NPHIES_BASE_CODE_TYPES;
 
 const { PROFILE_MEDICATION_REQUEST } = NPHIES_BASE_PROFILE_TYPES;
 const { MedicationRequest } = NPHIES_RESOURCE_TYPES;
@@ -42,8 +42,8 @@ const createMedicationRequestEntry = ({
   product,
 }) => {
   const {
-    nphiesProductCodeType,
-    nphiesProductCode,
+    // nphiesProductCodeType,
+    // nphiesProductCode,
     // nphiesProductName,
     scientificCodes,
     dosageData,

@@ -340,7 +340,7 @@ export const NPHIES_BASE_CODE_TYPES = {
   EXTENSION_LENGTH_OF_STAY: "extension-intendedLengthOfStay",
   ENCOUNTER_LENGTH_OF_STAY: "intended-length-of-stay",
   EXTENSION_DISCHARGE_DISPOSITION: "discharge-disposition",
-  ROUTE_OF_ADMINS: "route-of-admin",
+  // ROUTE_OF_ADMINS: "route-of-admin",
   EXTENSION_MEDICATION_REQUEST: "extension-medicationRequest",
   EXTENSION_STRENGTH: "extension-strength",
 };

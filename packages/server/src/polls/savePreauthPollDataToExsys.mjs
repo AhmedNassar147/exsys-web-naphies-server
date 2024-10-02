@@ -14,6 +14,7 @@ const { saveClaimPollData, savePreauthPollData, savePreauthOrClaimPollData } =
 const SAVE_API_BASED_REQUEST_TYPE = {
   [NPHIES_REQUEST_TYPES.CLAIM]: saveClaimPollData,
   [NPHIES_REQUEST_TYPES.PREAUTH]: savePreauthPollData,
+  [NPHIES_REQUEST_TYPES.PRESCRIBER]: savePreauthPollData,
 };
 
 const savePreauthPollDataToExsys = async ({
@@ -35,6 +36,8 @@ const savePreauthPollDataToExsys = async ({
     claimMessageEventType,
     creationBundleId,
     communicationExtractedData,
+    issueError,
+    issueErrorCode,
   } = nphiesExtractedData;
 
   const { communicationAboutSystemType, communicationAboutId } =
@@ -67,6 +70,9 @@ const savePreauthPollDataToExsys = async ({
     return;
   }
 
+  const _outcome =
+    !claimOutcome || !!(issueError || issueErrorCode) ? "error" : claimOutcome;
+
   const requestParams = {
     authorization,
     claimresponseid: claimResponseId || "",
@@ -75,7 +81,7 @@ const savePreauthPollDataToExsys = async ({
     claimperiodend: claimPeriodEnd || "",
     claimextensioncode: claimExtensionCode || "",
     claimrequestid: communicationAboutId || claimRequestId || "",
-    claimoutcome: claimOutcome || "",
+    claimoutcome: _outcome || "",
     claimmessageeventtype: requestType || claimMessageEventType,
     claimcreationbundleid: creationBundleId || "",
   };

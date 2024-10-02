@@ -96,6 +96,8 @@ const runPreauthorizationPoll = async ({
       creationBundleId,
       extractedTaskData,
       messageHeaderRequestType,
+      messageHeaderResponseIdentifier,
+      messageHeaderResponseCode,
       ...otherExtractedData
     } = nphiesExtractedData || {};
 
