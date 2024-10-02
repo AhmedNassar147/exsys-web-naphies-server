@@ -17,7 +17,7 @@ import {
 import fetchExsysMedicationCheckingDataAndCallNphies from "../exsysHelpers/fetchExsysMedicationCheckingDataAndCallNphies.mjs";
 
 const { queryMedicationsValidationPollData } = EXSYS_API_IDS_NAMES;
-const { PREAUTH } = NPHIES_REQUEST_TYPES;
+const { PRESCRIBER } = NPHIES_REQUEST_TYPES;
 
 const runExsysPollMedicationsValidation = async (authorization) => {
   const { visitId } = createExsysRequest({
@@ -39,7 +39,7 @@ const runExsysPollMedicationsValidation = async (authorization) => {
       printData: { data, isError, folderName },
     } = await fetchExsysMedicationCheckingDataAndCallNphies({
       isRunningFromPoll: true,
-      nphiesRequestType: PREAUTH,
+      nphiesRequestType: PRESCRIBER,
       requestParams: { visitId, authorization },
     });
 
