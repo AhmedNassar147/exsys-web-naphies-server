@@ -27,7 +27,6 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
   noPatientDataLogger,
   checkExsysDataValidationBeforeCallingNphies,
   checkPayloadNphiesSize,
-  noSave,
 }) => {
   const {
     isSuccess,
@@ -114,24 +113,14 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
           })
         : undefined;
 
-      if (!noSave) {
-        await createExsysRequest({
-          resourceName: exsysSaveApiId,
-          requestParams: errorSaveParams,
-          body: {
-            [exsysDataApiPrimaryKeyName]: primaryKey,
-            ...(createExsysErrorSaveApiBody(errorMessage) || null),
-          },
-        });
-      } else {
-        console.log({
-          successSaveParams: errorSaveParams,
-          body: {
-            [exsysDataApiPrimaryKeyName]: primaryKey,
-            ...(createExsysErrorSaveApiBody(errorMessage) || null),
-          },
-        });
-      }
+      await createExsysRequest({
+        resourceName: exsysSaveApiId,
+        requestParams: errorSaveParams,
+        body: {
+          [exsysDataApiPrimaryKeyName]: primaryKey,
+          ...(createExsysErrorSaveApiBody(errorMessage) || null),
+        },
+      });
     }
 
     return {
@@ -197,36 +186,20 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
         })
       : undefined;
 
-    if (!noSave) {
-      await createExsysRequest({
-        resourceName: exsysSaveApiId,
-        requestParams: successSaveParams,
-        body: {
-          [exsysDataApiPrimaryKeyName]: primaryKey,
-          nodeServerDataSentToNaphies,
-          nphiesResponse,
-          ...(isNphiesServerNotConnected || isSizeLimitExceeded
-            ? createExsysErrorSaveApiBody(errorMessage) || null
-            : {
-                nphiesExtractedData: nphiesExtractedData || {},
-              }),
-        },
-      });
-    } else {
-      console.log({
-        successSaveParams,
-        body: {
-          [exsysDataApiPrimaryKeyName]: primaryKey,
-          nodeServerDataSentToNaphies,
-          nphiesResponse,
-          ...(isNphiesServerNotConnected || isSizeLimitExceeded
-            ? createExsysErrorSaveApiBody(errorMessage) || null
-            : {
-                nphiesExtractedData: nphiesExtractedData || {},
-              }),
-        },
-      });
-    }
+    await createExsysRequest({
+      resourceName: exsysSaveApiId,
+      requestParams: successSaveParams,
+      body: {
+        [exsysDataApiPrimaryKeyName]: primaryKey,
+        nodeServerDataSentToNaphies,
+        nphiesResponse,
+        ...(isNphiesServerNotConnected || isSizeLimitExceeded
+          ? createExsysErrorSaveApiBody(errorMessage) || null
+          : {
+              nphiesExtractedData: nphiesExtractedData || {},
+            }),
+      },
+    });
   }
 
   if (onNphiesResponseWithSuccessFn) {

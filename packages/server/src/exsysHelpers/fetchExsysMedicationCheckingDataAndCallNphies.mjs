@@ -83,7 +83,7 @@ const CONFIG_MAP = {
   [NPHIES_REQUEST_TYPES.PREAUTH]: {
     exsysDataApiPrimaryKeyName: "prescription_pk",
     exsysQueryApiId: collectExsysPreauthData,
-    exsysSaveApiId: savePreauthData,
+    // exsysSaveApiId: savePreauthData,
   },
 };
 
@@ -118,7 +118,8 @@ const fetchExsysMedicationCheckingDataAndCallNphies = async ({
   };
 
   const __printFolderName__ = [
-    "medicationsValidation",
+    isRunningFromPoll ? "spacial_exsys" : "",
+    "medications_Validation",
     isRunningFromPoll ? "poll" : "",
   ]
     .filter(Boolean)
@@ -139,7 +140,6 @@ const fetchExsysMedicationCheckingDataAndCallNphies = async ({
     createExsysErrorSaveApiBody,
     checkExsysDataValidationBeforeCallingNphies,
     checkPayloadNphiesSize: true,
-    noSave: true,
   });
 };
 

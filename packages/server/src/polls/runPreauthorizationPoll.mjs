@@ -11,7 +11,7 @@ import {
   createCmdMessage,
 } from "@exsys-web-server/helpers";
 import savePreauthPollDataToExsys from "./savePreauthPollDataToExsys.mjs";
-import { NPHIES_RESOURCE_TYPES } from "../constants.mjs";
+import { NPHIES_RESOURCE_TYPES, NPHIES_REQUEST_TYPES } from "../constants.mjs";
 import createNphiesPreauthOrClaimPollData from "../nphiesHelpers/preauthorization/createNphiesPreauthOrClaimPollData.mjs";
 import mapEntriesAndExtractNeededData from "../nphiesHelpers/extraction/mapEntriesAndExtractNeededData.mjs";
 import extractCoverageEntryResponseData from "../nphiesHelpers/extraction/extractCoverageEntryResponseData.mjs";
@@ -23,6 +23,7 @@ import callNphiesApiAndCollectResults from "../nphiesHelpers/base/callNphiesApiA
 import buildPrintedResultPath from "../helpers/buildPrintedResultPath.mjs";
 
 const { COVERAGE } = NPHIES_RESOURCE_TYPES;
+const { PRESCRIBER } = NPHIES_REQUEST_TYPES;
 
 const MAX_DELAY_TIMEOUT = 1 * 60 * 1000;
 const MIN_DELAY_TIMEOUT = 5 * 1000;
@@ -101,10 +102,16 @@ const runPreauthorizationPoll = async ({
       ...otherExtractedData
     } = nphiesExtractedData || {};
 
+    const isPrescriberResponse = (messageHeaderRequestType || "").includes(
+      PRESCRIBER
+    );
+
     if (!isObjectHasData(otherExtractedData)) {
       createCmdMessage({
         type: "info",
-        message: `Authorization poll has no messages yet`,
+        message: `${
+          isPrescriberResponse ? "medicationsValidation" : "Authorization"
+        } poll has no messages yet`,
       });
 
       await delayProcess(MAX_DELAY_TIMEOUT);
@@ -116,7 +123,9 @@ const runPreauthorizationPoll = async ({
       organizationNo,
       clinicalEntityNo,
       skipThrowingOrganizationError: true,
-      innerFolderName: "authorizationPoll",
+      innerFolderName: isPrescriberResponse
+        ? "medications_Validation_poll"
+        : "authorizationPoll",
       segments: [
         messageHeaderRequestType,
         mainBundleId || bundleId || creationBundleId,
