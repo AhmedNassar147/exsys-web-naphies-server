@@ -11,12 +11,12 @@ import {
   createPrintResultsOrLog,
 } from "@exsys-web-server/helpers";
 import createExsysRequest from "../helpers/createExsysRequest.mjs";
+import fetchExsysMedicationCheckingDataAndCallNphies from "../exsysHelpers/fetchExsysMedicationCheckingDataAndCallNphies.mjs";
 import {
   EXSYS_API_IDS_NAMES,
   EXSYS_POLLS_TIMEOUT,
   NPHIES_REQUEST_TYPES,
 } from "../constants.mjs";
-import fetchExsysMedicationCheckingDataAndCallNphies from "../exsysHelpers/fetchExsysMedicationCheckingDataAndCallNphies.mjs";
 
 const { queryMedicationsValidationPollData } = EXSYS_API_IDS_NAMES;
 const { PRESCRIBER } = NPHIES_REQUEST_TYPES;

@@ -8,18 +8,22 @@ import {
   isArrayHasData,
   toCamelCase,
 } from "@exsys-web-server/helpers";
-import extractNphiesCodeAndDisplayFromCodingType from "../../nphiesHelpers/extraction/extractNphiesCodeAndDisplayFromCodingType.mjs";
+import extractNphiesCodeAndDisplayFromCodingType from "./extractNphiesCodeAndDisplayFromCodingType.mjs";
 
-const extractExtensionsSentToNphies = (extension) => {
+const extractExtensionsSentToNphies = (extension, accessorName) => {
   if (isArrayHasData(extension)) {
     return extension.reduce(
       (
         acc,
         { valueMoney, valueIdentifier, valueBoolean, url, valueCodeableConcept }
       ) => {
-        const filedName = toCamelCase(
+        let filedName = toCamelCase(
           getLastPartOfUrl(url, (value) => value.replace("-", " "))
         );
+
+        if (accessorName || typeof accessorName === "string") {
+          filedName = filedName.replace("extension", accessorName);
+        }
 
         let value = valueBoolean;
 

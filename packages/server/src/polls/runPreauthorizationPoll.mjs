@@ -14,7 +14,7 @@ import savePreauthPollDataToExsys from "./savePreauthPollDataToExsys.mjs";
 import { NPHIES_RESOURCE_TYPES, NPHIES_REQUEST_TYPES } from "../constants.mjs";
 import createNphiesPreauthOrClaimPollData from "../nphiesHelpers/preauthorization/createNphiesPreauthOrClaimPollData.mjs";
 import mapEntriesAndExtractNeededData from "../nphiesHelpers/extraction/mapEntriesAndExtractNeededData.mjs";
-import extractCoverageEntryResponseData from "../nphiesHelpers/extraction/extractCoverageEntryResponseData.mjs";
+import extractCoverageData from "../nphiesHelpers/extraction/extractCoverageData.mjs";
 import extractClaimResponseData from "../nphiesHelpers/extraction/extractClaimResponseData.mjs";
 import extractMessageHeaderData from "../nphiesHelpers/extraction/extractMessageHeaderData.mjs";
 import extractPreauthAndClaimPollTaskData from "../nphiesHelpers/extraction/extractPreauthAndClaimPollTaskData.mjs";
@@ -34,14 +34,14 @@ const setErrorIfExtractedDataFoundFn = ({ coverageErrors, claimErrors }) => [
 ];
 
 const extractionFunctionsMap = {
-  [COVERAGE]: extractCoverageEntryResponseData,
+  [COVERAGE]: extractCoverageData,
   Task: extractPreauthAndClaimPollTaskData,
   Bundle: ({ resource, creationBundleId }) =>
     mapEntriesAndExtractNeededData({
       nphiesResponse: resource,
       creationBundleId,
       extractionFunctionsMap: {
-        [COVERAGE]: extractCoverageEntryResponseData,
+        [COVERAGE]: extractCoverageData,
         MessageHeader: extractMessageHeaderData(/-response|-request/),
         CommunicationRequest: extractCommunicationData,
         ClaimResponse: extractClaimResponseData,

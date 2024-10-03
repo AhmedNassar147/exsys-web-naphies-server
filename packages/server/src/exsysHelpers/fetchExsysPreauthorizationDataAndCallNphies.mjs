@@ -8,7 +8,7 @@ import createExsysRequest from "../helpers/createExsysRequest.mjs";
 import convertSupportInfoAttachmentUrlsToBase64 from "../nphiesHelpers/base/convertSupportInfoAttachmentUrlsToBase64.mjs";
 import createBaseFetchExsysDataAndCallNphiesApi from "./createBaseFetchExsysDataAndCallNphiesApi.mjs";
 import extractClaimResponseData from "../nphiesHelpers/extraction/extractClaimResponseData.mjs";
-import extractCoverageEntryResponseData from "../nphiesHelpers/extraction/extractCoverageEntryResponseData.mjs";
+import extractCoverageData from "../nphiesHelpers/extraction/extractCoverageData.mjs";
 import createNphiesRequestPayloadFn from "../nphiesHelpers/preauthorization/index.mjs";
 import validateSupportInfoDataBeforeCallingNphies from "../nphiesHelpers/base/validateSupportInfoDataBeforeCallingNphies.mjs";
 import savePreauthPollDataToExsys from "../polls/savePreauthPollDataToExsys.mjs";
@@ -29,7 +29,7 @@ const {
 } = EXSYS_API_IDS_NAMES;
 
 const extractionFunctionsMap = {
-  [COVERAGE]: extractCoverageEntryResponseData,
+  [COVERAGE]: extractCoverageData,
   ClaimResponse: extractClaimResponseData,
 };
 

@@ -5,7 +5,7 @@
  */
 import { isArrayHasData } from "@exsys-web-server/helpers";
 import extractNphiesCodeAndDisplayFromCodingType from "../../nphiesHelpers/extraction/extractNphiesCodeAndDisplayFromCodingType.mjs";
-import extractExtensionsSentToNphies from "./extractExtensionsSentToNphies.mjs";
+import extractExtensionsSentToNphies from "../../nphiesHelpers/extraction/extractExtensionsSentToNphies.mjs";
 
 const createDiagnosisData = (diagnosis, diagnosisErrors) => {
   let diagnosisData = undefined;

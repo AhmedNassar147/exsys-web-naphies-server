@@ -5,7 +5,7 @@
  *
  */
 import { isArrayHasData } from "@exsys-web-server/helpers";
-import extractContentAttachment from "./extractContentAttachment.mjs";
+import extractContentAttachment from "../base/extractContentAttachment.mjs";
 
 const getErrors = (errors) => (isArrayHasData(errors) ? errors : undefined);
 

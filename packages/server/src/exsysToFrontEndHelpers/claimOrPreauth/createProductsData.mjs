@@ -7,7 +7,7 @@ import { isArrayHasData } from "@exsys-web-server/helpers";
 import extractNphiesCodeAndDisplayFromCodingType from "../../nphiesHelpers/extraction/extractNphiesCodeAndDisplayFromCodingType.mjs";
 import getValueFromObject from "../../nphiesHelpers/extraction/getValueFromObject.mjs";
 import extractProductOrServiceData from "./extractProductOrServiceData.mjs";
-import extractExtensionsSentToNphies from "./extractExtensionsSentToNphies.mjs";
+import extractExtensionsSentToNphies from "../../nphiesHelpers/extraction/extractExtensionsSentToNphies.mjs";
 
 const createProductsData = ({
   extractedProductsData,

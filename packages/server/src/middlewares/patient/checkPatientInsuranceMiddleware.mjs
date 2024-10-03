@@ -9,8 +9,8 @@ import {
   isArrayHasData,
   createDateFromNativeDate,
 } from "@exsys-web-server/helpers";
-import extractCoverageEligibilityEntryResponseData from "../../nphiesHelpers/extraction/extractCoverageEligibilityEntryResponseData.mjs";
-import extractCoverageEntryResponseData from "../../nphiesHelpers/extraction/extractCoverageEntryResponseData.mjs";
+import extractEligibilityResponseData from "../../nphiesHelpers/extraction/extractEligibilityResponseData.mjs";
+import extractCoverageData from "../../nphiesHelpers/extraction/extractCoverageData.mjs";
 import checkPatientInsuranceMiddleware from "../../helpers/createBaseExpressMiddleware.mjs";
 import createNphiesRequestPayloadFn from "../../nphiesHelpers/eligibility/index.mjs";
 import checkNphiesPatientInsurance from "../../exsysHelpers/checkNphiesPatientInsurance.mjs";
@@ -23,8 +23,8 @@ const { queryEligibilityDataFromCchi, queryExsysCchiPatient } =
   EXSYS_API_IDS_NAMES;
 
 const extractionFunctionsMap = {
-  CoverageEligibilityResponse: extractCoverageEligibilityEntryResponseData,
-  Coverage: extractCoverageEntryResponseData,
+  CoverageEligibilityResponse: extractEligibilityResponseData,
+  Coverage: extractCoverageData,
 };
 
 const setErrorIfExtractedDataFoundFn = ({

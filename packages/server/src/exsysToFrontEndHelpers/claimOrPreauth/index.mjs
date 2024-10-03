@@ -4,31 +4,33 @@
  *
  */
 import {
-  // findRootYarnWorkSpaces,
-  // readJsonFile,
-  // writeResultFile,
+  findRootYarnWorkSpaces,
+  readJsonFile,
+  writeResultFile,
   formatDateToNativeDateParts,
   getLastPartOfUrl,
   isArrayHasData,
 } from "@exsys-web-server/helpers";
 import { NPHIES_BASE_CODE_TYPES } from "../../constants.mjs";
-import mapEntriesAndExtractNeededData from "../../nphiesHelpers/extraction/mapEntriesAndExtractNeededData.mjs";
+import mapEntriesAndExtractNeededData, {
+  mapEntriesAndExtractNeededData2,
+} from "../../nphiesHelpers/extraction/mapEntriesAndExtractNeededData.mjs";
 import extractNphiesCodeAndDisplayFromCodingType from "../../nphiesHelpers/extraction/extractNphiesCodeAndDisplayFromCodingType.mjs";
 import extractIdentifierData from "../../nphiesHelpers/extraction/extractIdentifierData.mjs";
 import extractMessageHeaderData from "../../nphiesHelpers/extraction/extractMessageHeaderData.mjs";
 import formatNphiesResponseIssue from "../../nphiesHelpers/base/formatNphiesResponseIssue.mjs";
 import getValueFromObject from "../../nphiesHelpers/extraction/getValueFromObject.mjs";
-import extractPatientData from "../base/extractPatientData.mjs";
+import extractPatientData from "../../nphiesHelpers/extraction/extractPatientData.mjs";
+import extractCoverageRelationship from "../../nphiesHelpers/extraction/extractCoverageRelationship.mjs";
 import extractOrganizationData from "../base/extractOrganizationData.mjs";
 import extractNphiesSentDataErrors from "./extractNphiesSentDataErrors.mjs";
-import extractCoverageRelationship from "../../nphiesHelpers/extraction/extractCoverageRelationship.mjs";
 import extractCancellationData from "./extractCancellationData.mjs";
 import extractPollData from "./extractPollData.mjs";
 import createProductsData from "./createProductsData.mjs";
 import makeFinalCareTeamData from "./makeFinalCareTeamData.mjs";
 import createDiagnosisData from "./createDiagnosisData.mjs";
-import extractContentAttachment from "./extractContentAttachment.mjs";
 import extractSavedCommunicationData from "./extractSavedCommunicationData.mjs";
+import extractSupportInfoData from "../base/extractSupportInfoData.mjs";
 
 const {
   EXTENSION_AUTH_OFFLINE_DATE,
@@ -260,8 +262,6 @@ const extractPreauthOrClaimDataSentToNphies = ({
   communicationReplyData,
   communicationRequestData,
 }) => {
-  let supportInfoData = undefined;
-
   const { id: creationBundleId } = nodeServerDataSentToNaphies || {};
   const { issue } = nphiesResponse || {};
 
@@ -330,81 +330,10 @@ const extractPreauthOrClaimDataSentToNphies = ({
 
   const finalCareTeam = makeFinalCareTeamData(careTeam, careTeamData);
 
-  if (isArrayHasData(supportingInfo)) {
-    supportInfoData = supportingInfo.map(
-      ({
-        sequence,
-        category,
-        code,
-        valueQuantity,
-        valueAttachment,
-        valueString,
-        timingDate,
-        timingPeriod,
-        reason,
-      }) => {
-        const { code: categoryCode } =
-          extractNphiesCodeAndDisplayFromCodingType(category);
-
-        const {
-          code: codeValue,
-          display,
-          text,
-        } = extractNphiesCodeAndDisplayFromCodingType(code);
-
-        const { code: absenceReasonCode, codingSystemUrl: absenceReasonUrl } =
-          extractNphiesCodeAndDisplayFromCodingType(reason);
-
-        let value = valueString || timingDate;
-        let unit;
-        let title;
-        let contentType;
-        let creation;
-
-        if (valueQuantity) {
-          value = valueQuantity.value;
-          unit = valueQuantity.code;
-        }
-
-        if (valueAttachment) {
-          const result = extractContentAttachment(valueAttachment);
-
-          value = result.value;
-          contentType = result.contentType;
-          title = result.title;
-          creation = result.creation;
-        }
-
-        if (timingPeriod) {
-          const { start, end } = timingPeriod;
-          value = [start, end].filter(Boolean).join(" ~ ");
-        }
-
-        const __absenceReasonCode = [
-          absenceReasonCode,
-          getLastPartOfUrl(absenceReasonUrl),
-        ]
-          .filter(Boolean)
-          .join("  ");
-
-        return {
-          sequence,
-          categoryCode,
-          code: codeValue,
-          display,
-          text,
-          value,
-          unit,
-          title,
-          contentType,
-          creation,
-          extendable: "y",
-          absenceReasonCode: __absenceReasonCode || undefined,
-          error: supportInfoErrors[sequence],
-        };
-      }
-    );
-  }
+  const supportInfoData = extractSupportInfoData(
+    supportingInfo,
+    supportInfoErrors
+  );
 
   return {
     exsysRecordPk: preauth_pk || claim_pk,
@@ -451,12 +380,12 @@ const extractPreauthOrClaimDataSentToNphies = ({
   };
 };
 
-// const base = await findRootYarnWorkSpaces();
-// const [result] = await readJsonFile(`${base}/results/exsys/test2.json`, true);
+const base = await findRootYarnWorkSpaces();
+const [result] = await readJsonFile(`${base}/results/exsys/test2.json`, true);
 
-// await writeResultFile({
-//   data: extractPreauthOrClaimDataSentToNphies(result),
-//   folderName: "exsysFromEndnew",
-// });
+await writeResultFile({
+  data: mapEntriesAndExtractNeededData2(result),
+  folderName: "__exsysFromEndnew",
+});
 
 export default extractPreauthOrClaimDataSentToNphies;

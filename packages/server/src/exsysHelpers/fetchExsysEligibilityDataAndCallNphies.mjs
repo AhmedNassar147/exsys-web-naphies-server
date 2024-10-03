@@ -4,8 +4,8 @@
  *
  */
 import createBaseFetchExsysDataAndCallNphiesApi from "./createBaseFetchExsysDataAndCallNphiesApi.mjs";
-import extractCoverageEligibilityEntryResponseData from "../nphiesHelpers/extraction/extractCoverageEligibilityEntryResponseData.mjs";
-import extractCoverageEntryResponseData from "../nphiesHelpers/extraction/extractCoverageEntryResponseData.mjs";
+import extractEligibilityResponseData from "../nphiesHelpers/extraction/extractEligibilityResponseData.mjs";
+import extractCoverageData from "../nphiesHelpers/extraction/extractCoverageData.mjs";
 import createNphiesRequestPayloadFn from "../nphiesHelpers/eligibility/index.mjs";
 import { EXSYS_API_IDS_NAMES, NPHIES_RESOURCE_TYPES } from "../constants.mjs";
 
@@ -15,14 +15,14 @@ const { queryExsysEligibilityData, saveNphiesResponseToExsys } =
   EXSYS_API_IDS_NAMES;
 
 const extractionFunctionsMap = {
-  CoverageEligibilityResponse: extractCoverageEligibilityEntryResponseData,
-  [COVERAGE]: extractCoverageEntryResponseData,
+  CoverageEligibilityResponse: extractEligibilityResponseData,
+  [COVERAGE]: extractCoverageData,
 };
 
 const setErrorIfExtractedDataFoundFn = ({
   eligibilityErrors,
   coverageErrors,
-}) => [...(eligibilityErrors || []), ...(coverageErrors || [])];
+}) => [eligibilityErrors, coverageErrors].flat().filter(Boolean);
 
 const createResultsDataFromExsysResponse = ({ primaryKey, data }) => ({
   primaryKey,

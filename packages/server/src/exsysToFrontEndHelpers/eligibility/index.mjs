@@ -5,9 +5,9 @@
  */
 import { isArrayHasData } from "@exsys-web-server/helpers";
 import mapEntriesAndExtractNeededData from "../../nphiesHelpers/extraction/mapEntriesAndExtractNeededData.mjs";
+import extractPatientData from "../../nphiesHelpers/extraction/extractPatientData.mjs";
 import extractNphiesCodeAndDisplayFromCodingType from "../../nphiesHelpers/extraction/extractNphiesCodeAndDisplayFromCodingType.mjs";
 import formatNphiesResponseIssue from "../../nphiesHelpers/base/formatNphiesResponseIssue.mjs";
-import extractPatientData from "../base/extractPatientData.mjs";
 import extractOrganizationData from "../base/extractOrganizationData.mjs";
 import extractInsurancesData from "../../nphiesHelpers/extraction/extractInsurancesData.mjs";
 import extractCoverageRelationship from "../../nphiesHelpers/extraction/extractCoverageRelationship.mjs";
