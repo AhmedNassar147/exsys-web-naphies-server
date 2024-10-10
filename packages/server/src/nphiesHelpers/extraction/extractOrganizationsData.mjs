@@ -21,7 +21,7 @@ const extractOrganizationsData = ({ entryGroupArray }) => {
 
   return entryGroupArray.reduce((acc, item) => {
     const {
-      resource: { name, identifier, type, id, extension, meta },
+      resource: { name, identifier, id, extension, meta },
     } = item;
     const [value] = extractIdentifierData(identifier);
 
@@ -45,7 +45,7 @@ const extractOrganizationsData = ({ entryGroupArray }) => {
     if (isPolicyHolder) {
       acc = {
         ...acc,
-        policyHolderOrgBundleId: id,
+        policyHolderOrgBundleId: id || "",
         policyHolderOrg: fullName,
         ...extensions,
       };

@@ -4,22 +4,15 @@
  *
  */
 import createBaseFetchExsysDataAndCallNphiesApi from "./createBaseFetchExsysDataAndCallNphiesApi.mjs";
-import extractPreauthOrClaimStatusCheckResponseData from "../nphiesHelpers/extraction/extractPreauthOrClaimStatusCheckResponseData.mjs";
 import createNphiesRequestPayloadFn from "../nphiesHelpers/preauthorization/createNphiesPreauthOrClaimStatusCheckData.mjs";
-import {
-  EXSYS_API_IDS_NAMES,
-  NPHIES_RESOURCE_TYPES,
-  NPHIES_REQUEST_TYPES,
-} from "../constants.mjs";
+import { EXSYS_API_IDS_NAMES, NPHIES_REQUEST_TYPES } from "../constants.mjs";
+
+const { STATUS_CHECK } = NPHIES_REQUEST_TYPES;
 
 const {
   queryExsysClaimOrPreauthStatusCheckData,
   saveExsysClaimOrPreauthStatusCheckData,
 } = EXSYS_API_IDS_NAMES;
-
-const extractionFunctionsMap = {
-  [NPHIES_RESOURCE_TYPES.TASK]: extractPreauthOrClaimStatusCheckResponseData,
-};
 
 const setErrorIfExtractedDataFoundFn = ({ statusCheckErrors }) =>
   statusCheckErrors || [];
@@ -79,8 +72,8 @@ const createNphiesStatusCheckPreauthOrClaimData = async ({ requestParams }) => {
     requestMethod: "GET",
     printFolderName,
     exsysDataApiPrimaryKeyName,
+    extractionRequestType: STATUS_CHECK,
     createNphiesRequestPayloadFn,
-    extractionFunctionsMap,
     setErrorIfExtractedDataFoundFn,
     createExsysSaveApiParams,
     createExsysErrorSaveApiBody,

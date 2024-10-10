@@ -61,7 +61,7 @@ const createCommunicationEntry = ({
           system: providerFocusUrl.replace(resourceType, (value) =>
             value.toLowerCase()
           ),
-          value: `req_${requestId}`,
+          value: requestId,
         },
       ],
       ...(!!(communicationResponseBasedOnType && communicationResponseBasedOnId)
@@ -71,7 +71,7 @@ const createCommunicationEntry = ({
                 type: communicationResponseBasedOnType,
                 identifier: {
                   system: `${siteUrl}/${communicationResponseBasedOnType.toLowerCase()}`,
-                  value: `req_${communicationResponseBasedOnId}`,
+                  value: communicationResponseBasedOnId,
                 },
               },
             ],
@@ -97,7 +97,7 @@ const createCommunicationEntry = ({
           type: communicationAboutType,
           identifier: {
             system: `${siteUrl}/${communicationAboutSystemType}`,
-            value: `req_${communicationAboutId}`,
+            value: communicationAboutId,
           },
         },
       ],

@@ -19,13 +19,11 @@ import extractMessageHeaderData from "../../nphiesHelpers/extraction/extractMess
 import formatNphiesResponseIssue from "../../nphiesHelpers/base/formatNphiesResponseIssue.mjs";
 import getValueFromObject from "../../nphiesHelpers/extraction/getValueFromObject.mjs";
 import extractPatientData from "../../nphiesHelpers/extraction/extractPatientData.mjs";
-import extractOrganizationData from "../base/extractOrganizationData.mjs";
 import extractNphiesSentDataErrors from "./extractNphiesSentDataErrors.mjs";
 import extractCoverageRelationship from "../../nphiesHelpers/extraction/extractCoverageRelationship.mjs";
 import extractCancellationData from "./extractCancellationData.mjs";
 import extractPollData from "./extractPollData.mjs";
 import createProductsData from "./createProductsData.mjs";
-import makeFinalCareTeamData from "./makeFinalCareTeamData.mjs";
 import createDiagnosisData from "./createDiagnosisData.mjs";
 import extractSavedCommunicationData from "./extractSavedCommunicationData.mjs";
 

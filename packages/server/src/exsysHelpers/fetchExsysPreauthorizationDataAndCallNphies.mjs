@@ -7,18 +7,10 @@ import { isArrayHasData } from "@exsys-web-server/helpers";
 import createExsysRequest from "../helpers/createExsysRequest.mjs";
 import convertSupportInfoAttachmentUrlsToBase64 from "../nphiesHelpers/base/convertSupportInfoAttachmentUrlsToBase64.mjs";
 import createBaseFetchExsysDataAndCallNphiesApi from "./createBaseFetchExsysDataAndCallNphiesApi.mjs";
-import extractClaimResponseData from "../nphiesHelpers/extraction/extractClaimResponseData.mjs";
-import extractCoverageData from "../nphiesHelpers/extraction/extractCoverageData.mjs";
 import createNphiesRequestPayloadFn from "../nphiesHelpers/preauthorization/index.mjs";
 import validateSupportInfoDataBeforeCallingNphies from "../nphiesHelpers/base/validateSupportInfoDataBeforeCallingNphies.mjs";
 import savePreauthPollDataToExsys from "../polls/savePreauthPollDataToExsys.mjs";
-import {
-  EXSYS_API_IDS_NAMES,
-  NPHIES_RESOURCE_TYPES,
-  NPHIES_REQUEST_TYPES,
-} from "../constants.mjs";
-
-const { COVERAGE } = NPHIES_RESOURCE_TYPES;
+import { EXSYS_API_IDS_NAMES, NPHIES_REQUEST_TYPES } from "../constants.mjs";
 
 const {
   collectExsysPreauthData,
@@ -27,11 +19,6 @@ const {
   saveClaimData,
   saveClaimHistory,
 } = EXSYS_API_IDS_NAMES;
-
-const extractionFunctionsMap = {
-  [COVERAGE]: extractCoverageData,
-  ClaimResponse: extractClaimResponseData,
-};
 
 const setErrorIfExtractedDataFoundFn = ({ coverageErrors, claimErrors }) => [
   ...(coverageErrors || []),
@@ -174,7 +161,7 @@ const fetchExsysPreauthorizationDataAndCallNphies = async ({
     exsysDataApiPrimaryKeyName,
     createResultsDataFromExsysResponse,
     createNphiesRequestPayloadFn,
-    extractionFunctionsMap,
+    extractionRequestType: nphiesRequestType,
     setErrorIfExtractedDataFoundFn,
     createExsysSaveApiParams,
     createExsysErrorSaveApiBody,

@@ -16,7 +16,7 @@ const extractErrorsArray = (nphiesError, errorsFieldName = "code") =>
             extensionValue,
           } = extractNphiesCodeAndDisplayFromCodingType(codeType);
 
-          if (!errorCode || errorCode === "status") {
+          if (!errorCode || ["status", "response"].includes(errorCode)) {
             return false;
           }
 

@@ -9,11 +9,10 @@ import mapEntriesAndExtractNeededData from "../extraction/mapEntriesAndExtractNe
 const callNphiesAPIAndCollectResults = ({
   exsysResultsData,
   createNphiesRequestPayloadFn,
-  extractionFunctionsMap,
   otherPrintValues,
   setErrorIfExtractedDataFoundFn,
-  isAuthorizationPoll,
   checkPayloadNphiesSize,
+  extractionRequestType,
 }) =>
   new Promise(async (resolve) => {
     const { organizationNo, organization_no, clinicalEntityNo } =
@@ -71,24 +70,17 @@ const callNphiesAPIAndCollectResults = ({
     let hasError = !isSuccess;
 
     const { id: mainBundleId } = nphiesResponse || {};
-    const { id: creationBundleId } = nphiesRequestPayload;
 
     const isNphiesServerConnected = !!mainBundleId;
 
     if (isNphiesServerConnected) {
       const extractedData = mapEntriesAndExtractNeededData({
+        requestType: extractionRequestType,
         nphiesResponse,
-        extractionFunctionsMap,
-        creationBundleId,
+        nodeServerDataSentToNaphies: nphiesRequestPayload,
       });
 
-      nphiesResultData.nphiesExtractedData =
-        isAuthorizationPoll && mainBundleId
-          ? {
-              mainBundleId,
-              ...(extractedData || null),
-            }
-          : extractedData;
+      nphiesResultData.nphiesExtractedData = extractedData;
 
       if (extractedData && setErrorIfExtractedDataFoundFn) {
         const { issueErrorCode, issueError } = extractedData;

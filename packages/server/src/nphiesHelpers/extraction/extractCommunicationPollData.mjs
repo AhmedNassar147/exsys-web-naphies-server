@@ -1,6 +1,6 @@
 /*
  *
- * Helper: `extractCommunicationData`.
+ * Helper: `extractCommunicationPollDataData`.
  *
  */
 import { isArrayHasData, getLastPartOfUrl } from "@exsys-web-server/helpers";
@@ -8,8 +8,14 @@ import extractIdentifierData from "./extractIdentifierData.mjs";
 import extractNphiesCodeAndDisplayFromCodingType from "./extractNphiesCodeAndDisplayFromCodingType.mjs";
 import extractErrorsArray from "./extractErrorsArray.mjs";
 
-const extractCommunicationData = ({
-  resource: {
+const extractCommunicationPollDataData = ({ entryGroupArray }) => {
+  if (!isArrayHasData(entryGroupArray)) {
+    return null;
+  }
+
+  const [{ resource }] = entryGroupArray;
+
+  const {
     id,
     category,
     identifier,
@@ -20,8 +26,8 @@ const extractCommunicationData = ({
     error,
     status,
     basedOn,
-  },
-}) => {
+  } = resource;
+
   const [communicationIdentifier] = extractIdentifierData(identifier);
 
   const { code } = extractNphiesCodeAndDisplayFromCodingType(
@@ -46,20 +52,16 @@ const extractCommunicationData = ({
   return {
     communicationExtractedData: {
       communicationId: id,
-      communicationIdentifier: (communicationIdentifier || "").replace(
-        /req_|CommReq_/,
-        ""
-      ),
+      communicationIdentifier,
       communicationCategory: code,
       communicationPriority: priority,
       communicationStatus: status,
       communicationResponseBasedOnType: basedOnType,
-      communicationResponseBasedOnId: communicationResponseBasedOnId
-        ? communicationResponseBasedOnId.replace("req_", "")
-        : undefined,
+      communicationResponseBasedOnId:
+        communicationResponseBasedOnId || undefined,
       communicationAboutType,
-      communicationAboutId: typeId ? typeId.replace("req_", "") : undefined,
-      communicationAboutSystemType: getLastPartOfUrl(typeSystem),
+      communicationAboutId: typeId || undefined,
+      communicationAboutSystemType: getLastPartOfUrl(typeSystem) || undefined,
       communicationReasonCode: _reasonCode,
       communicationPayload: payload,
       communicationErrors,
@@ -67,4 +69,4 @@ const extractCommunicationData = ({
   };
 };
 
-export default extractCommunicationData;
+export default extractCommunicationPollDataData;

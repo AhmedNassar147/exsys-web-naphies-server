@@ -5,7 +5,7 @@
  *
  */
 import { isArrayHasData } from "@exsys-web-server/helpers";
-import extractContentAttachment from "../base/extractContentAttachment.mjs";
+import extractContentAttachment from "../../nphiesHelpers/extraction/extractContentAttachment.mjs";
 
 const getErrors = (errors) => (isArrayHasData(errors) ? errors : undefined);
 
@@ -42,7 +42,6 @@ const extractCommunicationRecord = ({
 
   return {
     sentCreationBundleId,
-
     nphiesResponseMainBundleId: mainBundleId,
     nphiesResponseBundleSectionId: bundleId,
     nphiesResponseTaskId: taskResponseId,

@@ -15,11 +15,11 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
   requestParams,
   requestBody,
   requestMethod,
+  extractionRequestType,
   createResultsDataFromExsysResponse,
   printFolderName,
   exsysDataApiPrimaryKeyName,
   createNphiesRequestPayloadFn,
-  extractionFunctionsMap,
   setErrorIfExtractedDataFoundFn,
   createExsysSaveApiParams,
   createExsysErrorSaveApiBody,
@@ -164,9 +164,9 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
   } = await callNphiesAPIAndCollectResults({
     exsysResultsData,
     createNphiesRequestPayloadFn,
-    extractionFunctionsMap,
     setErrorIfExtractedDataFoundFn,
     checkPayloadNphiesSize,
+    extractionRequestType,
   });
 
   const { nphiesExtractedData, nodeServerDataSentToNaphies, nphiesResponse } =

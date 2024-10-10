@@ -7,31 +7,13 @@ import convertSupportInfoAttachmentUrlsToBase64 from "../nphiesHelpers/base/conv
 import createBaseFetchExsysDataAndCallNphiesApi from "./createBaseFetchExsysDataAndCallNphiesApi.mjs";
 import validateSupportInfoDataBeforeCallingNphies from "../nphiesHelpers/base/validateSupportInfoDataBeforeCallingNphies.mjs";
 import createNphiesRequestPayloadFn from "../nphiesHelpers/communication/index.mjs";
-import { EXSYS_API_IDS_NAMES } from "../constants.mjs";
-import formatNphiesResponseIssue from "../nphiesHelpers/base/formatNphiesResponseIssue.mjs";
+import { EXSYS_API_IDS_NAMES, NPHIES_REQUEST_TYPES } from "../constants.mjs";
 
 const {
   collectExsysClaimOrPreauthCommunicationData,
   collectExsysClaimOrPreauthCommunicationRequestData,
   saveExsysClaimOrPreauthCommunicationData,
 } = EXSYS_API_IDS_NAMES;
-
-const extractionFunctionsMap = {
-  MessageHeader: ({ resource: { id, response } }) => {
-    const { identifier, code } = response || {};
-
-    const outcome = code || "error";
-
-    return {
-      communicationRequestId: identifier,
-      communicationResponseId: id,
-      communicationStatus: code,
-      communicationOutcome: outcome.includes("error") ? "error" : outcome,
-    };
-  },
-  OperationOutcome: ({ resource: { issue } }) =>
-    formatNphiesResponseIssue(issue),
-};
 
 const createExsysSaveApiParams =
   (is_communication_request) =>
@@ -99,8 +81,8 @@ const fetchPreauthAndClaimCommunicationResponse = async ({
     : collectExsysClaimOrPreauthCommunicationData;
 
   const basePrintFolder = isCommunicationRequest
-    ? "communicationRequest"
-    : "communication";
+    ? NPHIES_REQUEST_TYPES.COMMUNICATION_REQUEST
+    : NPHIES_REQUEST_TYPES.COMMUNICATION;
 
   return await createBaseFetchExsysDataAndCallNphiesApi({
     exsysQueryApiId,
@@ -111,8 +93,7 @@ const fetchPreauthAndClaimCommunicationResponse = async ({
     exsysDataApiPrimaryKeyName: "communication_pk",
     createResultsDataFromExsysResponse,
     createNphiesRequestPayloadFn,
-    extractionFunctionsMap,
-    // setErrorIfExtractedDataFoundFn,
+    extractionRequestType: basePrintFolder,
     createExsysSaveApiParams: createExsysSaveApiParams(
       isCommunicationRequest ? "Y" : "N"
     ),

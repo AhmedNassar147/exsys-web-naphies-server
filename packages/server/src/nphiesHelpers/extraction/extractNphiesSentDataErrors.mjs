@@ -5,7 +5,6 @@
  */
 import { isArrayHasData } from "@exsys-web-server/helpers";
 import getValueIndexFromString from "../../helpers/getValueIndexFromString.mjs";
-import getEntriesResourceIndicesMap from "../../nphiesHelpers/base/getEntriesResourceIndicesMap.mjs";
 
 const createAssignErrorToObjectError =
   ({ error, errorCode }) =>
@@ -39,13 +38,9 @@ const createAssignErrorToObjectError =
   };
 
 const extractNphiesSentDataErrors = (
-  nodeServerDataSentToNphies,
+  dataSentToNphiesIndicesMap,
   claimErrors
 ) => {
-  const entriesResourceIndicesMap = getEntriesResourceIndicesMap(
-    nodeServerDataSentToNphies
-  );
-
   let productErrors = {};
   let diagnosisErrors = {};
   let supportInfoErrors = {};
@@ -56,7 +51,7 @@ const extractNphiesSentDataErrors = (
       const { error, errorCode } = errorData;
 
       const bundleEntryIndex = getValueIndexFromString(error, "Bundle.entry");
-      const entryResourceType = entriesResourceIndicesMap[bundleEntryIndex];
+      const entryResourceType = dataSentToNphiesIndicesMap[bundleEntryIndex];
 
       const _error = [
         entryResourceType && `In (${entryResourceType}) entry`,

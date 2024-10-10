@@ -184,7 +184,6 @@ export const NPHIES_REQUEST_TYPES = {
   COMMUNICATION_REQUEST: "CommunicationRequest",
   CANCEL: "cancel",
   STATUS_CHECK: "status-check",
-  STATUS_CHECK: "status-check",
   MEDICATION_REQUEST: "medicationRequest",
   PRESCRIBER: "prescriber",
 };

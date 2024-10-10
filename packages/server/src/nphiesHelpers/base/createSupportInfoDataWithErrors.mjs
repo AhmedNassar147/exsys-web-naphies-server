@@ -1,13 +1,13 @@
 /*
  *
- * Helper: `extractSupportInfoData`.
+ * Helper: `createSupportInfoDataWithErrors`.
  *
  */
 import { getLastPartOfUrl, isArrayHasData } from "@exsys-web-server/helpers";
-import extractNphiesCodeAndDisplayFromCodingType from "../../nphiesHelpers/extraction/extractNphiesCodeAndDisplayFromCodingType.mjs";
-import extractContentAttachment from "./extractContentAttachment.mjs";
+import extractNphiesCodeAndDisplayFromCodingType from "../extraction/extractNphiesCodeAndDisplayFromCodingType.mjs";
+import extractContentAttachment from "../extraction/extractContentAttachment.mjs";
 
-const extractSupportInfoData = (supportingInfo, supportInfoErrors) => {
+const createSupportInfoDataWithErrors = (supportingInfo, supportInfoErrors) => {
   if (!isArrayHasData(supportingInfo)) {
     return undefined;
   }
@@ -87,4 +87,4 @@ const extractSupportInfoData = (supportingInfo, supportInfoErrors) => {
   );
 };
 
-export default extractSupportInfoData;
+export default createSupportInfoDataWithErrors;

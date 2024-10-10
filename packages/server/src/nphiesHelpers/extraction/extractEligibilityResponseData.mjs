@@ -101,7 +101,7 @@ export default extractEligibilityResponseData;
 //   eligibilityClaimResponse: '4856db6c-aa20-41f4-9463-c70eb22ced87',
 //   eligibilityRequesterOrganizationId: '6',
 //   eligibilityInsurerOrganizationId: '7001571327',
-//   eligibilityInsuranceBenefits: undefined,
+//   insuranceBenefits: undefined,
 //   isPatientEligible: 'N',
 //   eligibilityErrors: [ { error: '', errorCode: '1680' } ]
 // }

@@ -4,14 +4,18 @@
  *
  */
 import { isArrayHasData, isObjectHasData } from "@exsys-web-server/helpers";
+import mapEntriesAndExtractNeededData from "../../nphiesHelpers/extraction/mapEntriesAndExtractNeededData.mjs";
 import extractCommunicationRecord from "./extractCommunicationRecord.mjs";
-import extractCommunicationData from "../../nphiesHelpers/extraction/extractCommunicationData.mjs";
+import { NPHIES_REQUEST_TYPES } from "../../constants.mjs";
 
-const makeNphiesSendCommunicationData = ({
-  nodeServerDataSentToNaphies,
-  nphiesResponse,
-  nphiesExtractedData,
-}) => {
+const makeNphiesSendCommunicationData = (options) => {
+  if (!isObjectHasData(options)) {
+    return undefined;
+  }
+
+  const { nodeServerDataSentToNaphies, nphiesResponse, nphiesExtractedData } =
+    options;
+
   if (!isObjectHasData(nphiesExtractedData)) {
     return undefined;
   }
@@ -39,36 +43,32 @@ const makeNphiesSendCommunicationData = ({
   };
 };
 
-const makeExsysCommunicationReplyData = ({
-  communication_pk,
-  nodeServerDataSentToNaphies,
-  nphiesResponse,
-  nphiesExtractedData,
-}) => {
+const makeExsysCommunicationReplyData = (options) => {
+  if (!isObjectHasData(options)) {
+    return undefined;
+  }
+
+  const {
+    communication_pk,
+    nodeServerDataSentToNaphies,
+    nphiesResponse,
+    nphiesExtractedData,
+  } = options;
+
   if (!isObjectHasData(nphiesExtractedData)) {
     return undefined;
   }
 
-  const { entry } = nodeServerDataSentToNaphies;
-  const communicationEntry = entry.find(
-    ({ resource: { resourceType } }) => resourceType === "Communication"
-  );
+  const { nphiesRequestExtractedData } = nphiesExtractedData;
 
-  const {
-    communicationExtractedData: {
-      communicationIdentifier,
-      communicationCategory,
-      communicationPriority,
-      communicationStatus: communicationSentStatus,
-      communicationResponseBasedOnType,
-      communicationResponseBasedOnId,
-      communicationAboutType,
-      communicationAboutId,
-      communicationAboutSystemType,
-      communicationReasonCode,
-      communicationPayload,
-    },
-  } = extractCommunicationData(communicationEntry);
+  const result = isObjectHasData(nphiesRequestExtractedData)
+    ? nphiesExtractedData
+    : mapEntriesAndExtractNeededData({
+        requestType: NPHIES_REQUEST_TYPES.COMMUNICATION,
+        nphiesResponse,
+        nodeServerDataSentToNaphies,
+        defaultValue: {},
+      });
 
   const {
     creationBundleId,
@@ -80,7 +80,22 @@ const makeExsysCommunicationReplyData = ({
     communicationErrors,
     issueError,
     issueErrorCode,
-  } = nphiesExtractedData;
+    nphiesRequestExtractedData: nphiesRequestExtractedDataRes,
+  } = result;
+
+  const {
+    communicationIdentifier,
+    communicationCategory,
+    communicationPriority,
+    communicationStatus: communicationSentStatus,
+    communicationResponseBasedOnType,
+    communicationResponseBasedOnId,
+    communicationAboutType,
+    communicationAboutId,
+    communicationAboutSystemType,
+    communicationReasonCode,
+    communicationPayload,
+  } = nphiesRequestExtractedDataRes || {};
 
   const builtData = extractCommunicationRecord({
     sentCreationBundleId: creationBundleId,

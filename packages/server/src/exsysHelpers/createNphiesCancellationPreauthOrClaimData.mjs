@@ -4,25 +4,16 @@
  *
  */
 import createBaseFetchExsysDataAndCallNphiesApi from "./createBaseFetchExsysDataAndCallNphiesApi.mjs";
-import extractPreauthOrClaimCancellationResponseData from "../nphiesHelpers/extraction/extractPreauthOrClaimCancellationResponseData.mjs";
 import createNphiesRequestPayloadFnFactory from "../nphiesHelpers/preauthorization/createNphiesPreauthOrClaimCancellationData.mjs";
-import {
-  EXSYS_API_IDS_NAMES,
-  NPHIES_RESOURCE_TYPES,
-  NPHIES_REQUEST_TYPES,
-} from "../constants.mjs";
+import { EXSYS_API_IDS_NAMES, NPHIES_REQUEST_TYPES } from "../constants.mjs";
 
-const { CLAIM } = NPHIES_REQUEST_TYPES;
+const { CLAIM, CANCEL } = NPHIES_REQUEST_TYPES;
 
 const {
   queryClaimOrPreauthDataToCancellation,
   savePreauthData,
   saveClaimData,
 } = EXSYS_API_IDS_NAMES;
-
-const extractionFunctionsMap = {
-  [NPHIES_RESOURCE_TYPES.TASK]: extractPreauthOrClaimCancellationResponseData,
-};
 
 const setErrorIfExtractedDataFoundFn = ({ cancellationErrors }) =>
   cancellationErrors || [];
@@ -86,7 +77,7 @@ const createNphiesCancellationPreauthOrClaimData = async ({
     exsysDataApiPrimaryKeyName,
     createNphiesRequestPayloadFn:
       createNphiesRequestPayloadFnFactory(nullify_request),
-    extractionFunctionsMap,
+    extractionRequestType: CANCEL,
     setErrorIfExtractedDataFoundFn,
     createExsysSaveApiParams,
     createExsysErrorSaveApiBody,

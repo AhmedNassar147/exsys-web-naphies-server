@@ -5,6 +5,8 @@
  */
 import {
   createDateFromNativeDate,
+  formatDateToNativeDateParts,
+  getLastPartOfUrl,
   isArrayHasData,
 } from "@exsys-web-server/helpers";
 import extractNphiesCodeAndDisplayFromCodingType from "../../nphiesHelpers/extraction/extractNphiesCodeAndDisplayFromCodingType.mjs";
@@ -26,6 +28,7 @@ const extractPatientData = ({ entryGroupArray }) => {
     birthDate,
     maritalStatus,
     extension,
+    managingOrganization,
   } = resource;
 
   const [firstItem] = identifier || [];
@@ -38,9 +41,11 @@ const extractPatientData = ({ entryGroupArray }) => {
   const { code: maritalStatusCode } =
     extractNphiesCodeAndDisplayFromCodingType(maritalStatus);
 
-  const { dateString } = createDateFromNativeDate(birthDate, {
-    returnReversedDate: false,
+  const { dateString } = formatDateToNativeDateParts(birthDate, {
+    stringifyReturnedDate: true,
   });
+
+  const { reference } = managingOrganization || {};
 
   return {
     patientFileNo: id,
@@ -51,6 +56,7 @@ const extractPatientData = ({ entryGroupArray }) => {
     patientIdentifierIdType: `${display} (${code})`,
     patientIdentifierId: identifierValue,
     maritalStatusCode,
+    managingOrganization: getLastPartOfUrl(reference) || "",
     ...extractExtensionsSentToNphies(extension),
   };
 };

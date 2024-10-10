@@ -4,6 +4,8 @@
  *
  */
 import { isObjectHasData } from "@exsys-web-server/helpers";
+import { NPHIES_REQUEST_TYPES } from "../../constants.mjs";
+import mapEntriesAndExtractNeededData from "../../nphiesHelpers/extraction/mapEntriesAndExtractNeededData.mjs";
 
 const extractCancellationData = (cancellationData) => {
   const { nodeServerDataSentToNaphies, nphiesResponse, nphiesExtractedData } =
@@ -13,19 +15,29 @@ const extractCancellationData = (cancellationData) => {
     return undefined;
   }
 
+  const { nphiesRequestExtractedData } = nphiesExtractedData;
+
+  const result = isObjectHasData(nphiesRequestExtractedData)
+    ? nphiesExtractedData
+    : mapEntriesAndExtractNeededData({
+        requestType: NPHIES_REQUEST_TYPES.CANCEL,
+        nphiesResponse,
+        nodeServerDataSentToNaphies,
+        defaultValue: {},
+      });
+
   const {
-    cancellationResponseId,
-    cancellationRequestId,
-    cancellationQueuedRequestId,
-    cancellationStatus,
-    cancellationOutcome,
-    cancellationReasonCode,
-    cancellationErrors,
     bundleId,
     creationBundleId,
     issueError,
     issueErrorCode,
-  } = nphiesExtractedData || {};
+    cancellationResponseId,
+    cancellationRequestId,
+    cancellationStatus,
+    cancellationOutcome,
+    cancellationReasonCode,
+    cancellationErrors,
+  } = result;
 
   return {
     cancellationBundleId: bundleId,
@@ -33,7 +45,7 @@ const extractCancellationData = (cancellationData) => {
     cancellationIssueError: issueError,
     cancellationIssueErrorCode: issueErrorCode,
     cancellationResponseId,
-    cancellationRequestId: cancellationQueuedRequestId || cancellationRequestId,
+    cancellationRequestId,
     cancellationStatus,
     cancellationOutcome,
     cancellationReasonCode,

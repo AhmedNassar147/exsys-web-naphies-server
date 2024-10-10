@@ -9,23 +9,17 @@ import {
   isArrayHasData,
   createDateFromNativeDate,
 } from "@exsys-web-server/helpers";
-import extractEligibilityResponseData from "../../nphiesHelpers/extraction/extractEligibilityResponseData.mjs";
-import extractCoverageData from "../../nphiesHelpers/extraction/extractCoverageData.mjs";
 import checkPatientInsuranceMiddleware from "../../helpers/createBaseExpressMiddleware.mjs";
 import createNphiesRequestPayloadFn from "../../nphiesHelpers/eligibility/index.mjs";
 import checkNphiesPatientInsurance from "../../exsysHelpers/checkNphiesPatientInsurance.mjs";
 import createBaseFetchExsysDataAndCallNphiesApi from "../../exsysHelpers/createBaseFetchExsysDataAndCallNphiesApi.mjs";
 import extractEligibilityDataSentToNphies from "../../exsysToFrontEndHelpers/eligibility/index.mjs";
-import { EXSYS_API_IDS_NAMES } from "../../constants.mjs";
+import { EXSYS_API_IDS_NAMES, NPHIES_REQUEST_TYPES } from "../../constants.mjs";
 import createExsysRequest from "../../helpers/createExsysRequest.mjs";
 
 const { queryEligibilityDataFromCchi, queryExsysCchiPatient } =
   EXSYS_API_IDS_NAMES;
-
-const extractionFunctionsMap = {
-  CoverageEligibilityResponse: extractEligibilityResponseData,
-  Coverage: extractCoverageData,
-};
+const { ELIGIBILITY } = NPHIES_REQUEST_TYPES;
 
 const setErrorIfExtractedDataFoundFn = ({
   eligibilityErrors,
@@ -92,10 +86,10 @@ const checkInsuranceEligibility = async ({
       exsysQueryApiId: queryEligibilityDataFromCchi,
       requestParams: exsysApiParams,
       requestMethod: "GET",
+      extractionRequestType: ELIGIBILITY,
       printFolderName: `${printFolderName}/eligibility`,
       exsysDataApiPrimaryKeyName: "memberid",
       createNphiesRequestPayloadFn,
-      extractionFunctionsMap,
       setErrorIfExtractedDataFoundFn,
       noPatientDataLogger: true,
       createResultsDataFromExsysResponse: (result) => ({

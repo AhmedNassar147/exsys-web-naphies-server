@@ -7,23 +7,15 @@ import chalk from "chalk";
 import {
   delayProcess,
   writeResultFile,
-  isObjectHasData,
   createCmdMessage,
 } from "@exsys-web-server/helpers";
 import savePreauthPollDataToExsys from "./savePreauthPollDataToExsys.mjs";
-import { NPHIES_RESOURCE_TYPES, NPHIES_REQUEST_TYPES } from "../constants.mjs";
+import { NPHIES_REQUEST_TYPES } from "../constants.mjs";
 import createNphiesPreauthOrClaimPollData from "../nphiesHelpers/preauthorization/createNphiesPreauthOrClaimPollData.mjs";
-import mapEntriesAndExtractNeededData from "../nphiesHelpers/extraction/mapEntriesAndExtractNeededData.mjs";
-import extractCoverageData from "../nphiesHelpers/extraction/extractCoverageData.mjs";
-import extractClaimResponseData from "../nphiesHelpers/extraction/extractClaimResponseData.mjs";
-import extractMessageHeaderData from "../nphiesHelpers/extraction/extractMessageHeaderData.mjs";
-import extractPreauthAndClaimPollTaskData from "../nphiesHelpers/extraction/extractPreauthAndClaimPollTaskData.mjs";
-import extractCommunicationData from "../nphiesHelpers/extraction/extractCommunicationData.mjs";
 import callNphiesApiAndCollectResults from "../nphiesHelpers/base/callNphiesApiAndCollectResults.mjs";
 import buildPrintedResultPath from "../helpers/buildPrintedResultPath.mjs";
 
-const { COVERAGE } = NPHIES_RESOURCE_TYPES;
-const { PRESCRIBER } = NPHIES_REQUEST_TYPES;
+const { PRESCRIBER, POLL } = NPHIES_REQUEST_TYPES;
 
 const MAX_DELAY_TIMEOUT = 1 * 60 * 1000;
 const MIN_DELAY_TIMEOUT = 5 * 1000;
@@ -32,22 +24,6 @@ const setErrorIfExtractedDataFoundFn = ({ coverageErrors, claimErrors }) => [
   ...(coverageErrors || []),
   ...(claimErrors || []),
 ];
-
-const extractionFunctionsMap = {
-  [COVERAGE]: extractCoverageData,
-  Task: extractPreauthAndClaimPollTaskData,
-  Bundle: ({ resource, creationBundleId }) =>
-    mapEntriesAndExtractNeededData({
-      nphiesResponse: resource,
-      creationBundleId,
-      extractionFunctionsMap: {
-        [COVERAGE]: extractCoverageData,
-        MessageHeader: extractMessageHeaderData(/-response|-request/),
-        CommunicationRequest: extractCommunicationData,
-        ClaimResponse: extractClaimResponseData,
-      },
-    }),
-};
 
 const runPreauthorizationPoll = async ({
   includeMessageType,
@@ -80,8 +56,7 @@ const runPreauthorizationPoll = async ({
         ...preauthPollData,
       },
       setErrorIfExtractedDataFoundFn,
-      extractionFunctionsMap,
-      isAuthorizationPoll: true,
+      extractionRequestType: POLL,
     };
 
     const { nphiesResultData, hasError } = await callNphiesApiAndCollectResults(
@@ -92,26 +67,27 @@ const runPreauthorizationPoll = async ({
       nphiesResultData;
 
     const {
+      messageHeaderRequestType,
+      originalHeaderRequestType,
       mainBundleId,
       bundleId,
       creationBundleId,
-      extractedTaskData,
-      messageHeaderRequestType,
-      messageHeaderResponseIdentifier,
-      messageHeaderResponseCode,
-      ...otherExtractedData
     } = nphiesExtractedData || {};
+    const isEmptyPoll =
+      messageHeaderRequestType === "poll" && !originalHeaderRequestType;
 
     const isPrescriberResponse = (messageHeaderRequestType || "").includes(
       PRESCRIBER
     );
 
-    if (!isObjectHasData(otherExtractedData)) {
+    if (isEmptyPoll) {
       createCmdMessage({
         type: "info",
         message: `${
-          isPrescriberResponse ? "medicationsValidation" : "Authorization"
-        } poll has no messages yet`,
+          isPrescriberResponse ? "prescription" : "Authorization"
+        } poll has no messages yet ${chalk.bold.white(
+          `when request_type_is=${messageHeaderRequestType}`
+        )}`,
       });
 
       await delayProcess(MAX_DELAY_TIMEOUT);
@@ -124,7 +100,7 @@ const runPreauthorizationPoll = async ({
       clinicalEntityNo,
       skipThrowingOrganizationError: true,
       innerFolderName: isPrescriberResponse
-        ? "medications_Validation_poll"
+        ? "prescriptionPoll"
         : "authorizationPoll",
       segments: [
         messageHeaderRequestType,
@@ -151,7 +127,7 @@ const runPreauthorizationPoll = async ({
   } catch (error) {
     createCmdMessage({
       type: "error",
-      message: `Error when running preauth polling, ${chalk.bold.white(
+      message: `Error when running preauth/prescription poll, ${chalk.bold.white(
         `re-running the poll in ${MAX_DELAY_TIMEOUT / 1000} minutes`
       )}  `,
       data: error,

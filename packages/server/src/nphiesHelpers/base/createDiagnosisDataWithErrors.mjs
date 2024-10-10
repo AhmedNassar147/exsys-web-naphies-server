@@ -1,13 +1,13 @@
 /*
  *
- * Helper: `createDiagnosisData`.
+ * Helper: `createDiagnosisDataWithErrors`.
  *
  */
 import { isArrayHasData } from "@exsys-web-server/helpers";
-import extractNphiesCodeAndDisplayFromCodingType from "../../nphiesHelpers/extraction/extractNphiesCodeAndDisplayFromCodingType.mjs";
-import extractExtensionsSentToNphies from "../../nphiesHelpers/extraction/extractExtensionsSentToNphies.mjs";
+import extractNphiesCodeAndDisplayFromCodingType from "../extraction/extractNphiesCodeAndDisplayFromCodingType.mjs";
+import extractExtensionsSentToNphies from "../extraction/extractExtensionsSentToNphies.mjs";
 
-const createDiagnosisData = (diagnosis, diagnosisErrors) => {
+const createDiagnosisDataWithErrors = (diagnosis, diagnosisErrors) => {
   let diagnosisData = undefined;
 
   if (isArrayHasData(diagnosis)) {
@@ -45,4 +45,4 @@ const createDiagnosisData = (diagnosis, diagnosisErrors) => {
   return diagnosisData;
 };
 
-export default createDiagnosisData;
+export default createDiagnosisDataWithErrors;

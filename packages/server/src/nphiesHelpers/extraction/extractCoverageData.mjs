@@ -48,7 +48,7 @@ const extractCoverageData = ({ entryGroupArray, isRequest }) => {
     policyHolder,
   } = resource;
 
-  const [memberid] = extractIdentifierData(identifier);
+  const [memberId] = extractIdentifierData(identifier);
   const [{ value: firstPayorName, code: firstPayorCode }] = classes || [{}];
   const errors = extractErrorsArray(error);
 
@@ -96,7 +96,7 @@ const extractCoverageData = ({ entryGroupArray, isRequest }) => {
     coverageResourceType: resourceType,
     [idFieldName]: id,
     coverageStatus: status,
-    coverageMemberid: memberid,
+    memberId,
     coverageFirstPayorName: firstPayorName,
     coverageFirstPayorCode: firstPayorCode,
     coverageNetwork: network,
@@ -104,7 +104,7 @@ const extractCoverageData = ({ entryGroupArray, isRequest }) => {
     coverageStartDate: start,
     coverageEndDate: end,
     policyHolderOrganizationId: getLastPartOfUrl(policyHolderRef),
-    coverageTypeCode: extractNphiesCodeAndDisplayFromCodingType(type).code,
+    coverageType: extractNphiesCodeAndDisplayFromCodingType(type).code,
     relationship: extractCoverageRelationship(relationship),
     ...copayValues,
     coverageClasses: classesValues,
@@ -118,7 +118,7 @@ export default extractCoverageData;
 //   coverageResourceType: 'Coverage',
 //   coverageRequestId: 'd62b409e-4310-4f54-a313-fa8c49d198f0',
 //   coverageStatus: 'active',
-//   coverageMemberid: '2435328659',
+//   memberId: '2435328659',
 //   coverageFirstPayorName: '472266009',
 //   coverageFirstPayorCode: undefined,
 //   coverageNetwork: '0',
@@ -126,7 +126,7 @@ export default extractCoverageData;
 //   coverageStartDate: undefined,
 //   coverageEndDate: undefined,
 //   policyHolderOrganizationId: '13',
-//   coverageTypeCode: 'EHCPOL',
+//   coverageType: 'EHCPOL',
 //   relationship: 'Self',
 //   coverageClasses: [ { key: 'plan', value: '472266009', name: 'SILVER' } ],
 //   coverageErrors: undefined

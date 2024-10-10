@@ -3,94 +3,33 @@
  * Helper: `extractEligibilityDataSentToNphies`.
  *
  */
-import { isArrayHasData } from "@exsys-web-server/helpers";
+import { isObjectHasData } from "@exsys-web-server/helpers";
 import mapEntriesAndExtractNeededData from "../../nphiesHelpers/extraction/mapEntriesAndExtractNeededData.mjs";
-import extractPatientData from "../../nphiesHelpers/extraction/extractPatientData.mjs";
-import extractNphiesCodeAndDisplayFromCodingType from "../../nphiesHelpers/extraction/extractNphiesCodeAndDisplayFromCodingType.mjs";
-import formatNphiesResponseIssue from "../../nphiesHelpers/base/formatNphiesResponseIssue.mjs";
-import extractOrganizationData from "../base/extractOrganizationData.mjs";
-import extractInsurancesData from "../../nphiesHelpers/extraction/extractInsurancesData.mjs";
-import extractCoverageRelationship from "../../nphiesHelpers/extraction/extractCoverageRelationship.mjs";
-
-const extractionFunctionsMap = {
-  CoverageEligibilityRequest: ({
-    resource: { priority, created, purpose, id },
-  }) => ({
-    created,
-    priority: extractNphiesCodeAndDisplayFromCodingType(priority).code,
-    purpose: purpose.join(", "),
-    requestId: id,
-  }),
-  Location: ({ resource: { name, type } }) => ({
-    facilityName: name,
-    facilityType: extractNphiesCodeAndDisplayFromCodingType(
-      isArrayHasData(type) ? type[0] : type
-    ).code,
-  }),
-  Organization: extractOrganizationData("prov"),
-  Patient: extractPatientData,
-};
-
-const nphiesResponseExtractionFunctionsMap = {
-  CoverageEligibilityResponse: ({ resource: { insurance } }) => ({
-    insuranceBenefits: extractInsurancesData(insurance),
-  }),
-  Coverage: ({ resource: { relationship } }) => ({
-    relationship: extractCoverageRelationship(relationship),
-  }),
-};
-
-const extractionFunctionsMapForInsuranceOrg = {
-  Organization: extractOrganizationData("ins"),
-};
+import { NPHIES_REQUEST_TYPES } from "../../constants.mjs";
 
 const extractEligibilityDataSentToNphies = ({
   nodeServerDataSentToNaphies,
   nphiesResponse,
   nphiesExtractedData,
 }) => {
-  const { id: creationBundleId } = nodeServerDataSentToNaphies || {};
-  const { issue } = nphiesResponse || {};
+  if (!isObjectHasData(nphiesExtractedData)) {
+    return {};
+  }
 
-  const issueValues = formatNphiesResponseIssue(issue);
+  const { nphiesRequestExtractedData } = nphiesExtractedData;
 
-  const {
-    patientFileNo,
-    patientName,
-    patientBirthDate,
-    patientGender,
-    patientPhone,
-    patientIdentifierIdType,
-    requestId,
-    provider,
-    priority,
-    purpose,
-    created,
-    facilityName,
-    facilityType,
-  } = mapEntriesAndExtractNeededData({
-    nphiesResponse: nodeServerDataSentToNaphies,
-    extractionFunctionsMap,
-    creationBundleId,
-    defaultValue: {},
-  });
-
-  const { insuranceBenefits, relationship } = mapEntriesAndExtractNeededData({
-    nphiesResponse: nphiesResponse,
-    extractionFunctionsMap: nphiesResponseExtractionFunctionsMap,
-    creationBundleId,
-    defaultValue: {},
-  });
-
-  const { insurer, receiver } = mapEntriesAndExtractNeededData({
-    nphiesResponse: nodeServerDataSentToNaphies,
-    extractionFunctionsMap: extractionFunctionsMapForInsuranceOrg,
-    creationBundleId,
-    defaultValue: {},
-  });
+  const result = isObjectHasData(nphiesRequestExtractedData)
+    ? nphiesExtractedData
+    : mapEntriesAndExtractNeededData({
+        requestType: NPHIES_REQUEST_TYPES.ELIGIBILITY,
+        nphiesResponse,
+        nodeServerDataSentToNaphies,
+        defaultValue: {},
+      });
 
   const {
     bundleId: nphiesBundleId,
+    creationBundleId,
     eligibilityDisposition,
     isPatientEligible,
     eligibilityPeriodStart,
@@ -106,7 +45,34 @@ const extractEligibilityDataSentToNphies = ({
     coverageCurrency,
     coverageClasses,
     coverageErrors,
-  } = nphiesExtractedData || {};
+    issueError,
+    issueErrorCode,
+    insuranceBenefits,
+    nphiesRequestExtractedData: nphiesRequestExtractedDataRes,
+  } = result;
+
+  const {
+    patientFileNo,
+    patientName,
+    patientBirthDate,
+    patientGender,
+    patientPhone,
+    patientIdentifierIdType,
+    patientIdentifierId,
+    requestId,
+    provider,
+    priority,
+    purpose,
+    created,
+    facilityName,
+    facilityType,
+    insurer,
+    receiver,
+    extensionOccupation,
+    maritalStatusCode,
+    relationship,
+    memberId,
+  } = nphiesRequestExtractedDataRes || {};
 
   return {
     bundleId: nphiesBundleId,
@@ -129,7 +95,11 @@ const extractEligibilityDataSentToNphies = ({
     patientBirthDate,
     patientGender,
     patientPhone,
+    extensionOccupation,
+    maritalStatusCode,
     patientIdentifierIdType,
+    patientIdentifierId,
+    memberId,
     requestId,
     responseId: eligibilityResponseId,
     outcome: eligibilityOutcome,
@@ -144,7 +114,8 @@ const extractEligibilityDataSentToNphies = ({
     coverageCurrency,
     coverageClasses,
     coverageErrors,
-    ...issueValues,
+    issueError,
+    issueErrorCode,
     nodeServerDataSentToNphies: nodeServerDataSentToNaphies,
     nphiesResponse,
   };
