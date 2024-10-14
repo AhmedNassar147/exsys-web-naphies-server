@@ -72,10 +72,7 @@ const createCommunicationEntry = ({
                 type: communicationResponseBasedOnType,
                 identifier: {
                   system: `${siteUrl}/${communicationResponseBasedOnType.toLowerCase()}`,
-                  value: ensureRequestPrefixAdded(
-                    communicationResponseBasedOnId,
-                    true
-                  ),
+                  value: communicationResponseBasedOnId,
                 },
               },
             ],
