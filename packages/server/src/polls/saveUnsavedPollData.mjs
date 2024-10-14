@@ -3,7 +3,6 @@
  * Helper: `saveUnsavedPollData`.
  *
  */
-
 import { readJsonFile } from "@exsys-web-server/helpers";
 import savePreauthPollDataToExsys from "./savePreauthPollDataToExsys.mjs";
 
@@ -12,7 +11,7 @@ const saveUnsavedPollData = async (fileUrl) => {
   const [{ nodeServerDataSentToNaphies, nphiesResponse, nphiesExtractedData }] =
     data || [{}];
 
-  const result = await savePreauthPollDataToExsys({
+  await savePreauthPollDataToExsys({
     authorization: 111111,
     nodeServerDataSentToNaphies,
     nphiesResponse,
@@ -20,8 +19,6 @@ const saveUnsavedPollData = async (fileUrl) => {
     requestType: nphiesExtractedData.messageHeaderRequestType,
     logParams: true,
   });
-
-  console.log("result", result);
 };
 
 const fileUrl = "";

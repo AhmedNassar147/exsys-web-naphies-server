@@ -4,7 +4,6 @@
  *
  */
 import {
-  createDateFromNativeDate,
   formatDateToNativeDateParts,
   getLastPartOfUrl,
   isArrayHasData,

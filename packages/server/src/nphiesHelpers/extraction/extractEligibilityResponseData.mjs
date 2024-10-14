@@ -73,8 +73,8 @@ const extractEligibilityResponseData = ({ entryGroupArray }) => {
         : ""
     }${disposition ? ` - ${disposition}` : ""}`,
     eligibilityCreated: getDatTime(created),
-    eligibilityPeriodStart: getDatTime(start),
-    eligibilityPeriodEnd: getDatTime(end),
+    eligibilityPeriodStart: start,
+    eligibilityPeriodEnd: end,
     eligibilityPayerClaimResponseUrl: system,
     eligibilityClaimResponse: value,
     eligibilityRequesterOrganizationId: getLastPartOfUrl(requestorRef),

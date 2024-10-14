@@ -4,6 +4,7 @@
  *
  */
 import chalk from "chalk";
+import { writeFile } from "fs/promises";
 import { createCmdMessage } from "@exsys-web-server/helpers";
 import createExsysRequest from "../helpers/createExsysRequest.mjs";
 import { EXSYS_API_IDS_NAMES, NPHIES_REQUEST_TYPES } from "../constants.mjs";
@@ -74,6 +75,8 @@ const savePreauthPollDataToExsys = async ({
   const _outcome =
     !claimOutcome || !!(issueError || issueErrorCode) ? "error" : claimOutcome;
 
+  const requestId = communicationAboutId || claimRequestId || "";
+
   const requestParams = {
     authorization,
     claimresponseid: claimResponseId || "",
@@ -81,7 +84,7 @@ const savePreauthPollDataToExsys = async ({
     claimperiodstart: claimPeriodStart || "",
     claimperiodend: claimPeriodEnd || "",
     claimextensioncode: claimExtensionCode || "",
-    claimrequestid: communicationAboutId || claimRequestId || "",
+    claimrequestid: requesId,
     claimoutcome: _outcome || "",
     claimmessageeventtype: requestType || claimMessageEventType,
     claimcreationbundleid: creationBundleId || "",
@@ -91,7 +94,7 @@ const savePreauthPollDataToExsys = async ({
     console.log("requestParams", requestParams);
   }
 
-  return await createExsysRequest({
+  const { isSuccess, result } = await createExsysRequest({
     resourceName: saveApiName,
     requestParams,
     body: {
@@ -100,6 +103,15 @@ const savePreauthPollDataToExsys = async ({
       nphiesExtractedData,
     },
   });
+
+  if (logParams) {
+    if (!isSuccess) {
+      await writeFile(
+        `results/res-${claimResponseId}-req-${requestId}.html`,
+        result
+      );
+    }
+  }
 };
 
 export default savePreauthPollDataToExsys;

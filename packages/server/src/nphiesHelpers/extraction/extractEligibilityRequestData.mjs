@@ -36,12 +36,7 @@ const extractEligibilityRequestData = ({ entryGroupArray }) => {
     purpose: purpose.join(", "),
     insurerId: getLastPartOfUrl(insurerRef),
     providerId: getLastPartOfUrl(providerRef),
-    servicedPeriod: [
-      formatDateToNativeDateParts(start, dateOptions),
-      formatDateToNativeDateParts(end, dateOptions),
-    ]
-      .filter(Boolean)
-      .join(" ~ "),
+    servicedPeriod: [start, end].filter(Boolean).join(" ~ "),
   };
 };
 
