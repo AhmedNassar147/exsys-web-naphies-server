@@ -14,6 +14,7 @@ const { saveClaimPollData, savePreauthPollData, savePreauthOrClaimPollData } =
 const SAVE_API_BASED_REQUEST_TYPE = {
   [NPHIES_REQUEST_TYPES.CLAIM]: saveClaimPollData,
   [NPHIES_REQUEST_TYPES.PREAUTH]: savePreauthPollData,
+  // "advanced-authorization": savePreauthPollData,
   [NPHIES_REQUEST_TYPES.PRESCRIBER]: savePreauthPollData,
 };
 

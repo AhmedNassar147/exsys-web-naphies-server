@@ -37,17 +37,17 @@ const extractAuthPollBundleEntry = ({ entryGroupArray, mainRequestId }) => {
       entryGroupArray: MessageHeader,
     }) || {};
 
-  const __messageHeaderRequestType =
-    messageHeaderRequestType === "advanced-authorization"
-      ? NPHIES_REQUEST_TYPES.PREAUTH
-      : messageHeaderRequestType;
+  // const __messageHeaderRequestType =
+  //   messageHeaderRequestType === "advanced-authorization"
+  //     ? NPHIES_REQUEST_TYPES.PREAUTH
+  //     : messageHeaderRequestType;
 
   return {
     creationBundleId: mainRequestId,
     bundleId: id,
     ...issueValues,
     originalHeaderRequestType: messageHeaderRequestType,
-    messageHeaderRequestType: __messageHeaderRequestType,
+    messageHeaderRequestType: messageHeaderRequestType,
     ...messageHeaderData,
     ...extractPatientData({
       entryGroupArray: Patient,
