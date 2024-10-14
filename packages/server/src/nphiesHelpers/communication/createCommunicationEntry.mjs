@@ -6,6 +6,7 @@
 import { isArrayHasData, reverseDate } from "@exsys-web-server/helpers";
 import createNphiesBaseResource from "../base/createNphiesBaseResource.mjs";
 import removeInvisibleCharactersFromString from "../../helpers/removeInvisibleCharactersFromString.mjs";
+import ensureRequestPrefixAdded from "../../helpers/ensureRequestPrefixAdded.mjs";
 import {
   NPHIES_BASE_PROFILE_TYPES,
   NPHIES_API_URLS,
@@ -71,7 +72,10 @@ const createCommunicationEntry = ({
                 type: communicationResponseBasedOnType,
                 identifier: {
                   system: `${siteUrl}/${communicationResponseBasedOnType.toLowerCase()}`,
-                  value: communicationResponseBasedOnId,
+                  value: ensureRequestPrefixAdded(
+                    communicationResponseBasedOnId,
+                    true
+                  ),
                 },
               },
             ],
@@ -97,7 +101,7 @@ const createCommunicationEntry = ({
           type: communicationAboutType,
           identifier: {
             system: `${siteUrl}/${communicationAboutSystemType}`,
-            value: communicationAboutId,
+            value: ensureRequestPrefixAdded(communicationAboutId),
           },
         },
       ],
