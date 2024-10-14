@@ -192,8 +192,8 @@ const mapEntriesAndExtractNeededData = ({
         ...issueValues,
         ...nphiesResponseEntryResults,
         nphiesRequestExtractedData: nphiesRequestEntryResults,
-        groupedNphiesResponseEntries,
-        groupedNphiesRequestEntries,
+        // groupedNphiesResponseEntries,
+        // groupedNphiesRequestEntries,
       }
     : undefined;
 
