@@ -72,7 +72,7 @@ import { getConfigFileData } from "../helpers/getConfigFileData.mjs";
     );
 
     await Promise.all([
-      runExsysPollMedicationsValidation(authorization),
+      // runExsysPollMedicationsValidation(authorization),
       ...eligibilityPromises,
     ]);
 

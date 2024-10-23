@@ -111,8 +111,6 @@ const extractPaymentReconciliation = ({ entryGroupArray }) => {
     ...extractNphiesOutputErrors(output),
   ].filter(Boolean);
 
-  console.log("__details__", __details__);
-
   return {
     paymentReconciliationData: {
       bundleId: id,
