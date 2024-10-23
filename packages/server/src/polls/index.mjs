@@ -56,6 +56,12 @@ import { getConfigFileData } from "../helpers/getConfigFileData.mjs";
             }),
 
             runPreauthorizationPoll({
+              includeMessageType: "communication-request",
+              preauthPollData,
+              ...baseOptions,
+            }),
+
+            runPreauthorizationPoll({
               excludeMessageType: "priorauth-response",
               preauthPollData,
               ...baseOptions,
