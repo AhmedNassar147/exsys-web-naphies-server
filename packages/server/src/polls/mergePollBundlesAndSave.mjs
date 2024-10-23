@@ -4,8 +4,16 @@
  *
  */
 import chalk from "chalk";
-import { createCmdMessage, isArrayHasData } from "@exsys-web-server/helpers";
+import {
+  createCmdMessage,
+  isArrayHasData,
+  findRootYarnWorkSpaces,
+  readJsonFile,
+} from "@exsys-web-server/helpers";
 import savePreauthPollDataToExsys from "./savePreauthPollDataToExsys.mjs";
+import { NPHIES_REQUEST_TYPES } from "../constants.mjs";
+
+const { PRESCRIBER } = NPHIES_REQUEST_TYPES;
 
 const processBundleItem = async ({
   currentItem,
@@ -77,3 +85,14 @@ const mergePollBundlesAndSave = async ({
 };
 
 export default mergePollBundlesAndSave;
+
+// const base = await findRootYarnWorkSpaces();
+// const [{ nodeServerDataSentToNaphies, nphiesResponse, nphiesExtractedData }] =
+//   await readJsonFile(`${base}/results/blg/ahmed/23-10-2024.json`, true);
+
+// await mergePollBundlesAndSave({
+//   authorization: 111111,
+//   nphiesExtractedData,
+//   nodeServerDataSentToNaphies,
+//   nphiesResponse,
+// });
