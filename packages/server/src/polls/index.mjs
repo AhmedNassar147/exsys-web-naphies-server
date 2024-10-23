@@ -24,6 +24,7 @@ import { getConfigFileData } from "../helpers/getConfigFileData.mjs";
           authorization,
           organizationNo,
           clinicalEntityNo,
+          messagesCount: 5,
         };
 
         acc.eligibilityPromises.push(
@@ -32,18 +33,30 @@ import { getConfigFileData } from "../helpers/getConfigFileData.mjs";
 
         if (useAuthorizationOrClaimPolls) {
           acc.preauthPromises.push([
+            // runPreauthorizationPoll({
+            //   includeMessageType: "claim-response",
+            //   preauthPollData,
+            //   ...baseOptions,
+            // }),
+            // runPreauthorizationPoll({
+            //   excludeMessageType: "claim-response",
+            //   preauthPollData,
+            //   ...baseOptions,
+            // }),
+            // runPreauthorizationPoll({
+            //   includeMessageType: "prescriber-response",
+            //   preauthPollData,
+            //   ...baseOptions,
+            // }),
+
             runPreauthorizationPoll({
-              includeMessageType: "claim-response",
+              includeMessageType: "priorauth-response",
               preauthPollData,
               ...baseOptions,
             }),
+
             runPreauthorizationPoll({
-              excludeMessageType: "claim-response",
-              preauthPollData,
-              ...baseOptions,
-            }),
-            runPreauthorizationPoll({
-              includeMessageType: "prescriber-response",
+              excludeMessageType: "priorauth-response",
               preauthPollData,
               ...baseOptions,
             }),

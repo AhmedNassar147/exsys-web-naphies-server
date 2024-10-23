@@ -25,22 +25,16 @@ const setErrorIfExtractedDataFoundFn = ({ coverageErrors, claimErrors }) => [
   ...(claimErrors || []),
 ];
 
-const runPreauthorizationPoll = async ({
-  includeMessageType,
-  excludeMessageType,
-  preauthPollData,
-  authorization,
-  organizationNo,
-  clinicalEntityNo,
-}) => {
-  const fullOptions = {
+const runPreauthorizationPoll = async (fullOptions) => {
+  const {
     includeMessageType,
     excludeMessageType,
+    messagesCount,
     preauthPollData,
     authorization,
     organizationNo,
     clinicalEntityNo,
-  };
+  } = fullOptions;
 
   try {
     const options = {
@@ -49,6 +43,7 @@ const runPreauthorizationPoll = async ({
           ...preauthPollData,
           includeMessageType,
           excludeMessageType,
+          messagesCount,
         }),
       exsysResultsData: {
         organizationNo,
@@ -80,21 +75,6 @@ const runPreauthorizationPoll = async ({
       PRESCRIBER
     );
 
-    if (isEmptyPoll) {
-      createCmdMessage({
-        type: "info",
-        message: `${
-          isPrescriberResponse ? "prescription" : "Authorization"
-        } poll has no messages yet ${chalk.bold.white(
-          `when request_type_is=${messageHeaderRequestType}`
-        )}`,
-      });
-
-      await delayProcess(MAX_DELAY_TIMEOUT);
-      await runPreauthorizationPoll(fullOptions);
-      return;
-    }
-
     const folderName = buildPrintedResultPath({
       organizationNo,
       clinicalEntityNo,
@@ -113,6 +93,27 @@ const runPreauthorizationPoll = async ({
       data: nphiesResultData,
       isError: hasError,
     });
+
+    if (isEmptyPoll) {
+      createCmdMessage({
+        type: "info",
+        message: `${
+          isPrescriberResponse ? "prescription" : "Authorization"
+        } poll has no messages yet ${chalk.bold.white(
+          `when request_type_is=${messageHeaderRequestType}`
+        )}`,
+      });
+
+      await delayProcess(MAX_DELAY_TIMEOUT);
+      await runPreauthorizationPoll(fullOptions);
+      return;
+    }
+
+    // await writeResultFile({
+    //   folderName,
+    //   data: nphiesResultData,
+    //   isError: hasError,
+    // });
 
     await savePreauthPollDataToExsys({
       authorization,

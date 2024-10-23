@@ -43,6 +43,7 @@ const createNphiesTaskData = ({
   nullifyRequest,
   includeMessageType,
   excludeMessageType,
+  messagesCount,
 }) => {
   const { dateString: currentDate } = getCurrentDate(true);
   const isPreauthOrClaimPollRequest = requestType === POLL;
@@ -133,7 +134,7 @@ const createNphiesTaskData = ({
                     },
                   ],
                 },
-                valuePositiveInt: 1,
+                valuePositiveInt: messagesCount || 1,
               },
               !!(includeMessageType || excludeMessageType) && {
                 type: {

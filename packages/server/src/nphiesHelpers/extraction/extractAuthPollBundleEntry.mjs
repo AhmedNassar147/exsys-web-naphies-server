@@ -12,7 +12,7 @@ import extractCoverageData from "./extractCoverageData.mjs";
 import extractOrganizationsData from "./extractOrganizationsData.mjs";
 import extractPatientData from "./extractPatientData.mjs";
 import extractCommunicationPollData from "./extractCommunicationPollData.mjs";
-import { NPHIES_REQUEST_TYPES } from "../../constants.mjs";
+import extractPaymentReconciliation from "./extractPaymentReconciliation.mjs";
 
 const extractAuthPollBundleEntry = ({ entryGroupArray, mainRequestId }) => {
   if (!isArrayHasData(entryGroupArray)) {
@@ -29,6 +29,7 @@ const extractAuthPollBundleEntry = ({ entryGroupArray, mainRequestId }) => {
     Patient,
     Organization,
     CommunicationRequest,
+    PaymentReconciliation,
   } = makeEntriesGroupByResourceType(entry);
   const issueValues = formatNphiesResponseIssue(issue);
 
@@ -60,6 +61,9 @@ const extractAuthPollBundleEntry = ({ entryGroupArray, mainRequestId }) => {
     }),
     ...extractCommunicationPollData({
       entryGroupArray: CommunicationRequest,
+    }),
+    ...extractPaymentReconciliation({
+      entryGroupArray: PaymentReconciliation,
     }),
     ...extractClaimResponseData({
       entryGroupArray: ClaimResponse,

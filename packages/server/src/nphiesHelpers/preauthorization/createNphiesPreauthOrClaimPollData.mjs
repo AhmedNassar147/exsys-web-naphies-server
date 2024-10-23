@@ -19,6 +19,7 @@ const { POLL } = NPHIES_REQUEST_TYPES;
 const createNphiesPreauthOrClaimPollData = ({
   providerLicense,
   providerOrganization,
+  messagesCount,
   siteUrl,
   siteName,
   includeMessageType,
@@ -47,6 +48,7 @@ const createNphiesPreauthOrClaimPollData = ({
         requestId,
         providerFocusUrl,
         requestType: POLL,
+        messagesCount,
         includeMessageType,
         excludeMessageType,
       }),
