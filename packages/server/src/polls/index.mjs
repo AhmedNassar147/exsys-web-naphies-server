@@ -24,7 +24,6 @@ import { getConfigFileData } from "../helpers/getConfigFileData.mjs";
           authorization,
           organizationNo,
           clinicalEntityNo,
-          messagesCount: 5,
         };
 
         acc.eligibilityPromises.push(
@@ -53,6 +52,7 @@ import { getConfigFileData } from "../helpers/getConfigFileData.mjs";
               includeMessageType: "priorauth-response",
               preauthPollData,
               ...baseOptions,
+              messagesCount: 100,
             }),
 
             runPreauthorizationPoll({

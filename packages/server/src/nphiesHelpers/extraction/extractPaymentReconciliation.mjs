@@ -184,92 +184,92 @@ export default extractPaymentReconciliation;
 //   },
 // };
 
-console.log(
-  extractPaymentReconciliation({
-    entryGroupArray: [
-      {
-        fullUrl: "http://bupa.com.sa/PaymentReconciliation/746994",
-        resource: {
-          resourceType: "PaymentReconciliation",
-          id: "746994",
-          meta: {
-            profile: [
-              "http://nphies.sa/fhir/ksa/nphies-fs/StructureDefinition/payment-reconciliation|1.0.0",
-            ],
-          },
-          identifier: [
-            {
-              system: "http://bupa.com.sa/paymentreconciliation",
-              value: "PAYID001640312|2024-10-18T21:29:43",
-            },
-          ],
-          status: "active",
-          period: {
-            start: "2024-04-16T00:00:00+03:00",
-            end: "2024-05-16T00:00:00+03:00",
-          },
-          created: "2024-10-18T21:29:43+03:00",
-          paymentIssuer: {
-            reference: "http://bupa.com.sa/Organization/3473",
-          },
-          requestor: {
-            reference: "http://bupa.com.sa/Organization/6055",
-          },
-          outcome: "complete",
-          disposition:
-            "47218497|263131819|2024-04-16 00:00:00.0|2024-05-16 00:00:00.0|10000300122098|Balghasoon Polyclinic",
-          paymentDate: "2024-10-06",
-          paymentAmount: {
-            value: 190.25,
-            currency: "SAR",
-          },
-          detail: [
-            {
-              extension: [
-                {
-                  url: "http://nphies.sa/fhir/ksa/nphies-fs/StructureDefinition/extension-component-payment",
-                  valueMoney: {
-                    value: 190.25,
-                    currency: "SAR",
-                  },
-                },
-              ],
-              type: {
-                coding: [
-                  {
-                    system:
-                      "http://terminology.hl7.org/CodeSystem/payment-type",
-                    code: "payment",
-                  },
-                ],
-              },
-              request: {
-                identifier: {
-                  system: "http://exsyssolutions.com/claim",
-                  value: "req_db007b4a-c917-4c16-b788-8c5c03aa9f57",
-                },
-              },
-              submitter: {
-                reference: "organization/6055",
-              },
-              response: {
-                identifier: {
-                  system: "https://bupa.com.sa/claimresponse",
-                  value: "1301742826263131819",
-                },
-              },
-              date: "2024-08-05",
-              payee: {
-                reference: "http://bupa.com.sa/Organization/6055",
-              },
-              amount: {
-                value: 190.25,
-                currency: "SAR",
-              },
-            },
-          ],
-        },
-      },
-    ],
-  })
-);
+// console.log(
+//   extractPaymentReconciliation({
+//     entryGroupArray: [
+//       {
+//         fullUrl: "http://bupa.com.sa/PaymentReconciliation/746994",
+//         resource: {
+//           resourceType: "PaymentReconciliation",
+//           id: "746994",
+//           meta: {
+//             profile: [
+//               "http://nphies.sa/fhir/ksa/nphies-fs/StructureDefinition/payment-reconciliation|1.0.0",
+//             ],
+//           },
+//           identifier: [
+//             {
+//               system: "http://bupa.com.sa/paymentreconciliation",
+//               value: "PAYID001640312|2024-10-18T21:29:43",
+//             },
+//           ],
+//           status: "active",
+//           period: {
+//             start: "2024-04-16T00:00:00+03:00",
+//             end: "2024-05-16T00:00:00+03:00",
+//           },
+//           created: "2024-10-18T21:29:43+03:00",
+//           paymentIssuer: {
+//             reference: "http://bupa.com.sa/Organization/3473",
+//           },
+//           requestor: {
+//             reference: "http://bupa.com.sa/Organization/6055",
+//           },
+//           outcome: "complete",
+//           disposition:
+//             "47218497|263131819|2024-04-16 00:00:00.0|2024-05-16 00:00:00.0|10000300122098|Balghasoon Polyclinic",
+//           paymentDate: "2024-10-06",
+//           paymentAmount: {
+//             value: 190.25,
+//             currency: "SAR",
+//           },
+//           detail: [
+//             {
+//               extension: [
+//                 {
+//                   url: "http://nphies.sa/fhir/ksa/nphies-fs/StructureDefinition/extension-component-payment",
+//                   valueMoney: {
+//                     value: 190.25,
+//                     currency: "SAR",
+//                   },
+//                 },
+//               ],
+//               type: {
+//                 coding: [
+//                   {
+//                     system:
+//                       "http://terminology.hl7.org/CodeSystem/payment-type",
+//                     code: "payment",
+//                   },
+//                 ],
+//               },
+//               request: {
+//                 identifier: {
+//                   system: "http://exsyssolutions.com/claim",
+//                   value: "req_db007b4a-c917-4c16-b788-8c5c03aa9f57",
+//                 },
+//               },
+//               submitter: {
+//                 reference: "organization/6055",
+//               },
+//               response: {
+//                 identifier: {
+//                   system: "https://bupa.com.sa/claimresponse",
+//                   value: "1301742826263131819",
+//                 },
+//               },
+//               date: "2024-08-05",
+//               payee: {
+//                 reference: "http://bupa.com.sa/Organization/6055",
+//               },
+//               amount: {
+//                 value: 190.25,
+//                 currency: "SAR",
+//               },
+//             },
+//           ],
+//         },
+//       },
+//     ],
+//   })
+// );

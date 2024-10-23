@@ -14,12 +14,7 @@ import extractPatientData from "./extractPatientData.mjs";
 import extractCommunicationPollData from "./extractCommunicationPollData.mjs";
 import extractPaymentReconciliation from "./extractPaymentReconciliation.mjs";
 
-const extractAuthPollBundleEntry = ({ entryGroupArray, mainRequestId }) => {
-  if (!isArrayHasData(entryGroupArray)) {
-    return null;
-  }
-
-  const [{ resource }] = entryGroupArray;
+const constructBundle = (mainRequestId, { resource }) => {
   const { id, entry, issue } = resource;
 
   const {
@@ -69,6 +64,18 @@ const extractAuthPollBundleEntry = ({ entryGroupArray, mainRequestId }) => {
       entryGroupArray: ClaimResponse,
       isPollResponse: true,
     }),
+  };
+};
+
+const extractAuthPollBundleEntry = ({ entryGroupArray, mainRequestId }) => {
+  if (!isArrayHasData(entryGroupArray)) {
+    return null;
+  }
+
+  return {
+    pollBundles: entryGroupArray.map((resourceItem) =>
+      constructBundle(mainRequestId, resourceItem)
+    ),
   };
 };
 

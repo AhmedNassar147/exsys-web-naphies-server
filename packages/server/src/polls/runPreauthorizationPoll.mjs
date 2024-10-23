@@ -8,8 +8,8 @@ import {
   delayProcess,
   writeResultFile,
   createCmdMessage,
+  isArrayHasData,
 } from "@exsys-web-server/helpers";
-import savePreauthPollDataToExsys from "./savePreauthPollDataToExsys.mjs";
 import { NPHIES_REQUEST_TYPES } from "../constants.mjs";
 import createNphiesPreauthOrClaimPollData from "../nphiesHelpers/preauthorization/createNphiesPreauthOrClaimPollData.mjs";
 import callNphiesApiAndCollectResults from "../nphiesHelpers/base/callNphiesApiAndCollectResults.mjs";
@@ -58,34 +58,17 @@ const runPreauthorizationPoll = async (fullOptions) => {
       options
     );
 
-    const { nphiesExtractedData, nodeServerDataSentToNaphies, nphiesResponse } =
-      nphiesResultData;
+    const { nphiesExtractedData } = nphiesResultData;
 
-    const {
-      messageHeaderRequestType,
-      originalHeaderRequestType,
-      mainBundleId,
-      bundleId,
-      creationBundleId,
-    } = nphiesExtractedData || {};
-    const isEmptyPoll =
-      messageHeaderRequestType === "poll" && !originalHeaderRequestType;
-
-    const isPrescriberResponse = (messageHeaderRequestType || "").includes(
-      PRESCRIBER
-    );
+    const { pollBundles, mainBundleId, bundleId, creationBundleId } =
+      nphiesExtractedData || {};
 
     const folderName = buildPrintedResultPath({
       organizationNo,
       clinicalEntityNo,
       skipThrowingOrganizationError: true,
-      innerFolderName: isPrescriberResponse
-        ? "prescriptionPoll"
-        : "authorizationPoll",
-      segments: [
-        messageHeaderRequestType,
-        mainBundleId || bundleId || creationBundleId,
-      ],
+      innerFolderName: "poll_data",
+      segments: [mainBundleId || bundleId || creationBundleId],
     });
 
     await writeResultFile({
@@ -94,36 +77,18 @@ const runPreauthorizationPoll = async (fullOptions) => {
       isError: hasError,
     });
 
-    if (isEmptyPoll) {
-      createCmdMessage({
-        type: "info",
-        message: `${
-          isPrescriberResponse ? "prescription" : "Authorization"
-        } poll has no messages yet ${chalk.bold.white(
-          `when request_type_is=${messageHeaderRequestType}`
-        )}`,
-      });
-
-      await delayProcess(MAX_DELAY_TIMEOUT);
+    if (!isArrayHasData(pollBundles)) {
+      await delayProcess(MIN_DELAY_TIMEOUT);
       await runPreauthorizationPoll(fullOptions);
+
       return;
     }
 
-    // await writeResultFile({
-    //   folderName,
-    //   data: nphiesResultData,
-    //   isError: hasError,
-    // });
-
-    await savePreauthPollDataToExsys({
+    await mergePollBundlesAndSave({
       authorization,
-      nodeServerDataSentToNaphies,
-      nphiesResponse,
-      nphiesExtractedData,
-      requestType: messageHeaderRequestType,
+      ...nphiesResultData,
     });
 
-    await delayProcess(MIN_DELAY_TIMEOUT);
     await runPreauthorizationPoll(fullOptions);
   } catch (error) {
     createCmdMessage({
