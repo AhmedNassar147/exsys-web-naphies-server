@@ -7,8 +7,8 @@ import chalk from "chalk";
 import {
   createCmdMessage,
   isArrayHasData,
-  findRootYarnWorkSpaces,
-  readJsonFile,
+  // findRootYarnWorkSpaces,
+  // readJsonFile,
 } from "@exsys-web-server/helpers";
 import savePreauthPollDataToExsys from "./savePreauthPollDataToExsys.mjs";
 import { NPHIES_REQUEST_TYPES } from "../constants.mjs";
@@ -50,6 +50,7 @@ const processBundleItem = async ({
     nphiesResponse,
     nphiesExtractedData: currentItem,
     requestType: messageHeaderRequestType,
+    logParams: true,
   });
 };
 
