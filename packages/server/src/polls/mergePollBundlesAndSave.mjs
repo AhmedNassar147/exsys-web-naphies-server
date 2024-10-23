@@ -79,9 +79,11 @@ const mergePollBundlesAndSave = async ({
       })
     : undefined;
 
-  return await (isArrayHasData(promises)
-    ? Promise.all(promises)
-    : Promise.resolve());
+  if (isArrayHasData(promises)) {
+    return await Promise.all(promises);
+  }
+
+  await Promise.resolve();
 };
 
 export default mergePollBundlesAndSave;

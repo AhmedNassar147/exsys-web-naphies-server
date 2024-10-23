@@ -14,8 +14,9 @@ import { NPHIES_REQUEST_TYPES } from "../constants.mjs";
 import createNphiesPreauthOrClaimPollData from "../nphiesHelpers/preauthorization/createNphiesPreauthOrClaimPollData.mjs";
 import callNphiesApiAndCollectResults from "../nphiesHelpers/base/callNphiesApiAndCollectResults.mjs";
 import buildPrintedResultPath from "../helpers/buildPrintedResultPath.mjs";
+import mergePollBundlesAndSave from "./mergePollBundlesAndSave.mjs";
 
-const { PRESCRIBER, POLL } = NPHIES_REQUEST_TYPES;
+const { POLL } = NPHIES_REQUEST_TYPES;
 
 const MAX_DELAY_TIMEOUT = 1 * 60 * 1000;
 const MIN_DELAY_TIMEOUT = 5 * 1000;
