@@ -50,7 +50,7 @@ const processBundleItem = async ({
     nphiesResponse,
     nphiesExtractedData: currentItem,
     requestType: messageHeaderRequestType,
-    logParams: true,
+    // logParams: true,
   });
 };
 
