@@ -52,19 +52,21 @@ import { getConfigFileData } from "../helpers/getConfigFileData.mjs";
               includeMessageType: "priorauth-response",
               preauthPollData,
               ...baseOptions,
-              messagesCount: 100,
+              messagesCount: 1,
             }),
 
             runPreauthorizationPoll({
               includeMessageType: "communication-request",
               preauthPollData,
               ...baseOptions,
+              messagesCount: 1,
             }),
 
             runPreauthorizationPoll({
               excludeMessageType: "priorauth-response",
               preauthPollData,
               ...baseOptions,
+              messagesCount: 50,
             }),
           ]);
         }
