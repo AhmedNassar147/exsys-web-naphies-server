@@ -61,8 +61,13 @@ const runPreauthorizationPoll = async (fullOptions) => {
 
     const { nphiesExtractedData } = nphiesResultData;
 
-    const { pollBundles, mainBundleId, bundleId, creationBundleId } =
-      nphiesExtractedData || {};
+    const {
+      pollBundles,
+      mainBundleId,
+      bundleId,
+      creationBundleId,
+      messageHeaderRequestType,
+    } = nphiesExtractedData || {};
 
     const folderName = buildPrintedResultPath({
       organizationNo,
@@ -79,6 +84,13 @@ const runPreauthorizationPoll = async (fullOptions) => {
     });
 
     if (!isArrayHasData(pollBundles)) {
+      createCmdMessage({
+        type: "info",
+        message: `
+        Authorization poll has no messages yet when request_type_is=${chalk.bold.white(
+          messageHeaderRequestType
+        )}`,
+      });
       await delayProcess(MIN_DELAY_TIMEOUT);
       await runPreauthorizationPoll(fullOptions);
 
