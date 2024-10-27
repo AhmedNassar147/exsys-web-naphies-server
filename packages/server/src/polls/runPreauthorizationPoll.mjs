@@ -69,6 +69,19 @@ const runPreauthorizationPoll = async (fullOptions) => {
       messageHeaderRequestType,
     } = nphiesExtractedData || {};
 
+    if (!isArrayHasData(pollBundles)) {
+      createCmdMessage({
+        type: "info",
+        message: `Authorization poll has no messages yet when request_type_is=${chalk.bold.white(
+          messageHeaderRequestType
+        )}`,
+      });
+      await delayProcess(MIN_DELAY_TIMEOUT);
+      await runPreauthorizationPoll(fullOptions);
+
+      return;
+    }
+
     const folderName = buildPrintedResultPath({
       organizationNo,
       clinicalEntityNo,
@@ -82,20 +95,6 @@ const runPreauthorizationPoll = async (fullOptions) => {
       data: nphiesResultData,
       isError: hasError,
     });
-
-    if (!isArrayHasData(pollBundles)) {
-      createCmdMessage({
-        type: "info",
-        message: `
-        Authorization poll has no messages yet when request_type_is=${chalk.bold.white(
-          messageHeaderRequestType
-        )}`,
-      });
-      await delayProcess(MIN_DELAY_TIMEOUT);
-      await runPreauthorizationPoll(fullOptions);
-
-      return;
-    }
 
     await mergePollBundlesAndSave({
       authorization,
