@@ -34,6 +34,7 @@ const saveOldStructurePoll = async () => {
     nodeServerDataSentToNaphies,
     nphiesResponse,
     nphiesExtractedData: newExtractedData,
+    logParams: true,
   });
 };
 

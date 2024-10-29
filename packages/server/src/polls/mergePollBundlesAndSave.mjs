@@ -20,6 +20,7 @@ const processBundleItem = async ({
   authorization,
   nodeServerDataSentToNaphies,
   nphiesResponse,
+  logParams,
 }) => {
   const { messageHeaderRequestType, originalHeaderRequestType } =
     currentItem || {};
@@ -50,7 +51,7 @@ const processBundleItem = async ({
     nphiesResponse,
     nphiesExtractedData: currentItem,
     requestType: messageHeaderRequestType,
-    // logParams: true,
+    logParams,
   });
 };
 
@@ -59,6 +60,7 @@ const mergePollBundlesAndSave = async ({
   nphiesExtractedData,
   nodeServerDataSentToNaphies,
   nphiesResponse,
+  logParams,
 }) => {
   const { pollBundles, nphiesRequestExtractedData, ...baseExtractedData } =
     nphiesExtractedData || {};
@@ -76,6 +78,7 @@ const mergePollBundlesAndSave = async ({
           authorization,
           nodeServerDataSentToNaphies,
           nphiesResponse,
+          logParams,
         });
       })
     : undefined;
