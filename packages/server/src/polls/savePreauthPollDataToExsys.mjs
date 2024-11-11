@@ -93,9 +93,9 @@ const savePreauthPollDataToExsys = async ({
     claimcreationbundleid: creationBundleId || "",
   };
 
-  if (logParams) {
-    console.log("requestParams", requestParams);
-  }
+  // if (logParams) {
+  //   console.log("requestParams", requestParams);
+  // }
 
   const { isSuccess, result } = await createExsysRequest({
     resourceName: saveApiName,
@@ -111,7 +111,7 @@ const savePreauthPollDataToExsys = async ({
     if (!isSuccess) {
       const rootPath = await findRootYarnWorkSpaces();
       await writeFile(
-        `${rootPath}/results/html/res-${claimResponseId}-req-${requestId}.html`,
+        `${rootPath}/results/POLL-ERROR/res-${claimResponseId}-req-${requestId}.html`,
         result
       );
     }

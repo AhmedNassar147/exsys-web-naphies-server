@@ -78,7 +78,8 @@ const mergePollBundlesAndSave = async ({
           authorization,
           nodeServerDataSentToNaphies,
           nphiesResponse,
-          logParams,
+          // logParams,
+          logParams: true,
         });
       })
     : undefined;
