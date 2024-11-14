@@ -16,7 +16,7 @@
     "prepare": "yarn workspace @exsys-web-server/start-exsys-nphies-web-server start",
     "build": "rollup --config",
     "start": "yarn workspace @exsys-web-server/server start",
-    "dev": "yarn start --ignore-cert --port=9090 --exsys-base-url=http://149.102.140.8 client=exsys",
+    "dev": "yarn start client=exsyscenter --ignore-cert --port=4200 --exsys-base-url=http://94.97.253.213",
     "sagaf": "yarn start client=sagaf --production",
     "blgoson": "yarn start client=blgoson --production",
     "flahShobra": "yarn start client=flahShobra --production --exsys-base-url=http://10.100.0.14 --port=4800",
