@@ -13,12 +13,28 @@ import {
 import createNphiesRequest from "../helpers/createNphiesRequest.mjs";
 import { CLI_CONFIG, NPHIES_API_URLS } from "../constants.mjs";
 import buildPrintedResultPath from "../helpers/buildPrintedResultPath.mjs";
+import removeInvisibleCharactersFromString from "../helpers/removeInvisibleCharactersFromString.mjs";
 
 const { production } = CLI_CONFIG;
 const {
   NPHIES_CHECK_INSURANCE_PRODUCTION,
   NPHIES_CHECK_INSURANCE_DEVELOPMENT,
 } = NPHIES_API_URLS;
+
+const fieldNamesToBeCleaned = [
+  "Name",
+  "InsuranceCompanyEN",
+  "InsuranceCompanyAR",
+  "PolicyHolder",
+];
+
+const clearFieldsValue = (fieldName, value) => {
+  if (fieldNamesToBeCleaned.includes(fieldName) && value) {
+    return removeInvisibleCharactersFromString(value);
+  }
+
+  return value;
+};
 
 const lowerFirstLetter = (value) => {
   const [firstLetter, ...otherLetters] = [...(value || "")];
@@ -55,6 +71,8 @@ const transformResults = (result) => {
           ? createDateFromNativeDate(value, { returnReversedDate: false })
               .dateString
           : value;
+
+        _value = clearFieldsValue(key, _value);
 
         const isNameField = key === "Name";
         if (isNameField) {
