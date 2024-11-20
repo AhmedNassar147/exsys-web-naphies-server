@@ -14,7 +14,11 @@ import createNphiesRequestPayloadFn from "../../nphiesHelpers/eligibility/index.
 import checkNphiesPatientInsurance from "../../exsysHelpers/checkNphiesPatientInsurance.mjs";
 import createBaseFetchExsysDataAndCallNphiesApi from "../../exsysHelpers/createBaseFetchExsysDataAndCallNphiesApi.mjs";
 import extractEligibilityDataSentToNphies from "../../exsysToFrontEndHelpers/eligibility/index.mjs";
-import { EXSYS_API_IDS_NAMES, NPHIES_REQUEST_TYPES } from "../../constants.mjs";
+import {
+  EXSYS_API_IDS_NAMES,
+  NPHIES_REQUEST_TYPES,
+  TEST_PATIENT_NAME,
+} from "../../constants.mjs";
 import createExsysRequest from "../../helpers/createExsysRequest.mjs";
 
 const { queryEligibilityDataFromCchi, queryExsysCchiPatient } =
@@ -155,15 +159,16 @@ export default checkPatientInsuranceMiddleware(async (body) => {
 
   const printFolderName = `CCHI/${beneficiaryKey}/${systemType}`;
 
-  const { apiResults, cchiOriginalResults, isCCHITotallySuccesseded } =
-    await checkNphiesPatientInsurance({
+  const { apiResults, cchiOriginalResults } = await checkNphiesPatientInsurance(
+    {
       patientKey: beneficiaryKey,
       systemType,
       printValues,
       printFolderName,
       organizationNo: organization_no,
       clinicalEntityNo,
-    });
+    }
+  );
 
   const { insurance, errorCode, errorDescription } = apiResults;
 
@@ -289,10 +294,12 @@ export default checkPatientInsuranceMiddleware(async (body) => {
     const __beneficiaryKey = identityNumber || beneficiaryKey;
 
     const frontEndEligibilityData = await checkInsuranceEligibility({
-      firstName: patient_first_name || firstName || "No",
-      secondName: patient_second_name || secondName || "Name",
-      thirdName: patient_third_name || thirdName || "",
-      familyName: patient_family_name || lastName || "",
+      firstName: patient_first_name || firstName || TEST_PATIENT_NAME.firstName,
+      secondName:
+        patient_second_name || secondName || TEST_PATIENT_NAME.secondName,
+      thirdName: patient_third_name || thirdName || TEST_PATIENT_NAME.thirdName,
+      familyName:
+        patient_family_name || lastName || TEST_PATIENT_NAME.familyName,
       patientFileNoOrMemberId,
       beneficiaryKey: __beneficiaryKey,
       mobileNumber: mobileNumber || mobileFromBody || "",

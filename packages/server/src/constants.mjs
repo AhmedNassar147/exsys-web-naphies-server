@@ -10,6 +10,13 @@ export const CLI_CONFIG = await collectProcessOptions();
 
 export const FILES_ENCODING_LIMIT = "60mb";
 
+export const TEST_PATIENT_NAME = {
+  firstName: "-",
+  secondName: "-",
+  thirdName: "-",
+  familyName: "-",
+};
+
 export const SERVER_PORT = 5000;
 export const RETRY_TIMES = 1;
 export const RETRY_DELAY = 10000;

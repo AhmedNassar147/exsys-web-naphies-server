@@ -3,11 +3,124 @@
  * Helper: `createBaseFetchExsysDataAndCallNphiesApi`.
  *
  */
-import { isObjectHasData } from "@exsys-web-server/helpers";
-import { EXSYS_API_IDS } from "../constants.mjs";
+import {
+  isArrayHasData,
+  isObjectHasData,
+  toCamelCase,
+} from "@exsys-web-server/helpers";
+import { EXSYS_API_IDS, TEST_PATIENT_NAME } from "../constants.mjs";
 import createExsysRequest from "../helpers/createExsysRequest.mjs";
 import callNphiesAPIAndCollectResults from "../nphiesHelpers/base/callNphiesApiAndCollectResults.mjs";
 import buildPrintedResultPath from "../helpers/buildPrintedResultPath.mjs";
+import removeInvisibleCharactersFromString from "../helpers/removeInvisibleCharactersFromString.mjs";
+
+const makeValueWithoutSpaces = (value) => (value || "").replace(/\s/g, "");
+
+const replaceWithDefaultValue = (value, key) => {
+  const fixedValue = removeInvisibleCharactersFromString(value);
+  const valueWithoutSpaces = makeValueWithoutSpaces(fixedValue);
+
+  if (!valueWithoutSpaces) {
+    const fixedKey = toCamelCase(key.replace(/patient_|subscriber_/, ""));
+    return TEST_PATIENT_NAME[fixedKey];
+  }
+
+  return fixedValue;
+};
+
+const fixExsysResultsData = (exsysResultsData) => {
+  if (isObjectHasData(exsysResultsData)) {
+    const {
+      patient_file_no,
+      patient_first_name,
+      patient_second_name,
+      patient_third_name,
+      patient_family_name,
+      memberid,
+      iqama_no,
+      subscriber_file_no,
+      subscriber_phone,
+      subscriber_iqama_no,
+      subscriber_first_name,
+      subscriber_second_name,
+      subscriber_third_name,
+      subscriber_family_name,
+      site_name,
+      patient_phone,
+      network_name,
+      doctorsData,
+      ...otherData
+    } = exsysResultsData;
+
+    const dataToBeFixed = {
+      patient_file_no,
+      iqama_no,
+      memberid,
+      patient_first_name,
+      patient_second_name,
+      patient_third_name,
+      patient_family_name,
+      patient_phone,
+      subscriber_file_no,
+      subscriber_phone,
+      subscriber_iqama_no,
+      subscriber_first_name,
+      subscriber_second_name,
+      subscriber_third_name,
+      subscriber_family_name,
+      site_name,
+      network_name,
+    };
+
+    const fixedData = Object.keys(dataToBeFixed).reduce((acc, key) => {
+      const dataKeyValue = dataToBeFixed[key];
+
+      const isKeyStartsWithPatientOrSubscriberAndEndsWithName = [
+        "subscriber_",
+        "patient_",
+      ].some((start) => key.startsWith(start) && key.endsWith("_name"));
+
+      if (isKeyStartsWithPatientOrSubscriberAndEndsWithName) {
+        acc[key] = replaceWithDefaultValue(dataKeyValue, key);
+      } else {
+        const fixedValue = removeInvisibleCharactersFromString(dataKeyValue);
+        const valueWithoutSpaces = makeValueWithoutSpaces(fixedValue);
+
+        acc[key] = !valueWithoutSpaces ? undefined : fixedValue;
+      }
+
+      return acc;
+    }, {});
+
+    let fixedDoctorData;
+
+    if (isArrayHasData(doctorsData)) {
+      fixedDoctorData = doctorsData.map(
+        ({
+          first_name,
+          second_name,
+          third_name,
+          family_name,
+          ...otherDoctorData
+        }) => ({
+          ...otherDoctorData,
+          first_name: replaceWithDefaultValue(first_name, "first_name"),
+          second_name: replaceWithDefaultValue(second_name, "second_name"),
+          third_name: replaceWithDefaultValue(third_name, "third_name"),
+          family_name: replaceWithDefaultValue(family_name, "family_name"),
+        })
+      );
+    }
+
+    return {
+      ...fixedData,
+      doctorsData: fixedDoctorData,
+      ...otherData,
+    };
+  }
+
+  return exsysResultsData;
+};
 
 const createBaseFetchExsysDataAndCallNphiesApi = async ({
   exsysQueryApiId,
@@ -41,9 +154,11 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
 
   const _result = result || {};
 
-  const exsysResultsData = createResultsDataFromExsysResponse
+  let exsysResultsData = createResultsDataFromExsysResponse
     ? await createResultsDataFromExsysResponse(_result)
     : _result;
+
+  exsysResultsData = fixExsysResultsData(exsysResultsData);
 
   const {
     error_message,

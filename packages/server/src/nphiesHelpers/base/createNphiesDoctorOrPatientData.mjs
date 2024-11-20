@@ -38,7 +38,7 @@ const passportData = {
   system: PASSPORT_NO_URL,
 };
 
-const nationalidData = {
+const nationalIdData = {
   code: "NI",
   display: "nationalid",
   system: NATIONAL_ID_URL,
@@ -83,7 +83,7 @@ const createNphiesDoctorOrPatientData = ({
   let identifierData = passportData;
 
   if (isUsingNationalId) {
-    identifierData = nationalidData;
+    identifierData = nationalIdData;
   }
 
   if (isUsingIqamaId) {

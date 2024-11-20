@@ -72,7 +72,6 @@ const createNaphiesPreauthRequestFullData = ({
   batch_accounting_period,
   patient_martial_status,
   relationship,
-
   subscriber_file_no,
   subscriber_occupationCode,
   subscriber_religion,
@@ -86,7 +85,6 @@ const createNaphiesPreauthRequestFullData = ({
   subscriber_gender,
   subscriber_birthDate,
   subscriber_martial_status,
-
   network_name,
   occupationCode,
   religion,

@@ -3,12 +3,7 @@
  * Helpers: `createNphiesClaimData`.
  *
  */
-import {
-  isArrayHasData,
-  reverseDate,
-  replaceUnwantedCharactersFromString,
-  // createTimestamp,
-} from "@exsys-web-server/helpers";
+import { isArrayHasData, reverseDate } from "@exsys-web-server/helpers";
 import createBaseEntryRequestData from "./createBaseEntryRequestData.mjs";
 import removeInvisibleCharactersFromString from "../../helpers/removeInvisibleCharactersFromString.mjs";
 import {
@@ -605,7 +600,10 @@ const createNphiesClaimData = ({
                   {
                     system: DIAG_ICD_URL,
                     code: diagCode,
-                    display: diagDisplay,
+                    display: removeInvisibleCharactersFromString(
+                      diagDisplay,
+                      true
+                    ),
                   },
                 ],
               },
@@ -680,12 +678,6 @@ const createNphiesClaimData = ({
               informationSequence: hasSupportingInfoData
                 ? getSupportingInfoSequences(supportingInfo, days_supply_id)
                 : undefined,
-
-              // {
-              // 	"system": "http://nphies.sa/terminology/CodeSystem/scientific-codes",
-              // 	"code": "7000000961-500-100000073665"
-              // }
-
               extension: [
                 {
                   url: `${BASE_PROFILE_URL}/${EXTENSION_PACKAGE}`,
@@ -780,13 +772,17 @@ const createNphiesClaimData = ({
                       : nphiesProductCode,
                     display: isPrescriberRequestData
                       ? undefined
-                      : nphiesProductName,
+                      : removeInvisibleCharactersFromString(
+                          nphiesProductName,
+                          true
+                        ),
                   },
                   !isPrescriberRequestData && {
                     system: `${siteUrl}/${nphiesProductCodeType}`,
                     code: customerProductCode || nphiesProductCode,
-                    display: replaceUnwantedCharactersFromString(
-                      customerProductName || nphiesProductName
+                    display: removeInvisibleCharactersFromString(
+                      customerProductName || nphiesProductName,
+                      true
                     ),
                   },
                 ].filter(Boolean),
