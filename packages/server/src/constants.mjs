@@ -29,6 +29,9 @@ const API_URL_PORT = port || 4200;
 
 export const EXSYS_BASE_URL = `${BASE_API_IP_ADDRESS}:${API_URL_PORT}/ords/exsys_api`;
 
+export const ATTACHMENT_ANCHOR = "_FILE_URL_";
+export const ATTACHMENT_ANCHOR_REGEX = new RegExp(`${ATTACHMENT_ANCHOR}.+`);
+
 export const EXSYS_API_IDS_NAMES = {
   queryProgramOrganizations: "queryProgramOrganizations",
   queryExsysEligibilityData: "queryExsysEligibilityData", // this is a post method

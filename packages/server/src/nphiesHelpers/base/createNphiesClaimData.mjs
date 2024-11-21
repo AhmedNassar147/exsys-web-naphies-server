@@ -15,6 +15,7 @@ import {
   USE_NEW_INVESTIGATION_AS_ATTACHMENT,
   INVESTIGATION_RESULT_CODE_FOR_ATTACHMENT,
   NPHIES_REQUEST_TYPES,
+  ATTACHMENT_ANCHOR,
 } from "../../constants.mjs";
 
 const {
@@ -104,6 +105,7 @@ const buildAttachmentSupportInfoWithCodeSection = ({
   systemUrl,
   display,
   text,
+  fileUrl,
 }) => {
   const hasCodeSection = !!(systemUrl && code);
 
@@ -133,12 +135,18 @@ const buildAttachmentSupportInfoWithCodeSection = ({
       _title += ` ${contentType.replace("/", ".")}`;
     }
 
+    _title = removeInvisibleCharactersFromString(_title);
+
+    if (fileUrl && title) {
+      _title += ` ${ATTACHMENT_ANCHOR}${encodeURIComponent(fileUrl)}`;
+    }
+
     return {
       currentCategoryCode,
       codeSection: isUsingNewAttachmentCode ? codeSection : undefined,
       valueAttachment: {
         contentType,
-        title: removeInvisibleCharactersFromString(_title),
+        title: _title,
         creation: reverseDate(creation || batchPeriodStart),
         data: value,
       },
@@ -458,6 +466,7 @@ const createNphiesClaimData = ({
                 periodEnd,
                 absenceReasonCode,
                 absenceReasonUrl,
+                fileUrl,
               },
               index
             ) => {
@@ -483,8 +492,6 @@ const createNphiesClaimData = ({
               const hasTimingPeriod =
                 isHospitalizedCode || isEmploymentImpacted;
 
-              const hasValue = !!value || typeof value === "number";
-
               const hasAbsenceReason = !!(
                 absenceReasonCode && absenceReasonUrl
               );
@@ -501,6 +508,7 @@ const createNphiesClaimData = ({
                   systemUrl,
                   display,
                   text,
+                  fileUrl,
                 });
 
               return {
