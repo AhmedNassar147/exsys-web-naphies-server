@@ -6,6 +6,7 @@
 import { isArrayHasData, reverseDate } from "@exsys-web-server/helpers";
 import createBaseEntryRequestData from "./createBaseEntryRequestData.mjs";
 import removeInvisibleCharactersFromString from "../../helpers/removeInvisibleCharactersFromString.mjs";
+import createNphiesAttachmentObject from "./createNphiesAttachmentObject.mjs";
 import {
   NPHIES_BASE_PROFILE_TYPES,
   NPHIES_RESOURCE_TYPES,
@@ -15,7 +16,6 @@ import {
   USE_NEW_INVESTIGATION_AS_ATTACHMENT,
   INVESTIGATION_RESULT_CODE_FOR_ATTACHMENT,
   NPHIES_REQUEST_TYPES,
-  ATTACHMENT_ANCHOR,
 } from "../../constants.mjs";
 
 const {
@@ -121,8 +121,6 @@ const buildAttachmentSupportInfoWithCodeSection = ({
   };
 
   if (categoryCode === attachment) {
-    let _title = title || "";
-
     const isUsingNewAttachmentCode =
       USE_NEW_INVESTIGATION_AS_ATTACHMENT &&
       code === INVESTIGATION_RESULT_CODE_FOR_ATTACHMENT;
@@ -131,25 +129,16 @@ const buildAttachmentSupportInfoWithCodeSection = ({
       ? investigation_result
       : categoryCode;
 
-    if (contentType) {
-      _title += ` ${contentType.replace("/", ".")}`;
-    }
-
-    _title = removeInvisibleCharactersFromString(_title);
-
-    if (fileUrl && title) {
-      _title += ` ${ATTACHMENT_ANCHOR}${encodeURIComponent(fileUrl)}`;
-    }
-
     return {
       currentCategoryCode,
       codeSection: isUsingNewAttachmentCode ? codeSection : undefined,
-      valueAttachment: {
+      valueAttachment: createNphiesAttachmentObject({
+        title,
+        creation: creation || batchPeriodStart,
         contentType,
-        title: _title,
-        creation: reverseDate(creation || batchPeriodStart),
-        data: value,
-      },
+        value,
+        fileUrl,
+      }),
     };
   }
 

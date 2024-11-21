@@ -3,10 +3,11 @@
  * Helper: `createCommunicationEntry`.
  *
  */
-import { isArrayHasData, reverseDate } from "@exsys-web-server/helpers";
+import { isArrayHasData } from "@exsys-web-server/helpers";
 import createNphiesBaseResource from "../base/createNphiesBaseResource.mjs";
 import removeInvisibleCharactersFromString from "../../helpers/removeInvisibleCharactersFromString.mjs";
 import ensureRequestPrefixAdded from "../../helpers/ensureRequestPrefixAdded.mjs";
+import createNphiesAttachmentObject from "../base/createNphiesAttachmentObject.mjs";
 import {
   NPHIES_BASE_PROFILE_TYPES,
   NPHIES_API_URLS,
@@ -112,26 +113,23 @@ const createCommunicationEntry = ({
       },
       payload: isArrayHasData(communicationPayload)
         ? communicationPayload.map(
-            ({ value, contentType, title, creation }) => {
+            ({ value, contentType, title, creation, fileUrl }) => {
               if (!contentType) {
                 return {
                   contentString: removeInvisibleCharactersFromString(value),
                 };
               }
 
-              let _title = title || "";
-
-              if (contentType) {
-                _title += ` ${contentType.replace("/", ".")}`;
-              }
+              const contentAttachment = createNphiesAttachmentObject({
+                title,
+                creation,
+                contentType,
+                value,
+                fileUrl,
+              });
 
               return {
-                contentAttachment: {
-                  title: removeInvisibleCharactersFromString(_title),
-                  creation: reverseDate(creation),
-                  contentType,
-                  data: value,
-                },
+                contentAttachment,
               };
             }
           )

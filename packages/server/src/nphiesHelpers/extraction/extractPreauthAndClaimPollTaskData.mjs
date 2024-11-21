@@ -19,7 +19,7 @@ const getDate = (date) =>
 const extractPreauthAndClaimPollTaskData = ({
   entryGroupArray,
   isRequest,
-  isCancelationTask,
+  isCancellationTask,
   isStatusCheckTask,
 }) => {
   if (!isArrayHasData(entryGroupArray)) {
@@ -76,14 +76,14 @@ const extractPreauthAndClaimPollTaskData = ({
     requesterOrganization: getLastPartOfUrl(reference) || undefined,
   };
 
-  if (isCancelationTask || isStatusCheckTask) {
+  if (isCancellationTask || isStatusCheckTask) {
     const isClaim = type === "Claim";
     const cleanQueuedRequestId = queuedRequestId.replace("req_", "");
 
     const requestOrResponseId =
       taskIdentifierId.replace(/Cancel_|resp_/g, "") || id;
 
-    const baseFieldName = isCancelationTask ? "cancellation" : "statusCheck";
+    const baseFieldName = isCancellationTask ? "cancellation" : "statusCheck";
 
     return {
       [`${baseFieldName}ResourceType`]: isStatusCheckTask

@@ -11,6 +11,7 @@ import {
 import formatNphiesResponseIssue from "../base/formatNphiesResponseIssue.mjs";
 import getEntriesResourceIndicesMap from "../base/getEntriesResourceIndicesMap.mjs";
 import makeEntriesGroupByResourceType from "../base/makeEntriesGroupByResourceType.mjs";
+import convertSentAttachmentBase64ToFileUrl from "../base/convertSentAttachmentBase64ToFileUrl.mjs";
 import extractPatientData from "./extractPatientData.mjs";
 import extractCoverageData from "./extractCoverageData.mjs";
 import extractLocationData from "./extractLocationData.mjs";
@@ -75,7 +76,7 @@ const extractionFunctionsByRequestMap = {
     Task: (values) =>
       extractPreauthAndClaimPollTaskData({
         ...values,
-        isCancelationTask: true,
+        isCancellationTask: true,
       }),
   },
   [NPHIES_REQUEST_TYPES.STATUS_CHECK]: {
@@ -149,9 +150,11 @@ const mapEntriesAndExtractNeededData = ({
     timestamp: requestTimestamp,
   } = nodeServerDataSentToNaphies || {};
 
+  const groupedNphiesRequestEntries = convertSentAttachmentBase64ToFileUrl(
+    makeEntriesGroupByResourceType(requestEntries)
+  );
+
   const groupedNphiesResponseEntries = makeEntriesGroupByResourceType(entry);
-  const groupedNphiesRequestEntries =
-    makeEntriesGroupByResourceType(requestEntries);
 
   const shouldResultsToObjectOfData =
     !!groupedNphiesResponseEntries ||
@@ -236,7 +239,9 @@ export default mapEntriesAndExtractNeededData;
 //   // `${base}/results/new-arc/communication-poll/29-09-2024.json`,
 //   // `${base}/results/new-arc/communication-poll/30-09-2024.json`,
 // `${base}/results/blg/priorauth/aaf63ac6-3ccc-4aa5-a021-e98494e424b9/23-10-2024.json`,
-//   `${base}/results/nphies-all.json`,
+// `${base}/results/nphies-all.json`,
+// `${base}/results/Claim Professional with WPA Request.json`,
+//   `${base}/results/exsys/test2.json`,
 //   true
 // );
 
@@ -249,7 +254,9 @@ export default mapEntriesAndExtractNeededData;
 // requestType: NPHIES_REQUEST_TYPES.POLL,
 // requestType: NPHIES_REQUEST_TYPES.CANCEL,
 // requestType: NPHIES_REQUEST_TYPES.STATUS_CHECK,
-//   requestType: NPHIES_REQUEST_TYPES.POLL,
+// requestType: NPHIES_REQUEST_TYPES.POLL,
+// requestType: NPHIES_REQUEST_TYPES.CLAIM,
+//   requestType: NPHIES_REQUEST_TYPES.COMMUNICATION,
 // }),
 // folderName: `new-arc/results/elg-poll`,
 // folderName: `new-arc/results/priorauth`,
@@ -280,4 +287,6 @@ export default mapEntriesAndExtractNeededData;
 // folderName: `new-arc/results/communication-poll-30-09-2024.json`,
 // folderName: `blg/priorauth/aaf63ac6-3ccc-4aa5-a021-e98494e424b9/23-10-2024-result`,
 // folderName: `nphies-all-result`,
+// folderName: `Claim Professional with WPA Request-RES`,
+// folderName: `exsys-test2`,
 // });

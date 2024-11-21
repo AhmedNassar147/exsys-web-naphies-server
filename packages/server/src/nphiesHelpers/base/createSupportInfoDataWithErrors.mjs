@@ -5,11 +5,6 @@
  */
 import { getLastPartOfUrl, isArrayHasData } from "@exsys-web-server/helpers";
 import extractNphiesCodeAndDisplayFromCodingType from "../extraction/extractNphiesCodeAndDisplayFromCodingType.mjs";
-import extractContentAttachment from "../extraction/extractContentAttachment.mjs";
-import {
-  ATTACHMENT_ANCHOR,
-  ATTACHMENT_ANCHOR_REGEX,
-} from "../../constants.mjs";
 
 const createSupportInfoDataWithErrors = (supportingInfo, supportInfoErrors) => {
   if (!isArrayHasData(supportingInfo)) {
@@ -52,21 +47,10 @@ const createSupportInfoDataWithErrors = (supportingInfo, supportInfoErrors) => {
       }
 
       if (valueAttachment) {
-        const result = extractContentAttachment(valueAttachment);
-
-        value = result.value;
-        contentType = result.contentType;
-        title = result.title;
-        creation = result.creation;
-
-        if (title && title.includes(ATTACHMENT_ANCHOR)) {
-          const [fileUrl] = title.match(ATTACHMENT_ANCHOR_REGEX) || [];
-          title = title.replace(ATTACHMENT_ANCHOR_REGEX, "");
-
-          if (fileUrl) {
-            value = decodeURIComponent(fileUrl.replace(ATTACHMENT_ANCHOR, ""));
-          }
-        }
+        value = valueAttachment.value;
+        contentType = valueAttachment.contentType;
+        title = valueAttachment.title;
+        creation = valueAttachment.creation;
       }
 
       if (timingPeriod) {

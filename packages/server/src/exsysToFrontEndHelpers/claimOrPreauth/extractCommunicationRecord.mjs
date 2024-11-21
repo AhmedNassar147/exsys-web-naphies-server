@@ -5,7 +5,6 @@
  *
  */
 import { isArrayHasData } from "@exsys-web-server/helpers";
-import extractContentAttachment from "../../nphiesHelpers/extraction/extractContentAttachment.mjs";
 
 const getErrors = (errors) => (isArrayHasData(errors) ? errors : undefined);
 
@@ -35,10 +34,9 @@ const extractCommunicationRecord = ({
 
   const [{ contentString, contentAttachment }] = communicationPayload || [{}];
 
-  const attachmentData = extractContentAttachment(contentAttachment);
-  const hasContentAttachment = !!(
-    contentAttachment && attachmentData.contentType
-  );
+  const { creation, contentType } = contentAttachment || {};
+
+  const hasContentAttachment = !!(creation && contentType);
 
   return {
     sentCreationBundleId,
@@ -49,14 +47,15 @@ const extractCommunicationRecord = ({
     nphiesResponseTaskStatus: taskStatus,
     nphiesResponseTaskPriority: taskPriority,
     nphiesResponseTaskErrors: getErrors(taskErrors),
-
     communicationId,
     communicationIdentifier,
     communicationCategory,
     communicationPriority,
     communicationStatus,
     communicationContentString: contentString,
-    communicationAttachment: hasContentAttachment ? attachmentData : undefined,
+    communicationAttachment: hasContentAttachment
+      ? contentAttachment
+      : undefined,
     communicationErrors: getErrors(communicationErrors),
     communicationAbout: [
       communicationAboutType,

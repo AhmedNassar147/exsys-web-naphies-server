@@ -3,7 +3,12 @@
  * Helper: `extractContentAttachment`.
  *
  */
-const extractContentAttachment = (valueAttachment) => {
+import {
+  ATTACHMENT_ANCHOR,
+  ATTACHMENT_ANCHOR_REGEX,
+} from "../../constants.mjs";
+
+const extractContentAttachment = (valueAttachment, appendFileUrlIfFound) => {
   let value;
   let title;
   let contentType;
@@ -17,13 +22,24 @@ const extractContentAttachment = (valueAttachment) => {
       creation: _creation,
     } = valueAttachment;
 
-    value =
-      !!data && typeof data === "string"
-        ? `data:${_contentType};base64,${data}`
-        : undefined;
+    if (!!data && typeof data === "string") {
+      value = data.startsWith("http:")
+        ? data
+        : `data:${_contentType};base64,${data}`;
+    }
+
     contentType = _contentType;
     title = _title;
     creation = _creation;
+
+    if (appendFileUrlIfFound && title && title.includes(ATTACHMENT_ANCHOR)) {
+      const [fileUrl] = title.match(ATTACHMENT_ANCHOR_REGEX) || [];
+      title = title.replace(ATTACHMENT_ANCHOR_REGEX, "");
+
+      if (fileUrl) {
+        value = decodeURIComponent(fileUrl.replace(ATTACHMENT_ANCHOR, ""));
+      }
+    }
   }
 
   return {
