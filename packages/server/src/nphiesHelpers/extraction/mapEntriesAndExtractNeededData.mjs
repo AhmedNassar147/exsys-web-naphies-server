@@ -236,13 +236,14 @@ export default mapEntriesAndExtractNeededData;
 //   // `${base}/results/new-arc/communication-poll/29-09-2024.json`,
 //   // `${base}/results/new-arc/communication-poll/30-09-2024.json`,
 // `${base}/results/blg/priorauth/aaf63ac6-3ccc-4aa5-a021-e98494e424b9/23-10-2024.json`,
-// true
+//   `${base}/results/nphies-all.json`,
+//   true
 // );
 
 // await writeResultFile({
-// data: mapEntriesAndExtractNeededData({
-// nodeServerDataSentToNaphies,
-// nphiesResponse,
+//   data: mapEntriesAndExtractNeededData({
+//     nodeServerDataSentToNaphies,
+//     nphiesResponse,
 // requestType: NPHIES_REQUEST_TYPES.ELIGIBILITY,
 // requestType: NPHIES_REQUEST_TYPES.PREAUTH,
 // requestType: NPHIES_REQUEST_TYPES.POLL,
@@ -278,4 +279,5 @@ export default mapEntriesAndExtractNeededData;
 // folderName: `new-arc/results/communication-poll-29-09-2024.json`,
 // folderName: `new-arc/results/communication-poll-30-09-2024.json`,
 // folderName: `blg/priorauth/aaf63ac6-3ccc-4aa5-a021-e98494e424b9/23-10-2024-result`,
+// folderName: `nphies-all-result`,
 // });

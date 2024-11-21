@@ -15,6 +15,26 @@ import { NPHIES_REQUEST_TYPES } from "../constants.mjs";
 
 const { PRESCRIBER } = NPHIES_REQUEST_TYPES;
 
+const extractNphiesResponseBasedOnBundleId = (bundleId, allNphiesResponse) => {
+  const { entry, ...others } = allNphiesResponse;
+
+  const entries = entry.filter(({ resource: { resourceType, id } }) => {
+    const isTaskOrMessageHeader = ["MessageHeader", "Task"].includes(
+      resourceType
+    );
+
+    const isBundle = resourceType === "Bundle";
+    const isSameBundle = id === bundleId;
+
+    return isTaskOrMessageHeader || (isBundle && isSameBundle);
+  });
+
+  return {
+    ...others,
+    entry: entries,
+  };
+};
+
 const processBundleItem = async ({
   currentItem,
   authorization,
@@ -73,11 +93,18 @@ const mergePollBundlesAndSave = async ({
           nphiesRequestExtractedData,
         };
 
+        const { bundleId } = item;
+
+        const foundNphiesResponse = extractNphiesResponseBasedOnBundleId(
+          bundleId,
+          nphiesResponse
+        );
+
         return processBundleItem({
           currentItem,
           authorization,
           nodeServerDataSentToNaphies,
-          nphiesResponse,
+          nphiesResponse: foundNphiesResponse,
           // logParams,
           logParams: true,
         });
