@@ -3,11 +3,14 @@
  * Package: `@exsys-web-server/start-exsys-nphies-web-server`.
  *
  */
-import chalk from "chalk";
 import { join } from "path";
-import { exec } from "child_process";
+import { exec, spawn } from "child_process";
 import { promisify } from "util";
-import { createCmdMessage, isWindowsPlatform } from "@exsys-web-server/helpers";
+import {
+  createCmdMessage,
+  isWindowsPlatform,
+  delayProcess,
+} from "@exsys-web-server/helpers";
 import checkIfPackageAlreadyLinkedElseLink from "./checkIfPackageAlreadyLinkedElseLink.mjs";
 import { PACKAGE_NAME } from "./constants.mjs";
 
@@ -52,56 +55,42 @@ const asyncExec = promisify(exec);
   if (isWindowsOs) {
     createCmdMessage({
       type: "info",
-      message:
-        "checking scripts execution policy on windows to run our scripts on windows powershell",
+      message: 'changing scripts policy execution to "Unrestricted"',
     });
 
-    const { stdout: currentUserExecutionPolicy } = await asyncExec(
-      "Get-ExecutionPolicy",
-      {
-        shell: "powershell.exe",
-      }
-    );
+    const scriptPath = `${process.cwd()}\\src\\checkExecutionPolicy.ps1`;
 
-    const currentUserExecutionPolicyWithoutSpaces =
-      currentUserExecutionPolicy.replace(/\s|\r/g, "");
+    // Spawn a PowerShell process to run the script
+    const powershell = spawn("powershell.exe", [
+      "-ExecutionPolicy",
+      "ByPass", // Temporarily bypass the execution policy
+      "-File",
+      scriptPath, // Specify the script file
+    ]);
 
-    const isExecutionPolicyAlreadyUnRestricted =
-      currentUserExecutionPolicyWithoutSpaces === "Unrestricted";
-
-    createCmdMessage({
-      type: "info",
-      message: chalk.yellow(
-        `current scripts policy execution is "${chalk.white.bold(
-          currentUserExecutionPolicyWithoutSpaces
-        )}" ${
-          isExecutionPolicyAlreadyUnRestricted ? "no extra work needed" : ""
-        }`
-      ),
-    });
-
-    if (!isExecutionPolicyAlreadyUnRestricted) {
+    // Capture the output of the script
+    powershell.stdout.on("data", (data) => {
       createCmdMessage({
         type: "info",
-        message: 'changing scripts policy execution to "Unrestricted"',
+        message: data,
       });
+    });
 
-      const { stderr: forcingPowershellRestrictionError } = await asyncExec(
-        'Set-ExecutionPolicy -Scope "CurrentUser" -ExecutionPolicy "Unrestricted"',
-        {
-          shell: "powershell.exe",
-        }
-      );
+    // Capture any error output
+    powershell.stderr.on("data", (data) => {
+      createCmdMessage({
+        type: "error",
+        message: data,
+      });
+    });
 
-      if (forcingPowershellRestrictionError) {
-        createCmdMessage({
-          type: "info",
-          message: `something went wrong when allowing scripts to run on windows powershell
-            sorry, you can't use the app bins.
-            `,
-        });
-      }
-    }
+    // Capture when the process ends
+    powershell.on("close", (code) => {
+      createCmdMessage({
+        type: "error",
+        message: `PowerShell script exited with code ${code}`,
+      });
+    });
   }
 
   process.exit(0);
