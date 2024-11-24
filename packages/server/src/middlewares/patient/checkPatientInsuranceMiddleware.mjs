@@ -96,7 +96,6 @@ const checkInsuranceEligibility = async ({
       createNphiesRequestPayloadFn,
       setErrorIfExtractedDataFoundFn,
       noPatientDataLogger: true,
-      // insurance_company_payer_license
       checkExsysDataValidationBeforeCallingNphies: ({
         payer_license,
         insurance_company_payer_license,
@@ -106,8 +105,8 @@ const checkInsuranceEligibility = async ({
           payer_license !== insurance_company_payer_license
         ) {
           return {
-            validationError:
-              "Skipping request because payer license is different from insurance company payer license",
+            loggerMessage:
+              "Error, because payer license is different from insurance company payer license",
           };
         }
 
@@ -119,15 +118,8 @@ const checkInsuranceEligibility = async ({
       }),
     });
 
-  const { hasExsysApiError } = printData;
-
-  if (hasExsysApiError) {
-    return {
-      hasError: true,
-      loggerValue,
-    };
-  }
-
+  const { data, hasNphiesApiError, folderName } = printData;
+  const { loggerMessage } = data || {};
   const { nphiesExtractedData } = resultData || {};
 
   const {
@@ -137,7 +129,6 @@ const checkInsuranceEligibility = async ({
   } = nphiesExtractedData || {};
 
   if (printValues) {
-    const { data, hasNphiesApiError, folderName } = printData;
     await writeResultFile({
       data: {
         originalApiParams: originalApiParams,
@@ -155,7 +146,7 @@ const checkInsuranceEligibility = async ({
     nphiesExtractedData: otherNphiesExtractedData,
   });
 
-  return frontEndEligibilityData;
+  return { frontEndEligibilityData, loggerMessage };
 };
 
 export default checkPatientInsuranceMiddleware(async (body) => {
@@ -321,44 +312,34 @@ export default checkPatientInsuranceMiddleware(async (body) => {
 
     const __beneficiaryKey = identityNumber || beneficiaryKey;
 
-    const frontEndEligibilityData = await checkInsuranceEligibility({
-      firstName: patient_first_name || firstName || TEST_PATIENT_NAME.firstName,
-      secondName:
-        patient_second_name || secondName || TEST_PATIENT_NAME.secondName,
-      thirdName: patient_third_name || thirdName || TEST_PATIENT_NAME.thirdName,
-      familyName:
-        patient_family_name || lastName || TEST_PATIENT_NAME.familyName,
-      patientFileNoOrMemberId,
-      beneficiaryKey: __beneficiaryKey,
-      mobileNumber: mobileNumber || mobileFromBody || "",
-      genderName: mainGender || "male",
-      dateOfBirth: __dateOfBirth,
-      policyNumber: policyNumber || "00000000",
-      className: className || "class A+",
-      policyHolder: policyHolder || "policy holder test",
-      authorization,
-      organization_no,
-      customer_no: __customer_no,
-      customer_group_no: __customer_group_no,
-      insuranceCompanyId,
-      clinicalEntityNo,
-      printFolderName,
-      originalApiParams: body,
-      printValues,
-    });
-
-    const { hasError, loggerValue } = frontEndEligibilityData;
-
-    if (hasError && loggerValue) {
-      return {
-        data: {
-          ...baseResponse,
-          isErrorOutcome: hasError,
-          notificationError: loggerValue,
-          frontEndEligibilityData,
-        },
-      };
-    }
+    const { loggerMessage, frontEndEligibilityData } =
+      await checkInsuranceEligibility({
+        firstName:
+          patient_first_name || firstName || TEST_PATIENT_NAME.firstName,
+        secondName:
+          patient_second_name || secondName || TEST_PATIENT_NAME.secondName,
+        thirdName:
+          patient_third_name || thirdName || TEST_PATIENT_NAME.thirdName,
+        familyName:
+          patient_family_name || lastName || TEST_PATIENT_NAME.familyName,
+        patientFileNoOrMemberId,
+        beneficiaryKey: __beneficiaryKey,
+        mobileNumber: mobileNumber || mobileFromBody || "",
+        genderName: mainGender || "male",
+        dateOfBirth: __dateOfBirth,
+        policyNumber: policyNumber || "00000000",
+        className: className || "class A+",
+        policyHolder: policyHolder || "policy holder test",
+        authorization,
+        organization_no,
+        customer_no: __customer_no,
+        customer_group_no: __customer_group_no,
+        insuranceCompanyId,
+        clinicalEntityNo,
+        printFolderName,
+        originalApiParams: body,
+        printValues,
+      });
 
     const { outcome, disposition } = frontEndEligibilityData;
     const isMemberidNotValid = (disposition || "").includes(
@@ -371,7 +352,7 @@ export default checkPatientInsuranceMiddleware(async (body) => {
         isErrorOutcome: outcome === "error",
         notificationError: isMemberidNotValid
           ? "Please enter card no then make a new request"
-          : "",
+          : loggerMessage || "",
         frontEndEligibilityData,
       },
     };

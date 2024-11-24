@@ -189,7 +189,7 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
     skipThrowingOrganizationError: true,
   });
 
-  const { shouldSaveDataToExsys, validationError } =
+  const { shouldSaveDataToExsys, validationError, loggerMessage } =
     checkExsysDataValidationBeforeCallingNphies
       ? checkExsysDataValidationBeforeCallingNphies(exsysResultsData)
       : {};
@@ -344,6 +344,7 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
       data: {
         exsysRequestParams: requestParams,
         exsysRequestBody: requestBody,
+        loggerMessage,
         ...nphiesResultData,
       },
       hasNphiesApiError: hasError,
