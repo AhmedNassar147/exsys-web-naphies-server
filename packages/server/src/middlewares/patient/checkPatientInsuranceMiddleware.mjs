@@ -50,7 +50,7 @@ const checkInsuranceEligibility = async ({
   policyNumber,
   className,
   policyHolder,
-  insuranceCompanyID,
+  insuranceCompanyId,
   clinicalEntityNo,
   printFolderName,
   originalApiParams,
@@ -81,7 +81,7 @@ const checkInsuranceEligibility = async ({
     organization_no,
     customer_no: customer_no || "",
     customer_group_no: customer_group_no || "",
-    insurance_company: insuranceCompanyID || "",
+    insurance_company: insuranceCompanyId || "",
     clinicalEntityNo: clinicalEntityNo,
   };
 
@@ -96,11 +96,37 @@ const checkInsuranceEligibility = async ({
       createNphiesRequestPayloadFn,
       setErrorIfExtractedDataFoundFn,
       noPatientDataLogger: true,
+      // insurance_company_payer_license
+      checkExsysDataValidationBeforeCallingNphies: ({
+        payer_license,
+        insurance_company_payer_license,
+      }) => {
+        if (
+          insurance_company_payer_license &&
+          payer_license !== insurance_company_payer_license
+        ) {
+          return {
+            validationError:
+              "Skipping request because payer license is different from insurance company payer license",
+          };
+        }
+
+        return {};
+      },
       createResultsDataFromExsysResponse: (result) => ({
         ...baseEligibilityData,
         ...result,
       }),
     });
+
+  const { hasExsysApiError } = printData;
+
+  if (hasExsysApiError) {
+    return {
+      hasError: true,
+      loggerValue,
+    };
+  }
 
   const { nphiesExtractedData } = resultData || {};
 
@@ -193,6 +219,8 @@ export default checkPatientInsuranceMiddleware(async (body) => {
   const __genderCode = gender || genderCodeFromBody;
   const __nationalityCode = nationalityCode || nationalityID || nationality;
 
+  const insuranceCompanyId = insuranceCompanyID || insuranceCompanyIdFromBody;
+
   const { result } = await createExsysRequest({
     resourceName: queryExsysCchiPatient,
     requestMethod: "GET",
@@ -203,7 +231,7 @@ export default checkPatientInsuranceMiddleware(async (body) => {
       beneficiaryId: beneficiaryKey,
       nationalityCode: __nationalityCode,
       gender: __genderCode,
-      insuranceCompanyId: insuranceCompanyID || insuranceCompanyIdFromBody,
+      insuranceCompanyId,
       policyNumber,
       className: (className || "")
         .replace(/\s{1,}/g, " ")
@@ -312,12 +340,25 @@ export default checkPatientInsuranceMiddleware(async (body) => {
       organization_no,
       customer_no: __customer_no,
       customer_group_no: __customer_group_no,
-      insurance_company: insuranceCompanyID,
+      insuranceCompanyId,
       clinicalEntityNo,
       printFolderName,
       originalApiParams: body,
       printValues,
     });
+
+    const { hasError, loggerValue } = frontEndEligibilityData;
+
+    if (hasError && loggerValue) {
+      return {
+        data: {
+          ...baseResponse,
+          isErrorOutcome: hasError,
+          notificationError: loggerValue,
+          frontEndEligibilityData,
+        },
+      };
+    }
 
     const { outcome, disposition } = frontEndEligibilityData;
     const isMemberidNotValid = (disposition || "").includes(
