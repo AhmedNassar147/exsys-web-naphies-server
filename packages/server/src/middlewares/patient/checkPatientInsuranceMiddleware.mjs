@@ -106,7 +106,7 @@ const checkInsuranceEligibility = async ({
         ) {
           return {
             loggerMessage:
-              "Error, because payer license is different from insurance company payer license",
+              "Error, because payer license is different from registered payer license",
           };
         }
 
