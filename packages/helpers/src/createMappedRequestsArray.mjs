@@ -27,6 +27,8 @@ const createMappedRequestsArray = async ({
       const { resultData } = result;
       const { isNphiesServerNotConnected } = resultData;
 
+      await delayProcess(60);
+
       if (isNphiesServerNotConnected) {
         await delayProcess(6000);
       }
