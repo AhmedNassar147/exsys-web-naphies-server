@@ -3,11 +3,16 @@
  * Helper: `cancelLocalClaimsOrOauth`.
  *
  */
-import { readJsonFile } from "@exsys-web-server/helpers";
-import createMappedClaimOrPreauthCancellation from "./exsysHelpers/createMappedClaimOrPreauthCancellation.mjs";
+import {
+  findRootYarnWorkSpaces,
+  readJsonFile,
+} from "@exsys-web-server/helpers";
+import createMappedClaimOrPreauthCancellation from "./exsysHelpers/createMappedClaimOrPreauthCancellationOrStatusCheck.mjs";
 
 const cancelLocalClaimsOrOauth = async (filePath) => {
-  const claimsOrPreauthData = await readJsonFile(filePath, true);
+  const rootPath = await findRootYarnWorkSpaces();
+  const fullFilePath = `${rootPath}/${filePath}`;
+  const claimsOrPreauthData = await readJsonFile(fullFilePath, true);
 
   await createMappedClaimOrPreauthCancellation({
     data: claimsOrPreauthData,
