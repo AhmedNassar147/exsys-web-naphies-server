@@ -374,16 +374,12 @@ const createNphiesClaimData = ({
           }
         : null),
       use: useValue,
-      ...(useVisionPrescriptionUrl
+      prescription: !!(approvalPrescriptionId || useVisionPrescriptionUrl)
         ? {
-            prescription: {
-              reference: `${visionPrescriptionUrl}/${requestId}`,
-            },
-          }
-        : null),
-      prescription: approvalPrescriptionId
-        ? {
-            display: approvalPrescriptionId,
+            reference: useVisionPrescriptionUrl
+              ? `${visionPrescriptionUrl}/${requestId}`
+              : undefined,
+            display: approvalPrescriptionId || undefined,
           }
         : undefined,
       payee: isPrescriberRequestData
