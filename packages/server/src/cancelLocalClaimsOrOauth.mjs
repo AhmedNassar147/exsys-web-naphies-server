@@ -27,7 +27,7 @@ const cancelLocalClaimsOrOauth = async (filePath) => {
 
     const { resultsData, printInfo } =
       await createMappedClaimOrPreauthCancellation({
-        data,
+        data: data.map((claim) => ({ ...claim, nullifyRequest: "Y" })),
         authorization: 111111,
         printValues: false,
         formatReturnedResults: ({ printInfo, resultsData }) => ({
@@ -44,10 +44,6 @@ const cancelLocalClaimsOrOauth = async (filePath) => {
       const { folderName, data } = printInfo;
       const folderData = printInfoData[folderName] || [];
       printInfoData[folderName] = folderData.concat(...data);
-    }
-
-    if (!!claims.length) {
-      await delayProcess(6000);
     }
   }
 
