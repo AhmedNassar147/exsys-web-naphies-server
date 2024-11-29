@@ -357,7 +357,7 @@ export const NPHIES_BASE_CODE_TYPES = {
   EXTENSION_STRENGTH: "extension-strength",
 };
 
-export const USE_NEW_INVESTIGATION_AS_ATTACHMENT = false;
+export const USE_NEW_INVESTIGATION_AS_ATTACHMENT = true;
 export const INVESTIGATION_RESULT_CODE_FOR_ATTACHMENT = "IRA";
 
 export const SUPPORT_INFO_KEY_NAMES = {
