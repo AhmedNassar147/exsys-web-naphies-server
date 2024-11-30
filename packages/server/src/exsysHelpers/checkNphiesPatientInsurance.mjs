@@ -30,7 +30,10 @@ const fieldNamesToBeCleaned = [
 
 const clearFieldsValue = (fieldName, value) => {
   if (fieldNamesToBeCleaned.includes(fieldName) && value) {
-    return removeInvisibleCharactersFromString(value);
+    const value = removeInvisibleCharactersFromString(
+      value,
+      fieldName === "PolicyHolder" ? "" : undefined
+    );
   }
 
   return value;
@@ -75,6 +78,17 @@ const transformResults = (result) => {
         _value = clearFieldsValue(key, _value);
 
         const isNameField = key === "Name";
+        const isPolicyHolderField = key === "PolicyHolder";
+        const isPolicyHolderNoField = key === "PolicyNumber";
+
+        if (isPolicyHolderNoField && !finalResults.policyHolder) {
+          finalResults.policyHolder = value;
+        }
+
+        if (isPolicyHolderField && !value && finalResults.policyNumber) {
+          _value = finalResults.policyNumber;
+        }
+
         if (isNameField) {
           _value = (_value || "").replace(/\d\s-\s|\s\(\d{0,}.+/gm, "");
 
