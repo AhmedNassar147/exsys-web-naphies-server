@@ -109,25 +109,35 @@ const buildAttachmentSupportInfoWithCodeSection = ({
 }) => {
   const hasCodeSection = !!(systemUrl && code);
 
+  let __categoryCode = categoryCode;
+
+  const IS_INFO_CATEGORY = categoryCode === SUPPORT_INFO_KEY_NAMES.info;
+  const IS_IRA_CODE = code === INVESTIGATION_RESULT_CODE_FOR_ATTACHMENT;
+  const IS_INFO_AND_IRA_CODE = IS_INFO_CATEGORY && IS_IRA_CODE;
+  const currentCode = IS_INFO_AND_IRA_CODE ? "other" : code;
+
+  if (IS_INFO_AND_IRA_CODE) {
+    __categoryCode = investigation_result;
+  }
+
   const codeSection = {
     coding: [
       {
         system: systemUrl,
-        code,
+        code: currentCode,
         display,
       },
     ],
-    text,
+    text: IS_INFO_AND_IRA_CODE ? value : text,
   };
 
-  if (categoryCode === attachment) {
+  if (__categoryCode === attachment) {
     const isUsingNewAttachmentCode =
-      USE_NEW_INVESTIGATION_AS_ATTACHMENT &&
-      code === INVESTIGATION_RESULT_CODE_FOR_ATTACHMENT;
+      USE_NEW_INVESTIGATION_AS_ATTACHMENT && IS_IRA_CODE;
 
     const currentCategoryCode = isUsingNewAttachmentCode
       ? investigation_result
-      : categoryCode;
+      : __categoryCode;
 
     return {
       currentCategoryCode,
@@ -143,7 +153,7 @@ const buildAttachmentSupportInfoWithCodeSection = ({
   }
 
   return {
-    currentCategoryCode: categoryCode,
+    currentCategoryCode: __categoryCode,
     codeSection: hasCodeSection ? codeSection : undefined,
   };
 };
@@ -480,6 +490,26 @@ const createNphiesClaimData = ({
               const hasAbsenceReason = !!(
                 absenceReasonCode && absenceReasonUrl
               );
+
+              // {
+              //   "sequence": 10,
+              //   "category": {
+              //       "coding": [
+              //           {
+              //               "system": "http://nphies.sa/terminology/CodeSystem/claim-information-category",
+              //               "code": "investigation-result"
+              //           }
+              //       ]
+              //   },
+              //   "code": {
+              //       "coding": [
+              //           {
+              //               "system": "http://nphies.sa/terminology/CodeSystem/investigation-result",
+              //               "code": "other"
+              //           }
+              //       ],
+              //       "text" : "No Investigation Result"
+              //   }
 
               const { currentCategoryCode, codeSection, valueAttachment } =
                 buildAttachmentSupportInfoWithCodeSection({
