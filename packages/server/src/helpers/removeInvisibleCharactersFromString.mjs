@@ -14,7 +14,7 @@ const removeInvisibleCharactersFromString = (
 
   return (value || "").replace(
     /\s{1,300}|[^\x00-\x7F\u0600-\u06FF]/g,
-    replaceWith ? replaceWith : " "
+    typeof replaceWith === "string" ? replaceWith : " "
   );
 };
 

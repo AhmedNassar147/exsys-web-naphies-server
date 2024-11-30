@@ -30,8 +30,9 @@ const fieldNamesToBeCleaned = [
 
 const clearFieldsValue = (fieldName, value) => {
   if (fieldNamesToBeCleaned.includes(fieldName) && value) {
-    const value = removeInvisibleCharactersFromString(
+    return removeInvisibleCharactersFromString(
       value,
+      undefined,
       fieldName === "PolicyHolder" ? "" : undefined
     );
   }
@@ -82,10 +83,10 @@ const transformResults = (result) => {
         const isPolicyHolderNoField = key === "PolicyNumber";
 
         if (isPolicyHolderNoField && !finalResults.policyHolder) {
-          finalResults.policyHolder = value;
+          finalResults.policyHolder = _value;
         }
 
-        if (isPolicyHolderField && !value && finalResults.policyNumber) {
+        if (isPolicyHolderField && !_value && finalResults.policyNumber) {
           _value = finalResults.policyNumber;
         }
 
@@ -173,3 +174,30 @@ const checkNphiesPatientInsurance = async ({
 };
 
 export default checkNphiesPatientInsurance;
+
+// console.log(
+//   transformResults({
+//     Insurance: [
+//       {
+//         PolicyNumber: "37326578",
+//         InsuranceCompanyEN: "Tawuniya cooperative  Insurance Company",
+//         InsuranceCompanyAR: "الشركة التعاونية للتأمين التعاوني",
+//         InsuranceCompanyID: "101",
+//         ExpiryDate: "2025-04-19",
+//         ClassName: "vip",
+//         IdentityNumber: "1133928448",
+//         Name: "1 - jori abdullah al ghamdi (0) -a",
+//         Gender: "2",
+//         NationalityCode: "113",
+//         DeductibleRate: "20",
+//         MaxLimit: "100",
+//         BeneficiaryType: "2",
+//         BeneficiaryNumber: "001046411227221",
+//         NetworkID: "11",
+//         IssueDate: "2024-04-20",
+//         SponsorNumber: "7001256168",
+//         PolicyHolder: "ø¨ù†ùƒ ø§ù„øªù†ù…ùšø© ø§ù„ø§ø¬øªù…ø§ø¹ùšø©",
+//       },
+//     ],
+//   })
+// );
