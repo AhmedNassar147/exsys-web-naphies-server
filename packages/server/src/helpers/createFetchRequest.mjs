@@ -27,6 +27,16 @@ const createFetchRequest = (options) => {
   let currentResourceName = resourceName || "";
 
   if (requestParams) {
+    // const params = Object.keys(requestParams).reduce((acc, key) => {
+    //   const value = requestParams[key]
+    //   console.log(key, value)
+    //   if(value === 'undefined' || typeof value === "undefined"){
+    //     return acc
+    //   }
+    //   acc[key] = value
+
+    //   return acc
+    // }, {});
     const searchParams = new URLSearchParams(requestParams);
     currentResourceName += `?${searchParams.toString()}`;
   }
