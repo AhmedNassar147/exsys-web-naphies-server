@@ -20,7 +20,7 @@ export const TEST_PATIENT_NAME = {
 export const SERVER_PORT = 5000;
 export const RETRY_TIMES = 1;
 export const RETRY_DELAY = 10000;
-export const EXSYS_POLLS_TIMEOUT = 10000;
+export const EXSYS_POLLS_TIMEOUT = 30000;
 const { exsysBaseUrl, port } = CLI_CONFIG;
 
 export const BASE_API_IP_ADDRESS = exsysBaseUrl || "http://localhost";

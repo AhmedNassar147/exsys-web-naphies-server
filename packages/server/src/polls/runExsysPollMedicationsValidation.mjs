@@ -21,8 +21,6 @@ import {
 const { queryMedicationsValidationPollData } = EXSYS_API_IDS_NAMES;
 const { PRESCRIBER } = NPHIES_REQUEST_TYPES;
 
-const __EXSYS_POLLS_TIMEOUT = EXSYS_POLLS_TIMEOUT * 3;
-
 const runExsysPollMedicationsValidation = async (authorization) => {
   try {
     const { result } = await createExsysRequest({
@@ -36,7 +34,7 @@ const runExsysPollMedicationsValidation = async (authorization) => {
     const { visitId } = result;
 
     if (!visitId) {
-      await delayProcess(__EXSYS_POLLS_TIMEOUT);
+      await delayProcess(EXSYS_POLLS_TIMEOUT);
       createCmdMessage({
         type: "info",
         message: `couldn't find visitId in exsys prescriber poll ${chalk.green(
@@ -68,7 +66,7 @@ const runExsysPollMedicationsValidation = async (authorization) => {
       message: `Error from exsys medications validation polling\n ${error}`,
     });
   } finally {
-    await delayProcess(__EXSYS_POLLS_TIMEOUT);
+    await delayProcess(EXSYS_POLLS_TIMEOUT);
     await runExsysPollMedicationsValidation(authorization);
   }
 };

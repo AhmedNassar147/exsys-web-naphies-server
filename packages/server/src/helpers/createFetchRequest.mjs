@@ -31,7 +31,7 @@ const createFetchRequest = (options) => {
     currentResourceName += `?${searchParams.toString()}`;
   }
 
-  const API_URL = currentResourceName
+  let API_URL = currentResourceName
     ? `${baseAPiUrl}${
         currentResourceName.startsWith("?")
           ? currentResourceName
@@ -39,12 +39,14 @@ const createFetchRequest = (options) => {
       }`
     : baseAPiUrl;
 
+  API_URL = API_URL.replace(/undefined/g, "");
+
   const fetchOptions = {
     method: requestMethod,
     headers: requestHeaders,
     httpsAgent,
     data: body,
-    url: API_URL.replace(/undefined/g, ""),
+    url: API_URL,
   };
 
   return new Promise((resolve) => {
@@ -59,6 +61,7 @@ const createFetchRequest = (options) => {
             status,
             isSuccess,
             error: isSuccess ? undefined : message,
+            API_URL,
           };
 
           if (transformApiResults) {
@@ -92,6 +95,7 @@ const createFetchRequest = (options) => {
               error: errorMessage,
               status,
               result: responseData,
+              API_URL,
             });
           }
         });
