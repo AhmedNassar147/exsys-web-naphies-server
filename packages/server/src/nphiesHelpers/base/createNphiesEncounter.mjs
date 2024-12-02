@@ -41,7 +41,6 @@ const { BASE_CODE_SYS_URL, BASE_PROFILE_URL, BASE_TERMINOLOGY_CODE_SYS_URL } =
 const periodFormatOptions = {
   stringifyReturnedDate: true,
   use3Plus: true,
-  subtractMonthBy: 1,
 };
 
 const createNphiesEncounter = ({
