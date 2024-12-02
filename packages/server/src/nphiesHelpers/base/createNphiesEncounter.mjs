@@ -39,8 +39,9 @@ const { BASE_CODE_SYS_URL, BASE_PROFILE_URL, BASE_TERMINOLOGY_CODE_SYS_URL } =
   NPHIES_API_URLS;
 
 const periodFormatOptions = {
+  stringifyReturnedDate: true,
+  use3Plus: true,
   subtractMonthBy: 1,
-  returnResultAsTimeStamp: true,
 };
 
 const createNphiesEncounter = ({

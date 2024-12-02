@@ -17,6 +17,7 @@ const formatDateToNativeDateParts = (date, options) => {
     returnResultAsTimeStamp,
     replaceWith,
     ignoreTime,
+    use3Plus,
   } = options || {};
 
   const reversedDate = reverseDate(date);
@@ -24,17 +25,28 @@ const formatDateToNativeDateParts = (date, options) => {
   const [__date, time] = reversedDate.split(/T|\s/);
   const [year, month, day] = __date.split("-");
 
-  const timeParts = (time || "").replace("+03:00", "").split(":");
-
   const __month = subtractMonthBy ? month - subtractMonthBy : month;
+
+  const timeParts = (time || "").replace("+03:00", "").split(":");
 
   const dateParts = [+year, __month, day, ...timeParts].filter(Boolean);
 
   if (stringifyReturnedDate) {
-    let dateValue = [day, __month, +year].filter(Boolean).join("-");
-    const __time = [...timeParts].filter(Boolean).join(":");
+    let dateValue = [day, __month, +year].filter(Boolean);
+
+    if (use3Plus) {
+      dateValue = dateValue.reverse().join("-");
+    } else {
+      dateValue = dateValue.join("-");
+    }
+
+    let __time = [...timeParts].filter(Boolean).join(":");
 
     if (__time && !ignoreTime) {
+      if (use3Plus) {
+        return `${dateValue}T${__time}+03:00`;
+      }
+
       dateValue += ` ${__time}`;
     }
 
@@ -52,9 +64,15 @@ const formatDateToNativeDateParts = (date, options) => {
 
 export default formatDateToNativeDateParts;
 
+// "encounterPeriodStart": "2024-11-27 14:27:00",
+// "encounterPeriodEnd": "2024-11-27 00:00:00",
+
+// 2024-10-27T00:00:00+03:00
 // console.log(
-//   formatDateToNativeDateParts("04-12-2023 10:25:00", {
+//   formatDateToNativeDateParts("2024-11-27 00:00:00", {
 //     stringifyReturnedDate: true,
+//     use3Plus: true,
+//     subtractMonthBy: 1,
 //   })
 // );
 
