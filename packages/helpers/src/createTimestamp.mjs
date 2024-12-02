@@ -3,7 +3,6 @@
  * Helper: `createTimestamp`.
  *
  */
-
 const createTimestamp = (date) => {
   const __date = (Array.isArray(date) ? date : [date]).filter(Boolean);
 

@@ -6,19 +6,18 @@
 import createTimestamp from "./createTimestamp.mjs";
 import reverseDate from "./reverseDate.mjs";
 
-const formatDateToNativeDateParts = (
-  date,
-  {
+const formatDateToNativeDateParts = (date, options) => {
+  if (!date) {
+    return undefined;
+  }
+
+  const {
     stringifyReturnedDate,
     subtractMonthBy,
     returnResultAsTimeStamp,
     replaceWith,
     ignoreTime,
-  }
-) => {
-  if (!date) {
-    return undefined;
-  }
+  } = options || {};
 
   const reversedDate = reverseDate(date);
 
@@ -52,6 +51,12 @@ const formatDateToNativeDateParts = (
 };
 
 export default formatDateToNativeDateParts;
+
+// console.log(
+//   formatDateToNativeDateParts("04-12-2023 10:25:00", {
+//     stringifyReturnedDate: true,
+//   })
+// );
 
 // const date1 = "2024-09-28T15:24:39+03:00"
 // const date = "2023-12-05 11:10:12";
