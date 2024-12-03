@@ -401,7 +401,6 @@ const createNaphiesPreauthRequestFullData = ({
           patientFileNo: patient_file_no,
           organizationReference: provider_organization,
           providerOrganizationUrl,
-          extensionEncounterOrigin: provider_license,
         }),
       ...createAllOrganizationEntries({
         organizationLicense: provider_license,

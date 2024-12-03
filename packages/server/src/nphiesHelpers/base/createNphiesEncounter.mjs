@@ -77,7 +77,6 @@ const createNphiesEncounter = ({
   extensionIntendedLengthOfStayDisplay,
   dischargeDispositionCode,
   dischargeDispositionDisplay,
-  extensionEncounterOrigin,
 }) => {
   const showHospitalizationSection = [
     extensionDischargeSpecialtyCode,
@@ -85,7 +84,6 @@ const createNphiesEncounter = ({
     encounterAdmissionSpecialtyCode,
     encounterAdmitSourceCode,
     dischargeDispositionCode,
-    extensionEncounterOrigin,
   ].some(Boolean);
 
   const baseResourceData = createNphiesBaseResource({
@@ -274,7 +272,9 @@ const createNphiesEncounter = ({
                   },
                 }
               : null),
-            origin: extensionEncounterOrigin,
+            origin: {
+              reference: `${providerOrganizationUrl}/${organizationReference}`,
+            },
           }
         : undefined,
       serviceProvider: {
