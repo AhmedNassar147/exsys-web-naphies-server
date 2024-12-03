@@ -382,6 +382,7 @@ export const SUPPORT_INFO_KEY_NAMES = {
   days_supply: "days-supply",
   lab_test: "lab-test",
   ventilation_hours: "ventilation-hours",
+  morphology: "morphology",
 };
 
 export const ORGANIZATION_SECTION_TYPES = {

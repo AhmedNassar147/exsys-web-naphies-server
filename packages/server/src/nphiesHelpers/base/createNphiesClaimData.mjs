@@ -491,26 +491,6 @@ const createNphiesClaimData = ({
                 absenceReasonCode && absenceReasonUrl
               );
 
-              // {
-              //   "sequence": 10,
-              //   "category": {
-              //       "coding": [
-              //           {
-              //               "system": "http://nphies.sa/terminology/CodeSystem/claim-information-category",
-              //               "code": "investigation-result"
-              //           }
-              //       ]
-              //   },
-              //   "code": {
-              //       "coding": [
-              //           {
-              //               "system": "http://nphies.sa/terminology/CodeSystem/investigation-result",
-              //               "code": "other"
-              //           }
-              //       ],
-              //       "text" : "No Investigation Result"
-              //   }
-
               const { currentCategoryCode, codeSection, valueAttachment } =
                 buildAttachmentSupportInfoWithCodeSection({
                   categoryCode,

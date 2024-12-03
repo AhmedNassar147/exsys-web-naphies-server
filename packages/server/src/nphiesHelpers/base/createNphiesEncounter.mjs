@@ -202,10 +202,9 @@ const createNphiesEncounter = ({
           encounterPeriodStart,
           periodFormatOptions
         ),
-        end: formatDateToNativeDateParts(
-          encounterPeriodEnd,
-          periodFormatOptions
-        ),
+        end: encounterPeriodEnd
+          ? formatDateToNativeDateParts(encounterPeriodEnd, periodFormatOptions)
+          : undefined,
       },
       hospitalization: showHospitalizationSection
         ? {
