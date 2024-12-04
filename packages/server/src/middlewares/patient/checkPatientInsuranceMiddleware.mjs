@@ -3,151 +3,9 @@
  * Middleware: `checkPatientInsuranceMiddleware`.
  *
  */
-import {
-  writeResultFile,
-  // getCurrentDate,
-  isArrayHasData,
-  createDateFromNativeDate,
-} from "@exsys-web-server/helpers";
-import checkPatientInsuranceMiddleware from "../../helpers/createBaseExpressMiddleware.mjs";
-import createNphiesRequestPayloadFn from "../../nphiesHelpers/eligibility/index.mjs";
+import { writeResultFile, isArrayHasData } from "@exsys-web-server/helpers";
+import createCChiItemWithEligibility from "./createCChiItemWithEligibility.mjs";
 import checkNphiesPatientInsurance from "../../exsysHelpers/checkNphiesPatientInsurance.mjs";
-import createBaseFetchExsysDataAndCallNphiesApi from "../../exsysHelpers/createBaseFetchExsysDataAndCallNphiesApi.mjs";
-import extractEligibilityDataSentToNphies from "../../exsysToFrontEndHelpers/eligibility/index.mjs";
-import {
-  EXSYS_API_IDS_NAMES,
-  NPHIES_REQUEST_TYPES,
-  TEST_PATIENT_NAME,
-} from "../../constants.mjs";
-import createExsysRequest from "../../helpers/createExsysRequest.mjs";
-
-const { queryEligibilityDataFromCchi, queryExsysCchiPatient } =
-  EXSYS_API_IDS_NAMES;
-const { ELIGIBILITY } = NPHIES_REQUEST_TYPES;
-
-const setErrorIfExtractedDataFoundFn = ({
-  eligibilityErrors,
-  coverageErrors,
-}) => [...(eligibilityErrors || []), ...(coverageErrors || [])];
-
-const makeNphiesGenderName = (gender) =>
-  gender ? (gender === "1" ? "male" : "female") : "";
-
-const checkInsuranceEligibility = async ({
-  firstName,
-  secondName,
-  thirdName,
-  familyName,
-  patientFileNoOrMemberId,
-  beneficiaryKey,
-  mobileNumber,
-  genderName,
-  dateOfBirth,
-  authorization,
-  organization_no,
-  customer_no,
-  customer_group_no,
-  policyNumber,
-  className,
-  policyHolder,
-  insuranceCompanyId,
-  clinicalEntityNo,
-  printFolderName,
-  originalApiParams,
-  printValues,
-}) => {
-  const baseEligibilityData = {
-    patient_first_name: firstName || "",
-    patient_second_name: secondName || "",
-    patient_third_name: thirdName || "",
-    patient_family_name: familyName || "",
-    patient_file_no: patientFileNoOrMemberId,
-    memberid: patientFileNoOrMemberId,
-    iqama_no: beneficiaryKey,
-    patient_phone: mobileNumber,
-    gender: genderName,
-    birthDate: dateOfBirth || "1900-01-01",
-    relationship: "self",
-    classPolicyNo: policyNumber,
-    className,
-    policyHolderLicense: policyNumber,
-    policyHolderName: policyHolder,
-    occupationCode: "others",
-    patient_martial_status: "U",
-  };
-
-  const exsysApiParams = {
-    authorization,
-    organization_no,
-    customer_no: customer_no || "",
-    customer_group_no: customer_group_no || "",
-    insurance_company: insuranceCompanyId || "",
-    clinicalEntityNo: clinicalEntityNo,
-  };
-
-  const { printData, loggerValue, resultData } =
-    await createBaseFetchExsysDataAndCallNphiesApi({
-      exsysQueryApiId: queryEligibilityDataFromCchi,
-      requestParams: exsysApiParams,
-      requestMethod: "GET",
-      extractionRequestType: ELIGIBILITY,
-      printFolderName: `${printFolderName}/eligibility`,
-      exsysDataApiPrimaryKeyName: "memberid",
-      createNphiesRequestPayloadFn,
-      setErrorIfExtractedDataFoundFn,
-      noPatientDataLogger: true,
-      checkExsysDataValidationBeforeCallingNphies: ({
-        payer_license,
-        insurance_company_payer_license,
-      }) => {
-        if (
-          insurance_company_payer_license &&
-          payer_license !== insurance_company_payer_license
-        ) {
-          return {
-            loggerMessage:
-              "Error, because payer license is different from registered payer license",
-          };
-        }
-
-        return {};
-      },
-      createResultsDataFromExsysResponse: (result) => ({
-        ...baseEligibilityData,
-        ...result,
-      }),
-    });
-
-  const { data, hasNphiesApiError, folderName } = printData;
-  const { loggerMessage } = data || {};
-  const { nphiesExtractedData } = resultData || {};
-
-  const {
-    nodeServerDataSentToNphies,
-    nphiesResponse,
-    ...otherNphiesExtractedData
-  } = nphiesExtractedData || {};
-
-  if (printValues) {
-    await writeResultFile({
-      data: {
-        originalApiParams: originalApiParams,
-        hasNphiesApiError,
-        loggerValue,
-        ...data,
-      },
-      folderName,
-    });
-  }
-
-  const frontEndEligibilityData = extractEligibilityDataSentToNphies({
-    nodeServerDataSentToNaphies: nodeServerDataSentToNphies,
-    nphiesResponse,
-    nphiesExtractedData: otherNphiesExtractedData,
-  });
-
-  return { frontEndEligibilityData, loggerMessage };
-};
 
 export default checkPatientInsuranceMiddleware(async (body) => {
   const {
@@ -168,6 +26,7 @@ export default checkPatientInsuranceMiddleware(async (body) => {
     dateOfBirth: dateOfBirthFromBody,
     mobileNumber: mobileFromBody,
     insuranceCompanyId: insuranceCompanyIdFromBody,
+    requestIndex,
   } = body;
 
   const clinicalEntityNo = __clinicalEntityNo || "";
@@ -187,178 +46,112 @@ export default checkPatientInsuranceMiddleware(async (body) => {
     }
   );
 
-  const { insurance, errorCode, errorDescription } = apiResults;
+  const { insurance, errorCode, errorDescription, transactionName } =
+    apiResults;
 
-  const [firstItem] = insurance || [];
+  const _insuranceData = isArrayHasData(insurance) ? insurance : [{}];
 
-  const {
-    name,
-    identityNumber,
-    gender,
-    dateOfBirth: insuranceDateOfBirth,
-    mobileNumber,
-    insuranceCompanyID,
-    beneficiaryNumber,
-    nationalityCode,
-    nationalityID,
-    nationality,
-    policyNumber,
-    className,
-    policyHolder,
-  } = firstItem || {};
-
-  const __genderCode = gender || genderCodeFromBody;
-  const __nationalityCode = nationalityCode || nationalityID || nationality;
-
-  const insuranceCompanyId = insuranceCompanyID || insuranceCompanyIdFromBody;
-
-  const { result } = await createExsysRequest({
-    resourceName: queryExsysCchiPatient,
-    requestMethod: "GET",
-    retryTimes: 0,
-    requestParams: {
-      authorization,
-      organization_no,
-      beneficiaryId: beneficiaryKey,
-      nationalityCode: __nationalityCode,
-      gender: __genderCode,
-      insuranceCompanyId,
-      policyNumber,
-      className: (className || "")
-        .replace(/\s{1,}/g, " ")
-        .split(" ")
-        .filter((v) => v !== "class")
-        .join(" "),
-    },
-  });
-
-  const { data: __data } = result || {};
-  const exsysCchiPatientData = __data || {};
-
-  const {
-    nationalityCode: exsysNationalityCode,
-    nationality: nationalityName,
-    gender: genderName,
-    genderCode,
-    customerNo,
-    customerGroupNo,
-    dateOfBirth,
-    // patientCardNo: exsysPatientCardNo,
-  } = exsysCchiPatientData;
-
-  const __customer_no = customer_no || customerNo || "";
-  const __customer_group_no = customer_group_no || customerGroupNo || "";
-
-  const mockedDateOfBirth = dateOfBirthFromBody || "01-12-1970";
-
-  const __dateOfBirth =
-    dateOfBirth ||
-    createDateFromNativeDate(insuranceDateOfBirth || mockedDateOfBirth, {
-      returnReversedDate: !!mockedDateOfBirth,
-    }).dateString;
-
-  const mainGender = genderName || makeNphiesGenderName(__genderCode) || "";
-
-  const __insuranceData = isArrayHasData(insurance)
-    ? insurance.map((item) => ({
-        ...item,
-        nationalityCode: exsysNationalityCode || __nationalityCode,
-        nationality: nationalityName || "",
-        dateOfBirth: __dateOfBirth,
-        gender: mainGender,
-        genderCode: genderCode || __genderCode,
-      }))
-    : [];
-
-  const baseResponse = {
-    errorCode,
-    errorDescription,
-    cchiOriginalResults,
-    customerNo: __customer_no,
-    customerGroupNo: __customer_group_no,
-    exsysCchiPatientData,
-    insurance: __insuranceData,
-  };
-
-  const shouldCallEligibilityApi = !!(
-    organization_no &&
-    __customer_no &&
-    __customer_group_no
-  );
-
-  if (!shouldCallEligibilityApi) {
-    return {
-      data: {
-        ...baseResponse,
-        notificationError:
-          "Please select customer, customer-group and add card no",
-      },
-    };
-  }
-
-  const patientFileNoOrMemberId =
-    beneficiaryNumber || beneficiaryNumberFromBody || beneficiaryKey;
-
-  // const patientFileNoOrMemberId =
-  // beneficiaryNumber || beneficiaryNumberFromBody || exsysPatientCardNo || beneficiaryKey;
-
-  if (shouldCallEligibilityApi) {
-    const [
-      patient_first_name,
-      patient_second_name,
-      patient_third_name,
-      patient_family_name,
-    ] = (name || "").split(" ");
-
-    const __beneficiaryKey = identityNumber || beneficiaryKey;
-
-    const { loggerMessage, frontEndEligibilityData } =
-      await checkInsuranceEligibility({
-        firstName:
-          patient_first_name || firstName || TEST_PATIENT_NAME.firstName,
-        secondName:
-          patient_second_name || secondName || TEST_PATIENT_NAME.secondName,
-        thirdName:
-          patient_third_name || thirdName || TEST_PATIENT_NAME.thirdName,
-        familyName:
-          patient_family_name || lastName || TEST_PATIENT_NAME.familyName,
-        patientFileNoOrMemberId,
-        beneficiaryKey: __beneficiaryKey,
-        mobileNumber: mobileNumber || mobileFromBody || "",
-        genderName: mainGender || "male",
-        dateOfBirth: __dateOfBirth,
-        policyNumber: policyNumber || "00000000",
-        className: className || "class A+",
-        policyHolder: policyHolder || "policy holder test",
+  const insuranceWithEligibilityResults = await Promise.allSettled(
+    _insuranceData.map((cchiItem) =>
+      createCChiItemWithEligibility({
         authorization,
         organization_no,
-        customer_no: __customer_no,
-        customer_group_no: __customer_group_no,
-        insuranceCompanyId,
+        beneficiaryKey,
         clinicalEntityNo,
+        customer_no,
+        customer_group_no,
+        cchiItem,
+        genderCodeFromBody,
+        insuranceCompanyIdFromBody,
+        dateOfBirthFromBody,
+        beneficiaryNumberFromBody,
+        mobileFromBody,
+        firstName,
+        secondName,
+        thirdName,
+        lastName,
         printFolderName,
-        originalApiParams: body,
-        printValues,
-      });
+      })
+    )
+  );
 
-    const { outcome, disposition } = frontEndEligibilityData;
-    const isMemberidNotValid = (disposition || "").includes(
-      "Member ID is invalid"
-    );
+  const cchiRequestHasOnlyOneRecord =
+    insuranceWithEligibilityResults.length === 1;
 
-    return {
-      data: {
-        ...baseResponse,
-        isErrorOutcome: outcome === "error",
-        notificationError: isMemberidNotValid
-          ? "Please enter card no then make a new request"
-          : loggerMessage || "",
-        frontEndEligibilityData,
-      },
-    };
-  }
+  const result = insuranceWithEligibilityResults.reduce(
+    (acc, { value }) => {
+      if (value) {
+        const {
+          nextCchiItem,
+          error,
+          isErrorOutcome,
+          customerNo,
+          customerGroupNo,
+          hasPatientFileNo,
+          hasExsysCustomersList,
+          ...otherValues
+        } = value;
 
-  return {
-    data: baseResponse,
+        if (!acc.openPmiModal) {
+          acc.openPmiModal = hasPatientFileNo;
+        }
+
+        if (!acc.hasExsysCustomersList) {
+          acc.hasExsysCustomersList = hasExsysCustomersList;
+        }
+
+        if (!acc.hasAnyErrors) {
+          acc.hasAnyErrors = isErrorOutcome || !!error;
+        }
+
+        if (!acc.moreOptionsShown && error) {
+          acc.moreOptionsShown = error.includes("card no");
+        }
+
+        if (cchiRequestHasOnlyOneRecord) {
+          acc.customerNo = customerNo;
+          acc.customerGroupNo = customerGroupNo;
+        }
+
+        acc.insuranceWithEligibilityData.push({
+          ...nextCchiItem,
+          error,
+          isErrorOutcome,
+          customerNo,
+          customerGroupNo,
+          hasPatientFileNo,
+          hasExsysCustomersList,
+          ...otherValues,
+        });
+      }
+
+      return acc;
+    },
+    {
+      insuranceWithEligibilityData: [],
+      openPmiModal: false,
+      hasExsysCustomersList: false,
+      hasAnyErrors: false,
+      customerNo: undefined,
+      customerGroupNo: undefined,
+      moreOptionsShown: false,
+    }
+  );
+
+  const finalResult = {
+    errorCode,
+    errorDescription,
+    transactionName,
+    cchiOriginalResults,
+    requestIndex,
+    cchiRequestHasOnlyOneRecord,
+    ...result,
   };
+
+  await writeResultFile({
+    folderName: printFolderName,
+    data: finalResult,
+  });
+
+  return finalResult;
 });
