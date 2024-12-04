@@ -780,6 +780,7 @@ const createNphiesClaimData = ({
                           true
                         ),
                   },
+
                   !isPrescriberRequestData && {
                     system: `${siteUrl}/${nphiesProductCodeType}`,
                     code: customerProductCode || nphiesProductCode,
@@ -789,7 +790,9 @@ const createNphiesClaimData = ({
                     ),
                   },
                 ].filter(Boolean),
+                // "text": ""
               },
+              // "servicedPeriod": { "start": "2024-10-21", "end": "2024-10-21" },
               ...(tooth
                 ? {
                     bodySite: {

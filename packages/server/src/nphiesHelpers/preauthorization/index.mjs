@@ -150,6 +150,9 @@ const createNaphiesPreauthRequestFullData = ({
   extensionIntendedLengthOfStayDisplay,
   dischargeDispositionCode,
   dischargeDispositionDisplay,
+  encounterReAdmissionCode,
+  encounterReAdmissionDisplay,
+  encounterReAdmissionSystemUrl,
   approvalPrescriptionId,
 }) => {
   const isClaimRequest = message_event.includes("claim-request");
@@ -397,6 +400,9 @@ const createNaphiesPreauthRequestFullData = ({
           extensionIntendedLengthOfStayDisplay,
           dischargeDispositionCode,
           dischargeDispositionDisplay,
+          encounterReAdmissionCode,
+          encounterReAdmissionDisplay,
+          encounterReAdmissionSystemUrl,
           providerPatientUrl,
           patientFileNo: patient_file_no,
           organizationReference: provider_organization,

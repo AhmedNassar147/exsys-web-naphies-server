@@ -77,6 +77,9 @@ const createNphiesEncounter = ({
   extensionIntendedLengthOfStayDisplay,
   dischargeDispositionCode,
   dischargeDispositionDisplay,
+  encounterReAdmissionCode,
+  encounterReAdmissionSystemUrl,
+  encounterReAdmissionDisplay,
 }) => {
   const showHospitalizationSection = [
     extensionDischargeSpecialtyCode,
@@ -174,7 +177,7 @@ const createNphiesEncounter = ({
       identifier: [
         {
           system: encounterUrl.replace(ENCOUNTER, ENCOUNTER.toLowerCase()),
-          value: `${ENCOUNTER}${requestId}`,
+          value: requestId,
         },
       ],
       status: encounterStatus,
@@ -246,32 +249,39 @@ const createNphiesEncounter = ({
                 },
               },
             ].filter(Boolean),
-            ...(!!encounterAdmitSourceCode
+            admitSource: !!encounterAdmitSourceCode
               ? {
-                  admitSource: {
-                    coding: [
-                      {
-                        system: `${BASE_CODE_SYS_URL}/${ADMISSION_SOURCE}`,
-                        code: encounterAdmitSourceCode,
-                        display: encounterAdmitSourceDisplay,
-                      },
-                    ],
-                  },
+                  coding: [
+                    {
+                      system: `${BASE_CODE_SYS_URL}/${ADMISSION_SOURCE}`,
+                      code: encounterAdmitSourceCode,
+                      display: encounterAdmitSourceDisplay,
+                    },
+                  ],
                 }
-              : null),
-            ...(!!dischargeDispositionCode
+              : undefined,
+            dischargeDisposition: !!dischargeDispositionCode
               ? {
-                  dischargeDisposition: {
-                    coding: [
-                      {
-                        system: `${BASE_CODE_SYS_URL}/${EXTENSION_DISCHARGE_DISPOSITION}`,
-                        code: dischargeDispositionCode,
-                        display: dischargeDispositionDisplay,
-                      },
-                    ],
-                  },
+                  coding: [
+                    {
+                      system: `${BASE_CODE_SYS_URL}/${EXTENSION_DISCHARGE_DISPOSITION}`,
+                      code: dischargeDispositionCode,
+                      display: dischargeDispositionDisplay,
+                    },
+                  ],
                 }
-              : null),
+              : undefined,
+            reAdmission: encounterReAdmissionCode
+              ? {
+                  coding: [
+                    {
+                      system: encounterReAdmissionSystemUrl,
+                      code: encounterReAdmissionCode,
+                      display: encounterReAdmissionDisplay,
+                    },
+                  ],
+                }
+              : undefined,
             origin: {
               reference: `${providerOrganizationUrl}/${organizationReference}`,
             },
