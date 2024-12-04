@@ -243,7 +243,7 @@ export default checkPatientInsuranceMiddleware(async (body) => {
     customerNo,
     customerGroupNo,
     dateOfBirth,
-    patientCardNo: exsysPatientCardNo,
+    // patientCardNo: exsysPatientCardNo,
   } = exsysCchiPatientData;
 
   const __customer_no = customer_no || customerNo || "";
@@ -297,10 +297,10 @@ export default checkPatientInsuranceMiddleware(async (body) => {
   }
 
   const patientFileNoOrMemberId =
-    beneficiaryNumber ||
-    beneficiaryNumberFromBody ||
-    exsysPatientCardNo ||
-    beneficiaryKey;
+    beneficiaryNumber || beneficiaryNumberFromBody || beneficiaryKey;
+
+  // const patientFileNoOrMemberId =
+  // beneficiaryNumber || beneficiaryNumberFromBody || exsysPatientCardNo || beneficiaryKey;
 
   if (shouldCallEligibilityApi) {
     const [
