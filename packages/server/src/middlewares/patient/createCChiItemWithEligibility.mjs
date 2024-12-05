@@ -166,7 +166,7 @@ const createCChiItemWithEligibility = async ({
   if (!shouldCallEligibilityApi) {
     return {
       ...baseResponse,
-      error: "Please select customer, customer-group and add card no",
+      error: "Please select customer, customer-group or card no",
     };
   }
 
