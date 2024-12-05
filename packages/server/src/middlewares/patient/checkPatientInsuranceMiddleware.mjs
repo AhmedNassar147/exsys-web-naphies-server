@@ -4,6 +4,7 @@
  *
  */
 import { writeResultFile, isArrayHasData } from "@exsys-web-server/helpers";
+import checkPatientInsuranceMiddleware from "../../helpers/createBaseExpressMiddleware.mjs";
 import createCChiItemWithEligibility from "./createCChiItemWithEligibility.mjs";
 import checkNphiesPatientInsurance from "../../exsysHelpers/checkNphiesPatientInsurance.mjs";
 
@@ -52,14 +53,18 @@ export default checkPatientInsuranceMiddleware(async (body) => {
   const _insuranceData = isArrayHasData(insurance) ? insurance : [{}];
 
   const insuranceWithEligibilityResults = await Promise.allSettled(
-    _insuranceData.map((cchiItem) =>
+    _insuranceData.map((cchiItem, index) =>
       createCChiItemWithEligibility({
         authorization,
         organization_no,
         beneficiaryKey,
         clinicalEntityNo,
-        customer_no,
-        customer_group_no,
+        ...(requestIndex === index
+          ? {
+              customer_no,
+              customer_group_no,
+            }
+          : null),
         cchiItem,
         genderCodeFromBody,
         insuranceCompanyIdFromBody,
@@ -93,7 +98,7 @@ export default checkPatientInsuranceMiddleware(async (body) => {
         } = value;
 
         if (!acc.openPmiModal) {
-          acc.openPmiModal = hasPatientFileNo;
+          acc.openPmiModal = !hasPatientFileNo;
         }
 
         if (!acc.hasExsysCustomersList) {
@@ -139,19 +144,23 @@ export default checkPatientInsuranceMiddleware(async (body) => {
   );
 
   const finalResult = {
-    errorCode,
-    errorDescription,
-    transactionName,
-    cchiOriginalResults,
-    requestIndex,
-    cchiRequestHasOnlyOneRecord,
-    ...result,
+    data: {
+      errorCode,
+      errorDescription,
+      transactionName,
+      cchiOriginalResults,
+      requestIndex,
+      cchiRequestHasOnlyOneRecord,
+      ...result,
+    },
   };
 
-  await writeResultFile({
-    folderName: printFolderName,
-    data: finalResult,
-  });
+  if (printValues) {
+    await writeResultFile({
+      folderName: printFolderName,
+      data: finalResult,
+    });
+  }
 
   return finalResult;
 });
