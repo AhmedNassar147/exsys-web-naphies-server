@@ -2,3 +2,4 @@
 /results
 /config.json
 /certs
+/packages/*/node_modules
