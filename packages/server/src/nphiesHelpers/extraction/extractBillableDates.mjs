@@ -3,10 +3,7 @@
  * Helper: `extractBillableDates`.
  *
  */
-import {
-  formatDateToNativeDateParts,
-  isArrayHasData,
-} from "@exsys-web-server/helpers";
+import { formatDateToNativeDateParts } from "@exsys-web-server/helpers";
 
 const dateFormatOptions = { stringifyReturnedDate: true };
 

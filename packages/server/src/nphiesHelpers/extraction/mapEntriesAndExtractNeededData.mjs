@@ -22,6 +22,7 @@ import extractEligibilityResponseData from "./extractEligibilityResponseData.mjs
 import extractClaimRequestData from "./extractClaimRequestData.mjs";
 import extractClaimResponseData from "./extractClaimResponseData.mjs";
 import extractPreauthAndClaimPollTaskData from "./extractPreauthAndClaimPollTaskData.mjs";
+import extractEncounterRequestData from "./extractEncounterRequestData.mjs";
 import extractAuthPollBundleEntry from "./extractAuthPollBundleEntry.mjs";
 import extractExsysCommunicationEntryData from "./extractExsysCommunicationEntryData.mjs";
 import { NPHIES_REQUEST_TYPES } from "../../constants.mjs";
@@ -43,6 +44,7 @@ const extractionFunctionsByRequestMap = {
     Patient: extractPatientData,
     Coverage: extractCoverageData,
     Organization: extractOrganizationsData,
+    Encounter: extractEncounterRequestData,
   },
   [NPHIES_REQUEST_TYPES.PREAUTH]: {
     MessageHeader: extractMessageHeaderData(),
@@ -51,6 +53,7 @@ const extractionFunctionsByRequestMap = {
     Patient: extractPatientData,
     Coverage: extractCoverageData,
     Organization: extractOrganizationsData,
+    Encounter: extractEncounterRequestData,
   },
   [NPHIES_REQUEST_TYPES.POLL]: {
     MessageHeader: extractMessageHeaderData(),

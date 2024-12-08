@@ -17,7 +17,10 @@ const formatDate = (date, ignoreTime) =>
     ignoreTime,
   });
 
-const extractClaimResponseExtensions = (extension) => {
+const extractClaimResponseExtensions = (
+  extension,
+  shouldNotLowerCaseInitials
+) => {
   if (isArrayHasData(extension)) {
     return extension.reduce(
       (
@@ -33,6 +36,7 @@ const extractClaimResponseExtensions = (extension) => {
           valueString,
           valueReference,
           valueDate,
+          valueDateTime,
         }
       ) => {
         const { code, display } =
@@ -43,13 +47,21 @@ const extractClaimResponseExtensions = (extension) => {
           return acc;
         }
 
-        const lastPartValue = getLastPartOfUrl(url, toCamelCase);
+        const lastPartValue = getLastPartOfUrl(url, (value) =>
+          toCamelCase(value, shouldNotLowerCaseInitials)
+        );
 
         if (lastPartValue) {
           const hasValueInt = typeof valuePositiveInt === "number";
           const hasValueBoolean = typeof valueBoolean === "boolean";
 
           let finalValue = [display, code].filter(Boolean).join("/");
+
+          console.log("lastPartValue", {
+            display,
+            code,
+            lastPartValue,
+          });
 
           if (hasValueInt) {
             finalValue = valuePositiveInt;
@@ -68,6 +80,10 @@ const extractClaimResponseExtensions = (extension) => {
 
           if (valueDate) {
             finalValue = formatDate(valueDate);
+          }
+
+          if (valueDateTime) {
+            finalValue = formatDate(valueDateTime, false);
           }
 
           if (valueIdentifier) {
