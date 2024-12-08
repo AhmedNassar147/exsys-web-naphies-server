@@ -6,11 +6,7 @@
 import { join } from "path";
 import { exec, spawn } from "child_process";
 import { promisify } from "util";
-import {
-  createCmdMessage,
-  isWindowsPlatform,
-  delayProcess,
-} from "@exsys-web-server/helpers";
+import { createCmdMessage, isWindowsPlatform } from "@exsys-web-server/helpers";
 import checkIfPackageAlreadyLinkedElseLink from "./checkIfPackageAlreadyLinkedElseLink.mjs";
 import { PACKAGE_NAME } from "./constants.mjs";
 
@@ -47,9 +43,12 @@ const asyncExec = promisify(exec);
     `@exsys-web-server/${PACKAGE_NAME}`,
   ].filter(Boolean);
 
+  const __globalNpmBinsFolderPath = join(globalNpmBinsFolderPath, PACKAGE_NAME);
+  const __globalNpmModulesFolder = join(...globalNpmModulesFolderPathSegments);
+
   await checkIfPackageAlreadyLinkedElseLink({
-    globalNpmBinsFolderPath: join(globalNpmBinsFolderPath, PACKAGE_NAME),
-    globalNpmModulesFolder: join(...globalNpmModulesFolderPathSegments),
+    globalNpmBinsFolderPath: __globalNpmBinsFolderPath,
+    globalNpmModulesFolder: __globalNpmModulesFolder,
   });
 
   if (isWindowsOs) {
