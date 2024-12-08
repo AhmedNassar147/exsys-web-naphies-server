@@ -1,4 +1,2 @@
 #!/usr/bin/env node
-(async () => {
-  await import("@exsys-web-server/server");
-})();
+(async () => await import("@exsys-web-server/server"))();
