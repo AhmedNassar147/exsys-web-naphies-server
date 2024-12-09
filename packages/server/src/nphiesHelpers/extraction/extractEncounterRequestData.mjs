@@ -96,9 +96,28 @@ const extractEncounterRequestData = ({ entryGroupArray }) => {
     true
   );
 
+  const encounterHospitalization = {
+    admitSourceCode,
+    admitSourceUrl,
+    admitSourceDisplay,
+    admitSourceText,
+    dispositionCode,
+    dispositionUrl,
+    dispositionDisplay,
+    dispositionText,
+    reAdmissionCode,
+    reAdmissionUrl,
+    reAdmissionDisplay,
+    reAdmissionText,
+    originId,
+    extensions: isObjectHasData(extensionOthersValues)
+      ? extensionOthersValues
+      : undefined,
+  };
+
   return {
     encounterRequestId: id,
-    globalExtensionsValues: isObjectHasData(globalExtensionsValues)
+    encounterGlobalExtensionsValues: isObjectHasData(globalExtensionsValues)
       ? globalExtensionsValues
       : undefined,
     encounterIdentifierId,
@@ -115,24 +134,7 @@ const extractEncounterRequestData = ({ entryGroupArray }) => {
     encounterPeriodStart: formatDateToNativeDateParts(start, dateOptions),
     encounterPeriodEnd: formatDateToNativeDateParts(end, dateOptions),
     encounterServiceProviderId,
-    hospitalization: {
-      admitSourceCode,
-      admitSourceUrl,
-      admitSourceDisplay,
-      admitSourceText,
-      dispositionCode,
-      dispositionUrl,
-      dispositionDisplay,
-      dispositionText,
-      reAdmissionCode,
-      reAdmissionUrl,
-      reAdmissionDisplay,
-      reAdmissionText,
-      originId,
-      extensions: isObjectHasData(extensionOthersValues)
-        ? extensionOthersValues
-        : undefined,
-    },
+    encounterHospitalization,
   };
 };
 
