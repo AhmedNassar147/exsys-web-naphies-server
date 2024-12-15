@@ -214,10 +214,15 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
   }
 
   if (hasErrorMessageOrFailed) {
-    const errorMessage =
-      error_message || exsysError || validationError || hasErrorMessageOrFailed
-        ? "no organization no found"
-        : `error when calling exsys \`${EXSYS_API_IDS[exsysQueryApiId]}\` API`;
+    const hasAnyError =
+      error_message || exsysError || validationError || hasErrorMessageOrFailed;
+    const currentError = error_message || exsysError || validationError;
+
+    const errorMessage = hasAnyError
+      ? currentError
+        ? currentError
+        : "no organization no found"
+      : `error when calling exsys \`${EXSYS_API_IDS[exsysQueryApiId]}\` API`;
 
     if (exsysSaveApiId && (!!validationError ? shouldSaveDataToExsys : true)) {
       const errorSaveParams = createExsysSaveApiParams
