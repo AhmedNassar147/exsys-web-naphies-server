@@ -57,12 +57,6 @@ const extractClaimResponseExtensions = (
 
           let finalValue = [display, code].filter(Boolean).join("/");
 
-          console.log("lastPartValue", {
-            display,
-            code,
-            lastPartValue,
-          });
-
           if (hasValueInt) {
             finalValue = valuePositiveInt;
           }
