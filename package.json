@@ -31,6 +31,7 @@
     "kafaat": "yarn start client=kafaat --production --port=4200 --exsys-base-url=http://172.16.10.64",
     "elbadr_shqia": "yarn start client=elbadr_shqia --production --port=4200 --exsys-base-url=http://37.224.112.9",
     "fyhaa": "yarn start client=fyhaa --production --port=4960 --exsys-base-url=http://94.97.253.213",
+    "fyhaa_rfha": "yarn start client=fyhaa_rfha --production --port=4200 --exsys-base-url=http://192.168.10.20",
     "khaleej": "yarn start client=khaleej --production --port=4700 --exsys-base-url=http://10.100.0.17",
     "// tadawi": "yarn start client=tadawi",
     "tadawi": "yarn start client=tadawi --production --exsys-base-url=http://192.168.1.4",

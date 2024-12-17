@@ -86,6 +86,7 @@ export const CLIENT_NAMES = {
   kafaat: "kafaat",
   elbadr_shqia: "elbadr_shqia",
   fyhaa: "fyhaa",
+  fyhaa_rfha: "fyhaa_rfha",
   khaleej: "khaleej",
 };
 
