@@ -5,6 +5,7 @@
  */
 import createNphiesRequest from "../../helpers/createNphiesRequest.mjs";
 import mapEntriesAndExtractNeededData from "../extraction/mapEntriesAndExtractNeededData.mjs";
+import convertSentAttachmentBase64ToFileUrl from "./convertSentAttachmentBase64ToFileUrl.mjs";
 
 const callNphiesAPIAndCollectResults = ({
   exsysResultsData,
@@ -20,6 +21,9 @@ const callNphiesAPIAndCollectResults = ({
 
     const nphiesRequestPayload = createNphiesRequestPayloadFn(exsysResultsData);
 
+    const convertedNphiesRequestPayload =
+      convertSentAttachmentBase64ToFileUrl(nphiesRequestPayload);
+
     if (checkPayloadNphiesSize) {
       const sizeInBytes = Buffer.byteLength(
         JSON.stringify(nphiesRequestPayload)
@@ -31,7 +35,7 @@ const callNphiesAPIAndCollectResults = ({
           isSuccess: false,
           ...(otherPrintValues || null),
           exsysResultsData,
-          nodeServerDataSentToNaphies: nphiesRequestPayload,
+          nodeServerDataSentToNaphies: convertedNphiesRequestPayload,
         };
 
         resolve({
@@ -57,7 +61,7 @@ const callNphiesAPIAndCollectResults = ({
       ...restResult,
       ...(otherPrintValues || null),
       exsysResultsData,
-      nodeServerDataSentToNaphies: nphiesRequestPayload,
+      nodeServerDataSentToNaphies: convertedNphiesRequestPayload,
       nphiesResponse,
     };
 

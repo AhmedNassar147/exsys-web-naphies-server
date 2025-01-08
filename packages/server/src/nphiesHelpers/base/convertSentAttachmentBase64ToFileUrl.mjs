@@ -3,7 +3,7 @@
  * Helper: `convertSentAttachmentBase64ToFileUrl`.
  *
  */
-import { isArrayHasData, isObjectHasData } from "@exsys-web-server/helpers";
+import { isArrayHasData } from "@exsys-web-server/helpers";
 import extractContentAttachment from "../extraction/extractContentAttachment.mjs";
 
 const attachmentKeyToItemKey = {
@@ -11,7 +11,7 @@ const attachmentKeyToItemKey = {
   payload: "contentAttachment",
 };
 
-const convertItemEntry = (attachmentKey) => (entry) => {
+const convertItemEntry = (entry, attachmentKey) => {
   if (entry) {
     const { resource, ...otherEntryData } = entry;
 
@@ -48,24 +48,31 @@ const convertItemEntry = (attachmentKey) => (entry) => {
   return entry;
 };
 
-const convertSentAttachmentBase64ToFileUrl = (groupedNphiesRequestEntries) => {
-  if (
-    !groupedNphiesRequestEntries ||
-    !isObjectHasData(groupedNphiesRequestEntries)
-  ) {
-    return groupedNphiesRequestEntries;
+const convertSentAttachmentBase64ToFileUrl = (nodeServerDataSentToNaphies) => {
+  const { entry: requestEntries, ...otherData } =
+    nodeServerDataSentToNaphies || {};
+
+  if (isArrayHasData(requestEntries)) {
+    return {
+      ...otherData,
+      entry: requestEntries.map((entry) => {
+        const { resource } = entry || {};
+        const { resourceType } = resource || {};
+
+        if (resourceType === "Claim") {
+          return convertItemEntry(entry, "supportingInfo");
+        }
+
+        if (resourceType === "Communication") {
+          return convertItemEntry(entry, "payload");
+        }
+
+        return entry;
+      }),
+    };
   }
 
-  const { Claim, Communication, ...otherItem } = groupedNphiesRequestEntries;
-
-  return {
-    ...otherItem,
-    Claim: Claim ? Claim.map(convertItemEntry("supportingInfo")) : undefined,
-
-    Communication: Communication
-      ? Communication.map(convertItemEntry("payload"))
-      : undefined,
-  };
+  return nodeServerDataSentToNaphies;
 };
 
 export default convertSentAttachmentBase64ToFileUrl;

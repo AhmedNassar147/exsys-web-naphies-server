@@ -638,7 +638,6 @@ const createNphiesClaimData = ({
             },
           }
         : null),
-
       item: hasProductsData
         ? productsData.map(
             (

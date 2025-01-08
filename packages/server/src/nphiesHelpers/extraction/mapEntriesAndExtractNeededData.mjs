@@ -147,15 +147,14 @@ const mapEntriesAndExtractNeededData = ({
   const { entry, id, issue, timestamp } = nphiesResponse || {};
   const issueValues = formatNphiesResponseIssue(issue);
 
-  const {
-    id: mainRequestId,
-    entry: requestEntries,
-    timestamp: requestTimestamp,
-  } = nodeServerDataSentToNaphies || {};
+  const { id: mainRequestId, timestamp: requestTimestamp } =
+    nodeServerDataSentToNaphies || {};
 
-  const groupedNphiesRequestEntries = convertSentAttachmentBase64ToFileUrl(
-    makeEntriesGroupByResourceType(requestEntries)
-  );
+  const { entry: requestEntries } =
+    convertSentAttachmentBase64ToFileUrl(nodeServerDataSentToNaphies) || {};
+
+  const groupedNphiesRequestEntries =
+    makeEntriesGroupByResourceType(requestEntries);
 
   const groupedNphiesResponseEntries = makeEntriesGroupByResourceType(entry);
 
@@ -210,41 +209,10 @@ export default mapEntriesAndExtractNeededData;
 
 // const base = await findRootYarnWorkSpaces();
 // const [{ nodeServerDataSentToNaphies, nphiesResponse }] = await readJsonFile(
-//   // `${base}/results/new-arc/elg-poll.json`,
-//   // `${base}/results/new-arc/priorauth.json`,
-//   // `${base}/results/new-arc/priorauth2.json`,
-//   // `${base}/results/new-arc/advanced-authorization/28-09-2024.json`,
-//   // `${base}/results/new-arc/advanced-authorization/29-09-2024.json`,
-//   // `${base}/results/new-arc/claim-poll/--02-10-2024.json`,
-//   // `${base}/results/new-arc/claim-poll/--25-09-2024.json`,
-//   // `${base}/results/new-arc/claim-poll/02-10-2024.json`,
-//   // `${base}/results/new-arc/claim-poll/25-09-2024.json`,
-//   // `${base}/results/new-arc/claim-poll/26-09-2024.json`,
-//   // `${base}/results/new-arc/auth-poll/01-10-2024.json`,
-//   // `${base}/results/new-arc/auth-poll/02-10-2024.json`,
-//   // `${base}/results/new-arc/auth-poll/03-10-2024.json`,
-//   // `${base}/results/new-arc/auth-poll/25-09-2024.json`,
-//   // `${base}/results/new-arc/auth-poll/26-09-2024.json`,
-//   // `${base}/results/new-arc/auth-poll/29-09-2024.json`,
-//   // `${base}/results/new-arc/cancel-request/--25-09-2024.json`,
-//   // `${base}/results/new-arc/cancel-request/25-09-2024.json`,
-//   // `${base}/results/new-arc/empty-poll/empty1.json`,
-//   // `${base}/results/new-arc/empty-poll/empty2.json`,
-//   // `${base}/results/new-arc/empty-poll/empty3.json`,
-//   // `${base}/results/new-arc/empty-poll/empty4.json`,
-//   // `${base}/results/new-arc/empty-poll/empty4.json`,
-//   // `${base}/results/new-arc/statusCheck/priorauth-check-12-09-2024.json`,
-//   // `${base}/results/new-arc/statusCheck/--priorauth-check-12-09-2024.json`,
-//   // `${base}/results/new-arc/communication-poll/01-10-2024.json`,
-//   // `${base}/results/new-arc/communication-poll/03-10-2024.json`,
-//   // `${base}/results/new-arc/communication-poll/26-09-2024.json`,
-//   // `${base}/results/new-arc/communication-poll/28-09-2024.json`,
-//   // `${base}/results/new-arc/communication-poll/29-09-2024.json`,
-//   // `${base}/results/new-arc/communication-poll/30-09-2024.json`,
-// `${base}/results/blg/priorauth/aaf63ac6-3ccc-4aa5-a021-e98494e424b9/23-10-2024.json`,
-// `${base}/results/nphies-all.json`,
-// `${base}/results/Claim Professional with WPA Request.json`,
-//   `${base}/results/exsys/test2.json`,
+//   // `${base}/results/auth/exsys-sent-data(institutional).json`,
+//   `${base}/results/claims/exsys-sent-data(professional).json`,
+//   // `${base}/results/com/comm1.json`,
+//   //
 //   true
 // );
 
@@ -252,44 +220,9 @@ export default mapEntriesAndExtractNeededData;
 //   data: mapEntriesAndExtractNeededData({
 //     nodeServerDataSentToNaphies,
 //     nphiesResponse,
-// requestType: NPHIES_REQUEST_TYPES.ELIGIBILITY,
-// requestType: NPHIES_REQUEST_TYPES.PREAUTH,
-// requestType: NPHIES_REQUEST_TYPES.POLL,
-// requestType: NPHIES_REQUEST_TYPES.CANCEL,
-// requestType: NPHIES_REQUEST_TYPES.STATUS_CHECK,
-// requestType: NPHIES_REQUEST_TYPES.POLL,
-// requestType: NPHIES_REQUEST_TYPES.CLAIM,
-//   requestType: NPHIES_REQUEST_TYPES.COMMUNICATION,
-// }),
-// folderName: `new-arc/results/elg-poll`,
-// folderName: `new-arc/results/priorauth`,
-// folderName: `new-arc/results/priorauth2`,
-// folderName: `new-arc/results/claim-poll--02-10-2024.json`,
-// folderName: `new-arc/results/claim-poll--25-09-2024.json`,
-// folderName: `new-arc/results/claim-poll-25-09-2024.json`,
-// folderName: `new-arc/results/claim-poll-26-09-2024.json`,
-// folderName: `new-arc/results/auth-poll-01-10-2024.json`,
-// folderName: `new-arc/results/auth-poll-02-10-2024.json`,
-// folderName: `new-arc/results/auth-poll-03-10-2024.json`,
-// folderName: `new-arc/results/auth-poll-25-09-2024.json`,
-// folderName: `new-arc/results/auth-poll-26-09-2024.json`,
-// folderName: `new-arc/results/auth-poll-29-09-2024.json`,
-// folderName: `new-arc/results/cancel-request--25-09-2024.json`,
-// folderName: `new-arc/results/cancel-request-25-09-2024.json`,
-// folderName: `new-arc/results/empty-poll-empty1.json`,
-// folderName: `new-arc/results/empty-poll-empty2.json`,
-// folderName: `new-arc/results/empty-poll-empty3.json`,
-// folderName: `new-arc/results/empty-poll-empty4.json`,
-// folderName: `new-arc/results/statusCheck-priorauth-check-12-09-2024.json`,
-// folderName: `new-arc/results/statusCheck--priorauth-check-12-09-2024.json`,
-// folderName: `new-arc/results/communication-poll-01-10-2024.json`,
-// folderName: `new-arc/results/communication-poll-03-10-2024.json`,
-// folderName: `new-arc/results/communication-poll-26-09-2024.json`,
-// folderName: `new-arc/results/communication-poll-28-09-2024.json`,
-// folderName: `new-arc/results/communication-poll-29-09-2024.json`,
-// folderName: `new-arc/results/communication-poll-30-09-2024.json`,
-// folderName: `blg/priorauth/aaf63ac6-3ccc-4aa5-a021-e98494e424b9/23-10-2024-result`,
-// folderName: `nphies-all-result`,
-// folderName: `Claim Professional with WPA Request-RES`,
-// folderName: `exsys-test2`,
+//     requestType: NPHIES_REQUEST_TYPES.CLAIM,
+//   }),
+//   // folderName: `results/auth-institutional`,
+//   folderName: `results/claim-professional`,
+//   // folderName: `results/comm1`,
 // });
