@@ -51,3 +51,16 @@ const extractContentAttachment = (valueAttachment, appendFileUrlIfFound) => {
 };
 
 export default extractContentAttachment;
+
+// console.log(
+//   extractContentAttachment(
+//     {
+//       title:
+//         "application.pdf _FILE_URL_http%3A%2F%2F192.168.15.245%3A9090%2Fi%2Fexsys%2FnphiesSupportingInfo%2FS00124_02367%2F2180175198_024317_I00124-47792.pdf",
+//       creation: "2024-12-10",
+//       contentType: "image/jpeg",
+//       data: "ANCMSJMC",
+//     },
+//     true
+//   )
+// );

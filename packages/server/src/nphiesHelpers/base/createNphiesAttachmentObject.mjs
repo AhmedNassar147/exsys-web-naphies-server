@@ -22,7 +22,7 @@ const createNphiesAttachmentObject = ({
 
   _title = removeInvisibleCharactersFromString(_title);
 
-  if (fileUrl && title) {
+  if (fileUrl) {
     _title += ` ${ATTACHMENT_ANCHOR}${encodeURIComponent(fileUrl)}`;
   }
 
