@@ -28,6 +28,7 @@ export default checkPatientInsuranceMiddleware(async (body) => {
     mobileNumber: mobileFromBody,
     insuranceCompanyId: insuranceCompanyIdFromBody,
     requestIndex,
+    shouldCallEligibilityWithoutCchi,
   } = body;
 
   const clinicalEntityNo = __clinicalEntityNo || "";
@@ -50,7 +51,11 @@ export default checkPatientInsuranceMiddleware(async (body) => {
   const { insurance, errorCode, errorDescription, transactionName } =
     apiResults;
 
-  const _insuranceData = isArrayHasData(insurance) ? insurance : [{}];
+  let _insuranceData = isArrayHasData(insurance) ? insurance : [{}];
+
+  if (shouldCallEligibilityWithoutCchi) {
+    _insuranceData = [{}, ..._insuranceData];
+  }
 
   const insuranceWithEligibilityResults = await Promise.allSettled(
     _insuranceData.map((cchiItem, index) =>
@@ -59,7 +64,7 @@ export default checkPatientInsuranceMiddleware(async (body) => {
         organization_no,
         beneficiaryKey,
         clinicalEntityNo,
-        ...(requestIndex === index
+        ...(requestIndex === index || shouldCallEligibilityWithoutCchi
           ? {
               customer_no,
               customer_group_no,
