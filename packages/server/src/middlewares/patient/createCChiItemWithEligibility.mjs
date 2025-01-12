@@ -151,8 +151,11 @@ const createCChiItemWithEligibility = async ({
     genderCode: genderCode || __genderCode,
     beneficiaryNumber,
     identityNumber: _identityNumber,
-    insuranceCompanyEN: insuranceCompanyEN || customerGroupName,
+    insuranceCompanyEN:
+      insuranceCompanyEN || customerGroupName || beneficiaryKey,
   };
+
+  console.log("exsysCchiPatientData", exsysCchiPatientData);
 
   const baseResponse = {
     customerNo: __customer_no,
