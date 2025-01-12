@@ -155,8 +155,6 @@ const createCChiItemWithEligibility = async ({
       insuranceCompanyEN || customerGroupName || beneficiaryKey,
   };
 
-  console.log("exsysCchiPatientData", exsysCchiPatientData);
-
   const baseResponse = {
     customerNo: __customer_no,
     customerGroupNo: __customer_group_no,
