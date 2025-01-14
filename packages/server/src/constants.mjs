@@ -332,6 +332,8 @@ export const NPHIES_BASE_CODE_TYPES = {
   PHARM_SUBSTITUTE: "pharmacist-substitute",
   EXTENSION_MATERNITY: "extension-maternity",
   EXTENSION_OCCUPATION: "extension-occupation",
+  EXTENSION_NATIONALITY: "extension-nationality",
+  EXTENSION_PATIENT_RELIGION: "extension-patient-religion",
   EXTENSION_ENCOUNTER: "extension-encounter",
   EXTENSION_PROVIDER_TYPE: "extension-provider-type",
   EXTENSION_ADMISSION_SPECIALTY: "extension-admissionSpecialty",
@@ -381,8 +383,8 @@ export const SUPPORT_INFO_KEY_NAMES = {
   vital_sign_height: "vital-sign-height",
   icu_hours: "icu-hours",
   days_supply: "days-supply",
-  lab_test: "lab-test",
   ventilation_hours: "ventilation-hours",
+  lab_test: "lab-test",
   morphology: "morphology",
 };
 

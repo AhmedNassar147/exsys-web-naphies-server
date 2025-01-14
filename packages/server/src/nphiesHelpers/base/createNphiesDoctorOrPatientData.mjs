@@ -3,7 +3,11 @@
  * Helpers: `createNphiesDoctorOrPatientData`.
  *
  */
-import { capitalizeFirstLetter, reverseDate } from "@exsys-web-server/helpers";
+import {
+  capitalizeFirstLetter,
+  isArrayHasData,
+  reverseDate,
+} from "@exsys-web-server/helpers";
 import createNphiesBaseResource from "./createNphiesBaseResource.mjs";
 import {
   NPHIES_BASE_PROFILE_TYPES,
@@ -30,6 +34,8 @@ const {
   KAS_EXT_ADMIN_GENDER,
   KSA_ADMIN_GENDER,
   EXTENSION_OCCUPATION,
+  EXTENSION_NATIONALITY,
+  EXTENSION_PATIENT_RELIGION,
 } = NPHIES_BASE_CODE_TYPES;
 
 const passportData = {
@@ -61,6 +67,7 @@ const createNphiesDoctorOrPatientData = ({
   staffPhone,
   gender,
   religion,
+  nationalityCode,
   occupationCode,
   patientBirthdate,
   patientMaritalStatus,
@@ -98,6 +105,42 @@ const createNphiesDoctorOrPatientData = ({
     );
   }
 
+  const extensions = [
+    !!occupationCode && {
+      url: `${BASE_PROFILE_URL}/${EXTENSION_OCCUPATION}`,
+      valueCodeableConcept: {
+        coding: [
+          {
+            system: `${BASE_CODE_SYS_URL}/occupation`,
+            code: occupationCode,
+          },
+        ],
+      },
+    },
+    !!nationalityCode && {
+      url: `${EXTENSION_NATIONALITY}/${EXTENSION_OCCUPATION}`,
+      valueCodeableConcept: {
+        coding: [
+          {
+            system: "https://hl7.org/fhir/valueset-iso3166-1-3.html",
+            code: nationalityCode,
+          },
+        ],
+      },
+    },
+    !!religion && {
+      url: `${BASE_PROFILE_URL}/${EXTENSION_PATIENT_RELIGION}`,
+      valueCodeableConcept: {
+        coding: [
+          {
+            system: `${BASE_CODE_SYS_URL}/religion`,
+            code: religion,
+          },
+        ],
+      },
+    },
+  ].filter(Boolean);
+
   return {
     fullUrl: `${providerDoctorOrPatientUrl}/${patientOrDoctorId}`,
     resource: {
@@ -106,23 +149,7 @@ const createNphiesDoctorOrPatientData = ({
         profileType: isPatient ? PROFILE_PATIENT : PROFILE_PRACTITIONER,
         uuid: patientOrDoctorId,
       }),
-      ...(occupationCode
-        ? {
-            extension: [
-              {
-                url: `${BASE_PROFILE_URL}/${EXTENSION_OCCUPATION}`,
-                valueCodeableConcept: {
-                  coding: [
-                    {
-                      system: `${BASE_CODE_SYS_URL}/occupation`,
-                      code: occupationCode,
-                    },
-                  ],
-                },
-              },
-            ],
-          }
-        : null),
+      extension: isArrayHasData(extensions) ? extensions : undefined,
       identifier: [
         {
           type: {
