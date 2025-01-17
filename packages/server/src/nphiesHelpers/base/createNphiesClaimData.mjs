@@ -284,13 +284,17 @@ const createNphiesClaimData = ({
     ? profileType.replace("priorauth", "claim")
     : profileType;
 
-  const identifierUrlLastPart = isPrescriberRequestData
+  let identifierUrlLastPart = isPrescriberRequestData
     ? "prescription"
     : !isClaimRequest
     ? "authorization"
     : referalIdentifier
     ? "authorization"
     : "claim";
+
+  if (relatedParentClaimIdentifier && isClaimRequest) {
+    identifierUrlLastPart = "claim";
+  }
 
   const useValue = isPrescriberRequestData
     ? "predetermination"
