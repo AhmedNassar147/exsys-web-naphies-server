@@ -30,10 +30,11 @@ const makeNphiesGenderName = (gender) =>
   gender ? (gender === "1" ? "male" : "female") : "";
 
 const createCChiItemWithEligibility = async ({
+  beneficiaryKey,
+  isReferral,
   authorization,
   organization_no,
   clinicalEntityNo,
-  beneficiaryKey,
   customer_no,
   customer_group_no,
   cchiItem,
@@ -208,6 +209,7 @@ const createCChiItemWithEligibility = async ({
     customer_group_no: __customer_group_no || "",
     insurance_company: insuranceCompanyId || "",
     clinicalEntityNo: clinicalEntityNo,
+    isReferral: isReferral ? "Y" : "N",
   };
 
   const { printData, resultData } =

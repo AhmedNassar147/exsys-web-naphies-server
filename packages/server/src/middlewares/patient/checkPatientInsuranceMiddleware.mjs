@@ -13,6 +13,7 @@ export default checkPatientInsuranceMiddleware(async (body) => {
     authorization,
     printValues = false,
     beneficiaryKey,
+    isReferral,
     systemType: _systemType,
     organization_no,
     customer_no,
@@ -63,6 +64,7 @@ export default checkPatientInsuranceMiddleware(async (body) => {
         authorization,
         organization_no,
         beneficiaryKey,
+        isReferral,
         clinicalEntityNo,
         ...(requestIndex === index || shouldCallEligibilityWithoutCchi
           ? {
