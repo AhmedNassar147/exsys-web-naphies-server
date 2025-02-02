@@ -673,160 +673,165 @@ const createNphiesClaimData = ({
                 medicationStrength,
               },
               index
-            ) => ({
-              sequence,
-              careTeamSequence: getSequences(doctorsData, doctorsIds, "id"),
-              diagnosisSequence: getSequences(
-                diagnosisData,
-                diagnosisIds,
-                "diagCode"
-              ),
-              informationSequence: hasSupportingInfoData
-                ? getSupportingInfoSequences(supportingInfo, days_supply_id)
-                : undefined,
-              extension: [
-                {
-                  url: `${BASE_PROFILE_URL}/${EXTENSION_PACKAGE}`,
-                  valueBoolean: extensionPackage === "Y",
-                },
-                !!(episodeInvoiceNo || patientInvoiceNo) && {
-                  url: `${BASE_PROFILE_URL}/${EXTENSION_PATIENT_INVOICE}`,
-                  valueIdentifier: {
-                    system: `${siteUrl}/patientInvoice`,
-                    value: `Invc-${
-                      patientInvoiceNo || episodeInvoiceNo
-                    }/T_${Date.now()}`,
-                  },
-                },
-                !!pharmacistSelectionReason && {
-                  url: `${BASE_PROFILE_URL}/${EXTENSION_MEDS_SELECTION_REASON}`,
-                  valueCodeableConcept: {
-                    coding: [
-                      {
-                        system: `${BASE_CODE_SYS_URL}/${SELECTION_REASON}`,
-                        code: pharmacistSelectionReason,
-                        display: pharmacistSelectionReason,
-                      },
-                    ],
-                  },
-                },
-                !!pharmacistSubstitute && {
-                  url: `${BASE_PROFILE_URL}/${EXTENSION_PHARM_SUBSTITUTE}`,
-                  valueCodeableConcept: {
-                    coding: [
-                      {
-                        system: `${BASE_CODE_SYS_URL}/${PHARM_SUBSTITUTE}`,
-                        code: pharmacistSubstitute,
-                      },
-                    ],
-                  },
-                },
-                {
-                  url: `${BASE_PROFILE_URL}/${EXTENSION_MATERNITY}`,
-                  valueBoolean: isMaternity === "Y" ? true : false,
-                },
-                ...(isPrescriberRequestData
-                  ? [
-                      {
-                        url: `${BASE_PROFILE_URL}/${EXTENSION_MEDICATION_REQUEST}`,
-                        valueReference: {
-                          reference: `${medicationRequestUrl}/${medicationRequestIds[index]}`,
-                        },
-                      },
-                      {
-                        url: `${BASE_PROFILE_URL}/${EXTENSION_STRENGTH}`,
-                        valueString: medicationStrength,
-                      },
-                    ]
-                  : [
-                      !!scientificCodes && {
-                        url: `${BASE_PROFILE_URL}/${EXTENSION_PRESCRIBED_MEDS}`,
-                        valueCodeableConcept: {
-                          coding: [
-                            {
-                              system: `${BASE_CODE_SYS_URL}/${SCIENTIFIC_CODES}`,
-                              code: scientificCodes,
-                              display: scientificCodesName,
-                            },
-                          ],
-                        },
-                      },
-                      {
-                        url: `${BASE_PROFILE_URL}/${EXTENSION_TAX}`,
-                        valueMoney: {
-                          value: extensionTax || 0,
-                          currency,
-                        },
-                      },
-                      {
-                        url: `${BASE_PROFILE_URL}/${EXTENSION_PATIENT_SHARE}`,
-                        valueMoney: {
-                          value: extensionPatientShare,
-                          currency,
-                        },
-                      },
-                    ]),
-              ].filter(Boolean),
-              productOrService: {
-                coding: [
-                  {
-                    system: isPrescriberRequestData
-                      ? `${BASE_CODE_SYS_URL}/${SCIENTIFIC_CODES}`
-                      : `${BASE_CODE_SYS_URL}/${nphiesProductCodeType}`,
-                    code: isPrescriberRequestData
-                      ? scientificCodes
-                      : nphiesProductCode,
-                    display: isPrescriberRequestData
-                      ? undefined
-                      : removeInvisibleCharactersFromString(
-                          nphiesProductName,
-                          true
-                        ),
-                  },
+            ) => {
+              const hasSecondProductSection =
+                !isPrescriberRequestData &&
+                nphiesProductCodeType !== "moh-category";
 
-                  !isPrescriberRequestData && {
-                    system: `${siteUrl}/${nphiesProductCodeType}`,
-                    code: customerProductCode || nphiesProductCode,
-                    display: removeInvisibleCharactersFromString(
-                      customerProductName || nphiesProductName,
-                      true
-                    ),
+              return {
+                sequence,
+                careTeamSequence: getSequences(doctorsData, doctorsIds, "id"),
+                diagnosisSequence: getSequences(
+                  diagnosisData,
+                  diagnosisIds,
+                  "diagCode"
+                ),
+                informationSequence: hasSupportingInfoData
+                  ? getSupportingInfoSequences(supportingInfo, days_supply_id)
+                  : undefined,
+                extension: [
+                  {
+                    url: `${BASE_PROFILE_URL}/${EXTENSION_PACKAGE}`,
+                    valueBoolean: extensionPackage === "Y",
                   },
-                ].filter(Boolean),
-                // "text": ""
-              },
-              // "servicedPeriod": { "start": "2024-10-21", "end": "2024-10-21" },
-              ...(tooth
-                ? {
-                    bodySite: {
+                  !!(episodeInvoiceNo || patientInvoiceNo) && {
+                    url: `${BASE_PROFILE_URL}/${EXTENSION_PATIENT_INVOICE}`,
+                    valueIdentifier: {
+                      system: `${siteUrl}/patientInvoice`,
+                      value: `Invc-${
+                        patientInvoiceNo || episodeInvoiceNo
+                      }/T_${Date.now()}`,
+                    },
+                  },
+                  !!pharmacistSelectionReason && {
+                    url: `${BASE_PROFILE_URL}/${EXTENSION_MEDS_SELECTION_REASON}`,
+                    valueCodeableConcept: {
                       coding: [
                         {
-                          system:
-                            "http://nphies.sa/terminology/CodeSystem/fdi-oral-region",
-                          code: tooth,
+                          system: `${BASE_CODE_SYS_URL}/${SELECTION_REASON}`,
+                          code: pharmacistSelectionReason,
+                          display: pharmacistSelectionReason,
                         },
                       ],
                     },
-                  }
-                : null),
-              ...(!isPrescriberRequestData
-                ? {
-                    servicedDate: reverseDate(servicedDate),
-                    quantity: {
-                      value: quantity,
+                  },
+                  !!pharmacistSubstitute && {
+                    url: `${BASE_PROFILE_URL}/${EXTENSION_PHARM_SUBSTITUTE}`,
+                    valueCodeableConcept: {
+                      coding: [
+                        {
+                          system: `${BASE_CODE_SYS_URL}/${PHARM_SUBSTITUTE}`,
+                          code: pharmacistSubstitute,
+                        },
+                      ],
                     },
-                    unitPrice: {
-                      value: unitPrice || 0,
-                      currency,
+                  },
+                  {
+                    url: `${BASE_PROFILE_URL}/${EXTENSION_MATERNITY}`,
+                    valueBoolean: isMaternity === "Y" ? true : false,
+                  },
+                  ...(isPrescriberRequestData
+                    ? [
+                        {
+                          url: `${BASE_PROFILE_URL}/${EXTENSION_MEDICATION_REQUEST}`,
+                          valueReference: {
+                            reference: `${medicationRequestUrl}/${medicationRequestIds[index]}`,
+                          },
+                        },
+                        {
+                          url: `${BASE_PROFILE_URL}/${EXTENSION_STRENGTH}`,
+                          valueString: medicationStrength,
+                        },
+                      ]
+                    : [
+                        !!scientificCodes && {
+                          url: `${BASE_PROFILE_URL}/${EXTENSION_PRESCRIBED_MEDS}`,
+                          valueCodeableConcept: {
+                            coding: [
+                              {
+                                system: `${BASE_CODE_SYS_URL}/${SCIENTIFIC_CODES}`,
+                                code: scientificCodes,
+                                display: scientificCodesName,
+                              },
+                            ],
+                          },
+                        },
+                        {
+                          url: `${BASE_PROFILE_URL}/${EXTENSION_TAX}`,
+                          valueMoney: {
+                            value: extensionTax || 0,
+                            currency,
+                          },
+                        },
+                        {
+                          url: `${BASE_PROFILE_URL}/${EXTENSION_PATIENT_SHARE}`,
+                          valueMoney: {
+                            value: extensionPatientShare,
+                            currency,
+                          },
+                        },
+                      ]),
+                ].filter(Boolean),
+                productOrService: {
+                  coding: [
+                    {
+                      system: isPrescriberRequestData
+                        ? `${BASE_CODE_SYS_URL}/${SCIENTIFIC_CODES}`
+                        : `${BASE_CODE_SYS_URL}/${nphiesProductCodeType}`,
+                      code: isPrescriberRequestData
+                        ? scientificCodes
+                        : nphiesProductCode,
+                      display: isPrescriberRequestData
+                        ? undefined
+                        : removeInvisibleCharactersFromString(
+                            nphiesProductName,
+                            true
+                          ),
                     },
-                    factor,
-                    net: {
-                      value: net_price,
-                      currency,
+                    hasSecondProductSection && {
+                      system: `${siteUrl}/${nphiesProductCodeType}`,
+                      code: customerProductCode || nphiesProductCode,
+                      display: removeInvisibleCharactersFromString(
+                        customerProductName || nphiesProductName,
+                        true
+                      ),
                     },
-                  }
-                : null),
-            })
+                  ].filter(Boolean),
+                  // "text": ""
+                },
+                // "servicedPeriod": { "start": "2024-10-21", "end": "2024-10-21" },
+                ...(tooth
+                  ? {
+                      bodySite: {
+                        coding: [
+                          {
+                            system:
+                              "http://nphies.sa/terminology/CodeSystem/fdi-oral-region",
+                            code: tooth,
+                          },
+                        ],
+                      },
+                    }
+                  : null),
+                ...(!isPrescriberRequestData
+                  ? {
+                      servicedDate: reverseDate(servicedDate),
+                      quantity: {
+                        value: quantity,
+                      },
+                      unitPrice: {
+                        value: unitPrice || 0,
+                        currency,
+                      },
+                      factor,
+                      net: {
+                        value: net_price,
+                        currency,
+                      },
+                    }
+                  : null),
+              };
+            }
           )
         : undefined,
       total: isPrescriberRequestData
