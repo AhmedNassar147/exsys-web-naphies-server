@@ -23,6 +23,14 @@ const createMappedEligibilityRequests = async ({
       organization_no,
       type,
       clinicalEntityNo,
+      episodeNo,
+      visitId,
+      doctorId,
+      patientContractsSeq,
+      staff_id,
+      webRequestType,
+      patientIdTypeCode,
+      patientCardNo,
     }) => {
       const message_event_type =
         ELIGIBILITY_TYPES[type] || ELIGIBILITY_TYPES.validation;
@@ -37,6 +45,16 @@ const createMappedEligibilityRequests = async ({
           patient_file_no: patientFileNo,
           memberid: patientIdNo,
           contract_no: contractNo,
+          episode_no: episodeNo,
+          visit_id: visitId,
+          doctor_id: doctorId,
+          patient_contracts_seq: patientContractsSeq,
+        },
+        extraDataSavingToExsys: {
+          web_request_type: webRequestType,
+          patient_id_type_code: patientIdTypeCode,
+          patient_card_no: patientCardNo,
+          staff_id,
         },
       });
     },

@@ -140,6 +140,7 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
   noPatientDataLogger,
   checkExsysDataValidationBeforeCallingNphies,
   checkPayloadNphiesSize,
+  extraDataSavingToExsys: _extraDataSavingToExsys,
 }) => {
   const {
     isSuccess,
@@ -179,6 +180,8 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
     requestBody,
     exsysResultsData,
   };
+
+  const extraDataSavingToExsys = _extraDataSavingToExsys || {};
 
   const _organizationNo = organizationNo || organization_no;
 
@@ -237,6 +240,7 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
         resourceName: exsysSaveApiId,
         requestParams: errorSaveParams,
         body: {
+          ...extraDataSavingToExsys,
           [exsysDataApiPrimaryKeyName]: primaryKey,
           ...(createExsysErrorSaveApiBody(errorMessage) || null),
         },
@@ -310,6 +314,7 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
       resourceName: exsysSaveApiId,
       requestParams: successSaveParams,
       body: {
+        ...extraDataSavingToExsys,
         [exsysDataApiPrimaryKeyName]: primaryKey,
         nodeServerDataSentToNaphies,
         nphiesResponse,

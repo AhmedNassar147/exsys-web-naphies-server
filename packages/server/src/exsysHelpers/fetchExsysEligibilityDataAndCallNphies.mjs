@@ -46,10 +46,33 @@ const fetchExsysEligibilityDataAndCallNphies = async ({
   exsysAPiBodyData,
   noPatientDataLogger,
   printFolderName,
-}) =>
-  await createBaseFetchExsysDataAndCallNphiesApi({
+  extraDataSavingToExsys: _extraDataSavingToExsys,
+}) => {
+  const {
+    organization_no,
+    clinicalEntityNo,
+    patient_file_no,
+    memberid,
+    patient_contracts_seq,
+    contract_no,
+    episode_no,
+  } = requestParams;
+
+  const extraDataSavingToExsys = {
+    ...(_extraDataSavingToExsys || null),
+    organization_no,
+    clinicalEntityNo,
+    patient_file_no,
+    patient_id_no: memberid,
+    patient_contracts_seq,
+    contract_no,
+    episode_no,
+  };
+
+  return await createBaseFetchExsysDataAndCallNphiesApi({
     exsysQueryApiId: exsysApiId || queryExsysEligibilityData,
     exsysSaveApiId: saveNphiesResponseToExsys,
+    extraDataSavingToExsys,
     requestParams,
     requestBody: exsysAPiBodyData,
     requestMethod,
@@ -63,5 +86,5 @@ const fetchExsysEligibilityDataAndCallNphies = async ({
     createExsysErrorSaveApiBody,
     noPatientDataLogger,
   });
-
+};
 export default fetchExsysEligibilityDataAndCallNphies;
