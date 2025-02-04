@@ -118,7 +118,7 @@ const createNphiesDoctorOrPatientData = ({
       },
     },
     !!nationalityCode && {
-      url: `${EXTENSION_NATIONALITY}/${EXTENSION_OCCUPATION}`,
+      url: `${BASE_PROFILE_URL}/${EXTENSION_NATIONALITY}`,
       valueCodeableConcept: {
         coding: [
           {
