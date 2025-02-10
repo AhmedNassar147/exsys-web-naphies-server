@@ -50,17 +50,18 @@ const fetchExsysEligibilityDataAndCallNphies = async ({
 }) => {
   const {
     organization_no,
+    organizationNo,
     clinicalEntityNo,
     patient_file_no,
     memberid,
     patient_contracts_seq,
     contract_no,
     episode_no,
-  } = requestParams;
+  } = requestParams || exsysAPiBodyData || {};
 
   const extraDataSavingToExsys = {
     ...(_extraDataSavingToExsys || null),
-    organization_no,
+    organization_no: organization_no || organizationNo,
     clinicalEntityNo,
     patient_file_no,
     patient_id_no: memberid,
