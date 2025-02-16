@@ -276,6 +276,7 @@ const createNphiesClaimData = ({
   encounterUrl,
   relatedRelationshipCode,
   relatedSystemUrl,
+  priority,
 }) => {
   const profileType = isPrescriberRequestData
     ? PREAUTH_PROFILE_TYPES[PRESCRIBER]
@@ -340,6 +341,7 @@ const createNphiesClaimData = ({
     resourceType: CLAIM,
     profileType: _profileType,
     extension,
+    priority,
   });
 
   const hasDiagnosisData = isArrayHasData(diagnosisData);

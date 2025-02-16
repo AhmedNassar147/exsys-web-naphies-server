@@ -28,6 +28,7 @@ const createBaseEntryRequestData = ({
   resourceType,
   profileType,
   extension,
+  priority,
 }) => {
   const { dateString } = getCurrentDate(true);
 
@@ -61,7 +62,7 @@ const createBaseEntryRequestData = ({
         coding: [
           {
             system: `${BASE_TERMINOLOGY_CODE_SYS_URL}/${PROCESS_PRIORITY}`,
-            code: "normal",
+            code: priority || "normal",
           },
         ],
       },
