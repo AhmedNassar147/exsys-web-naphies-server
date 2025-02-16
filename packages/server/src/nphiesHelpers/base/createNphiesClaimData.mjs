@@ -307,9 +307,7 @@ const createNphiesClaimData = ({
 
   const identifierUrl = `${siteUrl}/${identifierUrlLastPart}`;
 
-  const relatedIdentifierUrl = `${
-    relatedSystemBaseUrl || siteUrl
-  }/${identifierUrlLastPart}`;
+  const relatedIdentifierUrl = relatedSystemBaseUrl || identifierUrl;
 
   const extension = isPrescriberRequestData
     ? undefined
