@@ -361,7 +361,7 @@ const createNphiesClaimData = ({
                 claim: {
                   identifier: {
                     system: identifierUrl,
-                    value: `req_${relatedClaimIdentifier}`,
+                    value: relatedClaimIdentifier,
                   },
                 },
                 relationship: {
