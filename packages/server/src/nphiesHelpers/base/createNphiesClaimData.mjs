@@ -275,6 +275,7 @@ const createNphiesClaimData = ({
   accidentCode,
   encounterUrl,
   relatedRelationshipCode,
+  relatedSystemBaseUrl,
 }) => {
   const profileType = isPrescriberRequestData
     ? PREAUTH_PROFILE_TYPES[PRESCRIBER]
@@ -302,7 +303,9 @@ const createNphiesClaimData = ({
     ? "claim"
     : "preauthorization";
 
-  const identifierUrl = `${siteUrl}/${identifierUrlLastPart}`;
+  const identifierUrl = `${
+    relatedSystemBaseUrl || siteUrl
+  }/${identifierUrlLastPart}`;
 
   const extension = isPrescriberRequestData
     ? undefined
@@ -341,18 +344,24 @@ const createNphiesClaimData = ({
   const hasSupportingInfoData = isArrayHasData(supportingInfo);
   const hasProductsData = isArrayHasData(productsData);
 
+  let relatedClaimIdentifier = relatedParentClaimIdentifier;
+
+  if (!relatedSystemBaseUrl) {
+    relatedClaimIdentifier = `req_${relatedParentClaimIdentifier}`;
+  }
+
   return {
     fullUrl,
     resource: {
       ...resource,
-      ...(relatedParentClaimIdentifier
+      ...(relatedClaimIdentifier
         ? {
             related: [
               {
                 claim: {
                   identifier: {
                     system: identifierUrl,
-                    value: `req_${relatedParentClaimIdentifier}`,
+                    value: `req_${relatedClaimIdentifier}`,
                   },
                 },
                 relationship: {

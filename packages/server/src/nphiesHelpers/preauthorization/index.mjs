@@ -47,7 +47,8 @@ const createNaphiesPreauthRequestFullData = ({
   provider_license,
   payer_license,
   payer_child_license,
-  site_url,
+  // site_url,
+  relatedSystemBaseUrl = "https://Interop.motalabatech.ai",
   site_name,
   provider_organization,
   payer_organization,
@@ -156,6 +157,7 @@ const createNaphiesPreauthRequestFullData = ({
   encounterReAdmissionSystemUrl,
   approvalPrescriptionId,
 }) => {
+  const site_url = "https://Interop.motalabatech.ai";
   const isClaimRequest = message_event.includes("claim-request");
   const isPrescriberRequestData = message_event.includes(PRESCRIBER);
 
@@ -248,6 +250,7 @@ const createNaphiesPreauthRequestFullData = ({
         providerCoverageUrl,
         providerFocusUrl,
         siteUrl: site_url,
+        relatedSystemBaseUrl,
         visionPrescriptionUrl,
         useVisionPrescriptionUrl: shouldBuildVisionPrescription,
         hasDoctorsData,
