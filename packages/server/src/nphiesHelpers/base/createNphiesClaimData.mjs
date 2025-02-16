@@ -297,13 +297,17 @@ const createNphiesClaimData = ({
     identifierUrlLastPart = "claim";
   }
 
+  // "https://Interop.motalabatech.ai"
+
   const useValue = isPrescriberRequestData
     ? "predetermination"
     : isClaimRequest
     ? "claim"
     : "preauthorization";
 
-  const identifierUrl = `${
+  const identifierUrl = `${siteUrl}/${identifierUrlLastPart}`;
+
+  const relatedIdentifierUrl = `${
     relatedSystemBaseUrl || siteUrl
   }/${identifierUrlLastPart}`;
 
@@ -360,7 +364,7 @@ const createNphiesClaimData = ({
               {
                 claim: {
                   identifier: {
-                    system: identifierUrl,
+                    system: relatedIdentifierUrl,
                     value: relatedClaimIdentifier,
                   },
                 },
