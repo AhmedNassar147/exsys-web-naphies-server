@@ -350,7 +350,7 @@ const createNphiesClaimData = ({
 
   let relatedClaimIdentifier = relatedParentClaimIdentifier;
 
-  if (!relatedSystemUrl) {
+  if (!relatedSystemUrl && relatedClaimIdentifier) {
     relatedClaimIdentifier = `req_${relatedParentClaimIdentifier}`;
   }
 

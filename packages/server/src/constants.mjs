@@ -97,6 +97,7 @@ export const EXSYS_API_IDS = {
   // http://149.102.140.8:9090/ords/exsys_api/nphies_pkg/initiate_program_organizations?client=exsys
   [EXSYS_API_IDS_NAMES.queryProgramOrganizations]:
     "nphies_pkg/initiate_program_organizations",
+  // http://149.102.140.8:9090/ords/exsys_api/nphies_pkg/create_nphies_request
   [EXSYS_API_IDS_NAMES.queryExsysEligibilityData]:
     "nphies_pkg/create_nphies_request",
   [EXSYS_API_IDS_NAMES.queryEligibilityPendingRequests]:
