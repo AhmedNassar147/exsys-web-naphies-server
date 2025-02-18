@@ -360,6 +360,8 @@ export const NPHIES_BASE_CODE_TYPES = {
   // ROUTE_OF_ADMINS: "route-of-admin",
   EXTENSION_MEDICATION_REQUEST: "extension-medicationRequest",
   EXTENSION_STRENGTH: "extension-strength",
+  COMMUNICATION_REASON: "communication-reason",
+  EXTENSION_CLAIM_SEQ: "extension-claimItemSequence",
 };
 
 export const USE_NEW_INVESTIGATION_AS_ATTACHMENT = true;

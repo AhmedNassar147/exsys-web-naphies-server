@@ -17,8 +17,10 @@ import {
 
 const { PROFILE_COMMUNICATION, PROFILE_COMMUNICATION_REQUEST } =
   NPHIES_BASE_PROFILE_TYPES;
-const { BASE_TERMINOLOGY_CODE_SYS_URL } = NPHIES_API_URLS;
-const { COMMUNICATION_CAT } = NPHIES_BASE_CODE_TYPES;
+const { BASE_TERMINOLOGY_CODE_SYS_URL, BASE_CODE_SYS_URL, BASE_PROFILE_URL } =
+  NPHIES_API_URLS;
+const { COMMUNICATION_CAT, COMMUNICATION_REASON, EXTENSION_CLAIM_SEQ } =
+  NPHIES_BASE_CODE_TYPES;
 const { COMMUNICATION, COMMUNICATION_REQUEST } = NPHIES_RESOURCE_TYPES;
 
 const createCommunicationEntry = ({
@@ -40,6 +42,7 @@ const createCommunicationEntry = ({
   communicationAboutSystemType,
   communicationPayload,
   isCommunicationRequest,
+  communicationReason,
 }) => {
   const resourceType = isCommunicationRequest
     ? COMMUNICATION_REQUEST
@@ -111,11 +114,42 @@ const createCommunicationEntry = ({
       sender: {
         reference: `${providerOrganizationUrl}/${providerOrganization}`,
       },
+      ...(communicationReason
+        ? {
+            reasonCode: [
+              {
+                coding: [
+                  {
+                    system: `${BASE_CODE_SYS_URL}/${COMMUNICATION_REASON}`,
+                    code: communicationReason,
+                  },
+                ],
+              },
+            ],
+          }
+        : null),
       payload: isArrayHasData(communicationPayload)
         ? communicationPayload.map(
-            ({ value, contentType, title, creation, fileUrl }) => {
+            ({
+              value,
+              contentType,
+              title,
+              creation,
+              fileUrl,
+              claimItemSequence,
+            }) => {
               if (!contentType) {
                 return {
+                  ...(!!claimItemSequence
+                    ? {
+                        extension: [
+                          {
+                            url: `${BASE_PROFILE_URL}/${EXTENSION_CLAIM_SEQ}`,
+                            valuePositiveInt: +claimItemSequence,
+                          },
+                        ],
+                      }
+                    : null),
                   contentString: removeInvisibleCharactersFromString(value),
                 };
               }

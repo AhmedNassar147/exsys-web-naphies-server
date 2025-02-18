@@ -23,6 +23,7 @@ const extractCommunicationRecord = ({
   communicationAboutId,
   communicationAboutSystemType,
   communicationErrors,
+  communicationReasonCode,
 }) => {
   const {
     taskResponseId,
@@ -32,11 +33,14 @@ const extractCommunicationRecord = ({
     taskErrors,
   } = nphiesTaskData || {};
 
-  const [{ contentString, contentAttachment }] = communicationPayload || [{}];
+  const [{ contentString, contentAttachment, extension }] =
+    communicationPayload || [{}];
 
   const { creation, contentType } = contentAttachment || {};
 
   const hasContentAttachment = !!(creation && contentType);
+
+  const [{ valuePositiveInt }] = extension || [{}];
 
   return {
     sentCreationBundleId,
@@ -52,6 +56,8 @@ const extractCommunicationRecord = ({
     communicationCategory,
     communicationPriority,
     communicationStatus,
+    communicationReasonCode,
+    claimItemSequence: valuePositiveInt,
     communicationContentString: contentString,
     communicationAttachment: hasContentAttachment
       ? contentAttachment

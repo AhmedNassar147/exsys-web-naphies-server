@@ -51,6 +51,7 @@ const createNaphiesCommunicationResponseFullData = ({
   policyHolderLicense,
   policyHolderReference,
   policyHolderName,
+  communication_reason,
 }) => {
   const isCommunicationRequest = is_communication_request === "Y";
 
@@ -96,6 +97,7 @@ const createNaphiesCommunicationResponseFullData = ({
         communicationAboutSystemType: communication_about_system_type,
         communicationPayload: communication_payload,
         isCommunicationRequest,
+        communicationReason: communication_reason,
       }),
       createNphiesDoctorOrPatientData({
         patientOrDoctorId: patient_file_no,
