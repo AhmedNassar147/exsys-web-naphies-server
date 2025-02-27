@@ -14,6 +14,7 @@ import createMappedClaimOrPreauthCancellation from "./exsysHelpers/createMappedC
 
 const claimsToBeSentToNphiesPerRequestsMap = 5;
 
+// node packages/server/src/cancelLocalClaimsOrOauth.mjs --production client=nameOfClient
 const cancelLocalClaimsOrOauth = async (filePath) => {
   const rootPath = await findRootYarnWorkSpaces();
   const fullFilePath = `${rootPath}/${filePath}`;
