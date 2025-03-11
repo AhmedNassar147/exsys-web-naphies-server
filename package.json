@@ -15,6 +15,7 @@
     "reset": "yarn clean && yarn clean-locks && yarn bootstrap",
     "prepare": "yarn workspace @exsys-web-server/start-exsys-nphies-web-server start",
     "start": "yarn workspace @exsys-web-server/server start",
+    "exsys": "yarn start client=exsys --ignore-cert --port=9090 --exsys-base-url=http://136.243.62.235",
     "dev": "yarn start client=exsyscenter --ignore-cert --port=4200 --exsys-base-url=http://94.97.253.213",
     "exsyscenter": "yarn start client=exsyscenter --production --port=4200 --exsys-base-url=http://94.97.253.213",
     "sagaf": "yarn start client=sagaf --production",
