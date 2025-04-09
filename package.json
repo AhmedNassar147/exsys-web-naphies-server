@@ -39,6 +39,7 @@
     "tadawi": "yarn start client=tadawi --production --exsys-base-url=http://192.168.1.4",
     "dev-tadawy": "yarn start client=tadawi --ignore-cert --exsys-base-url=http://192.168.1.4 --port=4200",
     "tadawy-test": "yarn start client=tadawi --ignore-cert --exsys-base-url=http://94.97.253.213 --port=1410",
+    "tadawy-test2": "yarn start client=tadawi --ignore-cert --port=4200 --exsys-base-url=http://10.100.0.11",
     "prod": "yarn start --production",
     "pup": "node packages/server/src/helpers/scrapNphiesSiteData.mjs --startpuppteer"
   },

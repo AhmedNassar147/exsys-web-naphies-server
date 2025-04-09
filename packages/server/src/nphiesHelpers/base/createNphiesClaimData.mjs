@@ -107,9 +107,21 @@ const buildAttachmentSupportInfoWithCodeSection = ({
   text,
   fileUrl,
 }) => {
-  const hasCodeSection = !!(systemUrl && code);
+  const isChiefOfClomplaintCode =
+    categoryCode === SUPPORT_INFO_KEY_NAMES.chief_complaint;
+
+  if (isChiefOfClomplaintCode) {
+    return {
+      currentCategoryCode: categoryCode,
+      codeSection: {
+        text: text,
+      },
+    };
+  }
 
   let __categoryCode = categoryCode;
+
+  const hasCodeSection = !!(systemUrl && code);
 
   const IS_INFO_CATEGORY = categoryCode === SUPPORT_INFO_KEY_NAMES.info;
   const IS_IRA_CODE = code === INVESTIGATION_RESULT_CODE_FOR_ATTACHMENT;
@@ -522,6 +534,23 @@ const createNphiesClaimData = ({
                   text,
                   fileUrl,
                 });
+
+              // if (categoryCode === "chief-complaint") {
+              //   return {
+              //     sequence: index + 1,
+              //     category: {
+              //       coding: [
+              //         {
+              //           system: `${BASE_CODE_SYS_URL}/${CLAIM_INFO_CATEGORY}`,
+              //           code: categoryCode,
+              //         },
+              //       ],
+              //     },
+              //     code: {
+              //       text: text,
+              //     },
+              //   };
+              // }
 
               return {
                 sequence: index + 1,

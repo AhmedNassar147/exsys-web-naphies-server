@@ -388,6 +388,7 @@ export const SUPPORT_INFO_KEY_NAMES = {
   icu_hours: "icu-hours",
   days_supply: "days-supply",
   ventilation_hours: "ventilation-hours",
+  chief_complaint: "chief-complaint",
   lab_test: "lab-test",
   morphology: "morphology",
 };
