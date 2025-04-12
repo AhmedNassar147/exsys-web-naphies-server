@@ -146,6 +146,7 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
     isSuccess,
     result,
     error: exsysError,
+    API_URL,
   } = await createExsysRequest({
     resourceName: exsysQueryApiId,
     requestMethod,
@@ -176,6 +177,7 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
   } = exsysResultsData;
 
   const printedErrorData = {
+    API_URL,
     requestParams,
     requestBody,
     exsysResultsData,
@@ -352,6 +354,7 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
     printData: {
       folderName,
       data: {
+        API_URL,
         exsysRequestParams: requestParams,
         exsysRequestBody: requestBody,
         loggerMessage,
