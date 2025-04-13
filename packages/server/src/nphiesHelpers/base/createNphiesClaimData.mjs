@@ -231,9 +231,13 @@ const createAuthorizationExtensions = ({
 const getSupportingInfoSequences = (supportingInfo, daysSupplyId) =>
   supportingInfo.reduce((acc, { categoryCode, value }, currentIndex) => {
     const isDaysSupply = categoryCode === SUPPORT_INFO_KEY_NAMES.days_supply;
+    const islabResult = categoryCode === SUPPORT_INFO_KEY_NAMES.lab_test;
+
+    const isDaysSupplyOrLabTest = isDaysSupply || islabResult;
+
     if (
-      !isDaysSupply ||
-      (isDaysSupply && !!daysSupplyId && daysSupplyId === value)
+      !isDaysSupplyOrLabTest ||
+      (isDaysSupplyOrLabTest && !!daysSupplyId && daysSupplyId === value)
     ) {
       acc.push(currentIndex + 1);
     }
@@ -479,6 +483,7 @@ const createNphiesClaimData = ({
                 value,
                 categoryCode,
                 systemUrl,
+                codingSystemUrl,
                 code,
                 display,
                 text,
@@ -513,8 +518,11 @@ const createNphiesClaimData = ({
               const isEmploymentImpacted =
                 categoryCode === SUPPORT_INFO_KEY_NAMES.employmentImpacted;
 
+              const isLabTestCode =
+                categoryCode === SUPPORT_INFO_KEY_NAMES.lab_test;
+
               const hasTimingPeriod =
-                isHospitalizedCode || isEmploymentImpacted;
+                isHospitalizedCode || isEmploymentImpacted || isLabTestCode;
 
               const hasAbsenceReason = !!(
                 absenceReasonCode && absenceReasonUrl
@@ -529,28 +537,11 @@ const createNphiesClaimData = ({
                   value,
                   creation,
                   batchPeriodStart,
-                  systemUrl,
+                  systemUrl: codingSystemUrl || systemUrl,
                   display,
                   text,
                   fileUrl,
                 });
-
-              // if (categoryCode === "chief-complaint") {
-              //   return {
-              //     sequence: index + 1,
-              //     category: {
-              //       coding: [
-              //         {
-              //           system: `${BASE_CODE_SYS_URL}/${CLAIM_INFO_CATEGORY}`,
-              //           code: categoryCode,
-              //         },
-              //       ],
-              //     },
-              //     code: {
-              //       text: text,
-              //     },
-              //   };
-              // }
 
               return {
                 sequence: index + 1,
