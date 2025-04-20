@@ -353,7 +353,7 @@ const createNphiesClaimData = ({
     insuranceFocal: primaryDoctorFocal,
     insuranceSequence: primaryDoctorSequence,
     insurancePreauthRefs: preauthRefs,
-    identifierUrl: relatedIdentifierUrl,
+    identifierUrl,
     resourceType: CLAIM,
     profileType: _profileType,
     extension,
