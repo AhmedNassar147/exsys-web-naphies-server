@@ -209,10 +209,7 @@ export default mapEntriesAndExtractNeededData;
 
 // const base = await findRootYarnWorkSpaces();
 // const [{ nodeServerDataSentToNaphies, nphiesResponse }] = await readJsonFile(
-//   // `${base}/results/auth/exsys-sent-data(institutional).json`,
-//   `${base}/results/claims/exsys-sent-data(professional).json`,
-//   // `${base}/results/com/comm1.json`,
-//   //
+//   `${base}/results/nphies-response(professional) (12).json`,
 //   true
 // );
 
@@ -220,9 +217,7 @@ export default mapEntriesAndExtractNeededData;
 //   data: mapEntriesAndExtractNeededData({
 //     nodeServerDataSentToNaphies,
 //     nphiesResponse,
-//     requestType: NPHIES_REQUEST_TYPES.CLAIM,
+//     requestType: NPHIES_REQUEST_TYPES.PREAUTH,
 //   }),
-//   // folderName: `results/auth-institutional`,
-//   folderName: `results/claim-professional`,
-//   // folderName: `results/comm1`,
+//   folderName: `results/claim-response-professional`,
 // });
