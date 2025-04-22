@@ -693,6 +693,7 @@ const createNphiesClaimData = ({
                 quantity,
                 unitPrice,
                 extensionTax,
+                extensionPayerShare,
                 extensionPatientShare,
                 extensionPackage,
                 diagnosisIds,
@@ -707,9 +708,20 @@ const createNphiesClaimData = ({
               },
               index
             ) => {
+              const IS_MOH = nphiesProductCodeType === "moh-category";
+
               const hasSecondProductSection =
-                !isPrescriberRequestData &&
-                nphiesProductCodeType !== "moh-category";
+                !isPrescriberRequestData && !IS_MOH;
+
+              const productDisplay = isPrescriberRequestData
+                ? undefined
+                : removeInvisibleCharactersFromString(nphiesProductName, true);
+
+              const service_date = servicedDate
+                ? reverseDate(servicedDate)
+                : undefined;
+
+              const dateFieldName = IS_MOH ? "servicedPeriod" : "servicedDate";
 
               return {
                 sequence,
@@ -726,6 +738,13 @@ const createNphiesClaimData = ({
                   {
                     url: `${BASE_PROFILE_URL}/${EXTENSION_PACKAGE}`,
                     valueBoolean: extensionPackage === "Y",
+                  },
+                  !!extensionPayerShare && {
+                    url: "http://nphies.sa/fhir/ksa/nphies-fs/StructureDefinition/extension-payer-share",
+                    valueMoney: {
+                      value: extensionPayerShare,
+                      currency: "SAR",
+                    },
                   },
                   !!(episodeInvoiceNo || patientInvoiceNo) && {
                     url: `${BASE_PROFILE_URL}/${EXTENSION_PATIENT_INVOICE}`,
@@ -814,12 +833,7 @@ const createNphiesClaimData = ({
                       code: isPrescriberRequestData
                         ? scientificCodes
                         : nphiesProductCode,
-                      display: isPrescriberRequestData
-                        ? undefined
-                        : removeInvisibleCharactersFromString(
-                            nphiesProductName,
-                            true
-                          ),
+                      display: productDisplay,
                     },
                     hasSecondProductSection && {
                       system: `${siteUrl}/${nphiesProductCodeType}`,
@@ -830,9 +844,9 @@ const createNphiesClaimData = ({
                       ),
                     },
                   ].filter(Boolean),
-                  // "text": ""
+
+                  text: IS_MOH ? productDisplay : undefined,
                 },
-                // "servicedPeriod": { "start": "2024-10-21", "end": "2024-10-21" },
                 ...(tooth
                   ? {
                       bodySite: {
@@ -848,7 +862,12 @@ const createNphiesClaimData = ({
                   : null),
                 ...(!isPrescriberRequestData
                   ? {
-                      servicedDate: reverseDate(servicedDate),
+                      [dateFieldName]: IS_MOH
+                        ? {
+                            start: service_date,
+                            end: service_date,
+                          }
+                        : service_date,
                       quantity: {
                         value: quantity,
                       },
