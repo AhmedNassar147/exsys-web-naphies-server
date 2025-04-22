@@ -287,6 +287,7 @@ const createNaphiesPreauthRequestFullData = ({
         billablePeriodStartDate,
         accidentDate,
         accidentCode,
+        isNewBorn: extensionNewborn === "Y",
         encounterUrl: fullEncounterUrl,
       }),
       createNphiesDoctorOrPatientData({
@@ -324,7 +325,6 @@ const createNaphiesPreauthRequestFullData = ({
           patientBirthdate: subscriber_birthDate,
           patientMaritalStatus: subscriber_martial_status,
           providerDoctorOrPatientUrl: providerPatientUrl,
-          isNewBorn: extensionNewborn === "Y",
         }),
       createNphiesCoverage({
         requestId,

@@ -55,6 +55,7 @@ const {
   EXT_PERIOD_START,
   EXT_ACCOUNT_PERIOD,
   EXTENSION_TRANSFER,
+  EXTENSION_NEW_BORN,
   EXTENSION_AUTH_ONLINE_RESPONSE,
   RELATED_CLAIM_RELATION,
   EXTENSION_PRESCRIBED_MEDS,
@@ -180,6 +181,7 @@ const createAuthorizationExtensions = ({
   extensionPriorauthId,
   isTransfer,
   encounterUrl,
+  isNewBorn,
 }) => {
   const extension = [
     !!offlineRequestDate && {
@@ -221,6 +223,10 @@ const createAuthorizationExtensions = ({
     },
     !!isTransfer && {
       url: `${BASE_PROFILE_URL}/${EXTENSION_TRANSFER}`,
+      valueBoolean: true,
+    },
+    isNewBorn && {
+      url: `${BASE_PROFILE_URL}/${EXTENSION_NEW_BORN}`,
       valueBoolean: true,
     },
   ].filter(Boolean);
@@ -293,6 +299,7 @@ const createNphiesClaimData = ({
   relatedRelationshipCode,
   relatedSystemUrl,
   priority,
+  isNewBorn,
 }) => {
   const profileType = isPrescriberRequestData
     ? PREAUTH_PROFILE_TYPES[PRESCRIBER]
@@ -338,6 +345,7 @@ const createNphiesClaimData = ({
         isTransfer,
         batchAccountingPeriod,
         encounterUrl,
+        isNewBorn,
       });
 
   const { fullUrl, resource } = createBaseEntryRequestData({
