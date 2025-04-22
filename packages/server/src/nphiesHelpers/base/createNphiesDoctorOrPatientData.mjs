@@ -36,6 +36,7 @@ const {
   EXTENSION_OCCUPATION,
   EXTENSION_NATIONALITY,
   EXTENSION_PATIENT_RELIGION,
+  EXTENSION_NEW_BORN,
 } = NPHIES_BASE_CODE_TYPES;
 
 const passportData = {
@@ -73,6 +74,7 @@ const createNphiesDoctorOrPatientData = ({
   patientMaritalStatus,
   providerDoctorOrPatientUrl,
   isPatient = true,
+  isNewBorn,
 }) => {
   const staffNames = [firstName, secondName, thirdName, familyName].filter(
     Boolean
@@ -138,6 +140,10 @@ const createNphiesDoctorOrPatientData = ({
           },
         ],
       },
+    },
+    isNewBorn && {
+      url: `${BASE_PROFILE_URL}/${EXTENSION_NEW_BORN}`,
+      valueBoolean: true,
     },
   ].filter(Boolean);
 

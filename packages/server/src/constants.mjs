@@ -362,6 +362,7 @@ export const NPHIES_BASE_CODE_TYPES = {
   EXTENSION_STRENGTH: "extension-strength",
   COMMUNICATION_REASON: "communication-reason",
   EXTENSION_CLAIM_SEQ: "extension-claimItemSequence",
+  EXTENSION_NEW_BORN: "extension-newborn",
 };
 
 export const USE_NEW_INVESTIGATION_AS_ATTACHMENT = true;

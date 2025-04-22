@@ -87,8 +87,10 @@ const createNaphiesPreauthRequestFullData = ({
   subscriber_family_name,
   subscriber_phone,
   subscriber_gender,
+  subscriber_nationality_code,
   subscriber_birthDate,
   subscriber_martial_status,
+  extensionNewborn,
   network_name,
   occupationCode,
   religion,
@@ -304,6 +306,26 @@ const createNaphiesPreauthRequestFullData = ({
         patientMaritalStatus: patient_martial_status,
         providerDoctorOrPatientUrl: providerPatientUrl,
       }),
+      !!subscriber_file_no &&
+        !!subscriber_iqama_no &&
+        createNphiesDoctorOrPatientData({
+          patientOrDoctorId: subscriber_file_no,
+          identifierId: subscriber_iqama_no,
+          identifierIdType: subscriber_national_id_type,
+          firstName: subscriber_first_name,
+          secondName: subscriber_second_name,
+          thirdName: subscriber_third_name,
+          familyName: subscriber_family_name,
+          staffPhone: subscriber_phone,
+          gender: subscriber_gender,
+          nationalityCode: subscriber_nationality_code,
+          occupationCode: subscriber_occupationCode,
+          religion: subscriber_religion,
+          patientBirthdate: subscriber_birthDate,
+          patientMaritalStatus: subscriber_martial_status,
+          providerDoctorOrPatientUrl: providerPatientUrl,
+          isNewBorn: extensionNewborn === "Y",
+        }),
       createNphiesCoverage({
         requestId,
         coverageType: coverage_type,
@@ -346,24 +368,6 @@ const createNaphiesPreauthRequestFullData = ({
               })
           )
         : []),
-      !!subscriber_file_no &&
-        !!subscriber_iqama_no &&
-        createNphiesDoctorOrPatientData({
-          patientOrDoctorId: subscriber_file_no,
-          identifierId: subscriber_iqama_no,
-          identifierIdType: subscriber_national_id_type,
-          firstName: subscriber_first_name,
-          secondName: subscriber_second_name,
-          thirdName: subscriber_third_name,
-          familyName: subscriber_family_name,
-          staffPhone: subscriber_phone,
-          gender: subscriber_gender,
-          patientBirthdate: subscriber_birthDate,
-          patientMaritalStatus: subscriber_martial_status,
-          providerDoctorOrPatientUrl: providerPatientUrl,
-          occupationCode: subscriber_occupationCode,
-          religion: subscriber_religion,
-        }),
       shouldBuildVisionPrescription &&
         createNphiesVisionPrescriptionData({
           visionPrescriptionUrl,
