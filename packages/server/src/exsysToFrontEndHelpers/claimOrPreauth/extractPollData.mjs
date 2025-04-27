@@ -65,6 +65,17 @@ const extractPollData = (
     addProductsData,
     claimErrors,
     totalAdjudicationValues,
+    providerBundleId,
+    provider,
+    ProviderType,
+
+    insurerBundleId,
+    insurer,
+    receiver,
+
+    policyHolderOrgBundleId,
+    policyHolderOrganizationId,
+    policyHolderOrg,
   } = result || {};
 
   const dataSentToNphiesIndicesMap = getEntriesResourceIndicesMap(
@@ -110,6 +121,17 @@ const extractPollData = (
     pollPriority: claimPriority,
     pollNotes: processNotes,
     pollFundsReserveCode: fundsReserveCode,
+
+    pollProviderBundleId: providerBundleId,
+    pollProvider: provider,
+    pollProviderType: ProviderType,
+    pollInsurerBundleId: insurerBundleId,
+    pollInsurer: insurer,
+    pollReceiver: receiver,
+    pollPolicyHolderOrgBundleId: policyHolderOrgBundleId,
+    pollPolicyHolderOrganizationId: policyHolderOrganizationId,
+    pollPolicyHolderOrg: policyHolderOrg,
+
     pollProductsData: productsData,
     pollAddProductsData: addProductsData,
     pollSupportInfoData: supportInfoData,

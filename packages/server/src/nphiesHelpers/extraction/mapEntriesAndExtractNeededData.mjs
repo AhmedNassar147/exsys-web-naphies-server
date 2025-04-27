@@ -209,7 +209,7 @@ export default mapEntriesAndExtractNeededData;
 
 // const base = await findRootYarnWorkSpaces();
 // const [{ nodeServerDataSentToNaphies, nphiesResponse }] = await readJsonFile(
-//   `${base}/results/nphies-response(professional) (12).json`,
+//   `${base}/results/nphies-response(pharmacy-poll).json`,
 //   true
 // );
 
@@ -217,7 +217,7 @@ export default mapEntriesAndExtractNeededData;
 //   data: mapEntriesAndExtractNeededData({
 //     nodeServerDataSentToNaphies,
 //     nphiesResponse,
-//     requestType: NPHIES_REQUEST_TYPES.PREAUTH,
+//     requestType: NPHIES_REQUEST_TYPES.POLL,
 //   }),
-//   folderName: `results/claim-response-professional`,
+//   folderName: `results/nphies-response(pharmacy-poll)`,
 // });
