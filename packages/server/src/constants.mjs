@@ -202,6 +202,7 @@ export const NPHIES_REQUEST_TYPES = {
   STATUS_CHECK: "status-check",
   MEDICATION_REQUEST: "medicationRequest",
   PRESCRIBER: "prescriber",
+  PAYMENT: "payment-reconciliation",
 };
 
 export const NPHIES_RESOURCE_TYPES = {

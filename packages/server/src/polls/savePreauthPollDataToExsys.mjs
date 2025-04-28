@@ -20,6 +20,7 @@ const SAVE_API_BASED_REQUEST_TYPE = {
   [NPHIES_REQUEST_TYPES.PREAUTH]: savePreauthPollData,
   // "advanced-authorization": savePreauthPollData,
   [NPHIES_REQUEST_TYPES.PRESCRIBER]: savePreauthPollData,
+  [NPHIES_REQUEST_TYPES.PAYMENT]: savePreauthPollData,
 };
 
 const savePreauthPollDataToExsys = async ({

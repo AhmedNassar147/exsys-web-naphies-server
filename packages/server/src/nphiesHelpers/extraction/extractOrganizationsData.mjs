@@ -47,6 +47,7 @@ const extractOrganizationsData = ({ entryGroupArray }) => {
         ...acc,
         policyHolderOrgBundleId: id || "",
         policyHolderOrg: fullName,
+        policyHolderID: value,
         ...extensions,
       };
     }
@@ -66,6 +67,7 @@ const extractOrganizationsData = ({ entryGroupArray }) => {
         ...acc,
         providerBundleId: id,
         provider: fullName,
+        providerID: value,
         ...extensions,
       };
     }
