@@ -14,15 +14,19 @@ const callNphiesAPIAndCollectResults = ({
   setErrorIfExtractedDataFoundFn,
   checkPayloadNphiesSize,
   extractionRequestType,
+  preparedNphiesRequestPayload,
 }) =>
   new Promise(async (resolve) => {
     const { organizationNo, organization_no, clinicalEntityNo } =
       exsysResultsData;
 
-    const nphiesRequestPayload = createNphiesRequestPayloadFn(exsysResultsData);
+    const nphiesRequestPayload = preparedNphiesRequestPayload
+      ? preparedNphiesRequestPayload
+      : createNphiesRequestPayloadFn(exsysResultsData);
 
-    const convertedNphiesRequestPayload =
-      convertSentAttachmentBase64ToFileUrl(nphiesRequestPayload);
+    const convertedNphiesRequestPayload = preparedNphiesRequestPayload
+      ? preparedNphiesRequestPayload
+      : convertSentAttachmentBase64ToFileUrl(nphiesRequestPayload);
 
     if (checkPayloadNphiesSize) {
       const sizeInBytes = Buffer.byteLength(

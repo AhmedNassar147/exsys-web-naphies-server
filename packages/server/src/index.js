@@ -30,6 +30,7 @@ import createStatusCheckRequestMiddleware from "./middlewares/claim/createStatus
 import createTotalFilesSizeMiddleware from "./middlewares/files/createTotalFilesSizeMiddleware.mjs";
 import checkMedicationValidationMiddleware from "./middlewares/medication/checkMedicationValidation.mjs";
 import createMergeClaimsFilesToOneFileMiddleware from "./middlewares/claim/createMergeClaimsFilesToOneFileMiddleware.mjs";
+import createClaimOrPreauthSecondResponseMiddleware from "./middlewares/claim/createClaimOrPreauthSecondResponseMiddleware.mjs";
 import stopTheProcessIfCertificateNotFound from "./helpers/stopTheProcessIfCertificateNotFound.mjs";
 import { getConfigFileData } from "./helpers/getConfigFileData.mjs";
 
@@ -88,6 +89,11 @@ const { client } = CLI_CONFIG;
     "/checkClaimOrPreauthStatus",
     createStatusCheckRequestMiddleware(app)
   ); //;
+  app.use(
+    "/checkClaimOrPreauthSecondResponse",
+    createClaimOrPreauthSecondResponseMiddleware(app)
+  ); //;
+
   app.use("/getFilesTotalSize", createTotalFilesSizeMiddleware(app)); //;
   app.use(
     "/mergeClaimsFilesToOne",

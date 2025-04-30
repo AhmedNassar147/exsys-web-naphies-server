@@ -4,6 +4,7 @@
  *
  */
 import { collectProcessOptions } from "@exsys-web-server/helpers";
+import { query } from "express";
 
 // --dev, --port,  ---ignore-cert, ---production, --exsys-base-url
 export const CLI_CONFIG = await collectProcessOptions();
@@ -66,6 +67,8 @@ export const EXSYS_API_IDS_NAMES = {
   saveCreatedClaimPdfStatus: "saveCreatedClaimPdfStatus",
   queryExsysCchiPatient: "queryExsysCchiPatient",
   queryMedicationsValidationPollData: "queryMedicationsValidationPollData",
+  queryClaimOrPreauthDataForSecondResponse:
+    "queryClaimOrPreauthDataForSecondResponse",
 };
 
 export const CLIENT_NAMES = {
@@ -169,6 +172,9 @@ export const EXSYS_API_IDS = {
   // http://149.102.140.8:9090/ords/exsys_api/hs_nphies_prescription_pkg/prescription_pending_request?authorization=24190201
   [EXSYS_API_IDS_NAMES.queryMedicationsValidationPollData]:
     "hs_nphies_prescription_pkg/prescription_pending_request",
+  // http://136.243.62.235:9090/ords/exsys_api/nphies_viewer_pkg/get_claim_response?authorization=111111&request_type=claim&primary_key=16811
+  [EXSYS_API_IDS_NAMES.queryClaimOrPreauthDataForSecondResponse]:
+    "nphies_viewer_pkg/get_claim_response",
 };
 
 export const HTTP_STATUS_CODE = {
