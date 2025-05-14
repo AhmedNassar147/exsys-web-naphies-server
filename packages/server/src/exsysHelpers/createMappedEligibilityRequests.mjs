@@ -43,7 +43,7 @@ const createMappedEligibilityRequests = async ({
           organization_no,
           clinicalEntityNo,
           patient_file_no: patientFileNo,
-          memberid: patientIdNo,
+          memberid: patientCardNo || patientIdNo,
           contract_no: contractNo,
           episode_no: episodeNo,
           visit_id: visitId,
