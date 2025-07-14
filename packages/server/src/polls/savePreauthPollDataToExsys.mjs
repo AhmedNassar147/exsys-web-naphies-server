@@ -4,10 +4,11 @@
  *
  */
 import chalk from "chalk";
-import { writeFile } from "fs/promises";
+import { writeFile, mkdir } from "fs/promises";
 import {
   createCmdMessage,
   findRootYarnWorkSpaces,
+  checkPathExists,
 } from "@exsys-web-server/helpers";
 import createExsysRequest from "../helpers/createExsysRequest.mjs";
 import { EXSYS_API_IDS_NAMES, NPHIES_REQUEST_TYPES } from "../constants.mjs";
@@ -111,10 +112,17 @@ const savePreauthPollDataToExsys = async ({
   if (logParams) {
     if (!isSuccess) {
       const rootPath = await findRootYarnWorkSpaces();
-      await writeFile(
-        `${rootPath}/results/POLL-ERROR/res-${claimResponseId}-req-${requestId}.html`,
-        result
-      );
+      const folderPath = `${rootPath}/results/POLL-ERROR`;
+
+      const isFolderExists = await checkPathExists(folderPath);
+
+      if (!isFolderExists) {
+        await mkdir(folderPath, { recursive: true });
+      }
+
+      const filePath = `${folderPath}/res-${claimResponseId}-req-${requestId}.html`;
+
+      await writeFile(filePath, result);
     }
   }
 };
