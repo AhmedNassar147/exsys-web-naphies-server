@@ -24,7 +24,7 @@
     "ahd_dmam": "yarn start client=ahd_dmam --production",
     "wecare": "yarn start client=wecare --production",
     "meshaal": "yarn start client=meshaal --production",
-    "shj": "yarn start client=shj --production --port=4200 --exsys-base-url=http://10.100.0.11",
+    "shj": "yarn start client=shj --production --port=4200 --exsys-base-url=http://172.16.0.193",
     "yashfen": "yarn start client=yashfen --production --exsys-base-url=http://37.224.99.197",
     "zaher": "yarn start client=zaher --production --exsys-base-url=http://192.168.100.41",
     "zaher_azizzia": "yarn start client=zaher_azizzia --production --exsys-base-url=http://37.224.116.41 --port=4300",
