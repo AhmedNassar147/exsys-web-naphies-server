@@ -6,12 +6,18 @@
 import { isArrayHasData } from "@exsys-web-server/helpers";
 import runExsysEligibilityPendingRequestsPoll from "./runExsysEligibilityPendingRequestsPoll.mjs";
 import runPreauthorizationPoll from "./runPreauthorizationPoll.mjs";
-import runExsysPollMedicationsValidation from "./runExsysPollMedicationsValidation.mjs";
+// import runExsysPollMedicationsValidation from "./runExsysPollMedicationsValidation.mjs";
 import { getConfigFileData } from "../helpers/getConfigFileData.mjs";
 
 (async () => {
-  const { organizations, authorization, noAuthorizationOrClaimPolls } =
-    await getConfigFileData();
+  const {
+    organizations,
+    authorization,
+    noAuthorizationOrClaimPolls,
+    priorauthResponseMessagesCount = 1,
+    communicationRequestMessagesCount = 1,
+    otherPollMessagesCount = 5,
+  } = await getConfigFileData();
 
   const organizationsValues = Object.values(organizations);
 
@@ -52,21 +58,21 @@ import { getConfigFileData } from "../helpers/getConfigFileData.mjs";
               includeMessageType: "priorauth-response",
               preauthPollData,
               ...baseOptions,
-              messagesCount: 1,
+              messagesCount: priorauthResponseMessagesCount,
             }),
 
             runPreauthorizationPoll({
               includeMessageType: "communication-request",
               preauthPollData,
               ...baseOptions,
-              messagesCount: 1,
+              messagesCount: communicationRequestMessagesCount,
             }),
 
             runPreauthorizationPoll({
               excludeMessageType: "priorauth-response",
               preauthPollData,
               ...baseOptions,
-              messagesCount: 50,
+              messagesCount: otherPollMessagesCount,
             }),
           ]);
         }
