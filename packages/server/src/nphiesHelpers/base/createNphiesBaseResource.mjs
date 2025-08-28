@@ -18,11 +18,13 @@ const createNphiesBaseResource = ({
   resourceType,
   profileType,
   uuid,
+  extraMeta,
 } = {}) => ({
   resourceType: resourceType || BUNDLE,
   id: (uuid || createUUID()).toString(),
   meta: {
     profile: [`${BASE_PROFILE_URL}/${profileType || PROFILE_BUNDLE}`],
+    ...(extraMeta || {}),
   },
 });
 

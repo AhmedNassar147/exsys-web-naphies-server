@@ -209,7 +209,7 @@ export default mapEntriesAndExtractNeededData;
 
 // const base = await findRootYarnWorkSpaces();
 // const [{ nodeServerDataSentToNaphies, nphiesResponse }] = await readJsonFile(
-//   `${base}/results/nphies-response(pharmacy-poll) (2).json`,
+//   `${base}/results/result-cchi/tawnia-new.json`,
 //   true
 // );
 
@@ -217,7 +217,21 @@ export default mapEntriesAndExtractNeededData;
 //   data: mapEntriesAndExtractNeededData({
 //     nodeServerDataSentToNaphies,
 //     nphiesResponse,
-//     requestType: NPHIES_REQUEST_TYPES.POLL,
+//     requestType: NPHIES_REQUEST_TYPES.ELIGIBILITY,
 //   }),
-//   folderName: `results/nphies-response(pharmacy-poll) (2)`,
+//   folderName: `results/tawnia-new`,
+// });
+
+// const [{ nodeServerDataSentToNaphies, nphiesResponse }] = await readJsonFile(
+//   `${base}/results/result-cchi/new-buba.json`,
+//   true
+// );
+
+// await writeResultFile({
+//   data: mapEntriesAndExtractNeededData({
+//     nodeServerDataSentToNaphies,
+//     nphiesResponse,
+//     requestType: NPHIES_REQUEST_TYPES.ELIGIBILITY,
+//   }),
+//   folderName: `results/new-buba`,
 // });

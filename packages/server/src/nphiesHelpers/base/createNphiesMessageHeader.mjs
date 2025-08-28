@@ -38,6 +38,7 @@ const createNphiesMessageHeader = ({
   requestId,
   providerFocusUrl,
   requestType,
+  isLargeClaim,
 }) => {
   const isCommunication = requestType === COMMUNICATION;
   const isCommunicationRequest = requestType === COMMUNICATION_REQUEST;
@@ -49,6 +50,20 @@ const createNphiesMessageHeader = ({
   const baseResourceData = createNphiesBaseResource({
     resourceType: RESOURCE_MESSAGE_HEADER,
     profileType: MESSAGE_HEADER,
+    extraMeta: isLargeClaim
+      ? {
+          tag: [
+            {
+              system: "http://nphies.sa/terminology/CodeSystem/meta-tags",
+              code: "queued-messages",
+            },
+            {
+              system: "http://nphies.sa/terminology/CodeSystem/meta-tags",
+              code: "large-claims",
+            },
+          ],
+        }
+      : undefined,
   });
 
   const { id } = baseResourceData;

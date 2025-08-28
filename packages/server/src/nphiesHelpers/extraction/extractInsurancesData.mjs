@@ -3,7 +3,7 @@
  * Helper:`extractInsurancesData`.
  *
  */
-import { isArrayHasData } from "@exsys-web-server/helpers";
+import { getLastPartOfUrl, isArrayHasData } from "@exsys-web-server/helpers";
 import extractNphiesCodeAndDisplayFromCodingType from "./extractNphiesCodeAndDisplayFromCodingType.mjs";
 
 const getInsuranceItem = (
@@ -25,20 +25,34 @@ const getInsuranceItem = (
   const benefits = isArrayHasData(benefit)
     ? benefit.reduce(
         (acc, { type, allowedMoney, allowedUnsignedInt, allowedString }) => {
-          const { code } = extractNphiesCodeAndDisplayFromCodingType(type);
+          const { code, codingSystemUrl } =
+            extractNphiesCodeAndDisplayFromCodingType(type);
 
           let itemValue = allowedString;
+          let baseValue = allowedString;
 
           if (allowedMoney) {
             const { value, currency } = allowedMoney || {};
             itemValue = `${value} ${currency}`;
+            baseValue = value;
           }
 
-          if (typeof allowedUnsignedInt === "number") {
+          const isUsingUnsignedInt = typeof allowedUnsignedInt === "number";
+
+          if (isUsingUnsignedInt) {
             itemValue = allowedUnsignedInt;
+            baseValue = allowedUnsignedInt;
           }
 
-          acc[code.replace(/-/g, "_")] = itemValue;
+          const enahancedCode = code.replace(/-/g, "_");
+
+          acc[enahancedCode] = itemValue;
+          acc[`${enahancedCode}_base_value`] = baseValue;
+          acc[`${enahancedCode}_using_unsiged_int`] = isUsingUnsignedInt
+            ? "Y"
+            : "N";
+          acc[`${enahancedCode}_system_type`] =
+            getLastPartOfUrl(codingSystemUrl);
 
           return acc;
         },

@@ -160,6 +160,7 @@ const createNaphiesPreauthRequestFullData = ({
   encounterReAdmissionDisplay,
   encounterReAdmissionSystemUrl,
   approvalPrescriptionId,
+  isLargeClaim,
 }) => {
   const isClaimRequest = message_event.includes("claim-request");
   const isPrescriberRequestData = message_event.includes(PRESCRIBER);
@@ -237,6 +238,7 @@ const createNaphiesPreauthRequestFullData = ({
         requestId,
         providerFocusUrl,
         requestType: isPrescriberRequestData ? PRESCRIBER : requestType,
+        isLargeClaim: isLargeClaim === "Y",
       }),
       createNphiesClaimData({
         requestId,

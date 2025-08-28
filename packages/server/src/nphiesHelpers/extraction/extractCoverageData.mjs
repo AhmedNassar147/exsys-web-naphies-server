@@ -46,6 +46,7 @@ const extractCoverageData = ({ entryGroupArray, isRequest }) => {
     relationship,
     type,
     policyHolder,
+    subscriberId,
   } = resource;
 
   const [memberId] = extractIdentifierData(identifier);
@@ -108,6 +109,7 @@ const extractCoverageData = ({ entryGroupArray, isRequest }) => {
     relationship: extractCoverageRelationship(relationship),
     ...copayValues,
     coverageClasses: classesValues,
+    coverageSubscriberId: subscriberId,
     coverageErrors: errors && errors.length ? errors : undefined,
   };
 };
