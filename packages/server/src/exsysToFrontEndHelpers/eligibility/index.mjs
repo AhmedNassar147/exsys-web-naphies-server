@@ -3,9 +3,16 @@
  * Helper: `extractEligibilityDataSentToNphies`.
  *
  */
-import { isObjectHasData } from "@exsys-web-server/helpers";
+import {
+  createDateFromNativeDate,
+  isObjectHasData,
+} from "@exsys-web-server/helpers";
 import mapEntriesAndExtractNeededData from "../../nphiesHelpers/extraction/mapEntriesAndExtractNeededData.mjs";
 import { NPHIES_REQUEST_TYPES } from "../../constants.mjs";
+
+const dateOptions = {
+  returnReversedDate: false,
+};
 
 const extractEligibilityDataSentToNphies = ({
   nodeServerDataSentToNaphies,
@@ -56,6 +63,68 @@ const extractEligibilityDataSentToNphies = ({
     nphiesRequestExtractedData: nphiesRequestExtractedDataRes,
   } = result;
 
+  const { policyNo, policyName, classCode, className } =
+    coverageClasses?.reduce(
+      (acc, item) => {
+        if (item) {
+          const { key, value, name } = item;
+
+          if (key === "class") {
+            acc.classCode = value || name || "";
+            acc.className = name || value || "";
+          }
+
+          if (key === "group") {
+            acc.policyName = value || name || acc.policyName || "";
+          }
+
+          if (key === "plan") {
+            acc.policyNo = value || acc.policyNo || "";
+
+            if (!acc.policyName) {
+              acc.policyName = name || "";
+            }
+          }
+        }
+
+        return acc;
+      },
+      {
+        policyNo: coverageSubscriberId,
+        policyName: "",
+        className: "",
+        classCode: "",
+      }
+    );
+
+  const { benefitPeriodStart, benefitPeriodEnd, activeBenefitItems } =
+    insuranceBenefits?.reduce(
+      (acc, item) => {
+        if (item) {
+          const {
+            benefitPeriodStart,
+            benefitPeriodEnd,
+            benefitInforce,
+            benefitItems,
+          } = item;
+
+          if (benefitInforce === "Y") {
+            acc.benefitPeriodStart = benefitPeriodStart;
+            acc.benefitPeriodEnd = benefitPeriodEnd;
+
+            acc.activeBenefitItems = benefitItems;
+          }
+        }
+
+        return acc;
+      },
+      {
+        benefitPeriodStart: undefined,
+        benefitPeriodEnd: undefined,
+        activeBenefitItems: [],
+      }
+    );
+
   const {
     patientFileNo,
     patientName,
@@ -79,16 +148,36 @@ const extractEligibilityDataSentToNphies = ({
     receiver,
     policyHolderID,
     providerID,
+    providerBundleId,
+    policyHolderOrgBundleId,
+    insurerBundleId,
   } = nphiesRequestExtractedDataRes || {};
+
+  const _coverageStartDate = createDateFromNativeDate(
+    coverageStartDate,
+    dateOptions
+  ).dateString;
+
+  const _coverageEndDate = createDateFromNativeDate(
+    coverageEndDate,
+    dateOptions
+  ).dateString;
+
+  const _benefitPeriodStart = benefitPeriodStart || _coverageStartDate;
+
+  const _benefitPeriodEnd = benefitPeriodEnd || _coverageEndDate;
 
   return {
     bundleId: nphiesBundleId,
     creationBundleId,
+    insurerBundleId,
     insurer,
     receiver,
     provider,
-    policyHolderID,
     providerID,
+    providerBundleId,
+    policyHolderID,
+    policyHolderOrgBundleId,
     servicePeriod: [eligibilityPeriodStart, eligibilityPeriodEnd]
       .filter(Boolean)
       .join(" ~ "),
@@ -98,7 +187,6 @@ const extractEligibilityDataSentToNphies = ({
     eligible: isPatientEligible === "Y",
     disposition: eligibilityDisposition,
     eligibilityErrors,
-    insuranceBenefits,
     patientFileNo,
     patientName,
     patientBirthDate,
@@ -114,12 +202,20 @@ const extractEligibilityDataSentToNphies = ({
     outcome: eligibilityOutcome,
     facilityName,
     facilityType,
+    insuranceBenefits,
+    policyNo,
+    policyName,
+    classCode,
+    className,
+    benefitPeriodStart: _benefitPeriodStart,
+    benefitPeriodEnd: _benefitPeriodEnd,
+    activeBenefitItems,
     coverageResponseId,
     coverageNetwork,
     relationship,
     coverageStatus,
-    coverageStartDate,
-    coverageEndDate,
+    coverageStartDate: _coverageStartDate,
+    coverageEndDate: _coverageEndDate,
     coverageType,
     coverageSubscriberId,
     coverageCopayPct,

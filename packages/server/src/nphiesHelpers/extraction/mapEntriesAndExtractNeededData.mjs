@@ -8,6 +8,7 @@ import {
   readJsonFile,
   writeResultFile,
 } from "@exsys-web-server/helpers";
+// import extractEligibilityDataSentToNphies from "../../exsysToFrontEndHelpers/eligibility/index.mjs";
 import formatNphiesResponseIssue from "../base/formatNphiesResponseIssue.mjs";
 import getEntriesResourceIndicesMap from "../base/getEntriesResourceIndicesMap.mjs";
 import makeEntriesGroupByResourceType from "../base/makeEntriesGroupByResourceType.mjs";
@@ -209,29 +210,21 @@ export default mapEntriesAndExtractNeededData;
 
 // const base = await findRootYarnWorkSpaces();
 // const [{ nodeServerDataSentToNaphies, nphiesResponse }] = await readJsonFile(
-//   `${base}/results/result-cchi/tawnia-new.json`,
+//   `${base}/results/tawnia-new.json`,
 //   true
 // );
 
-// await writeResultFile({
-//   data: mapEntriesAndExtractNeededData({
-//     nodeServerDataSentToNaphies,
-//     nphiesResponse,
-//     requestType: NPHIES_REQUEST_TYPES.ELIGIBILITY,
-//   }),
-//   folderName: `results/tawnia-new`,
+// const values = mapEntriesAndExtractNeededData({
+//   nodeServerDataSentToNaphies,
+//   nphiesResponse,
+//   requestType: NPHIES_REQUEST_TYPES.ELIGIBILITY,
 // });
 
-// const [{ nodeServerDataSentToNaphies, nphiesResponse }] = await readJsonFile(
-//   `${base}/results/result-cchi/new-buba.json`,
-//   true
-// );
-
 // await writeResultFile({
-//   data: mapEntriesAndExtractNeededData({
+//   data: extractEligibilityDataSentToNphies({
 //     nodeServerDataSentToNaphies,
 //     nphiesResponse,
-//     requestType: NPHIES_REQUEST_TYPES.ELIGIBILITY,
+//     nphiesExtractedData: values,
 //   }),
-//   folderName: `results/new-buba`,
+//   folderName: `result-tawnia-new`,
 // });

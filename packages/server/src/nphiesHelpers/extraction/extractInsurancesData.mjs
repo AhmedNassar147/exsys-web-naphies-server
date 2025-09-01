@@ -3,8 +3,16 @@
  * Helper:`extractInsurancesData`.
  *
  */
-import { getLastPartOfUrl, isArrayHasData } from "@exsys-web-server/helpers";
+import {
+  createDateFromNativeDate,
+  getLastPartOfUrl,
+  isArrayHasData,
+} from "@exsys-web-server/helpers";
 import extractNphiesCodeAndDisplayFromCodingType from "./extractNphiesCodeAndDisplayFromCodingType.mjs";
+
+const dateOptions = {
+  returnReversedDate: false,
+};
 
 const getInsuranceItem = (
   { category, name, description, network, unit, term, benefit },
@@ -82,8 +90,10 @@ const extractInsurancesData = (insurance) =>
           : undefined;
 
         return {
-          benefitPeriodStart: start,
-          benefitPeriodEnd: end,
+          benefitPeriodStart: createDateFromNativeDate(start, dateOptions)
+            .dateString,
+          benefitPeriodEnd: createDateFromNativeDate(end, dateOptions)
+            .dateString,
           benefitInforce: inforce ? "Y" : "N",
           benefitItems,
         };
