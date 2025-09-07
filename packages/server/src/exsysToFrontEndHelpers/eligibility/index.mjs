@@ -63,67 +63,81 @@ const extractEligibilityDataSentToNphies = ({
     nphiesRequestExtractedData: nphiesRequestExtractedDataRes,
   } = result;
 
-  const { policyNo, policyName, classCode, className } =
-    coverageClasses?.reduce(
-      (acc, item) => {
-        if (item) {
-          const { key, value, name } = item;
+  console.log("coverageClasses", { coverageClasses, insuranceBenefits });
 
-          if (key === "class") {
-            acc.classCode = value || name || "";
-            acc.className = name || value || "";
-          }
-
-          if (key === "group") {
-            acc.policyName = value || name || acc.policyName || "";
-          }
-
-          if (key === "plan") {
-            acc.policyNo = value || acc.policyNo || "";
-
-            if (!acc.policyName) {
-              acc.policyName = name || "";
-            }
-          }
-        }
-
-        return acc;
-      },
-      {
+  const { policyNo, policyName, classCode, className } = !coverageClasses
+    ? {
         policyNo: coverageSubscriberId,
         policyName: "",
         className: "",
         classCode: "",
       }
-    );
+    : coverageClasses?.reduce(
+        (acc, item) => {
+          if (item) {
+            const { key, value, name } = item;
+
+            if (key === "class") {
+              acc.classCode = value || name || "";
+              acc.className = name || value || "";
+            }
+
+            if (key === "group") {
+              acc.policyName = value || name || acc.policyName || "";
+            }
+
+            if (key === "plan") {
+              acc.policyNo = value || acc.policyNo || "";
+
+              if (!acc.policyName) {
+                acc.policyName = name || "";
+              }
+            }
+          }
+
+          return acc;
+        },
+        {
+          policyNo: coverageSubscriberId,
+          policyName: "",
+          className: "",
+          classCode: "",
+        }
+      );
 
   const { benefitPeriodStart, benefitPeriodEnd, activeBenefitItems } =
-    insuranceBenefits?.reduce(
-      (acc, item) => {
-        if (item) {
-          const {
-            benefitPeriodStart,
-            benefitPeriodEnd,
-            benefitInforce,
-            benefitItems,
-          } = item;
-
-          if (benefitInforce === "Y") {
-            acc.benefitPeriodStart = benefitPeriodStart;
-            acc.benefitPeriodEnd = benefitPeriodEnd;
-
-            acc.activeBenefitItems = benefitItems;
-          }
+    !insuranceBenefits
+      ? {
+          benefitPeriodStart: undefined,
+          benefitPeriodEnd: undefined,
+          activeBenefitItems: [],
         }
+      : insuranceBenefits?.reduce(
+          (acc, item) => {
+            if (item) {
+              const {
+                benefitPeriodStart,
+                benefitPeriodEnd,
+                benefitInforce,
+                benefitItems,
+              } = item;
 
-        return acc;
-      },
-      {
-        benefitPeriodStart: undefined,
-        benefitPeriodEnd: undefined,
-        activeBenefitItems: [],
-      }
-    );
+              if (benefitInforce === "Y") {
+                acc.benefitPeriodStart = benefitPeriodStart;
+                acc.benefitPeriodEnd = benefitPeriodEnd;
+
+                acc.activeBenefitItems = benefitItems;
+              }
+            }
+
+            return acc;
+          },
+          {
+            benefitPeriodStart: undefined,
+            benefitPeriodEnd: undefined,
+            activeBenefitItems: [],
+          }
+        );
 
   const {
     patientFileNo,
