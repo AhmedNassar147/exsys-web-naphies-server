@@ -63,8 +63,6 @@ const extractEligibilityDataSentToNphies = ({
     nphiesRequestExtractedData: nphiesRequestExtractedDataRes,
   } = result;
 
-  console.log("coverageClasses", { coverageClasses, insuranceBenefits });
-
   const { policyNo, policyName, classCode, className } = !coverageClasses
     ? {
         policyNo: coverageSubscriberId,
