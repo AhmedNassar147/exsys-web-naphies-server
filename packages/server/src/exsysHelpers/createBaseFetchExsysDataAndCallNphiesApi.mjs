@@ -336,6 +336,8 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
       nphiesExtractedData,
       exsysResultsData,
       isSizeLimitExceeded,
+      organizationNo: _organizationNo,
+      clinicalEntityNo,
     });
   }
 

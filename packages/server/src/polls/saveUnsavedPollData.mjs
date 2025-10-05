@@ -18,6 +18,9 @@ const saveUnsavedPollData = async (fileUrl) => {
     nphiesExtractedData,
     requestType: nphiesExtractedData.messageHeaderRequestType,
     logParams: true,
+    // these values are needed when advanced auth
+    clinicalEntityNo: "",
+    organizationNo: "",
   });
 };
 

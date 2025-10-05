@@ -98,6 +98,8 @@ const runPreauthorizationPoll = async (fullOptions) => {
 
     await mergePollBundlesAndSave({
       authorization,
+      organizationNo,
+      clinicalEntityNo,
       ...nphiesResultData,
     });
 

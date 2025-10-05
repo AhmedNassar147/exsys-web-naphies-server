@@ -13,8 +13,12 @@ import {
 import createExsysRequest from "../helpers/createExsysRequest.mjs";
 import { EXSYS_API_IDS_NAMES, NPHIES_REQUEST_TYPES } from "../constants.mjs";
 
-const { saveClaimPollData, savePreauthPollData, savePreauthOrClaimPollData } =
-  EXSYS_API_IDS_NAMES;
+const {
+  saveClaimPollData,
+  savePreauthPollData,
+  savePreauthOrClaimPollData,
+  saveAdvancedAuthorizationPollData,
+} = EXSYS_API_IDS_NAMES;
 
 const SAVE_API_BASED_REQUEST_TYPE = {
   [NPHIES_REQUEST_TYPES.CLAIM]: saveClaimPollData,
@@ -22,10 +26,14 @@ const SAVE_API_BASED_REQUEST_TYPE = {
   // "advanced-authorization": savePreauthPollData,
   [NPHIES_REQUEST_TYPES.PRESCRIBER]: savePreauthPollData,
   [NPHIES_REQUEST_TYPES.PAYMENT]: savePreauthPollData,
+  [NPHIES_REQUEST_TYPES.ADVANCED_AUTHORIZATION]:
+    saveAdvancedAuthorizationPollData,
 };
 
 const savePreauthPollDataToExsys = async ({
   authorization,
+  organizationNo,
+  clinicalEntityNo,
   nodeServerDataSentToNaphies,
   nphiesResponse,
   nphiesExtractedData,
@@ -84,6 +92,8 @@ const savePreauthPollDataToExsys = async ({
 
   const requestParams = {
     authorization,
+    organization_no: organizationNo || "",
+    clinicalEntityNo: clinicalEntityNo || "",
     claimresponseid: claimResponseId || "",
     claimpreauthref: claimPreauthRef || "",
     claimperiodstart: claimPeriodStart || "",

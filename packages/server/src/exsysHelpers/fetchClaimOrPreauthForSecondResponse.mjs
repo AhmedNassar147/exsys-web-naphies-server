@@ -148,6 +148,8 @@ const fetchClaimOrPreauthForSecondResponse = async ({
   ) {
     await savePreauthPollDataToExsys({
       authorization,
+      organizationNo: organization_no,
+      clinicalEntityNo,
       nphiesExtractedData,
       requestType,
       nodeServerDataSentToNaphies: jsonSentToNphies,

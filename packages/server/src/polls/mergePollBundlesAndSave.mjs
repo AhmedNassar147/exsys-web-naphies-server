@@ -38,6 +38,8 @@ const extractNphiesResponseBasedOnBundleId = (bundleId, allNphiesResponse) => {
 const processBundleItem = async ({
   currentItem,
   authorization,
+  organizationNo,
+  clinicalEntityNo,
   nodeServerDataSentToNaphies,
   nphiesResponse,
   logParams,
@@ -67,6 +69,8 @@ const processBundleItem = async ({
 
   return await savePreauthPollDataToExsys({
     authorization,
+    organizationNo,
+    clinicalEntityNo,
     nodeServerDataSentToNaphies,
     nphiesResponse,
     nphiesExtractedData: currentItem,
@@ -77,6 +81,8 @@ const processBundleItem = async ({
 
 const mergePollBundlesAndSave = async ({
   authorization,
+  organizationNo,
+  clinicalEntityNo,
   nphiesExtractedData,
   nodeServerDataSentToNaphies,
   nphiesResponse,
@@ -103,6 +109,8 @@ const mergePollBundlesAndSave = async ({
         return processBundleItem({
           currentItem,
           authorization,
+          organizationNo,
+          clinicalEntityNo,
           nodeServerDataSentToNaphies,
           nphiesResponse: foundNphiesResponse,
           // logParams,
@@ -121,12 +129,20 @@ const mergePollBundlesAndSave = async ({
 export default mergePollBundlesAndSave;
 
 // const base = await findRootYarnWorkSpaces();
-// const [{ nodeServerDataSentToNaphies, nphiesResponse, nphiesExtractedData }] =
-//   await readJsonFile(`${base}/results/blg/ahmed/23-10-2024.json`, true);
+// const { nodeServerDataSentToNaphies, nphiesResponse, nphiesExtractedData } =
+//   await readJsonFile(`${base}/results/advanced-new.json`, true);
 
-// await mergePollBundlesAndSave({
-//   authorization: 111111,
-//   nphiesExtractedData,
-//   nodeServerDataSentToNaphies,
-//   nphiesResponse,
-// });
+// try {
+//   const result = await processBundleItem({
+//     currentItem: nphiesExtractedData,
+//     authorization: 111111,
+//     organizationNo: "08",
+//     // clinicalEntityNo,
+//     nodeServerDataSentToNaphies,
+//     nphiesResponse,
+//     logParams: true,
+//   });
+//   console.log("result", result);
+// } catch (error) {
+//   console.log(error);
+// }

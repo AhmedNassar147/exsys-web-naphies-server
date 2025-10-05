@@ -43,6 +43,7 @@ export const EXSYS_API_IDS_NAMES = {
   collectExsysClaimData: "collectExsysClaimData",
   saveClaimData: "saveClaimData",
   savePreauthPollData: "savePreauthPollData",
+  saveAdvancedAuthorizationPollData: "saveAdvancedAuthorizationPollData",
   saveClaimPollData: "saveClaimPollData",
   queryClaimOrPreauthDataToCancellation:
     "queryClaimOrPreauthDataToCancellation",
@@ -175,6 +176,10 @@ export const EXSYS_API_IDS = {
   // http://136.243.62.235:9090/ords/exsys_api/nphies_viewer_pkg/get_claim_response?authorization=111111&request_type=claim&primary_key=16811
   [EXSYS_API_IDS_NAMES.queryClaimOrPreauthDataForSecondResponse]:
     "nphies_viewer_pkg/get_claim_response",
+
+  // http://localhost:8080/ords/exsys_api/hs_nphies_authorizations_pkg/save_advanced_authorization?authorization=&organization_no=&clinicalEntityNo
+  [EXSYS_API_IDS_NAMES.saveAdvancedAuthorizationPollData]:
+    "hs_nphies_authorizations_pkg/save_advanced_authorization",
 };
 
 export const HTTP_STATUS_CODE = {
@@ -209,6 +214,7 @@ export const NPHIES_REQUEST_TYPES = {
   MEDICATION_REQUEST: "medicationRequest",
   PRESCRIBER: "prescriber",
   PAYMENT: "payment-reconciliation",
+  ADVANCED_AUTHORIZATION: "advanced-authorization",
 };
 
 export const NPHIES_RESOURCE_TYPES = {
