@@ -7,7 +7,7 @@ import createBaseFetchExsysDataAndCallNphiesApi from "./createBaseFetchExsysData
 import createNphiesRequestPayloadFnFactory from "../nphiesHelpers/preauthorization/createNphiesPreauthOrClaimCancellationData.mjs";
 import { EXSYS_API_IDS_NAMES, NPHIES_REQUEST_TYPES } from "../constants.mjs";
 
-const { CLAIM, CANCEL } = NPHIES_REQUEST_TYPES;
+const { CLAIM, CANCEL, ADVANCED_AUTHORIZATION } = NPHIES_REQUEST_TYPES;
 
 const {
   queryClaimOrPreauthDataToCancellation,
@@ -29,6 +29,7 @@ const createExsysErrorSaveApiBody = (errorMessage) => ({
 const createExsysSaveApiParams = ({
   primaryKey,
   exsysDataApiPrimaryKeyName,
+  requestParams,
   nphiesExtractedData: {
     bundleId,
     cancellationStatus,
@@ -42,12 +43,17 @@ const createExsysSaveApiParams = ({
       ? "error"
       : cancellationStatus;
 
+  const { request_type } = requestParams;
+
   return {
     [exsysDataApiPrimaryKeyName]: primaryKey,
     bundle_id: bundleId,
     outcome: _outcome,
     creation_bundle_id: creationBundleId,
-    request_type: "cancel",
+    request_type:
+      request_type === ADVANCED_AUTHORIZATION
+        ? `cancel-${ADVANCED_AUTHORIZATION}`
+        : "cancel",
   };
 };
 

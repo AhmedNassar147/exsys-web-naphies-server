@@ -235,6 +235,8 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
             primaryKey,
             exsysDataApiPrimaryKeyName,
             nphiesExtractedData: {},
+            requestParams,
+            requestBody,
           })
         : undefined;
 
@@ -309,6 +311,8 @@ const createBaseFetchExsysDataAndCallNphiesApi = async ({
           exsysDataApiPrimaryKeyName,
           nphiesExtractedData: nphiesExtractedData || {},
           isSizeLimitExceeded,
+          requestParams,
+          requestBody,
         })
       : undefined;
 
