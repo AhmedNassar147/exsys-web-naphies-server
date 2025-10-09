@@ -29,6 +29,7 @@ const createNphiesPreauthOrClaimStatusCheckData = ({
   policyHolderLicense,
   policyHolderName,
   policyHolderReference,
+  noReqTextForIdentifier,
 }) => {
   const requestId = createUUID();
 
@@ -58,6 +59,7 @@ const createNphiesPreauthOrClaimStatusCheckData = ({
         cancellationReasonCode,
         focusType: focus_type,
         nullifyRequest: nullifyRequest === "Y",
+        noReqTextForIdentifier,
       }),
       ...createAllOrganizationEntries({
         organizationLicense: provider_license,

@@ -74,6 +74,8 @@ const createNphiesCancellationPreauthOrClaimData = async ({
     ? "claim_pk"
     : "preauth_pk";
 
+  const noReqTextForIdentifier = request_type === ADVANCED_AUTHORIZATION;
+
   return await createBaseFetchExsysDataAndCallNphiesApi({
     exsysQueryApiId: queryClaimOrPreauthDataToCancellation,
     exsysSaveApiId,
@@ -81,8 +83,10 @@ const createNphiesCancellationPreauthOrClaimData = async ({
     requestMethod: "GET",
     printFolderName,
     exsysDataApiPrimaryKeyName,
-    createNphiesRequestPayloadFn:
-      createNphiesRequestPayloadFnFactory(nullify_request),
+    createNphiesRequestPayloadFn: createNphiesRequestPayloadFnFactory(
+      nullify_request,
+      noReqTextForIdentifier
+    ),
     extractionRequestType: CANCEL,
     setErrorIfExtractedDataFoundFn,
     createExsysSaveApiParams,
