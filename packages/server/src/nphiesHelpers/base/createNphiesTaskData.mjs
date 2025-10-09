@@ -45,6 +45,7 @@ const createNphiesTaskData = ({
   excludeMessageType,
   messagesCount,
   noReqTextForIdentifier,
+  focusBaseUrl,
 }) => {
   const { dateString: currentDate } = getCurrentDate(true);
   const isPreauthOrClaimPollRequest = requestType === POLL;
@@ -95,7 +96,7 @@ const createNphiesTaskData = ({
             focus: {
               type: "Claim",
               identifier: {
-                system: `${siteUrl}/${focusType}`,
+                system: `${focusBaseUrl || siteUrl}/${focusType}`,
                 value: noReqTextForIdentifier
                   ? `${operationRequestId}`
                   : `req_${operationRequestId}`,
