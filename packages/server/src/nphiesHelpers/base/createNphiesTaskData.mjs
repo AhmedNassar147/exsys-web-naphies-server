@@ -44,7 +44,7 @@ const createNphiesTaskData = ({
   includeMessageType,
   excludeMessageType,
   messagesCount,
-  noReqTextForIdentifier,
+  isAdvancedAuthorization,
   focusBaseUrl,
 }) => {
   const { dateString: currentDate } = getCurrentDate(true);
@@ -94,10 +94,10 @@ const createNphiesTaskData = ({
       ...(isStatusCheckOrCancel
         ? {
             focus: {
-              type: "Claim",
+              type: isAdvancedAuthorization ? "ClaimResponse" : "Claim",
               identifier: {
                 system: `${focusBaseUrl || siteUrl}/${focusType}`,
-                value: noReqTextForIdentifier
+                value: isAdvancedAuthorization
                   ? `${operationRequestId}`
                   : `req_${operationRequestId}`,
               },

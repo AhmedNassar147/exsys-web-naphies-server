@@ -30,7 +30,7 @@ const createNphiesPreauthOrClaimStatusCheckData = ({
   policyHolderLicense,
   policyHolderName,
   policyHolderReference,
-  noReqTextForIdentifier,
+  isAdvancedAuthorization,
 }) => {
   const requestId = createUUID();
 
@@ -61,7 +61,7 @@ const createNphiesPreauthOrClaimStatusCheckData = ({
         focusType: focus_type,
         focusBaseUrl,
         nullifyRequest: nullifyRequest === "Y",
-        noReqTextForIdentifier,
+        isAdvancedAuthorization,
       }),
       ...createAllOrganizationEntries({
         organizationLicense: provider_license,

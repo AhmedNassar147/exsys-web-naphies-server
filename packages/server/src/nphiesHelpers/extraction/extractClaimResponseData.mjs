@@ -110,7 +110,15 @@ const extractClaimResponseData = ({ entryGroupArray, isPollResponse }) => {
     payeeType,
   } = resource || {};
 
-  const [claimResponseId] = extractIdentifierData(identifier);
+  const [claimResponseId, claimResponseSystem] =
+    extractIdentifierData(identifier);
+
+  let claimResponseBaseUrl;
+
+  if (claimResponseSystem) {
+    const urlObject = new URL(claimResponseSystem);
+    claimResponseBaseUrl = urlObject.origin;
+  }
 
   const { identifier: requestIdentifier } = request || {};
   const { value: requestIdentifierValue } = requestIdentifier || {};
@@ -157,6 +165,7 @@ const extractClaimResponseData = ({ entryGroupArray, isPollResponse }) => {
       : claimResponseId.includes("req_")
       ? id
       : baseResponseId,
+    claimResponseBaseUrl,
     claimRequestId,
     claimMessageEventType,
     claimIdentifier,
