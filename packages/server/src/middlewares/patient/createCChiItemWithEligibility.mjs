@@ -17,14 +17,34 @@ import {
   TEST_PATIENT_NAME,
 } from "../../constants.mjs";
 
-const { queryEligibilityDataFromCchi, queryExsysCchiPatient } =
-  EXSYS_API_IDS_NAMES;
+const {
+  queryEligibilityDataFromCchi,
+  queryExsysCchiPatient,
+  saveNphiesResponseToExsys,
+} = EXSYS_API_IDS_NAMES;
 const { ELIGIBILITY } = NPHIES_REQUEST_TYPES;
 
 const setErrorIfExtractedDataFoundFn = ({
   eligibilityErrors,
   coverageErrors,
 }) => [...(eligibilityErrors || []), ...(coverageErrors || [])];
+
+const createExsysErrorSaveApiBody = (errorMessage) => ({
+  nphiesExtractedData: {
+    eligibilityOutcome: "error",
+    isPatientEligible: "N",
+    eligibilityDisposition: errorMessage,
+  },
+});
+
+const createExsysSaveApiParams = ({
+  primaryKey,
+  exsysDataApiPrimaryKeyName,
+  nphiesExtractedData: { creationBundleId },
+}) => ({
+  [exsysDataApiPrimaryKeyName]: primaryKey,
+  creation_bundle_id: creationBundleId,
+});
 
 const makeNphiesGenderName = (gender) =>
   gender ? (gender === "1" ? "male" : "female") : "";
@@ -202,27 +222,46 @@ const createCChiItemWithEligibility = async ({
     patient_martial_status: "U",
   };
 
-  const exsysApiParams = {
-    authorization,
+  const initialParams = {
     organization_no,
+    clinicalEntityNo,
     customer_no: __customer_no || "",
     customer_group_no: __customer_group_no || "",
     insurance_company: insuranceCompanyId || "",
-    clinicalEntityNo: clinicalEntityNo,
     isReferral: isReferral ? "Y" : "N",
+  };
+
+  const exsysApiParams = {
+    authorization,
+    ...initialParams,
+  };
+
+  const extraDataSavingToExsys = {
+    patient_file_no: patientFileNoOrMemberId,
+    patient_id_no: patientFileNoOrMemberId,
+    ...initialParams,
+    isEligiblityPollRequest: "N",
   };
 
   const { printData, resultData } =
     await createBaseFetchExsysDataAndCallNphiesApi({
+      requestMethod: "GET",
       exsysQueryApiId: queryEligibilityDataFromCchi,
       requestParams: exsysApiParams,
-      requestMethod: "GET",
+      exsysSaveApiId: saveNphiesResponseToExsys,
+      extraDataSavingToExsys,
       extractionRequestType: ELIGIBILITY,
       printFolderName: `${printFolderName}/eligibility`,
       exsysDataApiPrimaryKeyName: "memberid",
       createNphiesRequestPayloadFn,
       setErrorIfExtractedDataFoundFn,
       noPatientDataLogger: true,
+      createExsysErrorSaveApiBody,
+      createExsysSaveApiParams,
+      createResultsDataFromExsysResponse: (result) => ({
+        ...baseEligibilityData,
+        ...result,
+      }),
       checkExsysDataValidationBeforeCallingNphies: ({
         payer_license,
         insurance_company_payer_license,
@@ -239,10 +278,6 @@ const createCChiItemWithEligibility = async ({
 
         return {};
       },
-      createResultsDataFromExsysResponse: (result) => ({
-        ...baseEligibilityData,
-        ...result,
-      }),
     });
 
   const { data } = printData;

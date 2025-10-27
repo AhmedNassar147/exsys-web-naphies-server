@@ -84,6 +84,7 @@ const { client } = CLI_CONFIG;
     "/fetchCommunicationResponseOrRequest",
     createCommunicationMiddleware(app)
   ); //
+
   app.use("/checkPatientInsurance", checkPatientInsuranceMiddleware(app)); //
   app.use(
     "/checkClaimOrPreauthStatus",

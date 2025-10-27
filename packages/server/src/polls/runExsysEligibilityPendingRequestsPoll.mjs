@@ -27,6 +27,7 @@ const runExsysEligibilityPendingRequestsPoll = async (options) => {
     noPatientDataLogger: true,
     printFolderName: "eligibilityPoll",
     requestParams: options,
+    isPollRequest: true,
   };
   try {
     const {

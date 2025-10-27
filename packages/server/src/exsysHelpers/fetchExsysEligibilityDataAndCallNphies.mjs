@@ -47,6 +47,7 @@ const fetchExsysEligibilityDataAndCallNphies = async ({
   noPatientDataLogger,
   printFolderName,
   extraDataSavingToExsys: _extraDataSavingToExsys,
+  isPollRequest,
 }) => {
   const {
     organization_no,
@@ -68,6 +69,7 @@ const fetchExsysEligibilityDataAndCallNphies = async ({
     patient_contracts_seq,
     contract_no,
     episode_no,
+    isEligiblityPollRequest: isPollRequest ? "Y" : "N",
   };
 
   return await createBaseFetchExsysDataAndCallNphiesApi({
