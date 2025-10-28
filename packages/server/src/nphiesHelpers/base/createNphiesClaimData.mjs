@@ -718,8 +718,11 @@ const createNphiesClaimData = ({
             ) => {
               const IS_MOH = nphiesProductCodeType === "moh-category";
 
-              const hasSecondProductSection =
-                !isPrescriberRequestData && !IS_MOH;
+              const IS_UNCLE_CODE = nphiesProductCode == "UNLC";
+
+              const hasSecondProductSection = IS_UNCLE_CODE
+                ? true
+                : !isPrescriberRequestData && !IS_MOH;
 
               const productDisplay = isPrescriberRequestData
                 ? undefined
