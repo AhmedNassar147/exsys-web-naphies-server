@@ -241,6 +241,7 @@ const createCChiItemWithEligibility = async ({
     patient_id_no: patientFileNoOrMemberId,
     ...initialParams,
     isEligiblityPollRequest: "N",
+    cchiOriginalResults: cchiItem,
   };
 
   const { printData, resultData } =
