@@ -93,6 +93,7 @@ export const CLIENT_NAMES = {
   fyhaa_rfha: "fyhaa_rfha",
   khaleej: "khaleej",
   helal: "helal",
+  zamzm: "zamzm",
 };
 
 export const CLIENT_NAMES_KEYS = Object.keys(CLIENT_NAMES);
