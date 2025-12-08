@@ -50,6 +50,7 @@ const makeNphiesGenderName = (gender) =>
   gender ? (gender === "1" ? "male" : "female") : "";
 
 const createCChiItemWithEligibility = async ({
+  staffId,
   beneficiaryKey,
   isReferral,
   authorization,
@@ -242,6 +243,7 @@ const createCChiItemWithEligibility = async ({
     ...initialParams,
     isEligiblityPollRequest: "N",
     cchiOriginalResults: cchiItem,
+    staffId,
   };
 
   const { printData, resultData } =

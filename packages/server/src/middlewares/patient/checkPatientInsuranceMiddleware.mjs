@@ -30,6 +30,7 @@ export default checkPatientInsuranceMiddleware(async (body) => {
     insuranceCompanyId: insuranceCompanyIdFromBody,
     requestIndex,
     shouldCallEligibilityWithoutCchi,
+    staff_id,
   } = body;
 
   const clinicalEntityNo = __clinicalEntityNo || "";
@@ -61,6 +62,7 @@ export default checkPatientInsuranceMiddleware(async (body) => {
   const insuranceWithEligibilityResults = await Promise.allSettled(
     _insuranceData.map((cchiItem, index) =>
       createCChiItemWithEligibility({
+        staffId: staff_id,
         authorization,
         organization_no,
         beneficiaryKey,
