@@ -90,7 +90,7 @@ const getSequences = (arrayData, ids, idPropName) => {
   }
   return arrayData
     .map(({ [idPropName]: id }, index) =>
-      ids.includes(id) ? index + 1 : undefined
+      ids.includes(id) ? index + 1 : undefined,
     )
     .filter(Boolean);
 };
@@ -312,10 +312,10 @@ const createNphiesClaimData = ({
   let identifierUrlLastPart = isPrescriberRequestData
     ? "prescription"
     : !isClaimRequest
-    ? "authorization"
-    : referalIdentifier
-    ? "authorization"
-    : "claim";
+      ? "authorization"
+      : referalIdentifier
+        ? "authorization"
+        : "claim";
 
   if (relatedParentClaimIdentifier && isClaimRequest) {
     identifierUrlLastPart = "claim";
@@ -326,8 +326,8 @@ const createNphiesClaimData = ({
   const useValue = isPrescriberRequestData
     ? "predetermination"
     : isClaimRequest
-    ? "claim"
-    : "preauthorization";
+      ? "claim"
+      : "preauthorization";
 
   const identifierUrl = `${siteUrl}/${identifierUrlLastPart}`;
 
@@ -505,7 +505,7 @@ const createNphiesClaimData = ({
                 absenceReasonUrl,
                 fileUrl,
               },
-              index
+              index,
             ) => {
               const isInfoCode = [
                 SUPPORT_INFO_KEY_NAMES.info,
@@ -597,7 +597,7 @@ const createNphiesClaimData = ({
                       }
                     : undefined,
               };
-            }
+            },
           )
         : undefined,
       diagnosis: hasDiagnosisData
@@ -610,7 +610,7 @@ const createNphiesClaimData = ({
                 diagDisplay,
                 onSetExtensionCode,
               },
-              index
+              index,
             ) => ({
               ...(!!onSetExtensionCode
                 ? {
@@ -622,7 +622,7 @@ const createNphiesClaimData = ({
                             {
                               system: `${BASE_CODE_SYS_URL}/${EXTENSION_ONSET_CONDITION_CODE.replace(
                                 "extension-",
-                                ""
+                                "",
                               )}`,
                               code: onSetExtensionCode,
                             },
@@ -650,7 +650,7 @@ const createNphiesClaimData = ({
                     code: diagCode,
                     display: removeInvisibleCharactersFromString(
                       diagDisplay,
-                      true
+                      true,
                     ),
                   },
                 ],
@@ -665,7 +665,7 @@ const createNphiesClaimData = ({
                   ],
                 },
               ],
-            })
+            }),
           )
         : undefined,
       ...(!!(accidentDate && accidentCode)
@@ -714,7 +714,7 @@ const createNphiesClaimData = ({
                 factor,
                 medicationStrength,
               },
-              index
+              index,
             ) => {
               const IS_MOH = nphiesProductCodeType === "moh-category";
 
@@ -740,7 +740,7 @@ const createNphiesClaimData = ({
                 diagnosisSequence: getSequences(
                   diagnosisData,
                   diagnosisIds,
-                  "diagCode"
+                  "diagCode",
                 ),
                 informationSequence: hasSupportingInfoData
                   ? getSupportingInfoSequences(supportingInfo, days_supply_id)
@@ -851,7 +851,7 @@ const createNphiesClaimData = ({
                       code: customerProductCode || nphiesProductCode,
                       display: removeInvisibleCharactersFromString(
                         customerProductName || nphiesProductName,
-                        true
+                        true,
                       ),
                     },
                   ].filter(Boolean),
@@ -894,7 +894,7 @@ const createNphiesClaimData = ({
                     }
                   : null),
               };
-            }
+            },
           )
         : undefined,
       total: isPrescriberRequestData
