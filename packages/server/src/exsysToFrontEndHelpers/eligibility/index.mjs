@@ -18,6 +18,7 @@ const extractEligibilityDataSentToNphies = ({
   nodeServerDataSentToNaphies,
   nphiesResponse,
   nphiesExtractedData,
+  policyHolder,
 }) => {
   if (!isObjectHasData(nphiesExtractedData)) {
     return {};
@@ -100,7 +101,7 @@ const extractEligibilityDataSentToNphies = ({
           policyName: "",
           className: "",
           classCode: "",
-        }
+        },
       );
 
   const { benefitPeriodStart, benefitPeriodEnd, activeBenefitItems } =
@@ -134,7 +135,7 @@ const extractEligibilityDataSentToNphies = ({
             benefitPeriodStart: undefined,
             benefitPeriodEnd: undefined,
             activeBenefitItems: [],
-          }
+          },
         );
 
   const {
@@ -167,12 +168,12 @@ const extractEligibilityDataSentToNphies = ({
 
   const _coverageStartDate = createDateFromNativeDate(
     coverageStartDate,
-    dateOptions
+    dateOptions,
   ).dateString;
 
   const _coverageEndDate = createDateFromNativeDate(
     coverageEndDate,
-    dateOptions
+    dateOptions,
   ).dateString;
 
   const _benefitPeriodStart = benefitPeriodStart || _coverageStartDate;
@@ -216,7 +217,7 @@ const extractEligibilityDataSentToNphies = ({
     facilityType,
     insuranceBenefits,
     policyNo,
-    policyName,
+    policyName: policyName || policyHolder,
     classCode,
     className,
     benefitPeriodStart: _benefitPeriodStart,

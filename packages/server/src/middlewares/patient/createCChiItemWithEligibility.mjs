@@ -297,12 +297,13 @@ const createCChiItemWithEligibility = async ({
     nodeServerDataSentToNaphies: nodeServerDataSentToNphies,
     nphiesResponse,
     nphiesExtractedData: otherNphiesExtractedData,
+    policyHolder: _policyHolder,
   });
 
   const { outcome, disposition } = frontEndEligibilityData;
 
   const isMemberidNotValid = (disposition || "").includes(
-    "Member ID is invalid"
+    "Member ID is invalid",
   );
 
   const isErrorOutcome = outcome === "error";
