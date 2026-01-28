@@ -18,7 +18,6 @@ const extractEligibilityDataSentToNphies = ({
   nodeServerDataSentToNaphies,
   nphiesResponse,
   nphiesExtractedData,
-  policyHolder,
 }) => {
   if (!isObjectHasData(nphiesExtractedData)) {
     return {};
@@ -61,6 +60,7 @@ const extractEligibilityDataSentToNphies = ({
     issueError,
     issueErrorCode,
     insuranceBenefits,
+    memberId,
     nphiesRequestExtractedData: nphiesRequestExtractedDataRes,
   } = result;
 
@@ -156,7 +156,6 @@ const extractEligibilityDataSentToNphies = ({
     extensionOccupation,
     maritalStatusCode,
     relationship,
-    memberId,
     insurer,
     receiver,
     policyHolderID,
@@ -164,6 +163,7 @@ const extractEligibilityDataSentToNphies = ({
     providerBundleId,
     policyHolderOrgBundleId,
     insurerBundleId,
+    memberId: requestMemberId,
   } = nphiesRequestExtractedDataRes || {};
 
   const _coverageStartDate = createDateFromNativeDate(
@@ -179,13 +179,13 @@ const extractEligibilityDataSentToNphies = ({
   const _benefitPeriodStart = benefitPeriodStart || _coverageStartDate;
 
   const _benefitPeriodEnd = benefitPeriodEnd || _coverageEndDate;
-
   return {
     bundleId: nphiesBundleId,
     creationBundleId,
     insurerBundleId,
     insurer,
     receiver,
+
     provider,
     providerID,
     providerBundleId,
@@ -200,7 +200,7 @@ const extractEligibilityDataSentToNphies = ({
     eligible: isPatientEligible === "Y",
     disposition: eligibilityDisposition,
     eligibilityErrors,
-    patientFileNo,
+    patientFileNo: patientFileNo,
     patientName,
     patientBirthDate,
     patientGender,
@@ -209,7 +209,7 @@ const extractEligibilityDataSentToNphies = ({
     maritalStatusCode,
     patientIdentifierIdType,
     patientIdentifierId,
-    memberId,
+    memberId: memberId || requestMemberId,
     requestId,
     responseId: eligibilityResponseId,
     outcome: eligibilityOutcome,
@@ -217,7 +217,7 @@ const extractEligibilityDataSentToNphies = ({
     facilityType,
     insuranceBenefits,
     policyNo,
-    policyName: policyName || policyHolder,
+    policyName,
     classCode,
     className,
     benefitPeriodStart: _benefitPeriodStart,
