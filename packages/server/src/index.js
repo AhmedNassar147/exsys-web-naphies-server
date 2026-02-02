@@ -32,6 +32,7 @@ import checkMedicationValidationMiddleware from "./middlewares/medication/checkM
 import createMergeClaimsFilesToOneFileMiddleware from "./middlewares/claim/createMergeClaimsFilesToOneFileMiddleware.mjs";
 import createClaimOrPreauthSecondResponseMiddleware from "./middlewares/claim/createClaimOrPreauthSecondResponseMiddleware.mjs";
 import stopTheProcessIfCertificateNotFound from "./helpers/stopTheProcessIfCertificateNotFound.mjs";
+import checkMedicationWithPbm from "./middlewares/pbm/checkMedicationWithPbm.mjs";
 import { getConfigFileData } from "./helpers/getConfigFileData.mjs";
 
 const { client } = CLI_CONFIG;
@@ -77,35 +78,36 @@ const { client } = CLI_CONFIG;
   app.use("/processSoaClaims", createProcessBulkClaimsMiddleware(app)); //
   app.use(
     "/querySavedClaimOrPreauthData",
-    createFetchSavedClaimDataToFrontendMiddleware(app)
+    createFetchSavedClaimDataToFrontendMiddleware(app),
   );
   app.use("/validateMedications", checkMedicationValidationMiddleware(app));
   app.use(
     "/fetchCommunicationResponseOrRequest",
-    createCommunicationMiddleware(app)
+    createCommunicationMiddleware(app),
   ); //
 
   app.use("/checkPatientInsurance", checkPatientInsuranceMiddleware(app)); //
   app.use(
     "/checkClaimOrPreauthStatus",
-    createStatusCheckRequestMiddleware(app)
+    createStatusCheckRequestMiddleware(app),
   ); //;
   app.use(
     "/checkClaimOrPreauthSecondResponse",
-    createClaimOrPreauthSecondResponseMiddleware(app)
+    createClaimOrPreauthSecondResponseMiddleware(app),
   ); //;
 
   app.use("/getFilesTotalSize", createTotalFilesSizeMiddleware(app)); //;
   app.use(
     "/mergeClaimsFilesToOne",
-    createMergeClaimsFilesToOneFileMiddleware(app)
+    createMergeClaimsFilesToOneFileMiddleware(app),
   ); //;
+  app.use("/checkMedicationWithPbm", checkMedicationWithPbm(app)); //;
 
   const res = app.listen(serverPort, () =>
     createCmdMessage({
       type: "success",
       message: `app is running on http://localhost:${serverPort}`,
-    })
+    }),
   );
 
   res.on("error", () => {
