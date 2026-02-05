@@ -54,6 +54,9 @@ export default async function compressPdfWithGhostscript(pdfBytes, opts = {}) {
   const inFile = join(dir, `in-${id}.pdf`);
   const outFile = join(dir, `out-${id}.pdf`);
 
+  console.log("inFile =>", inFile);
+  console.log("outFile =>", outFile);
+
   try {
     await writeFile(inFile, Buffer.from(pdfBytes));
 
