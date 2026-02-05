@@ -9,6 +9,10 @@ import { tmpdir } from "os";
 import { join } from "path";
 import createUUID from "./createUUID.mjs";
 
+// 1- install Ghostscript https://ghostscript.com/releases/gsdnld.html
+// 2- add C:\Program Files\gs\gs__your_version\bin to your PATH environment variable
+// 3- check gswin64c --version works in your terminal
+
 function run(cmd, args) {
   return new Promise((resolve, reject) => {
     const p = spawn(cmd, args, { windowsHide: true });

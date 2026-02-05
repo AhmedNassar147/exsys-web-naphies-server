@@ -13,10 +13,6 @@ import compressPdfWithGhostscript from "./compressPdfWithGhostscript.mjs";
 
 const { jpeg } = NPHIES_SUPPORTED_IMAGE_EXTENSIONS;
 
-// 1- install Ghostscript https://ghostscript.com/releases/gsdnld.html
-// 2- add C:\Program Files\gs\gs10.05.1\bin to your PATH environment variable
-// 3- check gswin64c --version works in your terminal
-
 const formatFiles = async (filesData) => {
   let parentPdfFileBytes;
 
